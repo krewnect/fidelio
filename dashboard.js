@@ -918,6 +918,16 @@
 
     if (accEmail && window.merchantSession) {
         accEmail.value = window.merchantSession.user.email;
+
+        // --- SESSION HEARTBEAT ---
+        // Verificar periódicamente que el token no haya sido revocado
+        setInterval(async () => {
+            const { data, error } = await window.supabaseClient.auth.getSession();
+            if (error || !data.session) {
+                console.warn("⚠️ Sesión revocada o expirada. Expulsando...");
+                window.location.href = '/';
+            }
+        }, 30000); // Revisar cada 30 segundos
     }
 
     if (btnSaveAccount) {

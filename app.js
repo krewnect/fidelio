@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { createClient } = require('@supabase/supabase-js');
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 const stripe = stripeKey ? require('stripe')(stripeKey) : null;
@@ -59,7 +61,19 @@ app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), async (
     res.json({received: true});
 });
 
-// Middleware
+// Middleware de Seguridad Básica
+app.use(helmet({
+    contentSecurityPolicy: false // Desactivado temporalmente para permitir scripts CDN como Supabase
+}));
+
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Límite de 100 peticiones por IP cada 15 min
+    message: { error: 'Demasiadas peticiones, por favor intenta más tarde.' }
+});
+
+app.use('/api/', apiLimiter);
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
