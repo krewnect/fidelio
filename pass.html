@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelio | Descarga tu Tarjeta Digital de Lealtad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-deep: #030303;
+            --bg-panel: rgba(18, 18, 24, 0.7);
+            --bg-input: rgba(255, 255, 255, 0.03);
+            
+            --border-glass: rgba(255, 255, 255, 0.08);
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            --accent-violet: #8b5cf6;
+            --accent-neon: #d946ef;
+            --accent-emerald: #10b981;
+            
+            --glow-violet: rgba(139, 92, 246, 0.3);
+            
+            --font-main: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'Space Grotesk', monospace;
+            
+            --transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .ambient-mesh {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(circle at 50% 0%, var(--glow-violet), transparent 60%),
+                        radial-gradient(circle at 50% 100%, rgba(217,70,239,0.1), transparent 60%);
+            filter: blur(80px); opacity: 0.6;
+        }
+
+        .pass-download-card {
+            position: relative;
+            z-index: 1;
+            background: var(--bg-panel);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--border-glass);
+            border-radius: 40px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.1);
+            text-align: center;
+            animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .biz-brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .biz-icon-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-neon));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #ffffff;
+            box-shadow: 0 10px 30px var(--glow-violet);
+        }
+
+        .biz-titles { text-align: left; }
+        .biz-titles strong { font-size: 24px; font-weight: 700; color: #ffffff; display: block; letter-spacing: -0.5px; }
+        .biz-titles span { font-size: 12px; color: var(--accent-emerald); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+        .intro-text { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+
+        /* PASS CARD PREVIEW 3D */
+        .pass-mini-card {
+            background: linear-gradient(180deg, #1e1b4b 0%, #0a0a0a 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 24px;
+            margin: 0 auto 32px;
+            text-align: left;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: perspective(1000px) rotateX(10deg) rotateY(-5deg);
+            box-shadow: 
+                -20px 30px 60px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                0 0 40px var(--glow-violet);
+            transition: var(--transition);
+        }
+        
+        .pass-mini-card:hover { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-5px); box-shadow: 0 40px 80px rgba(0,0,0,0.9), 0 0 60px var(--glow-violet); }
+        .pass-mini-card.tier-oro { border: 2px solid #f59e0b; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3), -20px 30px 60px rgba(0,0,0,0.8); }
+        .pass-mini-card.tier-oro:hover { box-shadow: 0 0 50px rgba(245, 158, 11, 0.5), 0 40px 80px rgba(0,0,0,0.9); }
+
+        .pass-mini-head { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; margin-bottom: 20px;}
+        .pass-mini-balance { text-align: center; margin: 16px 0; background: rgba(255,255,255,0.03); padding: 16px; border-radius: 16px; }
+        .balance-num { font-family: var(--font-mono); font-size: 32px; font-weight: 700; color: #fff; margin: 4px 0; letter-spacing:-1px; }
+
+        /* FORM */
+        .form-group { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 16px; }
+        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .form-group input {
+            background: var(--bg-input);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #ffffff;
+            font-family: var(--font-main);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .form-group input:focus { outline: none; border-color: var(--accent-violet); background: rgba(139,92,246,0.05); }
+
+        .btn-wallet-add {
+            width: 100%; padding: 16px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: var(--transition); margin-top: 12px;
+        }
+
+        .btn-apple-black { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .btn-apple-black:hover { transform: translateY(-2px); background: #111; box-shadow: 0 15px 40px rgba(0,0,0,0.7); border-color: rgba(255,255,255,0.4); }
+
+        .btn-google-blue { background: #1a73e8; color: #fff; }
+        .btn-google-blue:hover { transform: translateY(-2px); background: #1557b0; box-shadow: 0 15px 40px rgba(26,115,232,0.4); }
+
+        .powered-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border-glass); font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .powered-footer img { height: 16px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-mesh"></div>
+
+    <div class="pass-download-card">
+        <div class="biz-brand-header">
+            <div class="biz-icon-circle" id="biz-icon"><i class="fa-solid fa-store"></i></div>
+            <div class="biz-titles">
+                <strong id="biz-name">Don Pedro Gourmet</strong>
+                <span><i class="fa-solid fa-shield-check"></i> Comercio Verificado Fidelio</span>
+            </div>
+        </div>
+
+        <p class="intro-text">
+            Obtén tu Tarjeta Digital de Cliente Frecuente y acumula <strong>Cashback %</strong> y <strong>Sellos Gratis</strong> en tu Wallet.
+        </p>
+
+        <!-- 3D PASS PREVIEW -->
+        <div class="pass-mini-card tier-oro">
+            <div class="pass-mini-head">
+                <span id="card-biz-name">Don Pedro Gourmet</span>
+                <span style="color:#f59e0b; font-size:11px; font-weight:700; letter-spacing:1px;">ORO VIP</span>
+            </div>
+
+            <div class="pass-mini-balance">
+                <span style="font-size:10px; color:rgba(255,255,255,0.6); font-weight:600; text-transform:uppercase; letter-spacing:1px;">SALDO DE BIENVENIDA</span>
+                <div class="balance-num">$50.00</div>
+                <span style="font-size:11px; color:var(--accent-emerald); font-weight:500;">10% Cashback en cada consumo</span>
+            </div>
+
+            <div style="text-align:center;">
+                <i class="fa-solid fa-qrcode" style="font-size:48px; background:#fff; color:#000; padding:8px; border-radius:12px;"></i>
+                <small style="display:block; font-size:10px; color:rgba(255,255,255,0.5); margin-top:8px; font-family:var(--font-mono);" id="card-serial">#FIDELIO-DONPEDRO-8842</small>
+            </div>
+        </div>
+
+        <!-- REGISTRATION FORM -->
+        <form id="pass-download-form" onsubmit="return false;">
+            <div class="form-group">
+                <label for="cust-name">Tu Nombre Completo</label>
+                <input type="text" id="cust-name" placeholder="Ej. Roberto Ordóñez" value="Roberto Ordóñez" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cust-phone">Teléfono WhatsApp</label>
+                <input type="text" id="cust-phone" placeholder="+52 55 1234 5678" value="+52 55 1234 5678" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cust-email">Correo Electrónico</label>
+                <input type="email" id="cust-email" placeholder="tu.correo@ejemplo.com" value="roberto.ordonez@gmail.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cust-bday">Fecha de Cumpleaños (Para Regalo Especial)</label>
+                <input type="date" id="cust-bday" value="1995-11-18" required>
+            </div>
+
+            <button type="button" class="btn-wallet-add btn-apple-black" onclick="downloadPass('Apple Wallet')">
+                <i class="fa-brands fa-apple" style="font-size:20px;"></i> Añadir a Apple Wallet
+            </button>
+
+            <button type="button" class="btn-wallet-add btn-google-blue" onclick="downloadPass('Google Wallet')">
+                <i class="fa-brands fa-google" style="font-size:18px;"></i> Añadir a Google Wallet
+            </button>
+        </form>
+
+        <div class="powered-footer">
+            <img src="fidelio_logo.jpg" alt="Fidelio" onerror="this.src='https://ui-avatars.com/api/?name=F&background=8b5cf6&color=fff&size=32'">
+            <span>Powered by Fidelio</span>
+        </div>
+    </div>
+
+    <script>
+        // DYNAMICALLY PARSE ANY RESTAURANT NAME / SLUG FROM URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawSlug = urlParams.get('slug') || 'Don Pedro Gourmet';
+
+        const formattedName = decodeURIComponent(rawSlug)
+            .replace(/[-_]/g, ' ')
+            .replace(/\b\w/g, l => l.toUpperCase());
+
+        document.getElementById('biz-name').textContent = formattedName;
+        document.getElementById('card-biz-name').textContent = formattedName;
+        document.getElementById('card-serial').textContent = `#FIDELIO-${formattedName.replace(/\s+/g, '').toUpperCase()}-8842`;
+
+        function downloadPass(walletType) {
+            const name = document.getElementById('cust-name').value || "Cliente";
+            const email = document.getElementById('cust-email').value || "correo@ejemplo.com";
+            
+            if (!email) {
+                alert("Por favor ingresa tu correo electrónico.");
+                return;
+            }
+
+            alert(`¡Tarjeta Digital de ${formattedName} generada con éxito!\n\nNombre: ${name}\nCorreo: ${email}\n\nSe ha instalado tu pase en ${walletType}.\n¡Ya puedes acumular saldo y sellos!`);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelio | Enterprise Wallet Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-deep: #030303;
+            --bg-sidebar: #050505;
+            --bg-panel: rgba(18, 18, 24, 0.6);
+            --bg-input: rgba(255, 255, 255, 0.03);
+            
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(139, 92, 246, 0.3);
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            --accent-violet: #8b5cf6;
+            --accent-neon: #d946ef;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            
+            --glow-violet: rgba(139, 92, 246, 0.2);
+            --glow-neon: rgba(217, 70, 239, 0.2);
+            
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 100px;
+            
+            --font-main: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'Space Grotesk', monospace;
+            
+            --transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient Glow & Mesh */
+        .ambient-mesh {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(circle at 10% 20%, var(--glow-violet), transparent 50%),
+                        radial-gradient(circle at 90% 80%, var(--glow-neon), transparent 50%);
+            filter: blur(80px); opacity: 0.5;
+        }
+
+        .app-shell { display: flex; width: 100vw; height: 100vh; position: relative; z-index: 1; }
+
+        /* SIDEBAR */
+        .app-sidebar {
+            width: 260px; background: var(--bg-sidebar); border-right: 1px solid var(--border-glass);
+            display: flex; flex-direction: column; padding: 24px 16px; flex-shrink: 0;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+
+        .sidebar-brand {
+            display: flex; align-items: center; justify-content: center; padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-glass); margin-bottom: 24px;
+        }
+        .sidebar-brand img { height: 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px var(--glow-violet); }
+
+        .sidebar-menu { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; }
+        .menu-label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; padding: 0 12px 8px; text-transform: uppercase; }
+
+        .nav-tab {
+            background: transparent; border: none; color: var(--text-muted); padding: 10px 14px;
+            border-radius: var(--radius-sm); font-family: var(--font-main); font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+        }
+        .nav-tab i { font-size: 15px; color: var(--text-muted); width: 20px; text-align: center; transition: var(--transition); }
+        .nav-tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-tab.active {
+            background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); border: 1px solid var(--border-accent);
+        }
+        .nav-tab.active i { color: var(--accent-violet); }
+
+        .menu-badge { margin-left: auto; background: rgba(255,255,255,0.1); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 6px; }
+
+        .sidebar-footer { padding-top: 16px; border-top: 1px solid var(--border-glass); }
+        .user-account-card { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: var(--radius-sm); transition: var(--transition); cursor: pointer; }
+        .user-account-card:hover { background: rgba(255,255,255,0.05); }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-violet), var(--accent-neon)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .user-info strong { font-size: 13px; font-weight: 600; color: #fff; display: block; }
+        .user-info small { font-size: 11px; color: var(--text-muted); display: block; }
+
+        /* WORKSPACE */
+        .app-workspace { flex: 1; overflow-y: auto; padding: 40px; scroll-behavior: smooth; }
+        .workspace-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+        .workspace-eyebrow { font-size: 12px; font-weight: 600; color: var(--accent-violet); letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        .workspace-header h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; color: #fff; }
+        .workspace-header p { font-size: 15px; color: var(--text-muted); margin-top: 4px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* BUILDER GRID */
+        .builder-split-grid { display: grid; grid-template-columns: 1fr 400px; gap: 32px; align-items: start; }
+
+        .accordion-card {
+            background: var(--bg-panel); backdrop-filter: blur(24px); border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg); padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin-bottom: 24px;
+        }
+
+        .card-title-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .card-step-badge { font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.1); color: #fff; padding: 4px 12px; border-radius: var(--radius-pill); font-family: var(--font-mono); }
+        .card-title-bar h2 { font-size: 18px; font-weight: 600; color: #fff; }
+
+        /* FORM ELEMENTS */
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .form-group label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            background: var(--bg-input); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm);
+            padding: 12px 16px; color: #fff; font-family: var(--font-main); font-size: 14px; transition: var(--transition); width: 100%;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-violet); background: rgba(139,92,246,0.05); }
+
+        .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 16px; }
+
+        .file-dropzone { border: 1px dashed rgba(255,255,255,0.2); border-radius: var(--radius-sm); padding: 20px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; background: var(--bg-input); }
+        .file-dropzone:hover { border-color: var(--accent-violet); background: rgba(139,92,246,0.05); }
+        .file-dropzone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-dropzone i { font-size: 24px; color: var(--text-muted); margin-bottom: 8px; }
+        .file-dropzone span { display: block; font-size: 12px; color: var(--text-muted); }
+
+        /* MECHANICS GRID */
+        .mechanics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .mode-tile {
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md);
+            padding: 16px; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; gap: 6px;
+        }
+        .mode-tile:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+        .mode-tile.active { border-color: var(--accent-violet); background: rgba(139,92,246,0.1); }
+        .mode-tile.featured { grid-column: span 2; background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(217,70,239,0.1)); border-color: rgba(217,70,239,0.4); }
+        .mode-tile i { font-size: 20px; color: var(--text-muted); }
+        .mode-tile.active i { color: var(--accent-violet); }
+        .mode-tile strong { font-size: 14px; font-weight: 600; color: #fff; }
+        .mode-tile small { font-size: 12px; color: var(--text-muted); }
+
+        /* SWITCH */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); border-radius: 24px; transition: .3s; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #fff; border-radius: 50%; transition: .3s; }
+        input:checked + .slider { background-color: var(--accent-violet); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .param-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px; }
+        .param-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px;}
+        .param-card-head strong { font-size: 14px; font-weight: 600; }
+
+        .tier-config-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px; }
+        .tier-config-card.bronce-card { border-left: 2px solid #ea580c; }
+        .tier-config-card.plata-card { border-left: 2px solid #cbd5e1; }
+        .tier-config-card.oro-card { border-left: 2px solid #f59e0b; }
+        
+        .tier-pill { padding: 4px 12px; border-radius: var(--radius-pill); font-weight: 600; font-size: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); display: inline-block; margin-bottom: 16px;}
+        
+        /* PHONE STUDIO */
+        .phone-studio-panel {
+            background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(24px); border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg); padding: 32px; display: flex; flex-direction: column; align-items: center;
+            position: sticky; top: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .studio-topbar { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .studio-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+
+        .wallet-type-selector { display: flex; background: rgba(0,0,0,0.5); padding: 4px; border-radius: var(--radius-pill); border: 1px solid rgba(255,255,255,0.1); }
+        .wallet-btn { background: transparent; border: none; color: var(--text-muted); padding: 6px 16px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; cursor: pointer; transition: var(--transition); }
+        .wallet-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
+
+        .iphone-device {
+            width: 320px; height: 650px; background: #000; border-radius: 48px; border: 4px solid #333;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.2);
+            position: relative; padding: 12px; overflow: hidden;
+        }
+        
+        .dynamic-island {
+            position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 100px; height: 30px;
+            background: #000; border-radius: 20px; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 0 10px;
+        }
+        .dynamic-island .lens { width: 10px; height: 10px; background: #111; border-radius: 50%; box-shadow: inset 0 0 2px rgba(255,255,255,0.2); }
+
+        .pass-card-luxury {
+            margin-top: 50px; background: #1e1b4b; border-radius: 20px; padding: 20px; color: #fff;
+            position: relative; overflow: hidden; transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .pass-card-luxury.tier-border-oro { border: 2px solid #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+        .pass-card-luxury.tier-border-plata { border: 2px solid #cbd5e1; box-shadow: 0 0 20px rgba(203, 213, 225, 0.3); }
+        .pass-card-luxury.tier-border-bronce { border: 2px solid #f97316; box-shadow: 0 0 20px rgba(249, 115, 22, 0.3); }
+
+        .pass-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .pass-brand-mark { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+        .pass-vip-indicator { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #f59e0b; }
+
+        .pass-cover-banner { width: 100%; height: 100px; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+        .pass-cover-banner img { width: 100%; height: 100%; object-fit: cover; }
+
+        .pass-balance-hero { text-align: center; margin-bottom: 20px; }
+        .balance-caption { font-size: 10px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; display: block; }
+        .balance-amount { font-family: var(--font-mono); font-size: 32px; font-weight: 700; margin: 4px 0; }
+        .balance-sub { font-size: 11px; color: var(--accent-emerald); }
+
+        .pass-stamps-block { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .stamp-coin-grid { display: flex; justify-content: center; gap: 8px; margin: 8px 0; }
+        .stamp-coin { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+        .stamp-coin.filled { background: var(--accent-violet); color: #fff; }
+        .stamp-coin.empty { border: 1px dashed rgba(255,255,255,0.3); color: rgba(255,255,255,0.3); }
+        .reward-note { font-size: 11px; color: #f59e0b; }
+
+        .pass-promo-strip { background: rgba(217,70,239,0.1); border-radius: 8px; padding: 10px; font-size: 11px; color: #fdf4ff; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+
+        .pass-qr-footer { text-align: center; }
+        .qr-code-box { background: #fff; padding: 10px; border-radius: 12px; display: inline-block; color: #000; font-size: 64px; margin-bottom: 8px; }
+        .pass-serial { font-size: 11px; font-family: var(--font-mono); color: rgba(255,255,255,0.5); display: block; }
+
+        /* DATA GRID CRM */
+        .crm-table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
+        .crm-table th { background: transparent; color: var(--text-muted); font-size: 12px; font-weight: 500; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-glass); }
+        .crm-table tr { background: rgba(255,255,255,0.02); transition: var(--transition); }
+        .crm-table tr:hover { background: rgba(255,255,255,0.05); }
+        .crm-table td { padding: 16px; font-size: 13px; color: #e2e8f0; }
+        .crm-table td:first-child { border-top-left-radius: var(--radius-sm); border-bottom-left-radius: var(--radius-sm); }
+        .crm-table td:last-child { border-top-right-radius: var(--radius-sm); border-bottom-right-radius: var(--radius-sm); }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .badge.active { background: rgba(16,185,129,0.1); color: #10b981; }
+
+        /* BUTTONS */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); border: none; }
+        .btn-solid { background: var(--accent-violet); color: #fff; }
+        .btn-solid:hover { background: #7c3aed; transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-glass); color: #fff; }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .btn-block { width: 100%; }
+        
+        /* PRESETS */
+        .preset-selector-bar { display: flex; align-items: center; gap: 12px; }
+        .btn-preset { background: rgba(255,255,255,0.05); border: 1px solid transparent; color: var(--text-muted); padding: 6px 12px; border-radius: var(--radius-pill); font-size: 12px; cursor: pointer; transition: var(--transition); }
+        .btn-preset:hover, .btn-preset.active { background: rgba(139,92,246,0.1); color: #fff; border-color: rgba(139,92,246,0.3); }
+
+        .hidden { display: none !important; }
+        .mt-20 { margin-top: 20px; }
+        .mt-16 { margin-top: 16px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="ambient-mesh"></div>
+
+    <div class="app-shell">
+        <!-- SIDEBAR -->
+        <aside class="app-sidebar">
+            <div class="sidebar-brand">
+                <img src="fidelio_logo.jpg" alt="Fidelio Logo" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=8b5cf6&color=fff&size=64'">
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="menu-label">Plataforma</div>
+                <button class="nav-tab active" data-tab="tab-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Wallet</button>
+                <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">5</span></button>
+                <button class="nav-tab" data-tab="tab-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
+                <button class="nav-tab" data-tab="tab-scanner"><i class="fa-solid fa-qrcode"></i> Escáner Staff</button>
+                
+                <div class="menu-label mt-20">Automatización</div>
+                <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas IA</button>
+                <button class="nav-tab" data-tab="tab-support"><i class="fa-solid fa-headset"></i> Soporte</button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-account-card">
+                    <div class="user-avatar" id="header-business-icon"><i class="fa-solid fa-store"></i></div>
+                    <div class="user-info">
+                        <strong id="header-restaurant-name">Don Pedro Gourmet</strong>
+                        <small id="header-business-category">Restaurantes</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <main class="app-workspace">
+            
+            <!-- BUILDER TAB -->
+            <section id="tab-builder" class="tab-content active">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">DISEÑADOR DE TARJETAS DIGITALES</span>
+                        <h1>Configura tu Tarjeta</h1>
+                        <p>Diseña la tarjeta digital para tu negocio y visualiza la emisión en directo.</p>
+                    </div>
+                    <div class="preset-selector-bar">
+                        <span style="font-size:12px; color:var(--text-muted);">Plantillas:</span>
+                        <button class="btn-preset active" onclick="loadDemoPreset('restaurant')"><i class="fa-solid fa-utensils"></i> Restaurante</button>
+                        <button class="btn-preset" onclick="loadDemoPreset('barbershop')"><i class="fa-solid fa-scissors"></i> Barbería</button>
+                        <button class="btn-preset" onclick="loadDemoPreset('cafe')"><i class="fa-solid fa-mug-hot"></i> Cafetería</button>
+                    </div>
+                </div>
+
+                <div class="builder-split-grid">
+                    <!-- CONTROLS -->
+                    <div class="builder-controls-panel">
+                        <form id="pass-config-form" onsubmit="return false;">
+                            <!-- STEP 1 -->
+                            <div class="accordion-card">
+                                <div class="card-title-bar">
+                                    <span class="card-step-badge">01</span>
+                                    <h2>Dinámica de Lealtad</h2>
+                                </div>
+                                <div class="form-group">
+                                    <label>Industria del Comercio</label>
+                                    <select id="business-category-select">
+                                        <option value="restaurant" selected>Restaurantes / Gastronomía</option>
+                                        <option value="cafe">Cafeterías & Panaderías</option>
+                                        <option value="barbershop">Barbershops & Barberías</option>
+                                    </select>
+                                </div>
+                                <div class="mechanics-grid">
+                                    <div class="mode-tile active featured" data-mode="hybrid">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                        <strong>Modo Completo</strong>
+                                        <small>Cashback, Sellos, Promos, VIP</small>
+                                    </div>
+                                    <div class="mode-tile" data-mode="cashback">
+                                        <i class="fa-solid fa-percent"></i>
+                                        <strong>Cashback %</strong>
+                                    </div>
+                                    <div class="mode-tile" data-mode="stamps">
+                                        <i class="fa-solid fa-stamp"></i>
+                                        <strong>Sellos</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STEP 2 -->
+                            <div class="accordion-card">
+                                <div class="card-title-bar">
+                                    <span class="card-step-badge">02</span>
+                                    <h2>Marca & Colores</h2>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nombre Comercial</label>
+                                    <input type="text" id="rest-name" value="Don Pedro Gourmet">
+                                </div>
+                                <div class="form-row-2">
+                                    <div class="form-group">
+                                        <label>Logo (PNG)</label>
+                                        <div class="file-dropzone" id="logo-dropzone">
+                                            <input type="file" id="logo-file-input" accept="image/*">
+                                            <i class="fa-solid fa-image"></i>
+                                            <span>Subir logo</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Portada (JPG)</label>
+                                        <div class="file-dropzone" id="banner-dropzone">
+                                            <input type="file" id="banner-file-input" accept="image/*">
+                                            <i class="fa-solid fa-photo-film"></i>
+                                            <span>Subir fondo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row-3 mt-16">
+                                    <div class="form-group">
+                                        <label>Fondo</label>
+                                        <input type="color" id="color-primary" value="#1e1b4b" style="padding:2px; height:40px;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Acento</label>
+                                        <input type="color" id="color-accent" value="#8b5cf6" style="padding:2px; height:40px;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Icono</label>
+                                        <select id="rest-icon">
+                                            <option value="fa-burger" selected>Burger</option>
+                                            <option value="fa-scissors">Scissors</option>
+                                            <option value="fa-mug-hot">Mug</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3 -->
+                            <div class="accordion-card">
+                                <div class="card-title-bar">
+                                    <span class="card-step-badge">03</span>
+                                    <h2>Beneficios</h2>
+                                </div>
+                                
+                                <div class="param-card">
+                                    <div class="param-card-head">
+                                        <label class="switch"><input type="checkbox" id="mech-cashback-check" checked><span class="slider"></span></label>
+                                        <strong>Cashback %</strong>
+                                    </div>
+                                    <div class="form-group" id="mech-cashback-body">
+                                        <label>Porcentaje devuelto:</label>
+                                        <input type="number" id="cashback-percent" value="10">
+                                    </div>
+                                </div>
+
+                                <div class="param-card">
+                                    <div class="param-card-head">
+                                        <label class="switch"><input type="checkbox" id="mech-stamps-check" checked><span class="slider"></span></label>
+                                        <strong>Tarjeta de Sellos</strong>
+                                    </div>
+                                    <div class="form-row-2" id="mech-stamps-body">
+                                        <div class="form-group"><label>Sellos</label><input type="number" id="stamps-total" value="5"></div>
+                                        <div class="form-group"><label>Premio</label><input type="text" id="stamps-reward" value="Hamburguesa Gratis"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="param-card">
+                                    <div class="param-card-head">
+                                        <label class="switch"><input type="checkbox" id="mech-dynamic-check" checked><span class="slider"></span></label>
+                                        <strong>Promoción</strong>
+                                    </div>
+                                    <div class="form-group" id="mech-dynamic-body">
+                                        <input type="text" id="dynamic-desc" value="Martes y Jueves: Doble Cashback">
+                                    </div>
+                                </div>
+                                
+                                <div class="param-card">
+                                    <div class="param-card-head">
+                                        <label class="switch"><input type="checkbox" id="mech-vip-check" checked><span class="slider"></span></label>
+                                        <strong>Niveles VIP</strong>
+                                    </div>
+                                    <div id="mech-vip-body">
+                                        <div class="tier-config-card oro-card">
+                                            <span class="tier-pill" onclick="setDemoTier('oro')"><i class="fa-solid fa-crown"></i> ORO VIP</span>
+                                            <div class="form-row-2">
+                                                <div class="form-group"><label>Gasto Mín</label><input type="number" id="tier-oro-min" value="3000"></div>
+                                                <div class="form-group"><label>Cashback %</label><input type="number" id="tier-oro-cb" value="15"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- PREVIEW -->
+                    <div class="phone-studio-panel">
+                        <div class="studio-topbar">
+                            <span class="studio-label">FIDELIO STUDIO</span>
+                            <div class="wallet-type-selector">
+                                <button class="wallet-btn active" id="btn-apple-wallet">Apple Wallet</button>
+                                <button class="wallet-btn" id="btn-google-wallet">Google Wallet</button>
+                            </div>
+                        </div>
+
+                        <div class="iphone-device">
+                            <div class="dynamic-island"><div class="lens"></div></div>
+                            
+                            <div class="pass-card-luxury tier-border-oro" id="pass-render">
+                                <div class="pass-header-row">
+                                    <div class="pass-brand-mark">
+                                        <i class="fa-solid fa-burger" id="render-icon"></i>
+                                        <span id="render-name">Don Pedro Gourmet</span>
+                                    </div>
+                                    <div class="pass-vip-indicator" id="render-vip-caption">ORO VIP</div>
+                                </div>
+
+                                <div class="pass-cover-banner hidden" id="render-banner-container">
+                                    <img id="render-banner-img" src="" alt="Banner">
+                                </div>
+
+                                <div class="pass-balance-hero" id="render-cashback-container">
+                                    <span class="balance-caption">Cashback Balance</span>
+                                    <div class="balance-amount" id="render-balance">$145.00</div>
+                                    <span class="balance-sub" id="render-cashback-rate">15% acumulable</span>
+                                </div>
+
+                                <div class="pass-stamps-block" id="render-stamps-container">
+                                    <span class="balance-caption">Sellos (3/5)</span>
+                                    <div class="stamp-coin-grid" id="render-stamps-grid"></div>
+                                    <span class="reward-note" id="render-reward-text">Premio: Hamburguesa Gratis</span>
+                                </div>
+
+                                <div class="pass-promo-strip" id="render-promo-strip">
+                                    <i class="fa-solid fa-bolt"></i> <span id="render-promo-text">Martes y Jueves: Doble Cashback</span>
+                                </div>
+
+                                <div class="pass-qr-footer">
+                                    <div class="qr-code-box"><i class="fa-solid fa-qrcode"></i></div>
+                                    <span class="pass-serial">#FIDELIO-8842-MEX</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CRM TAB (Mock content to satisfy JS if needed) -->
+            <section id="tab-crm" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">BASE DE DATOS PRIVADA</span>
+                        <h1>Clientes Fidelizados</h1>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-outline" id="btn-show-register-preview">Ver Formulario QR</button>
+                        <button class="btn btn-solid" id="btn-add-demo-client">Simular Registro</button>
+                    </div>
+                </div>
+                <div class="accordion-card">
+                    <table class="crm-table">
+                        <thead>
+                            <tr><th>Cliente</th><th>Nivel</th><th>Estado</th></tr>
+                        </thead>
+                        <tbody id="crm-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- BRANCHES TAB (Mock content) -->
+            <section id="tab-branches" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">GEOFENCING</span>
+                        <h1>Sucursales GPS</h1>
+                    </div>
+                    <button class="btn btn-solid" id="btn-add-branch">+ Agregar Sucursal</button>
+                </div>
+                <div class="accordion-card">
+                    <h2><span id="branch-count">4</span> Sucursales Registradas</h2>
+                    <div id="branches-list"></div>
+                </div>
+            </section>
+
+            <!-- SCANNER TAB (Mock content) -->
+            <section id="tab-scanner" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">CAJA</span>
+                        <h1>Escáner Staff</h1>
+                    </div>
+                </div>
+                <div class="accordion-card">
+                    <button class="btn btn-solid" id="btn-simulate-scan">Simular Escaneo</button>
+                    <div id="scanner-step-1"></div>
+                    <div id="scanner-step-2" class="hidden">
+                        <span id="profile-balance"></span><span id="profile-stamps"></span><span id="profile-tier-badge"></span>
+                        <input type="number" id="bill-amount" value="450">
+                        <span id="calc-cashback"></span>
+                        <button id="btn-process-transaction">Abonar</button>
+                        <button id="btn-redeem-reward">Canjear</button>
+                    </div>
+                    <div id="activity-feed"></div>
+                </div>
+            </section>
+
+            <!-- MARKETING TAB (Mock content) -->
+            <section id="tab-marketing" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">IA</span>
+                        <h1>Campañas</h1>
+                    </div>
+                </div>
+                <div class="accordion-card">
+                    <textarea id="push-happy-text"></textarea>
+                    <button id="btn-send-push" class="btn btn-solid">Enviar Push</button>
+                </div>
+            </section>
+
+            <!-- SUPPORT TAB (Mock content) -->
+            <section id="tab-support" class="tab-content">
+                <div class="workspace-header">
+                    <div><h1>Soporte</h1></div>
+                </div>
+                <div class="accordion-card">
+                    <div id="ai-chat-history"></div>
+                    <input type="text" id="ai-chat-input">
+                    <button id="btn-send-ai-chat" class="btn btn-solid">Enviar</button>
+                </div>
+                <div class="accordion-card">
+                    <input type="text" id="ticket-subject"><textarea id="ticket-desc"></textarea>
+                    <button id="btn-send-email-ticket" class="btn btn-solid">Enviar Mail</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    
+    <!-- MODAL -->
+    <div class="hidden" id="modal-onboarding">
+        <button id="btn-close-onboarding">x</button>
+        <input type="text" id="cust-name">
+        <input type="text" id="cust-phone">
+        <input type="text" id="cust-email">
+        <input type="date" id="cust-birthday">
+        <button id="btn-submit-customer-register">Añadir</button>
+    </div>
+</body>
+</html>
