@@ -23,6 +23,118 @@ if (supabaseUrl && supabaseKey) {
     console.log('⚠️ Supabase no configurado aún (Faltan variables en .env)');
 }
 
+// --- AUTH MIDDLEWARE ---
+const requireMerchantAuth = async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+    const token = authHeader.split(' ')[1];
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    
+    if (error || !user) {
+        return res.status(401).json({ success: false, error: 'Invalid token' });
+    }
+    req.merchantId = user.id;
+    next();
+};
+
+// --- API ESCÁNER (STAFF) ---
+
+// 1. Buscar Cliente por ID (QR)
+app.get('/api/scanner/customer/:id', apiLimiter, requireMerchantAuth, async (req, res) => {
+    const customerId = req.params.id;
+    
+    try {
+        const { data: customer, error } = await supabase
+            .from('customers')
+            .select('*')
+            .eq('id', customerId)
+            .eq('merchant_id', req.merchantId)
+            .single();
+            
+        if (error || !customer) {
+            return res.status(404).json({ success: false, error: 'Cliente no encontrado o no pertenece a este comercio.' });
+        }
+        
+        res.json({ success: true, customer });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Error interno' });
+    }
+});
+
+// 2. Procesar Transacción
+app.post('/api/scanner/transaction', apiLimiter, requireMerchantAuth, async (req, res) => {
+    const { customerId, amount, type } = req.body;
+    // type: 'earn' (Dar puntos) o 'redeem' (Cobrar)
+    
+    if (!customerId || !amount || amount <= 0 || !['earn', 'redeem'].includes(type)) {
+        return res.status(400).json({ success: false, error: 'Datos inválidos' });
+    }
+    
+    try {
+        // Verificar que el cliente es de este comercio
+        const { data: customer, error: fetchErr } = await supabase
+            .from('customers')
+            .select('*')
+            .eq('id', customerId)
+            .eq('merchant_id', req.merchantId)
+            .single();
+            
+        if (fetchErr || !customer) {
+            return res.status(404).json({ success: false, error: 'Cliente no encontrado.' });
+        }
+
+        let newBalance = customer.current_balance;
+        let earned = 0;
+        let redeemed = 0;
+
+        if (type === 'earn') {
+            // Ejemplo: 5% de Cashback
+            earned = amount * 0.05;
+            newBalance += earned;
+        } else if (type === 'redeem') {
+            if (customer.current_balance < amount) {
+                return res.status(400).json({ success: false, error: 'Saldo insuficiente.' });
+            }
+            redeemed = amount;
+            newBalance -= redeemed;
+        }
+
+        // Actualizar Cliente
+        const { error: updateErr } = await supabase
+            .from('customers')
+            .update({ 
+                current_balance: newBalance,
+                lifetime_value: customer.lifetime_value + (type === 'earn' ? amount : 0),
+                visits: customer.visits + 1
+            })
+            .eq('id', customerId);
+
+        if (updateErr) throw updateErr;
+
+        // Registrar Transacción
+        await supabase
+            .from('transactions')
+            .insert([{
+                merchant_id: req.merchantId,
+                customer_id: customerId,
+                amount: amount,
+                type: type
+            }]);
+
+        res.json({ 
+            success: true, 
+            newBalance, 
+            pointsEarned: earned, 
+            amountRedeemed: redeemed 
+        });
+
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Error procesando transacción.' });
+    }
+});
+
 // -------------------------------------------------------------
 // WEBHOOK DE STRIPE (Debe ir antes del body parser JSON)
 // -------------------------------------------------------------

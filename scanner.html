@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Terminal Fidelio</title>
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- QR Code Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --surface: #111827;
+            --surface-light: #1f2937;
+            --primary: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 20px;
+            text-align: center;
+            background: var(--surface);
+            border-bottom: 1px solid var(--surface-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        
+        /* Main Container */
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Scanner Area */
+        #reader-container {
+            width: 100%;
+            background: black;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border: 2px solid var(--surface-light);
+        }
+        #reader { width: 100%; min-height: 300px; }
+        
+        /* States */
+        .loading { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2rem; color: var(--text-muted); }
+        .error { color: var(--danger); text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; margin-top: 20px; }
+        
+        /* Customer Action Panel (Hidden by default) */
+        #action-panel {
+            display: none;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--surface-light);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .customer-header { text-align: center; margin-bottom: 24px; }
+        .customer-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .customer-balance { font-size: 2rem; color: var(--success); font-weight: 800; }
+        .customer-balance span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+
+        /* Form */
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; }
+        .amount-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .amount-wrapper i { position: absolute; left: 16px; font-size: 1.2rem; color: var(--text-muted); }
+        input[type="number"] {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--surface-light);
+            color: white;
+            padding: 16px 16px 16px 40px;
+            font-size: 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+        input[type="number"]:focus { outline: none; border-color: var(--primary); }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 12px; margin-top: 24px; }
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+        button:active { opacity: 0.8; transform: scale(0.98); }
+        .btn-earn { background: var(--primary); }
+        .btn-redeem { background: var(--surface-light); color: var(--text-main); }
+        .btn-cancel { background: transparent; border: 1px solid var(--surface-light); margin-top: 12px; width: 100%; }
+
+        /* Status overlay */
+        #status-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(9, 13, 22, 0.95);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100;
+        }
+        .status-icon { font-size: 4rem; margin-bottom: 16px; }
+        .status-success { color: var(--success); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-qrcode"></i> Fidelio Terminal</div>
+        <div id="merchant-name" style="font-size: 0.9rem; color: var(--text-muted);">Cargando...</div>
+    </header>
+
+    <div class="container" id="main-container">
+        
+        <!-- Scanner -->
+        <div id="reader-container">
+            <div id="reader"></div>
+        </div>
+        
+        <p style="text-align:center; color:var(--text-muted); font-size:0.9rem;" id="scan-hint">
+            Apunta la cámara al pase de Apple Wallet del cliente.
+        </p>
+
+        <!-- Action Panel -->
+        <div id="action-panel">
+            <div class="customer-header">
+                <div class="customer-name" id="c-name">Cargando...</div>
+                <div class="customer-balance" id="c-balance">$0.00 <span>MXN Disponibles</span></div>
+            </div>
+
+            <div class="input-group">
+                <label>Monto del Consumo (Ticket)</label>
+                <div class="amount-wrapper">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <input type="number" id="ticket-amount" placeholder="0.00" step="0.01">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-earn" id="btn-earn" onclick="processTransaction('earn')">
+                    <i class="fa-solid fa-coins"></i> Dar Puntos
+                </button>
+                <button class="btn-redeem" id="btn-redeem" onclick="processTransaction('redeem')">
+                    <i class="fa-solid fa-money-bill-wave"></i> Cobrar
+                </button>
+            </div>
+            
+            <button class="btn-cancel" onclick="resetScanner()">
+                Cancelar
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Success Overlay -->
+    <div id="status-overlay">
+        <i class="fa-solid fa-circle-check status-icon status-success"></i>
+        <h2 style="font-size: 2rem; margin-bottom: 8px;">¡Éxito!</h2>
+        <p id="status-msg" style="color: var(--text-muted);">Transacción procesada.</p>
+        <button class="btn-primary" style="margin-top:24px; width:80%; max-width:300px; padding:16px; border-radius:12px; background:var(--primary); color:white; font-weight:700; border:none;" onclick="resetScanner()">Escanear Siguiente</button>
+    </div>
+
+    <script>
+        let supabaseClient;
+        let html5QrcodeScanner;
+        let currentCustomerId = null;
+        let merchantSession = null;
+
+        async function init() {
+            try {
+                // 1. Get Config
+                const res = await fetch('/api/config');
+                const config = await res.json();
+                supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+                // 2. Check Auth
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) {
+                    alert("Debes iniciar sesión en el Dashboard para usar el escáner.");
+                    window.location.href = '/';
+                    return;
+                }
+                merchantSession = session;
+                
+                // Load Merchant info
+                const { data: merchant } = await supabaseClient
+                    .from('merchants')
+                    .select('business_name')
+                    .eq('id', session.user.id)
+                    .single();
+                    
+                if (merchant) {
+                    document.getElementById('merchant-name').textContent = merchant.business_name;
+                }
+
+                // 3. Start Scanner
+                startScanner();
+
+            } catch (err) {
+                console.error("Error iniciando escáner:", err);
+                alert("Error de conexión con el servidor.");
+            }
+        }
+
+        function startScanner() {
+            document.getElementById('action-panel').style.display = 'none';
+            document.getElementById('reader-container').style.display = 'block';
+            document.getElementById('scan-hint').style.display = 'block';
+            
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            
+            // Configurar la cámara trasera (environment)
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+            .catch(err => {
+                console.error("Error iniciando cámara:", err);
+                document.getElementById('reader').innerHTML = '<div class="error">No se pudo acceder a la cámara. Revisa los permisos de tu navegador.</div>';
+            });
+        }
+
+        async function onScanSuccess(decodedText, decodedResult) {
+            // Detener el escáner al leer un código
+            html5QrcodeScanner.stop();
+            document.getElementById('reader-container').style.display = 'none';
+            document.getElementById('scan-hint').style.display = 'none';
+            document.getElementById('action-panel').style.display = 'block';
+            
+            currentCustomerId = decodedText; // El QR debe contener el ID del cliente
+            document.getElementById('c-name').textContent = "Buscando cliente...";
+            document.getElementById('c-balance').innerHTML = "...";
+            
+            // Fetch customer data from API
+            try {
+                const res = await fetch(`/api/scanner/customer/${currentCustomerId}`, {
+                    headers: { 'Authorization': `Bearer ${merchantSession.access_token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('c-name').textContent = data.customer.name;
+                    document.getElementById('c-balance').innerHTML = `$${data.customer.current_balance.toFixed(2)} <span>MXN</span>`;
+                } else {
+                    alert("Error: " + data.error);
+                    resetScanner();
+                }
+            } catch (err) {
+                alert("Error conectando con el servidor");
+                resetScanner();
+            }
+        }
+
+        function onScanFailure(error) {
+            // Se ejecuta constantemente mientras no encuentre QR, no hacemos nada.
+        }
+
+        function resetScanner() {
+            document.getElementById('status-overlay').style.display = 'none';
+            document.getElementById('ticket-amount').value = '';
+            currentCustomerId = null;
+            if(html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+            }
+            startScanner();
+        }
+
+        async function processTransaction(type) {
+            const amountStr = document.getElementById('ticket-amount').value;
+            const amount = parseFloat(amountStr);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert("Ingresa un monto válido.");
+                return;
+            }
+
+            const btnId = type === 'earn' ? 'btn-earn' : 'btn-redeem';
+            const btn = document.getElementById(btnId);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/scanner/transaction', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${merchantSession.access_token}`
+                    },
+                    body: JSON.stringify({
+                        customerId: currentCustomerId,
+                        amount: amount,
+                        type: type
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('status-overlay').style.display = 'flex';
+                    if (type === 'earn') {
+                        document.getElementById('status-msg').textContent = `Se otorgaron $${data.pointsEarned.toFixed(2)} MXN en Cashback.`;
+                    } else {
+                        document.getElementById('status-msg').textContent = `Se cobraron $${data.amountRedeemed.toFixed(2)} MXN con éxito.`;
+                    }
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (err) {
+                alert("Error conectando con el servidor.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Run
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
