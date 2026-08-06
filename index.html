@@ -285,6 +285,9 @@
                 <button class="nav-tab" data-tab="tab-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
                 <button class="nav-tab" data-tab="tab-scanner"><i class="fa-solid fa-qrcode"></i> Escáner Staff</button>
                 
+                <div class="menu-label mt-20" id="admin-leads-menu" style="display:none;">Administración Central</div>
+                <button class="nav-tab" data-tab="tab-leads" id="admin-leads-tab" style="display:none;"><i class="fa-solid fa-envelope-open-text"></i> Prospectos (Leads)</button>
+                
                 <div class="menu-label mt-20">Automatización</div>
                 <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas IA</button>
                 <button class="nav-tab" data-tab="tab-support"><i class="fa-solid fa-headset"></i> Soporte</button>
@@ -628,6 +631,34 @@
                         <button id="btn-save-account" class="btn-primary">Actualizar Credenciales</button>
                         <button id="btn-logout" class="btn-secondary" style="color:#ef4444; border-color:rgba(239,68,68,0.3);">Cerrar Sesión</button>
                     </div>
+                </div>
+            </section>
+
+            <!-- LEADS TAB (ADMIN ONLY) -->
+            <section id="tab-leads" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">ADMINISTRACIÓN CENTRAL</span>
+                        <h1>Prospectos Entrantes</h1>
+                        <p>Gestión de restaurantes interesados en obtener una Demo de Fidelio.</p>
+                    </div>
+                    <button class="btn-primary" onclick="loadLeads()"><i class="fa-solid fa-rotate-right"></i> Refrescar Lista</button>
+                </div>
+                
+                <div class="content-panel">
+                    <table class="crm-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Nombre</th>
+                                <th>Correo Electrónico</th>
+                                <th>Teléfono</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leads-table-body">
+                            <!-- Leads dinámicos aquí -->
+                        </tbody>
+                    </table>
                 </div>
             </section>
 

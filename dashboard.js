@@ -905,6 +905,42 @@
         });
     }
 
+    // --- LEADS MANAGEMENT (ADMIN ONLY) ---
+    window.loadLeads = async function() {
+        if (!window.merchantSession || window.merchantSession.user.email !== 'admin@fidelio.com') return;
+        
+        const tbody = document.getElementById('leads-table-body');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando prospectos...</td></tr>';
+        
+        const { data, error } = await window.supabaseClient
+            .from('demo_requests')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error cargando prospectos: ${error.message}</td></tr>`;
+            return;
+        }
+        
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay solicitudes pendientes.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        data.forEach(lead => {
+            const date = new Date(lead.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            tbody.innerHTML += `
+                <tr>
+                    <td>${date}</td>
+                    <td><strong style="color:#fff;">${lead.name}</strong></td>
+                    <td>${lead.email}</td>
+                    <td>${lead.phone}</td>
+                </tr>
+            `;
+        });
+    };
+
     // Initial Render Calls
     renderBranches();
     renderCRMTable();
@@ -918,6 +954,21 @@
 
     if (accEmail && window.merchantSession) {
         accEmail.value = window.merchantSession.user.email;
+        
+        // ADMIN CHECK FOR LEADS TAB
+        if (window.merchantSession.user.email === 'admin@fidelio.com') {
+            document.getElementById('admin-leads-menu').style.display = 'block';
+            document.getElementById('admin-leads-tab').style.display = 'block';
+            
+            // Re-attach listeners explicitly just in case for new tab
+            document.getElementById('admin-leads-tab').addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                document.getElementById('tab-leads').classList.add('active');
+                window.loadLeads();
+            });
+        }
 
         // --- SESSION HEARTBEAT ---
         // Verificar periódicamente que el token no haya sido revocado

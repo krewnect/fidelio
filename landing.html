@@ -476,24 +476,24 @@
             <nav class="nav-links">
                 <a href="#features">Características</a>
                 <a href="#pricing">Precios</a>
-                <a href="index.html">Portal Clientes</a>
+                <a href="#" onclick="document.getElementById('demoModal').classList.add('active'); return false;">Solicitar Demo</a>
             </nav>
 
             <div style="display:flex; gap: 12px;">
                 <button class="btn-secondary" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
-                <a href="#pricing" class="btn-primary">Registrar Negocio</a>
+                <a href="#pricing" class="btn-primary">Empezar</a>
             </div>
         </header>
 
         <section class="hero">
             <div class="hero-content">
                 <div class="hero-badge"><i class="fa-solid fa-sparkles"></i> Enterprise Loyalty Platform</div>
-                <h1 class="hero-title">Fidelización de <span>Clase Mundial</span> para tu Negocio.</h1>
+                <h1 class="hero-title">Fidelización <span>Inteligente</span> para tu Negocio.</h1>
                 <p class="hero-desc">Reemplaza el papel por pases nativos en Apple y Google Wallet. Aumenta la retención con notificaciones geolocalizadas, IA y experiencias de alta gama.</p>
                 
                 <div class="hero-actions">
                     <a href="#pricing" class="btn-primary">Empezar Ahora</a>
-                    <button class="btn-secondary" onclick="document.getElementById('demoModal').classList.add('active')"><i class="fa-solid fa-play"></i> Ver Demo en Vivo</button>
+                    <button class="btn-secondary" onclick="document.getElementById('demoModal').classList.add('active')"><i class="fa-solid fa-envelope"></i> Contáctanos</button>
                 </div>
 
                 <div class="stats-row">
@@ -585,7 +585,7 @@
                             <li><i class="fa-solid fa-check"></i> Soporte VIP 24/7</li>
                         </ul>
 
-                        <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('demoModal').classList.add('active')">
+                        <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('registerModal').classList.add('active')">
                             Suscribirme Ahora
                         </button>
                     </div>
@@ -598,12 +598,12 @@
         </footer>
     </div>
 
-    <!-- DEMO MODAL -->
-    <div class="modal-overlay" id="demoModal">
+    <!-- REGISTER MODAL (Antes Demo Modal) -->
+    <div class="modal-overlay" id="registerModal">
         <div class="modal-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="font-size:20px; font-weight:700;">Solicitar Acceso</h3>
-                <button onclick="document.getElementById('demoModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:24px;">&times;</button>
+                <h3 style="font-size:20px; font-weight:700;">Registro Enterprise</h3>
+                <button onclick="document.getElementById('registerModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:24px;">&times;</button>
             </div>
             
             <form id="registerForm">
@@ -618,15 +618,26 @@
                 <div class="input-group">
                     <label>Contraseña</label>
                     <input type="password" id="reg-password" required placeholder="Crea una contraseña segura">
+                    <div id="pwd-error" style="color:#ef4444; font-size:12px; margin-top:4px; display:none;">La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial (@$!%*?&).</div>
                 </div>
                 <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Crear Cuenta & Pagar</button>
             </form>
             <script>
                 document.getElementById('registerForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    
                     const businessName = document.getElementById('reg-business').value;
                     const email = document.getElementById('reg-email').value;
                     const password = document.getElementById('reg-password').value;
+                    const pwdError = document.getElementById('pwd-error');
+                    
+                    // Validación Fuerte de Contraseña
+                    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                    if (!strongPasswordRegex.test(password)) {
+                        pwdError.style.display = 'block';
+                        return;
+                    }
+                    pwdError.style.display = 'none';
                     
                     try {
                         const res = await fetch('/api/auth/register', {
@@ -656,6 +667,74 @@
                         }
                     } catch (error) {
                         alert('Error de conexión.');
+                    }
+                });
+            </script>
+        </div>
+    </div>
+
+    <!-- TRUE DEMO MODAL (Contact Form) -->
+    <div class="modal-overlay" id="demoModal">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="font-size:20px; font-weight:700;">Solicitar Demo</h3>
+                <button onclick="document.getElementById('demoModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:24px;">&times;</button>
+            </div>
+            
+            <form id="contactForm">
+                <div class="input-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="demo-name" required placeholder="Tu nombre">
+                </div>
+                <div class="input-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="demo-email" required placeholder="tu@empresa.com">
+                </div>
+                <div class="input-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="demo-phone" required placeholder="Tu número">
+                </div>
+                <button type="button" id="btn-submit-demo" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Enviar Solicitud</button>
+            </form>
+            <script>
+                document.getElementById('btn-submit-demo').addEventListener('click', async () => {
+                    const name = document.getElementById('demo-name').value;
+                    const email = document.getElementById('demo-email').value;
+                    const phone = document.getElementById('demo-phone').value;
+                    const btn = document.getElementById('btn-submit-demo');
+                    
+                    if(!name || !email || !phone) { alert('Llena todos los campos'); return; }
+                    
+                    btn.textContent = 'Enviando...';
+                    
+                    // Conectando directo a Supabase via REST desde la Landing (Opcion rápida)
+                    // Para mayor seguridad en producción esto iría por el backend, pero como es una inserción simple:
+                    const configRes = await fetch('/api/config');
+                    const configData = await configRes.json();
+                    
+                    try {
+                        const response = await fetch(`${configData.supabaseUrl}/rest/v1/demo_requests`, {
+                            method: 'POST',
+                            headers: {
+                                'apikey': configData.supabaseAnonKey,
+                                'Authorization': `Bearer ${configData.supabaseAnonKey}`,
+                                'Content-Type': 'application/json',
+                                'Prefer': 'return=minimal'
+                            },
+                            body: JSON.stringify({ name, email, phone })
+                        });
+                        
+                        if(response.ok) {
+                            btn.textContent = '¡Enviado!';
+                            btn.style.background = '#10b981';
+                            setTimeout(() => { document.getElementById('demoModal').classList.remove('active'); }, 2000);
+                        } else {
+                            alert('Error al enviar solicitud.');
+                            btn.textContent = 'Enviar Solicitud';
+                        }
+                    } catch(err) {
+                        alert('Error de conexión');
+                        btn.textContent = 'Enviar Solicitud';
                     }
                 });
             </script>
