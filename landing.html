@@ -480,7 +480,7 @@
             </nav>
 
             <div style="display:flex; gap: 12px;">
-                <button class="btn-secondary" onclick="document.getElementById('demoModal').classList.add('active')">Solicitar Demo</button>
+                <button class="btn-secondary" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
                 <a href="#pricing" class="btn-primary">Registrar Negocio</a>
             </div>
         </header>
@@ -656,6 +656,52 @@
                         }
                     } catch (error) {
                         alert('Error de conexión.');
+                    }
+                });
+            </script>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="font-size:20px; font-weight:700;">Iniciar Sesión</h3>
+                <button onclick="document.getElementById('loginModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:24px;">&times;</button>
+            </div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="login-email" required placeholder="tu@empresa.com">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="login-password" required placeholder="Tu contraseña">
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Entrar al Dashboard</button>
+            </form>
+            <script>
+                document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+                    
+                    try {
+                        const res = await fetch('/api/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+                        const data = await res.json();
+                        
+                        if(data.success) {
+                            window.location.href = '/panel'; // Redirige al Dashboard
+                        } else {
+                            alert('Error: Credenciales incorrectas');
+                        }
+                    } catch (error) {
+                        alert('Error de conexión al iniciar sesión.');
                     }
                 });
             </script>
