@@ -2,9 +2,14 @@
 
 (async function initFidelio() {
     
-    // Esperar a que se carguen los datos de Supabase antes de iniciar la interfaz
-    const loaded = await loadDataFromSupabase();
-    if (!loaded) return;
+    // Cargar datos reales
+    await loadDataFromSupabase();
+    
+    // Actualizar métricas del dashboard principal
+    updateDashboardMetrics();
+
+    // Aplicar la data a la UI
+    applyStateToUI();
 
     // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
     const categoryPresets = {
@@ -179,6 +184,11 @@
             .select('*')
             .eq('merchant_id', merchantId);
 
+        const { data: transData } = await window.supabaseClient
+            .from('transactions')
+            .select('*')
+            .eq('merchant_id', merchantId);
+
         state = {
             tenantId: merchantData.id,
             restaurantName: merchantData.business_name || "Mi Negocio",
@@ -204,10 +214,39 @@
             },
             branches: [],
             customers: custData || [],
+            transactions: transData || [],
             activeWallet: "apple"
         };
         
         return true;
+    }
+
+    function updateDashboardMetrics() {
+        if (!state.customers || !state.transactions) return;
+
+        // 1. Clientes Activos
+        const totalCustomers = state.customers.length;
+        document.getElementById('metric-customers').textContent = totalCustomers.toLocaleString();
+        
+        // Count in CRM badge as well
+        const crmBadge = document.getElementById('crm-count-badge');
+        if(crmBadge) crmBadge.textContent = totalCustomers;
+
+        // 2. Pasivo (Cashback Disp.)
+        const totalLiability = state.customers.reduce((sum, c) => sum + (c.current_balance || 0), 0);
+        document.getElementById('metric-liability').textContent = `$${totalLiability.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        // 3. Ventas Impulsadas (Suma de transacciones tipo 'earn')
+        const totalSales = state.transactions
+            .filter(t => t.type === 'earn')
+            .reduce((sum, t) => sum + (t.amount || 0), 0);
+        document.getElementById('metric-sales').textContent = `$${totalSales.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        // 4. Escaneos Hoy (Transacciones en las últimas 24 horas)
+        const now = new Date();
+        const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+        const scansToday = state.transactions.filter(t => new Date(t.created_at) >= yesterday).length;
+        document.getElementById('metric-scans').textContent = scansToday.toLocaleString();
     }
 
     async function saveDesignToSupabase() {
