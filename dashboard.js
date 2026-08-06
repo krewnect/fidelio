@@ -254,6 +254,7 @@
         
         const updates = {
             business_name: state.restaurantName,
+            industry: state.category,
             color_primary: state.colorPrimary,
             color_accent: state.colorAccent,
             cashback_percent: state.cashbackPercent,
@@ -569,38 +570,71 @@
     }
 
     if (btnSubmitRegister) {
-        btnSubmitRegister.addEventListener('click', () => {
-            const custName = document.getElementById('cust-name').value || "Cliente Nuevo";
-            const custPhone = document.getElementById('cust-phone').value || "+52 55 0000 0000";
-            const custEmail = document.getElementById('cust-email').value || "cliente@correo.com";
-            const custBday = document.getElementById('cust-birthday').value || "1995-11-18";
+        btnSubmitRegister.addEventListener('click', async () => {
+            const custName = document.getElementById('cust-name').value;
+            const custPhone = document.getElementById('cust-phone').value;
+            const custEmail = document.getElementById('cust-email').value;
 
-            const formattedBday = new Date(custBday).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-            const newId = `FIDELIO-${Math.floor(1000 + Math.random() * 9000)}`;
+            if (!custName || !custPhone) {
+                alert('Nombre y teléfono son obligatorios.');
+                return;
+            }
 
-            state.customers.unshift({
-                id: newId,
-                name: custName,
-                phone: custPhone,
-                email: custEmail,
-                birthday: formattedBday,
-                walletType: "Apple Wallet",
-                tier: "Bronce VIP",
-                balance: 20.00,
-                stamps: 1,
-                totalSpent: 200.00,
-                visits: 1,
-                lastVisit: new Date().toISOString().split('T')[0],
-                status: "Activo"
-            });
+            btnSubmitRegister.textContent = 'Registrando...';
+            btnSubmitRegister.disabled = true;
 
-            modalOnboarding.classList.add('hidden');
-            renderCRMTable();
-            updatePassRender();
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('customers')
+                    .insert([{
+                        merchant_id: window.merchantSession.user.id,
+                        name: custName,
+                        phone: custPhone,
+                        email: custEmail,
+                        current_balance: 0,
+                        lifetime_value: 0,
+                        visits: 0
+                    }])
+                    .select()
+                    .single();
 
-            showToast(`¡Registro Exitoso en Fidelio! ${custName} (Cumpleaños: ${formattedBday}) ha añadido su pase a Wallet.`, "success");
+                if (error) throw error;
+
+                state.customers.unshift(data);
+                
+                document.getElementById('modal-add-customer').classList.add('hidden');
+                
+                // Limpiar form
+                document.getElementById('cust-name').value = '';
+                document.getElementById('cust-phone').value = '';
+                document.getElementById('cust-email').value = '';
+
+                renderCRMTable();
+                updateDashboardMetrics(); // update stats
+                
+                showToast(`¡Cliente registrado! Código: ${data.id}`, "success");
+            } catch (err) {
+                alert('Error registrando cliente: ' + err.message);
+            } finally {
+                btnSubmitRegister.textContent = 'Registrar Cliente';
+                btnSubmitRegister.disabled = false;
+            }
         });
     }
+    
+    const btnCloseCustomerModal = document.getElementById('btn-close-customer-modal');
+    if (btnCloseCustomerModal) {
+        btnCloseCustomerModal.addEventListener('click', () => {
+            document.getElementById('modal-add-customer').classList.add('hidden');
+        });
+    }
+
+    // Global function for QR
+    window.showCustomerQR = function(customerId, customerName) {
+        document.getElementById('qr-modal-name').textContent = customerName;
+        document.getElementById('qr-modal-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${customerId}`;
+        document.getElementById('modal-view-qr').classList.remove('hidden');
+    };
 
     // --- CRM MODULE ---
     const crmTableBody = document.getElementById('crm-table-body');
@@ -639,34 +673,42 @@
         filtered.forEach(c => {
             const tr = document.createElement('tr');
             
-            const tierClass = c.tier.includes('Oro') ? 'oro' : c.tier.includes('Plata') ? 'plata' : 'bronce';
-            const statusClass = c.status === 'Activo' ? 'activo' : 'riesgo';
-            const walletIcon = c.walletType === 'Apple Wallet' ? 'fa-apple' : 'fa-google';
+            // Map Supabase variables
+            const balance = c.current_balance || 0;
+            const spent = c.lifetime_value || 0;
+            const tier = spent > 3000 ? 'Oro VIP' : (spent > 1000 ? 'Plata VIP' : 'Bronce VIP');
+            const tierClass = tier.includes('Oro') ? 'oro' : tier.includes('Plata') ? 'plata' : 'bronce';
+            const statusClass = c.visits > 0 ? 'activo' : 'riesgo';
+            const walletIcon = 'fa-apple';
+            const lastVisit = c.created_at ? new Date(c.created_at).toISOString().split('T')[0] : 'N/A';
 
             tr.innerHTML = `
                 <td>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <div style="width:34px; height:34px; border-radius:50%; background:var(--fidelio-violet); color:white; display:flex; align-items:center; justify-content:center; font-weight:800;">${c.name.charAt(0)}</div>
+                        <div style="width:34px; height:34px; border-radius:50%; background:var(--fidelio-violet); color:white; display:flex; align-items:center; justify-content:center; font-weight:800;">${c.name.charAt(0).toUpperCase()}</div>
                         <div>
                             <strong>${c.name}</strong>
-                            <small style="display:block; color:var(--text-muted);">${c.id}</small>
+                            <small style="display:block; color:var(--text-muted);">${c.id.substring(0,8)}...</small>
                         </div>
                     </div>
                 </td>
                 <td>
                     <strong>${c.phone}</strong>
-                    <small style="display:block; color:var(--text-muted);">${c.email}</small>
+                    <small style="display:block; color:var(--text-muted);">${c.email || 'Sin correo'}</small>
                 </td>
-                <td><strong style="color:var(--cyan);"><i class="fa-solid fa-cake-candles"></i> ${c.birthday || '18 de Nov'}</strong></td>
-                <td><span class="tier-pill ${tierClass}">${c.tier}</span></td>
-                <td><i class="fa-brands ${walletIcon}"></i> ${c.walletType}</td>
-                <td><strong class="text-emerald">$${c.balance.toFixed(2)} MXN</strong></td>
-                <td><strong>${c.stamps}/${state.stampsTotal}</strong></td>
-                <td>$${c.totalSpent.toFixed(2)} MXN</td>
-                <td>${c.lastVisit}</td>
-                <td><span class="badge-status ${statusClass}">${c.status}</span></td>
+                <td><strong style="color:var(--cyan);"><i class="fa-solid fa-cake-candles"></i> N/A</strong></td>
+                <td><span class="tier-pill ${tierClass}">${tier}</span></td>
+                <td><i class="fa-brands ${walletIcon}"></i> Apple Wallet</td>
+                <td><strong class="text-emerald">$${balance.toFixed(2)} MXN</strong></td>
+                <td><strong>${c.visits}/${state.stampsTotal}</strong></td>
+                <td>$${spent.toFixed(2)} MXN</td>
+                <td>${lastVisit}</td>
+                <td><span class="badge-status ${statusClass}">${c.visits > 0 ? 'Activo' : 'Nuevo'}</span></td>
                 <td>
-                    <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" title="Enviar Correo al Cliente" onclick="alert('Iniciando envío de correo directo a ${c.email}')">
+                    <button class="btn btn-outline" style="padding:6px 12px; font-size:12px; margin-right: 4px;" title="Ver QR del Cliente" onclick="window.showCustomerQR('${c.id}', '${c.name.replace(/'/g, "\\'")}')">
+                        <i class="fa-solid fa-qrcode"></i> QR
+                    </button>
+                    <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" title="Enviar Correo" onclick="alert('Iniciando envío de correo directo a ${c.email}')">
                         <i class="fa-solid fa-envelope"></i>
                     </button>
                 </td>

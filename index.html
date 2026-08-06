@@ -284,7 +284,7 @@
                 <button class="nav-tab" data-tab="tab-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Wallet</button>
                 <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></button>
                 <button class="nav-tab" data-tab="tab-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
-                <button class="nav-tab" data-tab="tab-scanner"><i class="fa-solid fa-qrcode"></i> Escáner Staff</button>
+                <button class="nav-tab" onclick="window.open('scanner.html', '_blank')"><i class="fa-solid fa-qrcode"></i> Escáner Staff <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px; margin-left:auto;"></i></button>
                 
                 <div class="menu-label mt-20" id="admin-leads-menu" style="display:none;">Administración Central</div>
                 <button class="nav-tab" data-tab="tab-leads" id="admin-leads-tab" style="display:none;"><i class="fa-solid fa-envelope-open-text"></i> Prospectos (Leads)</button>
@@ -564,8 +564,7 @@
                         <h1>Clientes Fidelizados</h1>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button class="btn btn-outline" id="btn-show-register-preview">Ver Formulario QR</button>
-                        <button class="btn btn-solid" id="btn-add-demo-client">Simular Registro</button>
+                        <button class="btn-primary" onclick="document.getElementById('modal-add-customer').classList.remove('hidden')"><i class="fa-solid fa-plus"></i> Añadir Cliente Manual</button>
                     </div>
                 </div>
                 <div class="accordion-card">
@@ -578,70 +577,59 @@
                 </div>
             </section>
 
-            <!-- BRANCHES TAB (Mock content) -->
+            <!-- BRANCHES TAB (Coming Soon) -->
             <section id="tab-branches" class="tab-content">
                 <div class="workspace-header">
                     <div>
-                        <span class="workspace-eyebrow">GEOFENCING</span>
+                        <span class="workspace-eyebrow">CONFIGURACIÓN</span>
                         <h1>Sucursales GPS</h1>
                     </div>
-                    <button class="btn btn-solid" id="btn-add-branch">+ Agregar Sucursal</button>
                 </div>
-                <div class="accordion-card">
-                    <h2><span id="branch-count">4</span> Sucursales Registradas</h2>
-                    <div id="branches-list"></div>
-                </div>
-            </section>
-
-            <!-- SCANNER TAB (Mock content) -->
-            <section id="tab-scanner" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <span class="workspace-eyebrow">CAJA</span>
-                        <h1>Escáner Staff</h1>
-                    </div>
-                </div>
-                <div class="accordion-card">
-                    <button class="btn btn-solid" id="btn-simulate-scan">Simular Escaneo</button>
-                    <div id="scanner-step-1"></div>
-                    <div id="scanner-step-2" class="hidden">
-                        <span id="profile-balance"></span><span id="profile-stamps"></span><span id="profile-tier-badge"></span>
-                        <input type="number" id="bill-amount" value="450">
-                        <span id="calc-cashback"></span>
-                        <button id="btn-process-transaction">Abonar</button>
-                        <button id="btn-redeem-reward">Canjear</button>
-                    </div>
-                    <div id="activity-feed"></div>
+                <div class="content-panel" style="text-align:center; padding: 80px 20px; max-width: 600px; margin: 40px auto; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);">
+                    <i class="fa-solid fa-map-location-dot" style="font-size: 4rem; color: var(--text-muted); margin-bottom:24px;"></i>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 12px;">Geolocalización Automática</h2>
+                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+                        Pronto podrás añadir las coordenadas de tus sucursales. Cuando tus clientes pasen cerca del restaurante, Apple Wallet les enviará una notificación push automática recomendándoles visitarte.
+                    </p>
+                    <span class="tier-pill oro" style="display:inline-block; font-size:14px; font-weight:700;"><i class="fa-solid fa-rocket"></i> Próximamente (Fase 2)</span>
                 </div>
             </section>
 
-            <!-- MARKETING TAB (Mock content) -->
+            <!-- MARKETING TAB (Coming Soon) -->
             <section id="tab-marketing" class="tab-content">
                 <div class="workspace-header">
                     <div>
-                        <span class="workspace-eyebrow">IA</span>
-                        <h1>Campañas</h1>
+                        <span class="workspace-eyebrow">CRECIMIENTO</span>
+                        <h1>Marketing & Push</h1>
                     </div>
                 </div>
-                <div class="accordion-card">
-                    <textarea id="push-happy-text"></textarea>
-                    <button id="btn-send-push" class="btn btn-solid">Enviar Push</button>
+                <div class="content-panel" style="text-align:center; padding: 80px 20px; max-width: 600px; margin: 40px auto; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);">
+                    <i class="fa-solid fa-bullhorn" style="font-size: 4rem; color: var(--text-muted); margin-bottom:24px;"></i>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 12px;">Campañas Notificaciones Push</h2>
+                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+                        Actualmente Fidelio envía notificaciones automáticas cada vez que un cliente gana o canjea puntos. Pronto liberaremos el módulo de marketing masivo para que puedas enviar promociones directas a la pantalla de bloqueo de todos tus clientes.
+                    </p>
+                    <span class="tier-pill oro" style="display:inline-block; font-size:14px; font-weight:700;"><i class="fa-solid fa-rocket"></i> Próximamente (Fase 2)</span>
                 </div>
             </section>
 
-            <!-- SUPPORT TAB (Mock content) -->
+            <!-- SUPPORT TAB -->
             <section id="tab-support" class="tab-content">
                 <div class="workspace-header">
-                    <div><h1>Soporte</h1></div>
+                    <div>
+                        <span class="workspace-eyebrow">AYUDA</span>
+                        <h1>Soporte Premium</h1>
+                    </div>
                 </div>
-                <div class="accordion-card">
-                    <div id="ai-chat-history"></div>
-                    <input type="text" id="ai-chat-input">
-                    <button id="btn-send-ai-chat" class="btn btn-solid">Enviar</button>
-                </div>
-                <div class="accordion-card">
-                    <input type="text" id="ticket-subject"><textarea id="ticket-desc"></textarea>
-                    <button id="btn-send-email-ticket" class="btn btn-solid">Enviar Mail</button>
+                <div class="content-panel" style="text-align:center; padding: 60px 20px; max-width: 600px; margin: 40px auto;">
+                    <i class="fa-solid fa-headset" style="font-size: 4rem; color: var(--fidelio-violet); margin-bottom:24px;"></i>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 12px;">Centro de Soporte Técnico</h2>
+                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+                        Si necesitas ayuda con la integración, cambio de contraseña, o tienes algún reporte técnico, nuestro equipo está disponible 24/7.
+                    </p>
+                    <a href="mailto:soporte@fidelio.com" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding: 12px 24px; text-decoration:none;">
+                        <i class="fa-solid fa-envelope"></i> Enviar Correo a Soporte
+                    </a>
                 </div>
             </section>
 
@@ -701,15 +689,63 @@
         </main>
     </div>
     
-    <!-- MODAL -->
-    <div class="hidden" id="modal-onboarding">
-        <button id="btn-close-onboarding">x</button>
-        <input type="text" id="cust-name">
-        <input type="text" id="cust-phone">
-        <input type="text" id="cust-email">
-        <input type="date" id="cust-birthday">
-        <button id="btn-submit-customer-register">Añadir</button>
+    <!-- MODALS -->
+    <!-- ADD CUSTOMER MODAL -->
+    <div class="modal-overlay hidden" id="modal-add-customer">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--surface-light); padding-bottom:16px; margin-bottom:20px;">
+                <h3 style="margin:0;"><i class="fa-solid fa-user-plus"></i> Añadir Cliente</h3>
+                <button id="btn-close-customer-modal" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="cust-name" class="fidelio-input" placeholder="Ej. Ana Sánchez">
+            </div>
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="cust-email" class="fidelio-input" placeholder="ana@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Teléfono (10 dígitos)</label>
+                <input type="tel" id="cust-phone" class="fidelio-input" placeholder="5512345678">
+            </div>
+            
+            <button id="btn-submit-customer-register" class="btn-primary" style="width:100%; margin-top:16px;">Registrar Cliente</button>
+        </div>
     </div>
+
+    <!-- QR SCANNER VIEW MODAL -->
+    <div class="modal-overlay hidden" id="modal-view-qr">
+        <div class="modal-content" style="max-width: 400px; text-align:center;">
+            <div style="display:flex; justify-content:flex-end;">
+                <button onclick="document.getElementById('modal-view-qr').classList.add('hidden')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <h3 id="qr-modal-name" style="margin-bottom: 8px;">Cliente</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:24px;">Puedes escanear este código con tu celular (Escáner Staff) para procesar pagos y puntos.</p>
+            
+            <div style="background:white; padding:20px; border-radius:16px; display:inline-block; margin-bottom:24px;">
+                <img id="qr-modal-image" src="" alt="QR Code" style="width: 250px; height: 250px;">
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-content {
+            background: var(--surface); border: 1px solid var(--surface-light);
+            padding: 30px; border-radius: 20px; width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
 
     <!-- Supabase & App Logic -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
