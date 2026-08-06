@@ -1,912 +1,193 @@
-// --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+const stripe = stripeKey ? require('stripe')(stripeKey) : null;
 
-(async function initFidelio() {
+const app = express();
+const PORT = process.env.PORT || 8080;
+
+// Configuración de Supabase
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+let supabase;
+
+if (supabaseUrl && supabaseKey) {
+    supabase = createClient(supabaseUrl, supabaseKey);
+    console.log('✅ Conectado a Supabase');
+} else {
+    console.log('⚠️ Supabase no configurado aún (Faltan variables en .env)');
+}
+
+// -------------------------------------------------------------
+// WEBHOOK DE STRIPE (Debe ir antes del body parser JSON)
+// -------------------------------------------------------------
+app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!endpointSecret) {
+        console.warn("⚠️ Advertencia: No hay STRIPE_WEBHOOK_SECRET configurado. El webhook no se puede verificar.");
+        return res.status(400).send('Webhook secret missing');
+    }
+
+    let event;
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+        console.error(`❌ Webhook Error: ${err.message}`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Manejar el evento de pago exitoso
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        const merchantId = session.client_reference_id;
+        
+        if (merchantId && supabase) {
+            console.log(`✅ Pago exitoso para el comercio: ${merchantId}`);
+            // Actualizar el estado en la base de datos a ACTIVO
+            await supabase
+                .from('merchants')
+                .update({ plan_status: 'active', stripe_customer_id: session.customer })
+                .eq('id', merchantId);
+        }
+    }
+
+    res.json({received: true});
+});
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Servir archivos estáticos (Frontend)
+app.use(express.static(path.join(__dirname, '/')));
+
+// --- RUTAS DEL API ---
+
+// Healthcheck
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', message: 'Fidelio API v1.0 running' });
+});
+
+// Autenticación de Negocios (Login)
+app.post('/api/auth/login', async (req, res) => {
+    const { email, password } = req.body;
     
-    // Esperar a que se carguen los datos de Supabase antes de iniciar la interfaz
-    const loaded = await loadDataFromSupabase();
-    if (!loaded) return;
+    if (!supabase) return res.status(500).json({ error: 'Supabase no configurado' });
 
-    // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
-    const categoryPresets = {
-        restaurant: {
-            label: "Restaurantes & Gastronomía",
-            name: "Don Pedro Gourmet",
-            color: "#090d16",
-            accent: "#5b0eb8",
-            icon: "fa-burger",
-            reward: "Hamburguesa o Platillo Gratis",
-            dynamic: "Martes y Jueves: Doble Cashback en Consumos",
-            perkBronce: "Acumulación estándar del 5% de Cashback",
-            perkPlata: "Postre de regalo en tu semana de cumpleaños",
-            perkOro: "Mesa preferente sin filas + Bebida de cortesía"
-        },
-        cafe: {
-            label: "Cafeterías & Panaderías",
-            name: "Café Espresso & Pan",
-            color: "#1c140d",
-            accent: "#ec7e00",
-            icon: "fa-mug-hot",
-            reward: "Café Capuchino o Repostería Gratis",
-            dynamic: "Mañanas 2x1 en Capuchinos de 8:00 AM a 11:00 AM",
-            perkBronce: "Acumulación del 5% en tus cafés diarios",
-            perkPlata: "Pan dulce de regalo en cada visita mayor a $150",
-            perkOro: "Café de tamaño grande con upgrade sin costo"
-        },
-        barbershop: {
-            label: "Barbershops & Barberías",
-            name: "Barbería El Imperio",
-            color: "#0d1117",
-            accent: "#ec4899",
-            icon: "fa-scissors",
-            reward: "Corte de Barba o Cera de Peinado Gratis",
-            dynamic: "Miércoles de Cerveza de Cortesía con tu Corte",
-            perkBronce: "Acumulación del 5% de Cashback en servicios",
-            perkPlata: "Bebida premium de cortesía en cada visita",
-            perkOro: "Servicio de toalla caliente + Ritual de barba gratis"
-        },
-        nails: {
-            label: "Salones de Uñas & Nails Studios",
-            name: "Glamour Nails Studio",
-            color: "#180c1e",
-            accent: "#ec4899",
-            icon: "fa-hand-sparkles",
-            reward: "Esmaltado Gelish o Retoque Gratis",
-            dynamic: "Jueves de 2x1 en Nail Art y Diseños Especiales",
-            perkBronce: "Acumulación del 5% de Cashback en manicure",
-            perkPlata: "Exfoliación de manos gratis en cada servicio",
-            perkOro: "Cita prioritaria sin espera + Regalo de cumpleaños"
-        },
-        beauty: {
-            label: "Salones de Belleza & Estéticas",
-            name: "Belleza & Style House",
-            color: "#160914",
-            accent: "#a855f7",
-            icon: "fa-wand-magic-sparkles",
-            reward: "Tratamiento Capilar o Peinado Gratis",
-            dynamic: "Lunes y Martes: 20% de Descuento en Tintes",
-            perkBronce: "Acumulación del 5% de Cashback en belleza",
-            perkPlata: "Ampolleta de hidratación capilar de regalo",
-            perkOro: "Styling VIP personalizado + Descuento exclusivo"
-        },
-        arcade: {
-            label: "Arcades, Bowling & Entretenimiento",
-            name: "Pixel Arcade & Fun",
-            color: "#061320",
-            accent: "#06b6d4",
-            icon: "fa-gamepad",
-            reward: "Bolsa de 50 Fichas o Créditos Gratis",
-            dynamic: "Viernes de Horas Mágicas: Doble Crédito en Recargas",
-            perkBronce: "Acumulación del 5% de saldo para tus jugadas",
-            perkPlata: "10 Fichas extra gratis en cada recarga de $200",
-            perkOro: "Pase libre a zona VR + Fichas ilimitadas en tu cumple"
-        },
-        retail: {
-            label: "Tiendas de Ropa & Retail",
-            name: "Boutique Urbana",
-            color: "#12141d",
-            accent: "#00a87e",
-            icon: "fa-bag-shopping",
-            reward: "Cuponera de $250 MXN o Accesorio Gratis",
-            dynamic: "Viernes de Ventas Privadas: 15% Cashback Extra",
-            perkBronce: "Acumulación del 5% de Cashback en ropa",
-            perkPlata: "Acceso anticipado a colecciones de temporada",
-            perkOro: "Asesoría de imagen personal + Ajustes gratis"
-        },
-        icecream: {
-            label: "Heladerías & Postres",
-            name: "Nieve & Waffle Gourmet",
-            color: "#190e15",
-            accent: "#ec4899",
-            icon: "fa-ice-cream",
-            reward: "Cono Doble o Waffle Especial Gratis",
-            dynamic: "Domingos Familiares: 3x2 en Conos y Nieve",
-            perkBronce: "Acumulación del 5% de saldo dulce",
-            perkPlata: "Toppings ilimitados de regalo en tu helado",
-            perkOro: "Malteada grande gratis en tu mes de cumpleaños"
-        },
-        spa: {
-            label: "Spas & Salones de Masaje",
-            name: "Lotus Spa & Wellness",
-            color: "#081615",
-            accent: "#00a87e",
-            icon: "fa-spa",
-            reward: "Masaje Facial de 30 Minutos Gratis",
-            dynamic: "Miércoles de Relax: Aromaterapia de Cortesía",
-            perkBronce: "Acumulación del 5% de Cashback en masajes",
-            perkPlata: "Sesión de sauna de regalo en tus servicios",
-            perkOro: "Upgrade de cabina VIP + Té de bienvenida"
-        },
-        fitness: {
-            label: "Gimnasios & Studios de Fitness",
-            name: "Titan Gym & Fitness",
-            color: "#160b0b",
-            accent: "#ea580c",
-            icon: "fa-dumbbell",
-            reward: "Pase VIP de 1 Semana para Acompañante",
-            dynamic: "Reto del Mes: Completa 12 Visitas y Gana un Shaker",
-            perkBronce: "Acumulación del 5% en tus mensualidades",
-            perkPlata: "Medición de composición InBody sin costo",
-            perkOro: "Sesión de entrenamiento personal 1-a-1 de regalo"
-        },
-        pets: {
-            label: "Veterinarias & Pet Shops",
-            name: "Pet Care & Vet",
-            color: "#0a151b",
-            accent: "#06b6d4",
-            icon: "fa-paw",
-            reward: "Baño Canino o Juguete Regalo Gratis",
-            dynamic: "Jueves de Spa Mascota: Limpieza Dental Gratis",
-            perkBronce: "Acumulación del 5% en alimento y estética",
-            perkPlata: "Revisión médica veterinaria de regalo al año",
-            perkOro: "Corte de uñas + Baño antipulgas cortesía"
-        },
-        general: {
-            label: "Comercio / Servicios Generales",
-            name: "Comercio Central",
-            color: "#090d16",
-            accent: "#5b0eb8",
-            icon: "fa-store",
-            reward: "Servicio o Producto de Regalo",
-            dynamic: "Promoción Especial de Temporada Activa",
-            perkBronce: "Acumulación estándar del 5% de Cashback",
-            perkPlata: "Beneficio exclusivo de cliente frecuente",
-            perkOro: "Atención VIP sin filas + Regalo de cortesía"
-        }
-    };
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-    // --- DATABASE SYNC ---
-    let state = {};
-    let saveTimeout = null;
-
-    async function loadDataFromSupabase() {
-        if (!window.supabaseClient || !window.merchantSession) return false;
-        const merchantId = window.merchantSession.user.id;
-
-        const { data: merchantData, error } = await window.supabaseClient
-            .from('merchants')
-            .select('*')
-            .eq('id', merchantId)
-            .single();
-
-        if (error) {
-            console.error("Error cargando perfil:", error);
-            showToast("Error al cargar configuración", "warning");
-            return false;
-        }
-
-        const { data: custData } = await window.supabaseClient
-            .from('customers')
-            .select('*')
-            .eq('merchant_id', merchantId);
-
-        state = {
-            tenantId: merchantData.id,
-            restaurantName: merchantData.business_name || "Mi Negocio",
-            category: merchantData.industry || "restaurant",
-            colorPrimary: merchantData.color_primary || "#090d16",
-            colorAccent: merchantData.color_accent || "#5b0eb8",
-            iconClass: "fa-burger",
-            customLogoUrl: merchantData.logo_url || null,
-            customBannerUrl: merchantData.banner_url || null,
-            activeMode: "hybrid",
-            cashbackActive: true,
-            cashbackPercent: merchantData.cashback_percent || 10,
-            stampsActive: true,
-            stampsTotal: merchantData.stamps_total || 5,
-            stampsReward: merchantData.stamps_reward_text || "Premio Gratis",
-            dynamicActive: true,
-            dynamicDesc: "Promoción Activa",
-            vipActive: true,
-            vipTiers: {
-                bronce: { name: "Bronce", minSpent: 0, cashbackPercent: 5, perk: "Beneficio Base" },
-                plata: { name: "Plata VIP", minSpent: 1000, cashbackPercent: 10, perk: "Beneficio Plata" },
-                oro: { name: "Oro VIP", minSpent: 3000, cashbackPercent: 15, perk: "Beneficio Oro" }
-            },
-            branches: [],
-            customers: custData || [],
-            activeWallet: "apple"
-        };
-        
-        return true;
+        if (error) throw error;
+        res.json({ success: true, session: data.session, user: data.user });
+    } catch (error) {
+        res.status(401).json({ error: error.message });
     }
+});
 
-    async function saveDesignToSupabase() {
-        if (!window.supabaseClient || !state.tenantId) return;
-        
-        const updates = {
-            business_name: state.restaurantName,
-            color_primary: state.colorPrimary,
-            color_accent: state.colorAccent,
-            cashback_percent: state.cashbackPercent,
-            stamps_total: state.stampsTotal,
-            stamps_reward_text: state.stampsReward,
-            logo_url: state.customLogoUrl,
-            banner_url: state.customBannerUrl
-        };
+// Registro de Negocios
+app.post('/api/auth/register', async (req, res) => {
+    const { businessName, email, password, phone } = req.body;
+    
+    if (!supabase) return res.status(500).json({ error: 'Supabase no configurado' });
 
-        const { error } = await window.supabaseClient
-            .from('merchants')
-            .update(updates)
-            .eq('id', state.tenantId);
+    try {
+        // 1. Crear usuario en Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email,
+            password,
+        });
+
+        if (authError) throw authError;
+
+        // 2. Insertar perfil en merchants
+        if (authData.user) {
+            const { error: dbError } = await supabase
+                .from('merchants')
+                .insert([
+                    { id: authData.user.id, business_name: businessName }
+                ]);
             
-        if (!error) {
-            showToast("Guardado automático en la nube ☁️", "success");
+            if (dbError) console.error("Error al crear merchant:", dbError);
         }
+
+        res.json({ success: true, user: authData.user });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
+});
 
-    function scheduleAutoSave() {
-        if (saveTimeout) clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(() => {
-            saveDesignToSupabase();
-        }, 1500);
+// Checkout con Stripe
+app.post('/api/stripe/checkout', async (req, res) => {
+    const { merchantId, email } = req.body;
+    
+    if (!stripe) return res.status(500).json({ error: 'Stripe no configurado' });
+
+    try {
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            customer_email: email,
+            client_reference_id: merchantId,
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'mxn',
+                        product_data: {
+                            name: 'Suscripción Enterprise Fidelio',
+                            description: 'Acceso a la plataforma B2B para pases en Apple & Google Wallet'
+                        },
+                        unit_amount: 99900,
+                        recurring: { interval: 'month' },
+                    },
+                    quantity: 1,
+                },
+            ],
+            mode: 'subscription',
+            success_url: `http://localhost:8080/panel?payment=success`,
+            cancel_url: `http://localhost:8080/`,
+        });
+
+        res.json({ success: true, url: session.url });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
+});
 
-    // --- TOAST NOTIFICATIONS ---
-    function showToast(message, type = "info") {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-
-        const toast = document.createElement('div');
-        toast.className = 'toast-msg';
-        
-        let iconClass = 'fa-circle-info';
-        if (type === 'success') iconClass = 'fa-circle-check text-emerald';
-        if (type === 'warning') iconClass = 'fa-triangle-exclamation';
-
-        toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(100%)';
-            setTimeout(() => toast.remove(), 300);
-        }, 4000);
-    }
-
-    // --- 1-CLICK INTUITIVE PRESET LOAD FUNCTION ---
-    window.loadDemoPreset = function(presetKey) {
-        const preset = categoryPresets[presetKey] || categoryPresets.general;
-        const categorySel = document.getElementById('business-category-select');
-        if (categorySel) categorySel.value = presetKey;
-
-        state.category = presetKey;
-        state.restaurantName = preset.name;
-        state.colorPrimary = preset.color;
-        state.colorAccent = preset.accent;
-        state.iconClass = preset.icon;
-        state.stampsReward = preset.reward;
-        state.dynamicDesc = preset.dynamic;
-        
-        scheduleAutoSave();
-
-        document.getElementById('rest-name').value = preset.name;
-        document.getElementById('color-primary').value = preset.color;
-        document.getElementById('color-accent').value = preset.accent;
-        document.getElementById('rest-icon').value = preset.icon;
-        document.getElementById('stamps-reward').value = preset.reward;
-        document.getElementById('dynamic-desc').value = preset.dynamic;
-        document.getElementById('tier-bronce-perk').value = preset.perkBronce;
-        document.getElementById('tier-plata-perk').value = preset.perkPlata;
-        document.getElementById('tier-oro-perk').value = preset.perkOro;
-
-        document.getElementById('header-restaurant-name').textContent = preset.name;
-        document.getElementById('header-business-category').textContent = preset.label;
-
-        updatePassRender();
-        showToast(`Plantilla cargada en Fidelio: ${preset.name} (${preset.label}).`, "success");
-    };
-
-    // --- CATEGORY CHANGE HANDLER (DYNAMIC GIRO ADAPTATION) ---
-    const categorySelect = document.getElementById('business-category-select');
-    if (categorySelect) {
-        categorySelect.addEventListener('change', (e) => {
-            window.loadDemoPreset(e.target.value);
-        });
-    }
-
-    // --- DEMO METALLIC TIER CONTORNO SELECTOR ---
-    window.setDemoTier = function(tier) {
-        const sampleClient = state.customers[0];
-        if (sampleClient) {
-            const tierConfig = state.vipTiers[tier];
-            sampleClient.tier = tierConfig ? tierConfig.name : (tier === 'oro' ? 'Oro VIP' : tier === 'plata' ? 'Plata VIP' : 'Bronce');
-            updatePassRender();
-            showToast(`Vista previa del pase actualizada a: ${sampleClient.tier}`, "info");
-        }
-    };
-
-    // --- BIND CONFIGURABLE VIP TIER INPUTS ---
-    const bindVipTierInputs = () => {
-        document.getElementById('tier-bronce-name').addEventListener('input', (e) => {
-            state.vipTiers.bronce.name = e.target.value;
-            updatePassRender();
-        });
-        document.getElementById('tier-bronce-cb').addEventListener('input', (e) => {
-            state.vipTiers.bronce.cashbackPercent = parseFloat(e.target.value) || 5;
-            updatePassRender();
-        });
-
-        document.getElementById('tier-plata-name').addEventListener('input', (e) => {
-            state.vipTiers.plata.name = e.target.value;
-            updatePassRender();
-        });
-        document.getElementById('tier-plata-cb').addEventListener('input', (e) => {
-            state.vipTiers.plata.cashbackPercent = parseFloat(e.target.value) || 10;
-            updatePassRender();
-        });
-
-        document.getElementById('tier-oro-name').addEventListener('input', (e) => {
-            state.vipTiers.oro.name = e.target.value;
-            updatePassRender();
-        });
-        document.getElementById('tier-oro-cb').addEventListener('input', (e) => {
-            state.vipTiers.oro.cashbackPercent = parseFloat(e.target.value) || 15;
-            updatePassRender();
-        });
-    };
-
-    bindVipTierInputs();
-
-    // --- FIDELITO SUPPORT CHATBOT ASSISTANT ---
-    const chatHistory = document.getElementById('ai-chat-history');
-    const chatInput = document.getElementById('ai-chat-input');
-    const btnSendChat = document.getElementById('btn-send-ai-chat');
-
-    function sendAiChatMessage() {
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        const userMsg = document.createElement('div');
-        userMsg.className = 'chat-msg user';
-        userMsg.innerHTML = `<i class="fa-solid fa-user"></i><div><strong>Tú</strong><p>${text}</p></div>`;
-        chatHistory.appendChild(userMsg);
-
-        chatInput.value = '';
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-
-        setTimeout(() => {
-            let aiReply = "¡Hola! Soy Fidelito, tu asistente de soporte de Fidelio. Fidelio es 100% intuitivo. Puedes usar las plantillas rápidas en la parte superior para configurar tu tipo de negocio en 1 clic. ¿Deseas ayuda con las 20 sucursales o con el escáner del mesero?";
-            const lower = text.toLowerCase();
-
-            if (lower.includes("plantilla") || lower.includes("demo") || lower.includes("intuitiv")) {
-                aiReply = "Soy Fidelito. Puedes hacer clic en las plantillas rápidas arriba del diseñador para ver cómo se adapta la tarjeta Fidelio al instante para Restaurantes, Barberías, Salones de Uñas, Cafeterías y Arcades.";
-            } else if (lower.includes("precio") || lower.includes("costo") || lower.includes("999")) {
-                aiReply = "La suscripción de Fidelio tiene un costo fijo de $999 MXN/mes por negocio e incluye hasta 20 sucursales con geofencing GPS y las 4 mecánicas de fidelización integradas.";
-            }
-
-            const botMsg = document.createElement('div');
-            botMsg.className = 'chat-msg bot';
-            botMsg.innerHTML = `<img src="fidelio_logo.jpg" alt="Fidelito Avatar" class="fidelito-avatar-img"><div><strong>Fidelito (Asistente de Soporte)</strong><p>${aiReply}</p></div>`;
-            chatHistory.appendChild(botMsg);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }, 800);
-    }
-
-    if (btnSendChat) {
-        btnSendChat.addEventListener('click', sendAiChatMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendAiChatMessage();
-        });
-    }
-
-    // --- EMAIL SUPPORT TICKET ---
-    const btnSendEmailTicket = document.getElementById('btn-send-email-ticket');
-    if (btnSendEmailTicket) {
-        btnSendEmailTicket.addEventListener('click', () => {
-            const subject = document.getElementById('ticket-subject').value;
-            const desc = document.getElementById('ticket-desc').value;
-
-            if (!subject || !desc) {
-                showToast("Por favor llena el asunto y la descripción de tu correo.", "warning");
-                return;
-            }
-
-            showToast("Ticket enviado a soporte@fidelio.app. Te responderemos por correo a la brevedad.", "success");
-            document.getElementById('ticket-subject').value = '';
-            document.getElementById('ticket-desc').value = '';
-        });
-    }
-
-    // --- MODE TILES HANDLER ---
-    const modeTiles = document.querySelectorAll('.mode-tile');
-    modeTiles.forEach(tile => {
-        tile.addEventListener('click', () => {
-            modeTiles.forEach(c => c.classList.remove('active'));
-            tile.classList.add('active');
-
-            const mode = tile.getAttribute('data-mode');
-            state.activeMode = mode;
-            tenantDatabase[currentTenantId].activeMode = mode;
-
-            applyModeToParams(mode);
-            updatePassRender();
-            showToast(`Formato de Lealtad actualizado: ${tile.querySelector('strong').textContent}`, "info");
-        });
+// Generar Pase de Wallet (Endpoint de prueba)
+app.post('/api/wallet/generate', (req, res) => {
+    const { customerName, customerEmail, passType } = req.body;
+    // TODO: Implementar lógica con passkit-generator para Apple y API para Google
+    res.json({ 
+        success: true, 
+        message: 'Pase en proceso de generación', 
+        data: { customerName, passType } 
     });
+});
 
-    function applyModeToParams(mode) {
-        const checkCb = document.getElementById('mech-cashback-check');
-        const checkSt = document.getElementById('mech-stamps-check');
-        const checkDy = document.getElementById('mech-dynamic-check');
-        const checkVip = document.getElementById('mech-vip-check');
-
-        if (mode === 'cashback') {
-            checkCb.checked = true; checkSt.checked = false; checkDy.checked = false; checkVip.checked = false;
-        } else if (mode === 'stamps') {
-            checkCb.checked = false; checkSt.checked = true; checkDy.checked = false; checkVip.checked = false;
-        } else if (mode === 'dynamic') {
-            checkCb.checked = false; checkSt.checked = false; checkDy.checked = true; checkVip.checked = false;
-        } else if (mode === 'vip') {
-            checkCb.checked = false; checkSt.checked = false; checkDy.checked = false; checkVip.checked = true;
-        } else if (mode === 'hybrid') {
-            checkCb.checked = true; checkSt.checked = true; checkDy.checked = true; checkVip.checked = true;
-        }
-
-        state.cashbackActive = checkCb.checked;
-        state.stampsActive = checkSt.checked;
-        state.dynamicActive = checkDy.checked;
-        state.vipActive = checkVip.checked;
-
-        document.getElementById('mech-cashback-body').style.display = checkCb.checked ? 'block' : 'none';
-        document.getElementById('mech-stamps-body').style.display = checkSt.checked ? 'block' : 'none';
-        document.getElementById('mech-dynamic-body').style.display = checkDy.checked ? 'block' : 'none';
-        document.getElementById('mech-vip-body').style.display = checkVip.checked ? 'block' : 'none';
-    }
-
-    // --- 20 SUCURSALES MANAGER RENDERING ---
-    const branchesList = document.getElementById('branches-list');
-    const branchCount = document.getElementById('branch-count');
-
-    function renderBranches() {
-        if (!branchesList) return;
-        branchCount.textContent = state.branches.length;
-        branchesList.innerHTML = '';
-
-        state.branches.forEach((b, idx) => {
-            const div = document.createElement('div');
-            div.className = 'branch-item';
-            div.innerHTML = `
-                <div class="branch-info">
-                    <strong>Sucursal ${idx + 1}: ${b.name}</strong>
-                    <p>${b.address}</p>
-                    <span class="branch-gps"><i class="fa-solid fa-location-crosshairs"></i> GPS: ${b.lat.toFixed(4)}, ${b.lng.toFixed(4)} (Geofence 100m Activo)</span>
-                </div>
-                <button class="btn btn-outline" style="padding:6px 12px; font-size:12px; color:var(--pink);" onclick="removeBranch(${b.id})">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            `;
-            branchesList.appendChild(div);
-        });
-    }
-
-    const btnAddBranch = document.getElementById('btn-add-branch');
-    if (btnAddBranch) {
-        btnAddBranch.addEventListener('click', () => {
-            if (state.branches.length >= 20) {
-                showToast("Límite máximo de 20 sucursales alcanzado.", "warning");
-                return;
-            }
-
-            const newId = Date.now();
-            const branchNames = ["Sucursal Pedregal", "Sucursal Interlomas", "Sucursal Satélite", "Sucursal Coapa"];
-            const randomName = branchNames[Math.floor(Math.random() * branchNames.length)] + ` #${state.branches.length + 1}`;
-
-            state.branches.push({
-                id: newId,
-                name: randomName,
-                address: "Av. Principal " + (100 + state.branches.length * 20) + ", CDMX",
-                lat: 19.4000 + (Math.random() * 0.05),
-                lng: -99.1500 - (Math.random() * 0.05)
-            });
-
-            renderBranches();
-            showToast(`Sucursal agregada con éxito (${randomName}). Geofencing configurado.`, "success");
-        });
-    }
-
-    window.removeBranch = function(id) {
-        state.branches = state.branches.filter(b => b.id !== id);
-        tenantDatabase[currentTenantId].branches = state.branches;
-        renderBranches();
-        showToast("Sucursal eliminada.", "info");
-    };
-
-    // --- CUSTOMER ONBOARDING FORM MODAL ---
-    const modalOnboarding = document.getElementById('modal-onboarding');
-    const btnShowRegister = document.getElementById('btn-show-register-preview');
-    const btnCloseOnboarding = document.getElementById('btn-close-onboarding');
-    const btnSubmitRegister = document.getElementById('btn-submit-customer-register');
-
-    if (btnShowRegister) {
-        btnShowRegister.addEventListener('click', () => {
-            modalOnboarding.classList.remove('hidden');
-        });
-    }
-
-    if (btnCloseOnboarding) {
-        btnCloseOnboarding.addEventListener('click', () => {
-            modalOnboarding.classList.add('hidden');
-        });
-    }
-
-    if (btnSubmitRegister) {
-        btnSubmitRegister.addEventListener('click', () => {
-            const custName = document.getElementById('cust-name').value || "Cliente Nuevo";
-            const custPhone = document.getElementById('cust-phone').value || "+52 55 0000 0000";
-            const custEmail = document.getElementById('cust-email').value || "cliente@correo.com";
-            const custBday = document.getElementById('cust-birthday').value || "1995-11-18";
-
-            const formattedBday = new Date(custBday).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-            const newId = `FIDELIO-${Math.floor(1000 + Math.random() * 9000)}`;
-
-            state.customers.unshift({
-                id: newId,
-                name: custName,
-                phone: custPhone,
-                email: custEmail,
-                birthday: formattedBday,
-                walletType: "Apple Wallet",
-                tier: "Bronce VIP",
-                balance: 20.00,
-                stamps: 1,
-                totalSpent: 200.00,
-                visits: 1,
-                lastVisit: new Date().toISOString().split('T')[0],
-                status: "Activo"
-            });
-
-            modalOnboarding.classList.add('hidden');
-            renderCRMTable();
-            updatePassRender();
-
-            showToast(`¡Registro Exitoso en Fidelio! ${custName} (Cumpleaños: ${formattedBday}) ha añadido su pase a Wallet.`, "success");
-        });
-    }
-
-    // --- CRM MODULE ---
-    const crmTableBody = document.getElementById('crm-table-body');
-    const crmSearchInput = document.getElementById('crm-search-input');
-    const crmFilterTier = document.getElementById('crm-filter-tier');
-    const crmFilterStatus = document.getElementById('crm-filter-status');
-    const crmCountBadge = document.getElementById('crm-count-badge');
-
-    function renderCRMTable() {
-        if (!crmTableBody) return;
-        const searchTerm = crmSearchInput.value.toLowerCase();
-        const tierFilter = crmFilterTier.value;
-        const statusFilter = crmFilterStatus.value;
-
-        const filtered = state.customers.filter(c => {
-            const matchesSearch = c.name.toLowerCase().includes(searchTerm) || 
-                                  c.phone.includes(searchTerm) || 
-                                  c.email.toLowerCase().includes(searchTerm) ||
-                                  (c.birthday && c.birthday.toLowerCase().includes(searchTerm)) ||
-                                  c.id.toLowerCase().includes(searchTerm);
-            
-            const matchesTier = tierFilter === 'all' || c.tier === tierFilter;
-            const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
-
-            return matchesSearch && matchesTier && matchesStatus;
-        });
-
-        crmCountBadge.textContent = state.customers.length;
-        crmTableBody.innerHTML = '';
-
-        if (filtered.length === 0) {
-            crmTableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; color: var(--text-muted); padding: 30px;">No se encontraron registros de clientes.</td></tr>`;
-            return;
-        }
-
-        filtered.forEach(c => {
-            const tr = document.createElement('tr');
-            
-            const tierClass = c.tier.includes('Oro') ? 'oro' : c.tier.includes('Plata') ? 'plata' : 'bronce';
-            const statusClass = c.status === 'Activo' ? 'activo' : 'riesgo';
-            const walletIcon = c.walletType === 'Apple Wallet' ? 'fa-apple' : 'fa-google';
-
-            tr.innerHTML = `
-                <td>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div style="width:34px; height:34px; border-radius:50%; background:var(--fidelio-violet); color:white; display:flex; align-items:center; justify-content:center; font-weight:800;">${c.name.charAt(0)}</div>
-                        <div>
-                            <strong>${c.name}</strong>
-                            <small style="display:block; color:var(--text-muted);">${c.id}</small>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <strong>${c.phone}</strong>
-                    <small style="display:block; color:var(--text-muted);">${c.email}</small>
-                </td>
-                <td><strong style="color:var(--cyan);"><i class="fa-solid fa-cake-candles"></i> ${c.birthday || '18 de Nov'}</strong></td>
-                <td><span class="tier-pill ${tierClass}">${c.tier}</span></td>
-                <td><i class="fa-brands ${walletIcon}"></i> ${c.walletType}</td>
-                <td><strong class="text-emerald">$${c.balance.toFixed(2)} MXN</strong></td>
-                <td><strong>${c.stamps}/${state.stampsTotal}</strong></td>
-                <td>$${c.totalSpent.toFixed(2)} MXN</td>
-                <td>${c.lastVisit}</td>
-                <td><span class="badge-status ${statusClass}">${c.status}</span></td>
-                <td>
-                    <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" title="Enviar Correo al Cliente" onclick="alert('Iniciando envío de correo directo a ${c.email}')">
-                        <i class="fa-solid fa-envelope"></i>
-                    </button>
-                </td>
-            `;
-            crmTableBody.appendChild(tr);
-        });
-    }
-
-    // --- PASS RENDER FUNCTION WITH METALLIC BORDERS & DYNAMIC CONFIGURABLE TIERS ---
-    const passRender = document.getElementById('pass-render');
-
-    function updatePassRender() {
-        if (!passRender) return;
-        scheduleAutoSave(); // Trigger auto-save debouncer
-        passRender.style.backgroundColor = state.colorPrimary;
-        document.getElementById('render-name').textContent = state.restaurantName;
-        
-        const logoContainer = document.getElementById('render-logo-container');
-        if (state.customLogoUrl) {
-            logoContainer.innerHTML = `<img src="${state.customLogoUrl}" style="width:28px; height:28px; border-radius:6px; object-fit:cover;"> <span id="render-name">${state.restaurantName}</span>`;
-        } else {
-            logoContainer.innerHTML = `<i class="fa-solid ${state.iconClass}" id="render-icon" style="color:${state.colorAccent}"></i> <span id="render-name">${state.restaurantName}</span>`;
-        }
-
-        const bannerContainer = document.getElementById('render-banner-container');
-        const bannerImg = document.getElementById('render-banner-img');
-        if (state.customBannerUrl) {
-            bannerContainer.classList.remove('hidden');
-            bannerImg.src = state.customBannerUrl;
-        } else {
-            bannerContainer.classList.add('hidden');
-            bannerImg.src = '';
-        }
-
-        const sampleClient = state.customers[0] || { tier: "Oro VIP", balance: 0, stamps: 0 };
-
-        passRender.classList.remove('tier-border-bronce', 'tier-border-plata', 'tier-border-oro');
-        
-        let currentTierConfig = state.vipTiers.oro;
-
-        if (sampleClient.tier.toLowerCase().includes('oro')) {
-            passRender.classList.add('tier-border-oro');
-            currentTierConfig = state.vipTiers.oro;
-        } else if (sampleClient.tier.toLowerCase().includes('plata')) {
-            passRender.classList.add('tier-border-plata');
-            currentTierConfig = state.vipTiers.plata;
-        } else {
-            passRender.classList.add('tier-border-bronce');
-            currentTierConfig = state.vipTiers.bronce;
-        }
-
-        const vipCaption = document.getElementById('render-vip-caption');
-        if (state.vipActive) {
-            vipCaption.style.display = 'block';
-            vipCaption.textContent = currentTierConfig.name.toUpperCase();
-        } else {
-            vipCaption.style.display = 'none';
-        }
-
-        const cashbackContainer = document.getElementById('render-cashback-container');
-        if (state.cashbackActive) {
-            cashbackContainer.style.display = 'block';
-            document.getElementById('render-balance').textContent = `$${sampleClient.balance.toFixed(2)} MXN`;
-            document.getElementById('render-cashback-rate').textContent = `${currentTierConfig.cashbackPercent}% acumulable (${currentTierConfig.name})`;
-        } else {
-            cashbackContainer.style.display = 'none';
-        }
-
-        const stampsContainer = document.getElementById('render-stamps-container');
-        if (state.stampsActive) {
-            stampsContainer.style.display = 'block';
-            const stampsGrid = document.getElementById('render-stamps-grid');
-            stampsGrid.innerHTML = '';
-
-            for (let i = 1; i <= state.stampsTotal; i++) {
-                const node = document.createElement('div');
-                if (i <= sampleClient.stamps) {
-                    node.className = 'stamp-coin filled';
-                    node.style.backgroundColor = state.colorAccent;
-                    node.innerHTML = '<i class="fa-solid fa-check"></i>';
-                } else {
-                    node.className = 'stamp-coin empty';
-                    node.textContent = i;
-                }
-                stampsGrid.appendChild(node);
-            }
-            document.getElementById('render-reward-text').textContent = `Premio: ${state.stampsReward}`;
-        } else {
-            stampsContainer.style.display = 'none';
-        }
-
-        const promoStrip = document.getElementById('render-promo-strip');
-        if (state.dynamicActive && state.dynamicDesc.trim() !== '') {
-            promoStrip.style.display = 'flex';
-            document.getElementById('render-promo-text').textContent = state.dynamicDesc;
-        } else {
-            promoStrip.style.display = 'none';
-        }
-    }
-
-    // --- UPLOAD HANDLERS ---
-    const logoFileInput = document.getElementById('logo-file-input');
-    const bannerFileInput = document.getElementById('banner-file-input');
-    const btnRemoveLogo = document.getElementById('btn-remove-logo');
-    const btnRemoveBanner = document.getElementById('btn-remove-banner');
-
-    if (logoFileInput) {
-        logoFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    state.customLogoUrl = evt.target.result;
-                    tenantDatabase[currentTenantId].customLogoUrl = evt.target.result;
-                    btnRemoveLogo.style.display = 'inline-block';
-                    updatePassRender();
-                    showToast("Logo cargado con éxito en la tarjeta digital.", "success");
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    if (btnRemoveLogo) {
-        btnRemoveLogo.addEventListener('click', () => {
-            state.customLogoUrl = null;
-            tenantDatabase[currentTenantId].customLogoUrl = null;
-            logoFileInput.value = '';
-            btnRemoveLogo.style.display = 'none';
-            updatePassRender();
-            showToast("Logo removido.", "info");
-        });
-    }
-
-    if (bannerFileInput) {
-        bannerFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    state.customBannerUrl = evt.target.result;
-                    tenantDatabase[currentTenantId].customBannerUrl = evt.target.result;
-                    btnRemoveBanner.style.display = 'inline-block';
-                    updatePassRender();
-                    showToast("Imagen de portada de tarjeta aplicada.", "success");
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    if (btnRemoveBanner) {
-        btnRemoveBanner.addEventListener('click', () => {
-            state.customBannerUrl = null;
-            tenantDatabase[currentTenantId].customBannerUrl = null;
-            bannerFileInput.value = '';
-            btnRemoveBanner.style.display = 'none';
-            updatePassRender();
-            showToast("Imagen de portada removida.", "info");
-        });
-    }
-
-    // --- TAB NAVIGATION ---
-    const navTabs = document.querySelectorAll('.nav-tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    navTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            navTabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-
-            tab.classList.add('active');
-            const targetTab = tab.getAttribute('data-tab');
-            document.getElementById(targetTab).classList.add('active');
-        });
+// Rutas principales
+app.get('/api/config', (req, res) => {
+    res.json({
+        supabaseUrl: process.env.SUPABASE_URL,
+        supabaseAnonKey: process.env.SUPABASE_ANON_KEY
     });
+});
 
-    // --- WALLET SELECTOR ---
-    const btnApple = document.getElementById('btn-apple-wallet');
-    const btnGoogle = document.getElementById('btn-google-wallet');
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'landing.html'));
+});
 
-    if (btnApple) {
-        btnApple.addEventListener('click', () => {
-            btnApple.classList.add('active');
-            btnGoogle.classList.remove('active');
-            state.activeWallet = 'apple';
-            passRender.style.borderRadius = '20px';
-            updatePassRender();
-        });
-    }
+app.get('/panel', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-    if (btnGoogle) {
-        btnGoogle.addEventListener('click', () => {
-            btnGoogle.classList.add('active');
-            btnApple.classList.remove('active');
-            state.activeWallet = 'google';
-            passRender.style.borderRadius = '16px';
-            updatePassRender();
-        });
-    }
-
-    // --- INPUT BINDINGS ---
-    if (document.getElementById('rest-name')) {
-        document.getElementById('rest-name').addEventListener('input', (e) => {
-            state.restaurantName = e.target.value || "Comercio";
-            updatePassRender();
-        });
-        document.getElementById('color-primary').addEventListener('input', (e) => {
-            state.colorPrimary = e.target.value;
-            updatePassRender();
-        });
-        document.getElementById('color-accent').addEventListener('input', (e) => {
-            state.colorAccent = e.target.value;
-            updatePassRender();
-        });
-        document.getElementById('rest-icon').addEventListener('change', (e) => {
-            state.iconClass = e.target.value;
-            updatePassRender();
-        });
-
-        document.getElementById('mech-cashback-check').addEventListener('change', (e) => {
-            state.cashbackActive = e.target.checked;
-            updatePassRender();
-        });
-        document.getElementById('cashback-percent').addEventListener('input', (e) => {
-            state.cashbackPercent = parseFloat(e.target.value) || 0;
-            updatePassRender();
-        });
-
-        document.getElementById('mech-stamps-check').addEventListener('change', (e) => {
-            state.stampsActive = e.target.checked;
-            updatePassRender();
-        });
-        document.getElementById('stamps-total').addEventListener('input', (e) => {
-            state.stampsTotal = parseInt(e.target.value) || 5;
-            updatePassRender();
-        });
-        document.getElementById('stamps-reward').addEventListener('input', (e) => {
-            state.stampsReward = e.target.value || "Premio";
-            updatePassRender();
-        });
-
-        document.getElementById('mech-dynamic-check').addEventListener('change', (e) => {
-            state.dynamicActive = e.target.checked;
-            updatePassRender();
-        });
-        document.getElementById('dynamic-desc').addEventListener('input', (e) => {
-            state.dynamicDesc = e.target.value;
-            updatePassRender();
-        });
-
-        document.getElementById('mech-vip-check').addEventListener('change', (e) => {
-            state.vipActive = e.target.checked;
-            updatePassRender();
-        });
-    }
-
-    if (crmSearchInput) {
-        crmSearchInput.addEventListener('input', renderCRMTable);
-        crmFilterTier.addEventListener('change', renderCRMTable);
-        crmFilterStatus.addEventListener('change', renderCRMTable);
-    }
-
-    const btnExportCrm = document.getElementById('btn-export-crm');
-    if (btnExportCrm) {
-        btnExportCrm.addEventListener('click', () => {
-            showToast(`Exportando archivo CSV con ${state.customers.length} registros...`, "success");
-        });
-    }
-
-    const btnAddDemoClient = document.getElementById('btn-add-demo-client');
-    if (btnAddDemoClient) {
-        btnAddDemoClient.addEventListener('click', () => {
-            modalOnboarding.classList.remove('hidden');
-        });
-    }
-
-    // Initial Render Calls
-    renderBranches();
-    renderCRMTable();
-    updatePassRender();
-})();
+app.listen(PORT, () => {
+    console.log(`🚀 Fidelio Backend Server active on http://localhost:${PORT}`);
+});
