@@ -65,7 +65,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Servir archivos estáticos (Frontend)
-app.use(express.static(path.join(__dirname, '/')));
+app.use(express.static(path.join(__dirname, '/'), { index: false }));
 
 // --- RUTAS DEL API ---
 
