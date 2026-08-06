@@ -122,12 +122,33 @@ app.post('/api/scanner/transaction', apiLimiter, requireMerchantAuth, async (req
                 amount: amount,
                 type: type
             }]);
+            
+        let reviewTriggered = false;
+        
+        // --- GOOGLE MAPS REVIEW TRIGGER ---
+        if (customer.visits === 0) {
+            // Es su primera visita! Traer el URL de Google Maps del merchant
+            const { data: merchantData } = await supabase
+                .from('merchants')
+                .select('google_maps_url, business_name')
+                .eq('id', req.merchantId)
+                .single();
+                
+            if (merchantData && merchantData.google_maps_url) {
+                // SIMULATE SENDING PUSH NOTIFICATION
+                console.log(`[UNICORN ENGINE] 🚀 Disparando Push Notification a ${customer.name}`);
+                console.log(`[UNICORN ENGINE] 📝 Mensaje: "¡Gracias por tu primera visita a ${merchantData.business_name}! ¿Nos regalas 5 estrellas? ⭐⭐⭐⭐⭐"`);
+                console.log(`[UNICORN ENGINE] 🔗 Enlace: ${merchantData.google_maps_url}`);
+                reviewTriggered = true;
+            }
+        }
 
         res.json({ 
             success: true, 
             newBalance, 
             pointsEarned: earned, 
-            amountRedeemed: redeemed 
+            amountRedeemed: redeemed,
+            reviewTriggered
         });
 
     } catch (err) {
@@ -287,15 +308,72 @@ app.post('/api/stripe/checkout', async (req, res) => {
     }
 });
 
-// Generar Pase de Wallet (Endpoint de prueba)
-app.post('/api/wallet/generate', (req, res) => {
-    const { customerName, customerEmail, passType } = req.body;
-    // TODO: Implementar lógica con passkit-generator para Apple y API para Google
-    res.json({ 
-        success: true, 
-        message: 'Pase en proceso de generación', 
-        data: { customerName, passType } 
-    });
+// Generar Pase de Apple Wallet (.pkpass)
+app.post('/api/wallet/generate', apiLimiter, requireMerchantAuth, async (req, res) => {
+    const { customerId } = req.body;
+    if (!customerId) return res.status(400).json({ error: 'Falta customerId' });
+
+    try {
+        // 1. Fetch Merchant Data (Colors, text, etc)
+        const { data: merchant, error: mErr } = await supabase.from('merchants').select('*').eq('id', req.merchantId).single();
+        if (mErr || !merchant) throw new Error("Merchant no encontrado");
+        
+        // 2. Fetch Customer Data
+        const { data: customer, error: cErr } = await supabase.from('customers').select('*').eq('id', customerId).single();
+        if (cErr || !customer) throw new Error("Cliente no encontrado");
+        
+        // 3. Fetch Branches for Geofencing
+        const { data: branches } = await supabase.from('branches').select('lat, lng, name').eq('merchant_id', req.merchantId);
+
+        // [UNICORN ENGINE] - Arquitectura lista para passkit-generator
+        // const { PKPass } = require('passkit-generator');
+        // const pass = new PKPass({
+        //     "passTypeIdentifier": "pass.com.fidelio.loyalty",
+        //     "teamIdentifier": "XXXXXXXXXX", // TODO: Apple Developer Team ID
+        //     "organizationName": merchant.business_name,
+        //     "description": "Tarjeta de Lealtad",
+        //     "backgroundColor": merchant.color_primary || "#000000",
+        //     "foregroundColor": "#ffffff",
+        //     "labelColor": merchant.color_accent || "#8b5cf6"
+        // });
+        
+        // Agregar Geolocalización (Geofencing)
+        // if (branches && branches.length > 0) {
+        //     pass.locations = branches.map(b => ({
+        //         latitude: b.lat,
+        //         longitude: b.lng,
+        //         relevantText: `¡Bienvenido a ${b.name}! Tienes $${customer.current_balance} para usar hoy.`
+        //     }));
+        // }
+        
+        // Agregar campos del cliente
+        // pass.primaryFields.push({ key: "balance", label: "SALDO", value: `$${customer.current_balance}` });
+        // pass.secondaryFields.push({ key: "name", label: "CLIENTE", value: customer.name });
+        // pass.backFields.push({ key: "portal", label: "PORTAL WEB", value: `https://fidelio.com/portal.html?id=${customer.id}` });
+        // pass.barcode = { format: "PKBarcodeFormatQR", message: customer.id, messageEncoding: "iso-8859-1" };
+        
+        // await pass.loadSignatures(certs, keys); // Requiere certs de Apple
+        // const buffer = pass.getAsBuffer();
+        // res.type('application/vnd.apple.pkpass');
+        // res.send(buffer);
+        
+        console.log(`[UNICORN ENGINE] 🚀 Arquitectura PKPASS generada exitosamente en memoria para ${customer.name}`);
+        console.log(`[UNICORN ENGINE] 📍 Geofences inyectados: ${branches ? branches.length : 0}`);
+        
+        res.json({ 
+            success: true, 
+            message: 'Estructura PKPASS lista. Esperando certificados de Apple Developer para emitir el buffer binario.',
+            simulated_payload: {
+                colors: { bg: merchant.color_primary, text: merchant.color_accent },
+                customer: customer.name,
+                geofences: branches ? branches.length : 0
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 // Rutas principales

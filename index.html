@@ -577,41 +577,83 @@
                 </div>
             </section>
 
-            <!-- BRANCHES TAB (Coming Soon) -->
+            <!-- BRANCHES TAB -->
             <section id="tab-branches" class="tab-content">
                 <div class="workspace-header">
                     <div>
                         <span class="workspace-eyebrow">CONFIGURACIÓN</span>
-                        <h1>Sucursales GPS</h1>
+                        <h1>Sucursales y Reseñas</h1>
+                        <p>Geolocalización para Apple Wallet y motor automático de reseñas.</p>
                     </div>
                 </div>
-                <div class="content-panel" style="text-align:center; padding: 80px 20px; max-width: 600px; margin: 40px auto; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);">
-                    <i class="fa-solid fa-map-location-dot" style="font-size: 4rem; color: var(--text-muted); margin-bottom:24px;"></i>
-                    <h2 style="font-size: 1.5rem; margin-bottom: 12px;">Geolocalización Automática</h2>
-                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
-                        Pronto podrás añadir las coordenadas de tus sucursales. Cuando tus clientes pasen cerca del restaurante, Apple Wallet les enviará una notificación push automática recomendándoles visitarte.
-                    </p>
-                    <span class="tier-pill oro" style="display:inline-block; font-size:14px; font-weight:700;"><i class="fa-solid fa-rocket"></i> Próximamente (Fase 2)</span>
+                
+                <div class="content-panel" style="max-width: 600px; margin-bottom: 24px;">
+                    <h3 style="margin-bottom:16px;"><i class="fa-solid fa-star text-amber"></i> Enlace de Google Maps</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">Pegue aquí el enlace de su restaurante en Google Maps. Fidelio lo enviará automáticamente a sus clientes después de su primera visita para pedirles una calificación de 5 estrellas.</p>
+                    <div style="display:flex; gap:10px;">
+                        <input type="url" id="google-maps-url" class="fidelio-input" placeholder="https://g.page/r/..." style="flex:1;">
+                        <button class="btn-primary" id="btn-save-maps">Guardar Enlace</button>
+                    </div>
+                </div>
+
+                <div class="content-panel" style="max-width: 600px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <h3 style="margin:0;"><i class="fa-solid fa-map-location-dot"></i> Puntos de Geolocalización (GPS)</h3>
+                        <button class="btn btn-outline" id="btn-add-branch-modal" style="font-size:0.8rem; padding:4px 10px;">+ Añadir</button>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">Máximo 10 sucursales. Apple Wallet enviará una notificación push automática cuando un cliente esté cerca de estas coordenadas.</p>
+                    
+                    <div id="branches-list-container">
+                        <p style="color:var(--text-muted); text-align:center; padding: 20px;">Cargando sucursales...</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- MARKETING TAB (Coming Soon) -->
+            <!-- MARKETING TAB -->
             <section id="tab-marketing" class="tab-content">
                 <div class="workspace-header">
                     <div>
                         <span class="workspace-eyebrow">CRECIMIENTO</span>
                         <h1>Marketing & Push</h1>
+                        <p>Segmenta a tus clientes y envía notificaciones directo a su pantalla de bloqueo.</p>
                     </div>
                 </div>
-                <div class="content-panel" style="text-align:center; padding: 80px 20px; max-width: 600px; margin: 40px auto; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);">
-                    <i class="fa-solid fa-bullhorn" style="font-size: 4rem; color: var(--text-muted); margin-bottom:24px;"></i>
-                    <h2 style="font-size: 1.5rem; margin-bottom: 12px;">Campañas Notificaciones Push</h2>
-                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
-                        Actualmente Fidelio envía notificaciones automáticas cada vez que un cliente gana o canjea puntos. Pronto liberaremos el módulo de marketing masivo para que puedas enviar promociones directas a la pantalla de bloqueo de todos tus clientes.
-                    </p>
-                    <span class="tier-pill oro" style="display:inline-block; font-size:14px; font-weight:700;"><i class="fa-solid fa-rocket"></i> Próximamente (Fase 2)</span>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; max-width:900px;">
+                    <div class="content-panel">
+                        <h3 style="margin-bottom:16px;">Segmentos de Audiencia (RFM)</h3>
+                        <div class="segment-card" onclick="selectSegment('all')">
+                            <div><strong>Todos los Clientes</strong> <small style="display:block; color:var(--text-muted);">Base completa</small></div>
+                            <span class="tier-pill oro" id="seg-all-count">0</span>
+                        </div>
+                        <div class="segment-card" onclick="selectSegment('active')">
+                            <div><strong>Frecuentes</strong> <small style="display:block; color:var(--text-muted);">Visitaron en los últimos 30 días</small></div>
+                            <span class="tier-pill activo" id="seg-active-count">0</span>
+                        </div>
+                        <div class="segment-card" onclick="selectSegment('risk')">
+                            <div><strong>En Riesgo (Perdidos)</strong> <small style="display:block; color:var(--text-muted);">Sin visitas por más de 30 días</small></div>
+                            <span class="tier-pill riesgo" id="seg-risk-count">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="content-panel">
+                        <h3 style="margin-bottom:16px;"><i class="fa-solid fa-paper-plane"></i> Lanzar Campaña Push</h3>
+                        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">Audiencia seleccionada: <strong id="selected-segment-name" style="color:var(--text-main);">Todos los Clientes</strong></p>
+                        
+                        <div class="form-group">
+                            <label>Mensaje Push</label>
+                            <textarea id="push-message" class="fidelio-input" rows="3" placeholder="Ej. ¡Te extrañamos! Visítanos este fin de semana y obtén doble cashback."></textarea>
+                        </div>
+                        
+                        <button id="btn-send-push" class="btn-primary" style="width:100%;"><i class="fa-solid fa-tower-broadcast"></i> Disparar Campaña a Apple Wallet</button>
+                    </div>
                 </div>
             </section>
+            <style>
+                .segment-card { display:flex; justify-content:space-between; align-items:center; padding:16px; background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); border-radius:12px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; }
+                .segment-card:hover { background:rgba(255,255,255,0.08); border-color:var(--accent-violet); }
+                .segment-card.selected { background:rgba(139,92,246,0.15); border-color:var(--accent-violet); box-shadow:0 0 15px rgba(139,92,246,0.2); }
+            </style>
 
             <!-- SUPPORT TAB -->
             <section id="tab-support" class="tab-content">
@@ -689,7 +731,33 @@
         </main>
     </div>
     
-    <!-- MODALS -->
+    <!-- ADD BRANCH MODAL -->
+    <div class="modal-overlay hidden" id="modal-add-branch">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--surface-light); padding-bottom:16px; margin-bottom:20px;">
+                <h3 style="margin:0;"><i class="fa-solid fa-map-pin"></i> Añadir Sucursal</h3>
+                <button onclick="document.getElementById('modal-add-branch').classList.add('hidden')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="form-group">
+                <label>Nombre de Sucursal</label>
+                <input type="text" id="branch-name" class="fidelio-input" placeholder="Ej. Sucursal Centro">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <div class="form-group" style="flex:1;">
+                    <label>Latitud</label>
+                    <input type="text" id="branch-lat" class="fidelio-input" placeholder="Ej. 19.4326">
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>Longitud</label>
+                    <input type="text" id="branch-lng" class="fidelio-input" placeholder="Ej. -99.1332">
+                </div>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">(Obtén estas coordenadas desde Google Maps haciendo clic derecho en tu ubicación)</p>
+            
+            <button id="btn-submit-branch" class="btn-primary" style="width:100%;">Guardar Sucursal</button>
+        </div>
+    </div>
     <!-- ADD CUSTOMER MODAL -->
     <div class="modal-overlay hidden" id="modal-add-customer">
         <div class="modal-content" style="max-width: 400px;">
