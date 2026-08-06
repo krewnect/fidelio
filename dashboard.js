@@ -909,4 +909,46 @@
     renderBranches();
     renderCRMTable();
     updatePassRender();
+
+    // --- ACCOUNT SETTINGS LOGIC ---
+    const accEmail = document.getElementById('acc-email');
+    const accPassword = document.getElementById('acc-password');
+    const btnSaveAccount = document.getElementById('btn-save-account');
+    const btnLogout = document.getElementById('btn-logout');
+
+    if (accEmail && window.merchantSession) {
+        accEmail.value = window.merchantSession.user.email;
+    }
+
+    if (btnSaveAccount) {
+        btnSaveAccount.addEventListener('click', async () => {
+            const newEmail = accEmail.value.trim();
+            const newPassword = accPassword.value;
+            
+            const updates = {};
+            if (newEmail && newEmail !== window.merchantSession.user.email) updates.email = newEmail;
+            if (newPassword) updates.password = newPassword;
+
+            if (Object.keys(updates).length === 0) return;
+
+            btnSaveAccount.textContent = 'Actualizando...';
+            const { data, error } = await window.supabaseClient.auth.updateUser(updates);
+            
+            if (error) {
+                showToast(error.message, 'warning');
+            } else {
+                showToast('Credenciales actualizadas correctamente.', 'success');
+                if (newPassword) accPassword.value = '';
+                if (data.user) window.merchantSession.user = data.user;
+            }
+            btnSaveAccount.textContent = 'Actualizar Credenciales';
+        });
+    }
+
+    if (btnLogout) {
+        btnLogout.addEventListener('click', async () => {
+            await window.supabaseClient.auth.signOut();
+            window.location.href = '/';
+        });
+    }
 })();

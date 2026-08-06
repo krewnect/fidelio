@@ -288,6 +288,9 @@
                 <div class="menu-label mt-20">Automatización</div>
                 <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas IA</button>
                 <button class="nav-tab" data-tab="tab-support"><i class="fa-solid fa-headset"></i> Soporte</button>
+                
+                <div class="menu-label mt-20">Configuración</div>
+                <button class="nav-tab" data-tab="tab-account"><i class="fa-solid fa-user-gear"></i> Mi Cuenta</button>
             </nav>
 
             <div class="sidebar-footer">
@@ -600,6 +603,31 @@
                 <div class="accordion-card">
                     <input type="text" id="ticket-subject"><textarea id="ticket-desc"></textarea>
                     <button id="btn-send-email-ticket" class="btn btn-solid">Enviar Mail</button>
+                </div>
+            </section>
+
+            <!-- ACCOUNT SETTINGS TAB -->
+            <section id="tab-account" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">CONFIGURACIÓN</span>
+                        <h1>Mi Cuenta</h1>
+                        <p>Administra tu acceso y credenciales.</p>
+                    </div>
+                </div>
+                <div class="content-panel" style="max-width: 600px;">
+                    <div class="form-group">
+                        <label>Correo Electrónico (Login)</label>
+                        <input type="email" id="acc-email" class="fidelio-input" placeholder="tu@correo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Nueva Contraseña</label>
+                        <input type="password" id="acc-password" class="fidelio-input" placeholder="Escribe para cambiar (opcional)">
+                    </div>
+                    <div style="display:flex; gap:16px; margin-top:24px;">
+                        <button id="btn-save-account" class="btn-primary">Actualizar Credenciales</button>
+                        <button id="btn-logout" class="btn-secondary" style="color:#ef4444; border-color:rgba(239,68,68,0.3);">Cerrar Sesión</button>
+                    </div>
                 </div>
             </section>
 
