@@ -446,35 +446,49 @@ app.post('/api/wallet/generate', apiLimiter, requireMerchantAuth, async (req, re
     }
 });
 
+// Utilidad para firmar JWT sin dependencias (RS256)
+const crypto = require('crypto');
+function signJwtRS256(payload, privateKey) {
+    const header = { alg: "RS256", typ: "JWT" };
+    const toBase64Url = (obj) => Buffer.from(JSON.stringify(obj)).toString('base64url');
+    const data = `${toBase64Url(header)}.${toBase64Url(payload)}`;
+    const signature = crypto.createSign('RSA-SHA256').update(data).sign(privateKey, 'base64url');
+    return `${data}.${signature}`;
+}
+
 // Generar Tarjeta de Google Wallet (JWT)
 app.post('/api/wallet/google', apiLimiter, requireMerchantAuth, async (req, res) => {
     const { customerId } = req.body;
     if (!customerId) return res.status(400).json({ error: 'Falta customerId' });
 
     try {
+        const issuerId = process.env.GOOGLE_WALLET_ISSUER_ID;
+        const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+        let privateKey = process.env.GOOGLE_PRIVATE_KEY;
+
+        if (!issuerId || !clientEmail || !privateKey) {
+            return res.status(500).json({ error: 'Credenciales de Google Wallet no configuradas en el servidor.' });
+        }
+        
+        // Render parsea los \n como texto plano, hay que convertirlos a saltos reales
+        privateKey = privateKey.replace(/\\n/g, '\n');
+
         const { data: merchant } = await supabase.from('merchants').select('*').eq('id', req.merchantId).single();
         const { data: customer } = await supabase.from('customers').select('*').eq('id', customerId).single();
         
         if (!merchant || !customer) throw new Error("Datos incompletos");
 
-        // [UNICORN ENGINE] - Arquitectura para Google Wallet API
-        // const { google } = require('googleapis');
-        // const credentials = require('./google-credentials.json');
-        
-        // 1. Crear el Class (Plantilla general) si no existe.
-        // 2. Crear el Object (Tarjeta específica del cliente).
-        // 3. Firmar el JWT (JSON Web Token) con la llave de servicio de Google.
-
-        const dummyJwtPayload = {
-            iss: "fidelio-service-account@google.com",
+        // Objecto de Lealtad (Tarjeta)
+        const jwtPayload = {
+            iss: clientEmail,
             aud: "google",
             typ: "savetowallet",
             iat: Math.floor(Date.now() / 1000),
-            origins: ["https://fidelio.com"],
+            origins: [],
             payload: {
                 loyaltyObjects: [{
-                    id: `ISSUER_ID.${customer.id}`,
-                    classId: `ISSUER_ID.${req.merchantId}`,
+                    id: `${issuerId}.${customer.id}`,
+                    classId: `${issuerId}.${req.merchantId}`, // Asume que la clase (plantilla) ya se creó en la consola
                     accountId: customer.id,
                     accountName: customer.name,
                     state: "ACTIVE",
@@ -487,19 +501,18 @@ app.post('/api/wallet/google', apiLimiter, requireMerchantAuth, async (req, res)
             }
         };
 
-        // const token = jwt.sign(dummyJwtPayload, credentials.private_key, { algorithm: 'RS256' });
-        // const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
+        const token = signJwtRS256(jwtPayload, privateKey);
+        const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
 
-        console.log(`[UNICORN ENGINE] 🚀 Arquitectura Google Wallet (JWT) lista para firmar.`);
+        console.log(`[UNICORN ENGINE] 🚀 Link de Google Wallet generado para ${customer.name}`);
 
         res.json({
             success: true,
-            message: 'Estructura Google Wallet (JWT) lista. Requiere archivo credentials.json de Google Cloud.',
-            simulated_jwt_payload: dummyJwtPayload
+            saveUrl: saveUrl
         });
 
     } catch (err) {
-        console.error(err);
+        console.error("Error Google Wallet:", err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
