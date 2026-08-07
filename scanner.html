@@ -212,6 +212,29 @@
 
     </div>
 
+    <!-- Login Screen -->
+    <div id="login-screen" style="display:none; position:fixed; inset:0; background:var(--bg-dark); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+        <div style="text-align:center; margin-bottom:40px;">
+            <i class="fa-solid fa-qrcode" style="font-size:3rem; color:var(--primary); margin-bottom:16px;"></i>
+            <h2>Fidelio Terminal</h2>
+            <p style="color:var(--text-muted); margin-top:8px;">Acceso exclusivo para Staff</p>
+        </div>
+        <div style="width:100%; max-width:350px;">
+            <div style="margin-bottom:16px;">
+                <label style="display:block; margin-bottom:8px; font-size:0.9rem; color:var(--text-muted);">Correo</label>
+                <input type="email" id="login-email" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--surface-light); background:var(--surface); color:white;" placeholder="cajero@tuempresa.com">
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block; margin-bottom:8px; font-size:0.9rem; color:var(--text-muted);">Contraseña</label>
+                <input type="password" id="login-password" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--surface-light); background:var(--surface); color:white;" placeholder="******">
+            </div>
+            <button id="btn-login" style="width:100%; padding:14px; border-radius:8px; border:none; background:var(--primary); color:white; font-weight:600; font-size:1rem;" onclick="handleLogin()">
+                Iniciar Sesión
+            </button>
+            <p id="login-error" style="color:var(--danger); text-align:center; margin-top:16px; font-size:0.9rem; display:none;"></p>
+        </div>
+    </div>
+
     <!-- Success Overlay -->
     <div id="status-overlay">
         <i class="fa-solid fa-circle-check status-icon status-success"></i>
@@ -236,30 +259,68 @@
                 // 2. Check Auth
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) {
-                    alert("Debes iniciar sesión en el Dashboard para usar el escáner.");
-                    window.location.href = '/';
+                    showLoginScreen();
                     return;
                 }
-                merchantSession = session;
                 
-                // Load Merchant info
-                const { data: merchant } = await supabaseClient
-                    .from('merchants')
-                    .select('business_name')
-                    .eq('id', session.user.id)
-                    .single();
-                    
-                if (merchant) {
-                    document.getElementById('merchant-name').textContent = merchant.business_name;
-                }
-
-                // 3. Start Scanner
-                startScanner();
-
+                await setupScannerSession(session);
             } catch (err) {
                 console.error("Error iniciando escáner:", err);
                 alert("Error de conexión con el servidor.");
             }
+        }
+
+        function showLoginScreen() {
+            document.getElementById('main-container').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-login');
+            const errLabel = document.getElementById('login-error');
+            
+            if(!email || !password) return;
+            
+            btn.disabled = true;
+            btn.textContent = "Verificando...";
+            errLabel.style.display = 'none';
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                errLabel.textContent = "Credenciales incorrectas.";
+                errLabel.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = "Iniciar Sesión";
+                return;
+            }
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-container').style.display = 'block';
+            await setupScannerSession(data.session);
+        }
+
+        async function setupScannerSession(session) {
+            merchantSession = session;
+            const role = session.user.user_metadata?.role;
+            const targetMerchantId = role === 'staff' ? session.user.user_metadata.merchant_id : session.user.id;
+            
+            // Load Merchant info
+            const { data: merchant } = await supabaseClient
+                .from('merchants')
+                .select('business_name')
+                .eq('id', targetMerchantId)
+                .single();
+                
+            if (merchant) {
+                let badge = role === 'staff' ? ' (Cajero)' : ' (Dueño)';
+                document.getElementById('merchant-name').textContent = merchant.business_name + badge;
+            }
+
+            // 3. Start Scanner
+            startScanner();
         }
 
         function startScanner() {

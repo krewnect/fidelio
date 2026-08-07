@@ -14,16 +14,26 @@ const PORT = process.env.PORT || 8080;
 // Configuración de Supabase
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
 let supabase;
+let supabaseAdmin; // Para crear usuarios de Staff sin perder sesión
 
 if (supabaseUrl && supabaseKey) {
     supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('✅ Conectado a Supabase');
+    console.log('✅ Conectado a Supabase (Cliente)');
 } else {
     console.log('⚠️ Supabase no configurado aún (Faltan variables en .env)');
 }
 
-// --- AUTH MIDDLEWARE ---
+if (supabaseUrl && supabaseServiceKey) {
+    supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+        auth: { autoRefreshToken: false, persistSession: false }
+    });
+    console.log('🛡️ Conectado a Supabase (Admin API)');
+}
+
+// --- AUTH MIDDLEWARE (FIREWALL) ---
 const requireMerchantAuth = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -35,7 +45,16 @@ const requireMerchantAuth = async (req, res, next) => {
     if (error || !user) {
         return res.status(401).json({ success: false, error: 'Invalid token' });
     }
-    req.merchantId = user.id;
+    
+    // RBAC: Si es cajero, su dueño es merchant_id. Si es dueño, su id es su merchant_id.
+    if (user.user_metadata && user.user_metadata.role === 'staff') {
+        req.merchantId = user.user_metadata.merchant_id;
+        req.userRole = 'staff';
+    } else {
+        req.merchantId = user.id;
+        req.userRole = 'admin';
+    }
+    
     next();
 };
 
@@ -268,6 +287,51 @@ app.post('/api/auth/register', async (req, res) => {
 
         res.json({ success: true, user: authData.user });
     } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Creación de Cajeros (Staff)
+app.post('/api/auth/staff/create', apiLimiter, requireMerchantAuth, async (req, res) => {
+    const { email, password, name } = req.body;
+    
+    if (req.userRole !== 'admin') {
+        return res.status(403).json({ error: 'Solo el dueño puede crear cajeros.' });
+    }
+    if (!supabaseAdmin) {
+        return res.status(500).json({ error: 'Supabase Admin no configurado (Falta SERVICE_ROLE_KEY).' });
+    }
+
+    try {
+        // 1. Crear el usuario con la API Admin para no cerrar la sesión del dueño
+        const { data: staffAuth, error: authError } = await supabaseAdmin.auth.admin.createUser({
+            email: email,
+            password: password,
+            email_confirm: true,
+            user_metadata: {
+                role: 'staff',
+                merchant_id: req.merchantId,
+                name: name
+            }
+        });
+
+        if (authError) throw authError;
+
+        // 2. Registrar al cajero en la tabla 'staff' para que el dueño lo vea en la lista
+        const { error: dbError } = await supabaseAdmin
+            .from('staff')
+            .insert([{ 
+                id: staffAuth.user.id, 
+                merchant_id: req.merchantId, 
+                email: email,
+                name: name
+            }]);
+            
+        if (dbError) throw dbError;
+
+        res.json({ success: true, user: staffAuth.user });
+    } catch (error) {
+        console.error("Staff Create Error:", error);
         res.status(400).json({ error: error.message });
     }
 });

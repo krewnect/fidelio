@@ -291,7 +291,7 @@
                 
                 <div class="menu-label mt-20">Automatización</div>
                 <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas IA</button>
-                <button class="nav-tab" data-tab="tab-support"><i class="fa-solid fa-headset"></i> Soporte</button>
+                <button class="nav-tab" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
                 
                 <div class="menu-label mt-20">Configuración</div>
                 <button class="nav-tab" data-tab="tab-account"><i class="fa-solid fa-user-gear"></i> Mi Cuenta</button>
@@ -655,23 +655,40 @@
                 .segment-card.selected { background:rgba(139,92,246,0.15); border-color:var(--accent-violet); box-shadow:0 0 15px rgba(139,92,246,0.2); }
             </style>
 
-            <!-- SUPPORT TAB -->
-            <section id="tab-support" class="tab-content">
+            <!-- STAFF TAB -->
+            <section id="tab-staff" class="tab-content">
                 <div class="workspace-header">
                     <div>
-                        <span class="workspace-eyebrow">AYUDA</span>
-                        <h1>Soporte Premium</h1>
+                        <span class="workspace-eyebrow">SEGURIDAD Y ROLES</span>
+                        <h1>Cajeros y Equipo</h1>
+                        <p>Cuentas limitadas exclusivas para el escáner.</p>
                     </div>
                 </div>
-                <div class="content-panel" style="text-align:center; padding: 60px 20px; max-width: 600px; margin: 40px auto;">
-                    <i class="fa-solid fa-headset" style="font-size: 4rem; color: var(--fidelio-violet); margin-bottom:24px;"></i>
-                    <h2 style="font-size: 1.5rem; margin-bottom: 12px;">Centro de Soporte Técnico</h2>
-                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
-                        Si necesitas ayuda con la integración, cambio de contraseña, o tienes algún reporte técnico, nuestro equipo está disponible 24/7.
-                    </p>
-                    <a href="mailto:soporte@fidelio.com" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding: 12px 24px; text-decoration:none;">
-                        <i class="fa-solid fa-envelope"></i> Enviar Correo a Soporte
-                    </a>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; max-width:900px;">
+                    <div class="content-panel">
+                        <h3 style="margin-bottom:16px;"><i class="fa-solid fa-user-plus"></i> Crear Nuevo Cajero</h3>
+                        <div class="form-group">
+                            <label>Nombre del Cajero</label>
+                            <input type="text" id="staff-name" class="fidelio-input" placeholder="Ej. Roberto">
+                        </div>
+                        <div class="form-group">
+                            <label>Correo de Acceso</label>
+                            <input type="email" id="staff-email" class="fidelio-input" placeholder="cajero1@tuempresa.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña Temporal</label>
+                            <input type="password" id="staff-password" class="fidelio-input" placeholder="Mínimo 6 caracteres">
+                        </div>
+                        <button id="btn-create-staff" class="btn-primary" style="width:100%;">Crear Cuenta de Cajero</button>
+                    </div>
+                    
+                    <div class="content-panel">
+                        <h3 style="margin-bottom:16px;"><i class="fa-solid fa-users-gear"></i> Personal Activo</h3>
+                        <div id="staff-list-container">
+                            <p style="color:var(--text-muted); text-align:center; padding: 20px;">Cargando equipo...</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
