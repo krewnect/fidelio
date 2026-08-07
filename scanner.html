@@ -172,14 +172,34 @@
 
     <div class="container" id="main-container">
         
-        <!-- Scanner -->
-        <div id="reader-container">
-            <div id="reader"></div>
+        <!-- Mode Switcher -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button id="btn-mode-scan" class="btn-primary" style="flex:1; padding:12px; border-radius:12px; font-size:1rem; border:none; background:var(--primary);" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escanear</button>
+            <button id="btn-mode-manual" class="btn-secondary" style="flex:1; padding:12px; border-radius:12px; font-size:1rem; background:var(--surface-light); color:white; border:none;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Búsqueda Manual</button>
         </div>
-        
-        <p style="text-align:center; color:var(--text-muted); font-size:0.9rem;" id="scan-hint">
-            Apunta la cámara al pase de Apple Wallet del cliente.
-        </p>
+
+        <!-- Scanner -->
+        <div id="scanner-section">
+            <div id="reader-container">
+                <div id="reader"></div>
+            </div>
+            <p style="text-align:center; color:var(--text-muted); font-size:0.9rem;" id="scan-hint">
+                Apunta la cámara al pase de Apple/Google Wallet del cliente.
+            </p>
+        </div>
+
+        <!-- Manual Search (Hidden initially) -->
+        <div id="manual-section" style="display:none; background:var(--surface); padding:24px; border-radius:16px; border:1px solid var(--surface-light); margin-bottom:20px;">
+            <h3 style="margin-bottom:16px; text-align:center;">Búsqueda Delivery / Remota</h3>
+            <div class="input-group">
+                <label>Teléfono o Correo Electrónico</label>
+                <input type="text" id="manual-search-input" style="width:100%; padding:14px; border-radius:8px; border:1px solid var(--surface-light); background:var(--bg-dark); color:white; font-size:1.1rem;" placeholder="ej. 5512345678 o correo@mail.com">
+            </div>
+            <button class="btn-primary" style="width:100%; padding:14px; border-radius:12px; font-weight:700; background:var(--primary); color:white; border:none; margin-top:8px;" onclick="searchCustomerManual()" id="btn-manual-search">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente
+            </button>
+            <p id="manual-search-error" style="color:var(--danger); text-align:center; margin-top:12px; font-size:0.9rem; display:none;"></p>
+        </div>
 
         <!-- Action Panel -->
         <div id="action-panel">
@@ -375,14 +395,101 @@
             // Se ejecuta constantemente mientras no encuentre QR, no hacemos nada.
         }
 
+        function setMode(mode) {
+            document.getElementById('action-panel').style.display = 'none';
+            document.getElementById('manual-search-error').style.display = 'none';
+            document.getElementById('manual-search-input').value = '';
+
+            if (mode === 'scan') {
+                document.getElementById('manual-section').style.display = 'none';
+                document.getElementById('btn-mode-manual').style.background = 'var(--surface-light)';
+                document.getElementById('btn-mode-manual').style.color = 'white';
+                document.getElementById('btn-mode-scan').style.background = 'var(--primary)';
+                
+                document.getElementById('scanner-section').style.display = 'block';
+                if (!html5QrcodeScanner) {
+                    startScanner();
+                } else {
+                    // html5-qrcode doesn't have a reliable getState, so we just try to restart
+                    try { html5QrcodeScanner.clear(); } catch(e){}
+                    startScanner();
+                }
+            } else {
+                document.getElementById('scanner-section').style.display = 'none';
+                document.getElementById('btn-mode-scan').style.background = 'var(--surface-light)';
+                document.getElementById('btn-mode-scan').style.color = 'white';
+                document.getElementById('btn-mode-manual').style.background = 'var(--primary)';
+                
+                document.getElementById('manual-section').style.display = 'block';
+                if (html5QrcodeScanner) {
+                    try { html5QrcodeScanner.stop(); } catch(e){}
+                }
+            }
+        }
+
+        async function searchCustomerManual() {
+            const query = document.getElementById('manual-search-input').value.trim();
+            const errEl = document.getElementById('manual-search-error');
+            const btn = document.getElementById('btn-manual-search');
+            
+            if (!query) {
+                errEl.textContent = "Ingresa un teléfono o correo";
+                errEl.style.display = 'block';
+                return;
+            }
+            
+            errEl.style.display = 'none';
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando...';
+            btn.disabled = true;
+
+            try {
+                let column = query.includes('@') ? 'email' : 'phone';
+                
+                // Extraer el merchant_id de la sesión del cajero
+                // El cajero pertenece a un merchant
+                const { data: userData } = await supabaseClient.auth.getUser();
+                const merchantId = userData.user.user_metadata.merchant_id || userData.user.id;
+                
+                const { data: customer, error } = await supabaseClient
+                    .from('customers')
+                    .select('*')
+                    .eq('merchant_id', merchantId)
+                    .eq(column, query)
+                    .single();
+
+                if (error || !customer) {
+                    errEl.textContent = "Cliente no encontrado. Pídele que se registre escaneando tu QR.";
+                    errEl.style.display = 'block';
+                } else {
+                    document.getElementById('manual-section').style.display = 'none';
+                    document.getElementById('action-panel').style.display = 'block';
+                    
+                    currentCustomerId = customer.id;
+                    document.getElementById('c-name').textContent = customer.name || "Invitado";
+                    document.getElementById('c-balance').innerHTML = `$${(customer.current_balance || 0).toFixed(2)} <span>MXN</span>`;
+                }
+            } catch (err) {
+                errEl.textContent = "Error al buscar cliente";
+                errEl.style.display = 'block';
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
         function resetScanner() {
             document.getElementById('status-overlay').style.display = 'none';
             document.getElementById('ticket-amount').value = '';
             currentCustomerId = null;
-            if(html5QrcodeScanner) {
-                html5QrcodeScanner.clear();
+            document.getElementById('action-panel').style.display = 'none';
+            
+            const isManual = document.getElementById('manual-section').style.display === 'block';
+            if (isManual) {
+                setMode('manual');
+            } else {
+                setMode('scan');
             }
-            startScanner();
         }
 
         async function processTransaction(type) {
