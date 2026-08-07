@@ -2,7 +2,7 @@ services:
   - type: web
     name: fidelio-app
     env: node
-    plan: free
+    plan: starter
     buildCommand: npm install
     startCommand: node app.js
     envVars:
