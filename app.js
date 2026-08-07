@@ -58,6 +58,26 @@ const requireMerchantAuth = async (req, res, next) => {
     next();
 };
 
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 100,
+    message: { error: 'Demasiadas peticiones, por favor intenta más tarde.' }
+});
+
+app.use(helmet({
+    contentSecurityPolicy: false
+}));
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Logging middleware
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
+
 // --- API ESCÁNER (STAFF) ---
 
 // 1. Buscar Cliente por ID (QR)
@@ -213,21 +233,7 @@ app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), async (
     res.json({received: true});
 });
 
-// Middleware de Seguridad Básica
-app.use(helmet({
-    contentSecurityPolicy: false // Desactivado temporalmente para permitir scripts CDN como Supabase
-}));
-
-const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100, // Límite de 100 peticiones por IP cada 15 min
-    message: { error: 'Demasiadas peticiones, por favor intenta más tarde.' }
-});
-
-app.use('/api/', apiLimiter);
-
-app.use(cors());
-app.use(express.json());
+// Middleware de Seguridad Básica eliminado (ya está arriba)
 app.use(express.urlencoded({ extended: true }));
 
 // Servir archivos estáticos (Frontend)
