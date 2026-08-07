@@ -376,6 +376,64 @@ app.post('/api/wallet/generate', apiLimiter, requireMerchantAuth, async (req, re
     }
 });
 
+// Generar Tarjeta de Google Wallet (JWT)
+app.post('/api/wallet/google', apiLimiter, requireMerchantAuth, async (req, res) => {
+    const { customerId } = req.body;
+    if (!customerId) return res.status(400).json({ error: 'Falta customerId' });
+
+    try {
+        const { data: merchant } = await supabase.from('merchants').select('*').eq('id', req.merchantId).single();
+        const { data: customer } = await supabase.from('customers').select('*').eq('id', customerId).single();
+        
+        if (!merchant || !customer) throw new Error("Datos incompletos");
+
+        // [UNICORN ENGINE] - Arquitectura para Google Wallet API
+        // const { google } = require('googleapis');
+        // const credentials = require('./google-credentials.json');
+        
+        // 1. Crear el Class (Plantilla general) si no existe.
+        // 2. Crear el Object (Tarjeta específica del cliente).
+        // 3. Firmar el JWT (JSON Web Token) con la llave de servicio de Google.
+
+        const dummyJwtPayload = {
+            iss: "fidelio-service-account@google.com",
+            aud: "google",
+            typ: "savetowallet",
+            iat: Math.floor(Date.now() / 1000),
+            origins: ["https://fidelio.com"],
+            payload: {
+                loyaltyObjects: [{
+                    id: `ISSUER_ID.${customer.id}`,
+                    classId: `ISSUER_ID.${req.merchantId}`,
+                    accountId: customer.id,
+                    accountName: customer.name,
+                    state: "ACTIVE",
+                    barcode: { type: "QR_CODE", value: customer.id },
+                    loyaltyPoints: {
+                        balance: { string: `$${customer.current_balance}` },
+                        label: "Saldo"
+                    }
+                }]
+            }
+        };
+
+        // const token = jwt.sign(dummyJwtPayload, credentials.private_key, { algorithm: 'RS256' });
+        // const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
+
+        console.log(`[UNICORN ENGINE] 🚀 Arquitectura Google Wallet (JWT) lista para firmar.`);
+
+        res.json({
+            success: true,
+            message: 'Estructura Google Wallet (JWT) lista. Requiere archivo credentials.json de Google Cloud.',
+            simulated_jwt_payload: dummyJwtPayload
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // Rutas principales
 app.get('/api/config', (req, res) => {
     res.json({

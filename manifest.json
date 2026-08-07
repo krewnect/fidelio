@@ -1,0 +1,17 @@
+{
+  "name": "Fidelio Scanner",
+  "short_name": "Scanner",
+  "description": "Terminal de escáner oficial para restaurantes Fidelio.",
+  "start_url": "/scanner.html",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/fidelio_logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "orientation": "portrait-primary"
+}
