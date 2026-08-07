@@ -217,6 +217,28 @@
             transactions: transData || [],
             activeWallet: "apple"
         };
+
+        // --- INJECT MERCHANT QR ---
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/pass.html?m=' + merchantId)}`;
+        const qrPreview = document.getElementById('merchant-qr-preview');
+        const btnDownloadQr = document.getElementById('btn-download-merchant-qr');
+        
+        if (qrPreview) {
+            qrPreview.src = qrUrl;
+        }
+        
+        if (btnDownloadQr) {
+            btnDownloadQr.onclick = () => {
+                const a = document.createElement('a');
+                a.href = qrUrl;
+                a.download = `QR_Mesa_${state.restaurantName}.png`;
+                // qrserver doesn't set Content-Disposition by default, so we open it in new tab for mobile/desktop native download
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+        }
         
         return true;
     }
@@ -662,6 +684,47 @@
             } finally {
                 btnGw.innerHTML = originalText;
                 btnGw.disabled = false;
+            }
+        };
+
+        const btnAw = document.getElementById('btn-generate-aw');
+        btnAw.onclick = async () => {
+            const originalText = btnAw.innerHTML;
+            btnAw.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generando...';
+            btnAw.disabled = true;
+
+            try {
+                const { data: { session } } = await window.supabaseClient.auth.getSession();
+                const res = await fetch('/api/wallet/apple', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ customerId })
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.error || 'Error al generar Apple Wallet');
+                }
+                
+                // It's a binary file download (.pkpass)
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${customerName.replace(/\\s+/g, '_')}_Lealtad.pkpass`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btnAw.innerHTML = originalText;
+                btnAw.disabled = false;
             }
         };
 

@@ -379,12 +379,26 @@ app.post('/api/stripe/checkout', async (req, res) => {
 });
 
 // Generar Pase de Apple Wallet (.pkpass)
-app.post('/api/wallet/generate', apiLimiter, requireMerchantAuth, async (req, res) => {
+app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) => {
     const { customerId } = req.body;
     if (!customerId) return res.status(400).json({ error: 'Falta customerId' });
 
     try {
-        // 1. Fetch Merchant Data (Colors, text, etc)
+        const { PKPass } = require('passkit-generator');
+        
+        // Credenciales de Apple desde variables de entorno
+        const wwdr = process.env.APPLE_WWDR_CERT; // El certificado WWDR G4 en base64
+        const signerCert = process.env.APPLE_SIGNER_CERT; // El certificado pass (.pem) en base64
+        const signerKey = process.env.APPLE_SIGNER_KEY; // La llave privada (.pem) en base64
+        const signerKeyPassphrase = process.env.APPLE_SIGNER_KEY_PASSPHRASE; // Contraseña de la llave privada
+        const teamIdentifier = process.env.APPLE_TEAM_ID;
+        const passTypeIdentifier = process.env.APPLE_PASS_TYPE_ID;
+
+        if (!wwdr || !signerCert || !signerKey || !teamIdentifier || !passTypeIdentifier) {
+            return res.status(500).json({ error: 'Faltan certificados de Apple en las variables de entorno.' });
+        }
+
+        // 1. Fetch Merchant Data
         const { data: merchant, error: mErr } = await supabase.from('merchants').select('*').eq('id', req.merchantId).single();
         if (mErr || !merchant) throw new Error("Merchant no encontrado");
         
@@ -395,53 +409,71 @@ app.post('/api/wallet/generate', apiLimiter, requireMerchantAuth, async (req, re
         // 3. Fetch Branches for Geofencing
         const { data: branches } = await supabase.from('branches').select('lat, lng, name').eq('merchant_id', req.merchantId);
 
-        // [UNICORN ENGINE] - Arquitectura lista para passkit-generator
-        // const { PKPass } = require('passkit-generator');
-        // const pass = new PKPass({
-        //     "passTypeIdentifier": "pass.com.fidelio.loyalty",
-        //     "teamIdentifier": "XXXXXXXXXX", // TODO: Apple Developer Team ID
-        //     "organizationName": merchant.business_name,
-        //     "description": "Tarjeta de Lealtad",
-        //     "backgroundColor": merchant.color_primary || "#000000",
-        //     "foregroundColor": "#ffffff",
-        //     "labelColor": merchant.color_accent || "#8b5cf6"
-        // });
-        
-        // Agregar Geolocalización (Geofencing)
-        // if (branches && branches.length > 0) {
-        //     pass.locations = branches.map(b => ({
-        //         latitude: b.lat,
-        //         longitude: b.lng,
-        //         relevantText: `¡Bienvenido a ${b.name}! Tienes $${customer.current_balance} para usar hoy.`
-        //     }));
-        // }
-        
-        // Agregar campos del cliente
-        // pass.primaryFields.push({ key: "balance", label: "SALDO", value: `$${customer.current_balance}` });
-        // pass.secondaryFields.push({ key: "name", label: "CLIENTE", value: customer.name });
-        // pass.backFields.push({ key: "portal", label: "PORTAL WEB", value: `https://fidelio.com/portal.html?id=${customer.id}` });
-        // pass.barcode = { format: "PKBarcodeFormatQR", message: customer.id, messageEncoding: "iso-8859-1" };
-        
-        // await pass.loadSignatures(certs, keys); // Requiere certs de Apple
-        // const buffer = pass.getAsBuffer();
-        // res.type('application/vnd.apple.pkpass');
-        // res.send(buffer);
-        
-        console.log(`[UNICORN ENGINE] 🚀 Arquitectura PKPASS generada exitosamente en memoria para ${customer.name}`);
-        console.log(`[UNICORN ENGINE] 📍 Geofences inyectados: ${branches ? branches.length : 0}`);
-        
-        res.json({ 
-            success: true, 
-            message: 'Estructura PKPASS lista. Esperando certificados de Apple Developer para emitir el buffer binario.',
-            simulated_payload: {
-                colors: { bg: merchant.color_primary, text: merchant.color_accent },
-                customer: customer.name,
-                geofences: branches ? branches.length : 0
+        // Crear la estructura de la tarjeta
+        const pass = new PKPass({
+            "pass.json": {
+                formatVersion: 1,
+                passTypeIdentifier: passTypeIdentifier,
+                serialNumber: customer.id,
+                teamIdentifier: teamIdentifier,
+                organizationName: merchant.business_name || "Mi Negocio",
+                description: "Tarjeta de Lealtad",
+                logoText: merchant.business_name || "Mi Negocio",
+                backgroundColor: merchant.color_primary || "#090d16",
+                foregroundColor: "#ffffff",
+                labelColor: merchant.color_accent || "#8b5cf6",
+                storeCard: {
+                    primaryFields: [
+                        { key: "balance", label: "SALDO", value: `$${customer.current_balance}` }
+                    ],
+                    secondaryFields: [
+                        { key: "name", label: "CLIENTE", value: customer.name || "Invitado" }
+                    ],
+                    backFields: [
+                        { key: "portal", label: "PORTAL WEB", value: `https://fidelio.com/portal.html?id=${customer.id}` }
+                    ]
+                },
+                barcode: {
+                    format: "PKBarcodeFormatQR",
+                    message: customer.id,
+                    messageEncoding: "iso-8859-1",
+                    altText: customer.id
+                }
             }
         });
 
+        // Geofencing (si hay sucursales)
+        if (branches && branches.length > 0) {
+            const locations = branches.map(b => ({
+                latitude: b.lat,
+                longitude: b.lng,
+                relevantText: `¡Bienvenido a ${b.name}! Tienes $${customer.current_balance} para usar hoy.`
+            }));
+            pass.add('locations', locations);
+        }
+
+        // Cargar Certificados (decodificados de base64)
+        pass.certificates({
+            wwdr: Buffer.from(wwdr, 'base64'),
+            signerCert: Buffer.from(signerCert, 'base64'),
+            signerKey: Buffer.from(signerKey, 'base64'),
+            signerKeyPassphrase: signerKeyPassphrase || undefined
+        });
+
+        // Generar archivo binario (.pkpass)
+        const buffer = await pass.getAsBuffer();
+        
+        // Responder con el archivo binario directo al navegador
+        res.set({
+            'Content-Type': 'application/vnd.apple.pkpass',
+            'Content-Disposition': `attachment; filename="${merchant.business_name || 'tarjeta'}.pkpass"`
+        });
+        res.send(buffer);
+
+        console.log(`[UNICORN ENGINE] 🍏 Tarjeta Apple Wallet generada y firmada para ${customer.name}`);
+
     } catch (err) {
-        console.error(err);
+        console.error("Error Apple Wallet:", err);
         res.status(500).json({ success: false, error: err.message });
     }
 });

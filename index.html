@@ -344,6 +344,19 @@
                         <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Saldo pendiente por cobrar</div>
                     </div>
                 </div>
+
+                <div style="background: var(--surface); padding: 32px; border-radius: 20px; border: 1px solid var(--surface-light); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                    <div>
+                        <h2 style="font-size:1.5rem; margin-bottom:8px;">Código QR de tu Restaurante</h2>
+                        <p style="color:var(--text-muted); max-width:400px; line-height:1.5;">Imprime este código y colócalo en las mesas o en la caja. Tus clientes lo escanearán para registrarse y descargar su tarjeta de Apple o Google Wallet.</p>
+                        <button id="btn-download-merchant-qr" class="btn-primary" style="margin-top: 20px;">
+                            <i class="fa-solid fa-download"></i> Descargar Alta Resolución
+                        </button>
+                    </div>
+                    <div style="background:white; padding:16px; border-radius:16px;">
+                        <img id="merchant-qr-preview" src="" alt="QR del Restaurante" style="width: 150px; height: 150px;">
+                    </div>
+                </div>
             </section>
             
             <!-- BUILDER TAB -->
@@ -816,6 +829,9 @@
             <div style="margin-top:10px;">
                 <button id="btn-generate-gw" class="btn btn-primary" style="width:100%; padding:14px; border-radius:12px; font-weight:600; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:8px;">
                     <i class="fa-brands fa-google"></i> Guardar en Google Wallet
+                </button>
+                <button id="btn-generate-aw" class="btn" style="width:100%; padding:14px; border-radius:12px; font-weight:600; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:8px; background-color: #000; color: #fff; margin-top: 10px; border: 1px solid #333;">
+                    <i class="fa-brands fa-apple"></i> Guardar en Apple Wallet
                 </button>
             </div>
         </div>

@@ -1,6 +1,6 @@
 // --- PASSLOYALTY SUPER ADMIN MASTER SCRIPT (4 MAIN TABS) --- //
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
     // --- TAB NAVIGATION FOR SUPER ADMIN ---
     const adminNavTabs = document.querySelectorAll('[data-admin-tab]');
@@ -17,53 +17,85 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- MASTER CUSTOMER DATABASE CONSOLIDATION ---
-    const masterDatabase = [
-        { id: "LOYAL-8842", name: "Roberto Ordóñez", restaurant: "Don Pedro Gourmet", phone: "+52 55 1234 5678", email: "roberto@ejemplo.com", birthday: "18 de Noviembre", walletType: "Apple Wallet", tier: "Oro VIP", balance: 145.00, regDate: "2026-01-15" },
-        { id: "LOYAL-9912", name: "Ana Sofía Gómez", restaurant: "Don Pedro Gourmet", phone: "+52 55 9876 5432", email: "ana.gomez@gmail.com", birthday: "05 de Agosto", walletType: "Apple Wallet", tier: "Oro VIP", balance: 320.50, regDate: "2026-01-18" },
-        { id: "LOYAL-1044", name: "Carlos Mendoza", restaurant: "Don Pedro Gourmet", phone: "+52 55 5555 1212", email: "carlos.m@hotmail.com", birthday: "22 de Febrero", walletType: "Google Wallet", tier: "Bronce VIP", balance: 45.00, regDate: "2026-02-01" },
-        { id: "LOYAL-2390", name: "Mariana Torres", restaurant: "Don Pedro Gourmet", phone: "+52 55 4444 8888", email: "mtorres@empresa.com", birthday: "14 de Septiembre", walletType: "Apple Wallet", tier: "Plata VIP", balance: 190.00, regDate: "2026-02-05" },
-        { id: "TACO-001", name: "David López", restaurant: "Tacos El Pastor", phone: "+52 55 1111 2222", email: "david@tacos.com", birthday: "12 de Diciembre", walletType: "Google Wallet", tier: "Oro VIP", balance: 210.00, regDate: "2026-02-10" },
-        { id: "TACO-002", name: "Lucía Ramírez", restaurant: "Tacos El Pastor", phone: "+52 55 2222 3333", email: "lucia@gmail.com", birthday: "28 de Junio", walletType: "Apple Wallet", tier: "Bronce VIP", balance: 36.00, regDate: "2026-02-14" },
-        { id: "PIZZA-501", name: "Gabriel Silva", restaurant: "Pizzería Bella Italia", phone: "+52 55 8888 7777", email: "gabriel@pizza.com", birthday: "04 de Mayo", walletType: "Apple Wallet", tier: "Plata VIP", balance: 95.00, regDate: "2026-03-01" }
-    ];
+    // --- FETCH MERCHANTS FROM SUPABASE ---
+    const tbody = document.getElementById('master-table-body');
+    const searchInput = document.getElementById('master-search-input');
+    
+    // Change table headers in super-admin.html to match merchants
+    // We'll just render it differently in JS.
+    let merchants = [];
 
-    const tbody = document.getElementById('master-crm-table-body');
-    const searchInput = document.getElementById('admin-search-input');
+    async function fetchMerchants() {
+        if (!window.supabaseClient) return;
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">Cargando restaurantes...</td></tr>';
+        
+        const { data, error } = await window.supabaseClient
+            .from('merchants')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.error(error);
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:red;">Error cargando datos.</td></tr>';
+            return;
+        }
+        
+        merchants = data || [];
+        renderMasterTable();
+        
+        const totalCount = document.querySelector('.font-giant');
+        if (totalCount) totalCount.textContent = `${merchants.length} Comercios`;
+    }
 
     function renderMasterTable() {
         if (!tbody) return;
         const query = searchInput ? searchInput.value.toLowerCase() : '';
-        const filtered = masterDatabase.filter(c => 
-            c.name.toLowerCase().includes(query) ||
-            c.restaurant.toLowerCase().includes(query) ||
-            c.phone.includes(query) ||
-            c.email.toLowerCase().includes(query) ||
-            c.birthday.toLowerCase().includes(query) ||
-            c.id.toLowerCase().includes(query)
+        const filtered = merchants.filter(m => 
+            (m.business_name || '').toLowerCase().includes(query) ||
+            (m.email || '').toLowerCase().includes(query) ||
+            (m.industry || '').toLowerCase().includes(query) ||
+            (m.id || '').toLowerCase().includes(query)
         );
 
         tbody.innerHTML = '';
+        
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay comercios registrados.</td></tr>';
+            return;
+        }
 
-        filtered.forEach(c => {
+        filtered.forEach(m => {
             const tr = document.createElement('tr');
-            const tierClass = c.tier.includes('Oro') ? 'oro' : c.tier.includes('Plata') ? 'plata' : 'bronce';
+            const date = m.created_at ? new Date(m.created_at).toISOString().split('T')[0] : 'N/A';
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/pass.html?m=' + m.id)}`;
 
             tr.innerHTML = `
-                <td><code>${c.id}</code></td>
-                <td><strong>${c.name}</strong></td>
-                <td><span class="tier-pill" style="background:rgba(99, 102, 241, 0.15); color:var(--indigo);">${c.restaurant}</span></td>
-                <td>${c.phone}</td>
-                <td>${c.email}</td>
-                <td><strong style="color:var(--cyan);"><i class="fa-solid fa-cake-candles"></i> ${c.birthday}</strong></td>
-                <td><i class="fa-brands ${c.walletType.includes('Apple') ? 'fa-apple' : 'fa-google'}"></i> ${c.walletType}</td>
-                <td><span class="tier-pill ${tierClass}">${c.tier}</span></td>
-                <td><strong class="text-emerald">$${c.balance.toFixed(2)} MXN</strong></td>
-                <td>${c.regDate}</td>
+                <td><code>${m.id.substring(0,8)}...</code></td>
+                <td><strong>${m.business_name || 'Sin Nombre'}</strong></td>
+                <td><span class="tier-pill" style="background:rgba(99, 102, 241, 0.15); color:var(--indigo);">${m.industry || 'General'}</span></td>
+                <td>${m.email || 'N/A'}</td>
+                <td><strong class="text-emerald">Activo</strong></td>
+                <td>${date}</td>
+                <td>
+                    <button class="btn-primary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="downloadQR('${qrUrl}', '${m.business_name || 'comercio'}')">
+                        <i class="fa-solid fa-qrcode"></i> Descargar QR
+                    </button>
+                </td>
+                <td colspan="3"></td>
             `;
             tbody.appendChild(tr);
         });
     }
+    
+    window.downloadQR = function(url, name) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `QR_Mesa_${name}.png`;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
 
     if (searchInput) {
         searchInput.addEventListener('input', renderMasterTable);
@@ -90,5 +122,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    renderMasterTable();
+    fetchMerchants();
 });

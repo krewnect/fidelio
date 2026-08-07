@@ -137,15 +137,14 @@
                         <table class="crm-table">
                             <thead>
                                 <tr>
-                                    <th>Cliente</th>
+                                    <th>ID</th>
                                     <th>Negocio / Comercio</th>
                                     <th>Giro</th>
-                                    <th>Contacto / Email</th>
-                                    <th>Cumpleaños</th>
-                                    <th>Nivel VIP</th>
-                                    <th>Saldo Acumulado</th>
-                                    <th>Visitas</th>
-                                    <th>Última Visita</th>
+                                    <th>Email / Contacto</th>
+                                    <th>Estado</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Código QR</th>
+                                    <th colspan="3"></th>
                                 </tr>
                             </thead>
                             <tbody id="master-table-body"></tbody>
@@ -254,6 +253,27 @@
 
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="super-admin.js?v=20260806_FIDELIO_TOTAL_REDESIGN_V12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        fetch('/api/config')
+            .then(res => res.json())
+            .then(async (config) => {
+                window.supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+                
+                const { data, error } = await window.supabaseClient.auth.getSession();
+                if (error || !data.session || data.session.user.email !== 'admin@fidelio.com') {
+                    window.location.href = 'index.html'; // Kick non-admins out
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = 'super-admin.js?v=' + Date.now();
+                document.body.appendChild(script);
+            })
+            .catch(err => {
+                console.error('Error loading config:', err);
+                alert("Error crítico conectando a la base de datos.");
+            });
+    </script>
 </body>
 </html>
