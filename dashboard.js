@@ -633,6 +633,38 @@
     window.showCustomerQR = function(customerId, customerName) {
         document.getElementById('qr-modal-name').textContent = customerName;
         document.getElementById('qr-modal-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${customerId}`;
+        
+        const btnGw = document.getElementById('btn-generate-gw');
+        btnGw.onclick = async () => {
+            const originalText = btnGw.innerHTML;
+            btnGw.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generando...';
+            btnGw.disabled = true;
+
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                const res = await fetch('/api/wallet/google', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ customerId })
+                });
+
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Error desconocido al generar Google Wallet');
+                
+                // Open the Google Pay Save URL
+                window.open(data.saveUrl, '_blank');
+
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btnGw.innerHTML = originalText;
+                btnGw.disabled = false;
+            }
+        };
+
         document.getElementById('modal-view-qr').classList.remove('hidden');
     };
 
