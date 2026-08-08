@@ -1123,7 +1123,12 @@ let saveTimeout = null;
             const adminCategory = document.getElementById('header-business-category');
             if (adminCategory) adminCategory.textContent = "Backoffice Central";
             const adminIcon = document.getElementById('header-business-icon');
-            if (adminIcon) adminIcon.innerHTML = '<img src="fidelio_logo.jpg" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+            if (adminIcon) adminIcon.innerHTML = '<img src="fidelio_logo.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+            
+            setTimeout(() => {
+                const leadsTab = document.getElementById('admin-leads-tab');
+                if (leadsTab) leadsTab.click();
+            }, 100);
 
             
             // Re-attach listeners explicitly just in case for new tab
@@ -1183,10 +1188,13 @@ let saveTimeout = null;
         // Actualizar métricas del dashboard principal
         updateDashboardMetrics();
 
-        // Actualizar encabezados
+        // Actualizar encabezados (solo si no es admin)
         if (state && state.restaurantName) {
-            document.getElementById('header-restaurant-name').textContent = state.restaurantName;
-            document.getElementById('header-business-category').textContent = state.category || "Restaurante";
+            const currentEmail = (window.merchantSession && window.merchantSession.user) ? window.merchantSession.user.email : '';
+            if (currentEmail !== 'admin@fidelio.com') {
+                document.getElementById('header-restaurant-name').textContent = state.restaurantName;
+                document.getElementById('header-business-category').textContent = state.category || "Restaurante";
+            }
         }
 
         // Inicializar UI
