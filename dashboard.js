@@ -7,23 +7,9 @@ let saveTimeout = null;
     try {
         // Cargar datos reales
         await loadDataFromSupabase();
-        
-        // Actualizar métricas del dashboard principal
-        updateDashboardMetrics();
-
-        // Actualizar encabezados
-        if (state && state.restaurantName) {
-            document.getElementById('header-restaurant-name').textContent = state.restaurantName;
-            document.getElementById('header-business-category').textContent = state.category || "Restaurante";
-        }
-
-        // Inicializar UI
-        updatePassRender();
-        renderBranches();
-        renderCRMTable();
     } catch (err) {
-        console.error("Dashboard init error:", err);
-        alert("CRASH LOG (por favor muéstrale esto a tu asistente):\n" + err.stack);
+        console.error("Dashboard DB init error:", err);
+        alert("CRASH LOG DB (por favor muéstrale esto a tu asistente):\n" + err.stack);
     }
 
     // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
@@ -1203,5 +1189,24 @@ let saveTimeout = null;
             await window.supabaseClient.auth.signOut();
             window.location.href = '/';
         });
+    }
+
+    try {
+        // Actualizar métricas del dashboard principal
+        updateDashboardMetrics();
+
+        // Actualizar encabezados
+        if (state && state.restaurantName) {
+            document.getElementById('header-restaurant-name').textContent = state.restaurantName;
+            document.getElementById('header-business-category').textContent = state.category || "Restaurante";
+        }
+
+        // Inicializar UI
+        updatePassRender();
+        renderBranches();
+        renderCRMTable();
+    } catch (err) {
+        console.error("Dashboard UI init error:", err);
+        alert("CRASH LOG UI (por favor muéstrale esto a tu asistente):\n" + err.stack);
     }
 })();
