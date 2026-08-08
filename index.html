@@ -870,6 +870,8 @@
                 // Get Session
                 const { data, error } = await window.supabaseClient.auth.getSession();
                 if (error || !data.session) {
+                    alert("Error crítico: No se encontró la sesión al cargar el Dashboard. Esto puede ser por un bloqueo de cookies en tu navegador o caché viejo. Redirigiendo al inicio...");
+                    console.error("Session fetch failed:", error, data);
                     window.location.href = '/landing.html';
                     return;
                 }

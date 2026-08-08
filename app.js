@@ -237,7 +237,14 @@ app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), async (
 app.use(express.urlencoded({ extended: true }));
 
 // Servir archivos estáticos (Frontend)
-app.use(express.static(path.join(__dirname, '/'), { index: false }));
+app.use(express.static(path.join(__dirname, '/'), { 
+    index: false,
+    setHeaders: (res, path) => {
+        if (path.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        }
+    }
+}));
 
 // --- RUTAS DEL API ---
 
