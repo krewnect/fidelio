@@ -1,21 +1,27 @@
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
 
 (async function initFidelio() {
-    
-    // Cargar datos reales
-    await loadDataFromSupabase();
-    
-    // Actualizar métricas del dashboard principal
-    updateDashboardMetrics();
+    try {
+        // Cargar datos reales
+        await loadDataFromSupabase();
+        
+        // Actualizar métricas del dashboard principal
+        updateDashboardMetrics();
 
-    // Actualizar encabezados
-    document.getElementById('header-restaurant-name').textContent = state.restaurantName;
-    document.getElementById('header-business-category').textContent = "Restaurante";
+        // Actualizar encabezados
+        if (state && state.restaurantName) {
+            document.getElementById('header-restaurant-name').textContent = state.restaurantName;
+            document.getElementById('header-business-category').textContent = state.category || "Restaurante";
+        }
 
-    // Inicializar UI
-    updatePassRender();
-    renderBranches();
-    renderCRMTable();
+        // Inicializar UI
+        updatePassRender();
+        renderBranches();
+        renderCRMTable();
+    } catch (err) {
+        console.error("Dashboard init error:", err);
+        alert("CRASH LOG (por favor muéstrale esto a tu asistente):\n" + err.stack);
+    }
 
     // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
     const categoryPresets = {
