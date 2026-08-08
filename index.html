@@ -71,11 +71,15 @@
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
 
-        .sidebar-brand {
-            display: flex; align-items: center; justify-content: center; padding-bottom: 24px;
-            border-bottom: 1px solid var(--border-glass); margin-bottom: 24px;
+        .sidebar-brand { padding: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-brand img { 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 14px; /* iOS App Store shape */
+            object-fit: cover;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .sidebar-brand img { height: 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px var(--glow-violet); }
 
         .sidebar-menu { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; }
         .menu-label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; padding: 0 12px 8px; text-transform: uppercase; }
@@ -275,7 +279,7 @@
         <!-- SIDEBAR -->
         <aside class="app-sidebar">
             <div class="sidebar-brand">
-                <img src="fidelio_logo.jpg" alt="Fidelio Logo" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=8b5cf6&color=fff&size=64'">
+                <img src="fidelio_logo.png" alt="Fidelio Logo" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=8b5cf6&color=fff&size=64'">
             </div>
 
             <nav class="sidebar-menu">
