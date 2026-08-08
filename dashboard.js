@@ -849,11 +849,13 @@
         passRender.classList.remove('tier-border-bronce', 'tier-border-plata', 'tier-border-oro');
         
         let currentTierConfig = state.vipTiers.oro;
+        
+        const clientTier = sampleClient.vip_tier || sampleClient.tier || 'Bronce';
 
-        if (sampleClient.tier.toLowerCase().includes('oro')) {
+        if (clientTier.toLowerCase().includes('oro')) {
             passRender.classList.add('tier-border-oro');
             currentTierConfig = state.vipTiers.oro;
-        } else if (sampleClient.tier.toLowerCase().includes('plata')) {
+        } else if (clientTier.toLowerCase().includes('plata')) {
             passRender.classList.add('tier-border-plata');
             currentTierConfig = state.vipTiers.plata;
         } else {
@@ -872,7 +874,8 @@
         const cashbackContainer = document.getElementById('render-cashback-container');
         if (state.cashbackActive) {
             cashbackContainer.style.display = 'block';
-            document.getElementById('render-balance').textContent = `$${sampleClient.balance.toFixed(2)} MXN`;
+            const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
+            document.getElementById('render-balance').textContent = `$${bal.toFixed(2)} MXN`;
             document.getElementById('render-cashback-rate').textContent = `${currentTierConfig.cashbackPercent}% acumulable (${currentTierConfig.name})`;
         } else {
             cashbackContainer.style.display = 'none';
