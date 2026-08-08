@@ -565,10 +565,12 @@ app.get('/api/config', (req, res) => {
 });
 
 app.get('/', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.sendFile(path.join(__dirname, 'landing.html'));
 });
 
 app.get('/panel', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
