@@ -101,9 +101,7 @@
         
         .brand-logo img {
             height: 36px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 0 20px var(--glow-violet);
+            border-radius: 4px;
         }
 
         .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -470,7 +468,7 @@
     <div class="layout-wrapper">
         <header class="nav-header">
             <a href="#" class="brand-logo">
-                <img src="fidelio_logo.jpg" alt="Fidelio" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=8b5cf6&color=fff&size=64'"> Fidelio
+                <img src="fidelio_logo.png" alt="Fidelio" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=8b5cf6&color=fff&size=64'">
             </a>
             
             <nav class="nav-links">
@@ -760,6 +758,7 @@
                 </div>
                 <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Entrar al Dashboard</button>
             </form>
+            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
             <script>
                 document.getElementById('loginForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -767,20 +766,33 @@
                     const password = document.getElementById('login-password').value;
                     
                     try {
-                        const res = await fetch('/api/auth/login', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password })
+                        const btn = e.target.querySelector('button[type="submit"]');
+                        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cargando...';
+                        btn.disabled = true;
+
+                        // Pedir configuración de Supabase al backend
+                        const configRes = await fetch('/api/config');
+                        const config = await configRes.json();
+                        const supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+                        // Iniciar sesión directamente en el cliente para que guarde las cookies/tokens
+                        const { data, error } = await supabaseClient.auth.signInWithPassword({
+                            email,
+                            password
                         });
-                        const data = await res.json();
                         
-                        if(data.success) {
-                            window.location.href = '/panel'; // Redirige al Dashboard
+                        if(error) {
+                            alert('Error: ' + error.message);
+                            btn.innerHTML = 'Iniciar Sesión';
+                            btn.disabled = false;
                         } else {
-                            alert('Error: Credenciales incorrectas');
+                            window.location.href = '/panel'; // Redirige al Dashboard
                         }
                     } catch (error) {
                         alert('Error de conexión al iniciar sesión.');
+                        const btn = e.target.querySelector('button[type="submit"]');
+                        btn.innerHTML = 'Iniciar Sesión';
+                        btn.disabled = false;
                     }
                 });
             </script>
