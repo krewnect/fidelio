@@ -13,6 +13,11 @@ let saveTimeout = null;
     }
 
     // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
+    const safeAdd = (id, evt, cb) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(evt, cb);
+    };
+
     const categoryPresets = {
         restaurant: {
             label: "Restaurantes & Gastronomía",
@@ -378,31 +383,23 @@ let saveTimeout = null;
 
     // --- BIND CONFIGURABLE VIP TIER INPUTS ---
     const bindVipTierInputs = () => {
-        document.getElementById('tier-bronce-name').addEventListener('input', (e) => {
-            state.vipTiers.bronce.name = e.target.value;
-            updatePassRender();
+        safeAdd('tier-bronce-name', 'input', (e) => {
+            state.vipTiers.bronce.name = e.target.value; updatePassRender();
         });
-        document.getElementById('tier-bronce-cb').addEventListener('input', (e) => {
-            state.vipTiers.bronce.cashbackPercent = parseFloat(e.target.value) || 5;
-            updatePassRender();
+        safeAdd('tier-bronce-cb', 'input', (e) => {
+            state.vipTiers.bronce.cashbackPercent = parseFloat(e.target.value) || 5; updatePassRender();
         });
-
-        document.getElementById('tier-plata-name').addEventListener('input', (e) => {
-            state.vipTiers.plata.name = e.target.value;
-            updatePassRender();
+        safeAdd('tier-plata-name', 'input', (e) => {
+            state.vipTiers.plata.name = e.target.value; updatePassRender();
         });
-        document.getElementById('tier-plata-cb').addEventListener('input', (e) => {
-            state.vipTiers.plata.cashbackPercent = parseFloat(e.target.value) || 10;
-            updatePassRender();
+        safeAdd('tier-plata-cb', 'input', (e) => {
+            state.vipTiers.plata.cashbackPercent = parseFloat(e.target.value) || 10; updatePassRender();
         });
-
-        document.getElementById('tier-oro-name').addEventListener('input', (e) => {
-            state.vipTiers.oro.name = e.target.value;
-            updatePassRender();
+        safeAdd('tier-oro-name', 'input', (e) => {
+            state.vipTiers.oro.name = e.target.value; updatePassRender();
         });
-        document.getElementById('tier-oro-cb').addEventListener('input', (e) => {
-            state.vipTiers.oro.cashbackPercent = parseFloat(e.target.value) || 15;
-            updatePassRender();
+        safeAdd('tier-oro-cb', 'input', (e) => {
+            state.vipTiers.oro.cashbackPercent = parseFloat(e.target.value) || 15; updatePassRender();
         });
     };
 
@@ -1008,60 +1005,42 @@ let saveTimeout = null;
     }
 
     // --- INPUT BINDINGS ---
-    if (document.getElementById('rest-name')) {
-        document.getElementById('rest-name').addEventListener('input', (e) => {
-            state.restaurantName = e.target.value || "Comercio";
-            updatePassRender();
-        });
-        document.getElementById('color-primary').addEventListener('input', (e) => {
-            state.colorPrimary = e.target.value;
-            updatePassRender();
-        });
-        document.getElementById('color-accent').addEventListener('input', (e) => {
-            state.colorAccent = e.target.value;
-            updatePassRender();
-        });
-        document.getElementById('rest-icon').addEventListener('change', (e) => {
-            state.iconClass = e.target.value;
-            updatePassRender();
-        });
-
-        document.getElementById('mech-cashback-check').addEventListener('change', (e) => {
-            state.cashbackActive = e.target.checked;
-            updatePassRender();
-        });
-        document.getElementById('cashback-percent').addEventListener('input', (e) => {
-            state.cashbackPercent = parseFloat(e.target.value) || 0;
-            updatePassRender();
-        });
-
-        document.getElementById('mech-stamps-check').addEventListener('change', (e) => {
-            state.stampsActive = e.target.checked;
-            updatePassRender();
-        });
-        document.getElementById('stamps-total').addEventListener('input', (e) => {
-            state.stampsTotal = parseInt(e.target.value) || 5;
-            updatePassRender();
-        });
-        document.getElementById('stamps-reward').addEventListener('input', (e) => {
-            state.stampsReward = e.target.value || "Premio";
-            updatePassRender();
-        });
-
-        document.getElementById('mech-dynamic-check').addEventListener('change', (e) => {
-            state.dynamicActive = e.target.checked;
-            updatePassRender();
-        });
-        document.getElementById('dynamic-desc').addEventListener('input', (e) => {
-            state.dynamicDesc = e.target.value;
-            updatePassRender();
-        });
-
-        document.getElementById('mech-vip-check').addEventListener('change', (e) => {
-            state.vipActive = e.target.checked;
-            updatePassRender();
-        });
-    }
+    safeAdd('rest-name', 'input', (e) => {
+        state.restaurantName = e.target.value || "Comercio"; updatePassRender();
+    });
+    safeAdd('color-primary', 'input', (e) => {
+        state.colorPrimary = e.target.value; updatePassRender();
+    });
+    safeAdd('color-accent', 'input', (e) => {
+        state.colorAccent = e.target.value; updatePassRender();
+    });
+    safeAdd('rest-icon', 'change', (e) => {
+        state.iconClass = e.target.value; updatePassRender();
+    });
+    safeAdd('mech-cashback-check', 'change', (e) => {
+        state.cashbackActive = e.target.checked; updatePassRender();
+    });
+    safeAdd('cashback-percent', 'input', (e) => {
+        state.cashbackPercent = parseFloat(e.target.value) || 0; updatePassRender();
+    });
+    safeAdd('mech-stamps-check', 'change', (e) => {
+        state.stampsActive = e.target.checked; updatePassRender();
+    });
+    safeAdd('stamps-total', 'input', (e) => {
+        state.stampsTotal = parseInt(e.target.value) || 5; updatePassRender();
+    });
+    safeAdd('stamps-reward', 'input', (e) => {
+        state.stampsReward = e.target.value || "Premio"; updatePassRender();
+    });
+    safeAdd('mech-dynamic-check', 'change', (e) => {
+        state.dynamicActive = e.target.checked; updatePassRender();
+    });
+    safeAdd('dynamic-desc', 'input', (e) => {
+        state.dynamicDesc = e.target.value; updatePassRender();
+    });
+    safeAdd('mech-vip-check', 'change', (e) => {
+        state.vipActive = e.target.checked; updatePassRender();
+    });
 
     if (crmSearchInput) {
         crmSearchInput.addEventListener('input', renderCRMTable);
