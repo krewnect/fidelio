@@ -250,13 +250,31 @@
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
         .badge.active { background: rgba(16,185,129,0.1); color: #10b981; }
 
-        /* BUTTONS */
+        /* BUTTONS & INPUTS */
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); border: none; }
         .btn-solid { background: var(--accent-violet); color: #fff; }
         .btn-solid:hover { background: #7c3aed; transform: translateY(-1px); }
         .btn-outline { background: transparent; border: 1px solid var(--border-glass); color: #fff; }
         .btn-outline:hover { background: rgba(255,255,255,0.05); }
         .btn-block { width: 100%; }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--accent-violet) 0%, var(--accent-neon) 100%); 
+            color: #fff; border: none; padding: 12px 24px; border-radius: var(--radius-sm); 
+            font-size: 14px; font-weight: 600; cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5); filter: brightness(1.1); color: #fff;}
+        .btn-primary:active { transform: translateY(0); }
+
+        .fidelio-input {
+            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass);
+            color: #fff; padding: 12px 16px; border-radius: var(--radius-sm);
+            font-size: 14px; transition: var(--transition); font-family: var(--font-main);
+        }
+        .fidelio-input:focus { outline: none; border-color: var(--accent-violet); box-shadow: 0 0 0 3px rgba(139,92,246,0.2); background: rgba(0,0,0,0.4); }
+        .fidelio-input::placeholder { color: rgba(255,255,255,0.3); }
         
         /* PRESETS */
         .preset-selector-bar { display: flex; align-items: center; gap: 12px; }
@@ -634,39 +652,90 @@
                     </div>
                 </div>
                 
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; max-width:900px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; max-width:1000px;">
                     <div class="content-panel">
-                        <h3 style="margin-bottom:16px;">Segmentos de Audiencia (RFM)</h3>
-                        <div class="segment-card" onclick="selectSegment('all')">
+                        <h3 style="margin-bottom:16px;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-violet);"></i> Campañas de Inteligencia Artificial</h3>
+                        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">Selecciona una campaña predictiva. Fidelio autogenerará el texto y seleccionará la audiencia óptima.</p>
+                        
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 24px;">
+                            <div class="campaign-card" onclick="selectCampaign('recuperacion')">
+                                <div><i class="fa-solid fa-heart-crack text-rose"></i></div>
+                                <strong>Recuperar Perdidos</strong>
+                                <small>Clientes en riesgo</small>
+                            </div>
+                            <div class="campaign-card" onclick="selectCampaign('cumpleanos')">
+                                <div><i class="fa-solid fa-cake-candles text-amber"></i></div>
+                                <strong>Cumpleañeros</strong>
+                                <small>Mes actual</small>
+                            </div>
+                            <div class="campaign-card" onclick="selectCampaign('dias_lentos')">
+                                <div><i class="fa-solid fa-clock text-blue"></i></div>
+                                <strong>Días Muertos</strong>
+                                <small>Impulso de tráfico</small>
+                            </div>
+                            <div class="campaign-card" onclick="selectCampaign('vip_exclusivo')">
+                                <div><i class="fa-solid fa-crown text-emerald"></i></div>
+                                <strong>VIP Exclusivo</strong>
+                                <small>Solo nivel Oro</small>
+                            </div>
+                            <div class="campaign-card" onclick="selectCampaign('resenas')">
+                                <div><i class="fa-solid fa-star text-amber"></i></div>
+                                <strong>Caza Reseñas</strong>
+                                <small>Frecuentes recientes</small>
+                            </div>
+                            <div class="campaign-card active" onclick="selectCampaign('manual')">
+                                <div><i class="fa-solid fa-pen-nib text-purple"></i></div>
+                                <strong>Crear Manual</strong>
+                                <small>Texto libre</small>
+                            </div>
+                        </div>
+
+                        <h3 style="margin-bottom:12px; border-top: 1px solid var(--border-glass); padding-top: 20px;">Filtro Manual (Opcional)</h3>
+                        <div class="segment-card" onclick="selectSegment('all')" id="seg-card-all">
                             <div><strong>Todos los Clientes</strong> <small style="display:block; color:var(--text-muted);">Base completa</small></div>
                             <span class="tier-pill oro" id="seg-all-count">0</span>
                         </div>
-                        <div class="segment-card" onclick="selectSegment('active')">
+                        <div class="segment-card" onclick="selectSegment('active')" id="seg-card-active">
                             <div><strong>Frecuentes</strong> <small style="display:block; color:var(--text-muted);">Visitaron en los últimos 30 días</small></div>
                             <span class="tier-pill activo" id="seg-active-count">0</span>
                         </div>
-                        <div class="segment-card" onclick="selectSegment('risk')">
+                        <div class="segment-card" onclick="selectSegment('risk')" id="seg-card-risk">
                             <div><strong>En Riesgo (Perdidos)</strong> <small style="display:block; color:var(--text-muted);">Sin visitas por más de 30 días</small></div>
                             <span class="tier-pill riesgo" id="seg-risk-count">0</span>
                         </div>
                     </div>
                     
-                    <div class="content-panel">
+                    <div class="content-panel" style="display:flex; flex-direction:column;">
                         <h3 style="margin-bottom:16px;"><i class="fa-solid fa-paper-plane"></i> Lanzar Campaña Push</h3>
-                        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">Audiencia seleccionada: <strong id="selected-segment-name" style="color:var(--text-main);">Todos los Clientes</strong></p>
-                        
-                        <div class="form-group">
-                            <label>Mensaje Push</label>
-                            <textarea id="push-message" class="fidelio-input" rows="3" placeholder="Ej. ¡Te extrañamos! Visítanos este fin de semana y obtén doble cashback."></textarea>
+                        <div style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:4px;">Audiencia objetivo:</p>
+                            <strong id="selected-segment-name" style="color:#fff; font-size: 1.1rem;">Todos los Clientes</strong>
                         </div>
                         
-                        <button id="btn-send-push" class="btn-primary" style="width:100%;"><i class="fa-solid fa-tower-broadcast"></i> Disparar Campaña a Apple Wallet</button>
+                        <div class="form-group" style="flex:1;">
+                            <label>Mensaje Push a Pantalla de Bloqueo</label>
+                            <textarea id="push-message" class="fidelio-input" style="height: 150px; resize: none; font-size: 1.1rem; padding: 16px;" placeholder="Ej. ¡Te extrañamos! Visítanos este fin de semana y obtén doble cashback. Escribe tu mensaje aquí..."></textarea>
+                        </div>
+                        
+                        <button id="btn-send-push" class="btn-primary" style="width:100%; padding: 16px; font-size: 1.1rem; margin-top: 20px;"><i class="fa-solid fa-tower-broadcast"></i> Disparar Push a Apple Wallet</button>
                     </div>
                 </div>
             </section>
             <style>
+                .campaign-card { background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+                .campaign-card:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
+                .campaign-card.active { background: rgba(139,92,246,0.15); border-color: var(--accent-violet); box-shadow: 0 4px 15px rgba(139,92,246,0.2); }
+                .campaign-card i { font-size: 24px; margin-bottom: 12px; display: block; }
+                .campaign-card strong { display: block; font-size: 13px; color: #fff; margin-bottom: 4px; }
+                .campaign-card small { display: block; font-size: 11px; color: var(--text-muted); }
+                .text-rose { color: #f43f5e; }
+                .text-amber { color: #f59e0b; }
+                .text-blue { color: #3b82f6; }
+                .text-emerald { color: #10b981; }
+                .text-purple { color: #a855f7; }
+
                 .segment-card { display:flex; justify-content:space-between; align-items:center; padding:16px; background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); border-radius:12px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; }
-                .segment-card:hover { background:rgba(255,255,255,0.08); border-color:var(--accent-violet); }
+                .segment-card:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.2); }
                 .segment-card.selected { background:rgba(139,92,246,0.15); border-color:var(--accent-violet); box-shadow:0 0 15px rgba(139,92,246,0.2); }
             </style>
 

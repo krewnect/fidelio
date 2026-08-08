@@ -1117,6 +1117,15 @@ let saveTimeout = null;
             document.getElementById('admin-leads-menu').style.display = 'block';
             document.getElementById('admin-leads-tab').style.display = 'block';
             
+            // Override UI for Admin
+            const adminName = document.getElementById('header-restaurant-name');
+            if (adminName) adminName.textContent = "Fidelio Admin";
+            const adminCategory = document.getElementById('header-business-category');
+            if (adminCategory) adminCategory.textContent = "Backoffice Central";
+            const adminIcon = document.getElementById('header-business-icon');
+            if (adminIcon) adminIcon.innerHTML = '<img src="fidelio_logo.jpg" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+
+            
             // Re-attach listeners explicitly just in case for new tab
             document.getElementById('admin-leads-tab').addEventListener('click', (e) => {
                 document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
@@ -1189,3 +1198,47 @@ let saveTimeout = null;
         alert("CRASH LOG UI (por favor muéstrale esto a tu asistente):\n" + err.stack);
     }
 })();
+
+// --- GLOBAL AI CAMPAIGN FUNCTIONS ---
+window.selectSegment = function(segment) {
+    document.querySelectorAll('.segment-card').forEach(c => c.classList.remove('selected'));
+    const card = document.getElementById('seg-card-' + segment);
+    if (card) card.classList.add('selected');
+    
+    const names = {
+        'all': 'Todos los Clientes',
+        'active': 'Frecuentes (Últimos 30 días)',
+        'risk': 'En Riesgo (Sin visitas recientes)'
+    };
+    const targetEl = document.getElementById('selected-segment-name');
+    if (targetEl) targetEl.textContent = names[segment] || 'Todos los Clientes';
+};
+
+window.selectCampaign = function(type) {
+    document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    const txt = document.getElementById('push-message');
+    if (!txt) return;
+
+    if (type === 'recuperacion') {
+        window.selectSegment('risk');
+        txt.value = "¡Te extrañamos! Visítanos este fin de semana y obtén doble cashback en tu cuenta.";
+    } else if (type === 'cumpleanos') {
+        window.selectSegment('all');
+        txt.value = "¡Es tu mes! Ven a celebrar con nosotros y recibe una cortesía sorpresa.";
+    } else if (type === 'dias_lentos') {
+        window.selectSegment('active');
+        txt.value = "Oferta Flash: Ven hoy entre 4PM y 7PM y tu nivel sube a VIP por el día.";
+    } else if (type === 'vip_exclusivo') {
+        window.selectSegment('active');
+        txt.value = "Alerta VIP Oro: Tenemos un beneficio exclusivo esperándote hoy. Muestra tu Apple Wallet.";
+    } else if (type === 'resenas') {
+        window.selectSegment('active');
+        txt.value = "¡Gracias por tu última visita! Califícanos en Google Maps y gana 5 sellos extra.";
+    } else if (type === 'manual') {
+        window.selectSegment('all');
+        txt.value = "";
+        txt.focus();
+    }
+};
