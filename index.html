@@ -880,7 +880,7 @@
                 
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
-                script.src = 'dashboard.js';
+                script.src = 'dashboard.js?v=' + new Date().getTime();
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));
