@@ -8,8 +8,14 @@
     // Actualizar métricas del dashboard principal
     updateDashboardMetrics();
 
-    // Aplicar la data a la UI
-    applyStateToUI();
+    // Actualizar encabezados
+    document.getElementById('header-restaurant-name').textContent = state.restaurantName;
+    document.getElementById('header-business-category').textContent = "Restaurante";
+
+    // Inicializar UI
+    updatePassRender();
+    renderBranches();
+    renderCRMTable();
 
     // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
     const categoryPresets = {
