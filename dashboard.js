@@ -1,5 +1,8 @@
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
 
+let state = {};
+let saveTimeout = null;
+
 (async function initFidelio() {
     try {
         // Cargar datos reales
@@ -172,8 +175,6 @@
     };
 
     // --- DATABASE SYNC ---
-    let state = {};
-    let saveTimeout = null;
 
     async function loadDataFromSupabase() {
         if (!window.supabaseClient || !window.merchantSession) return false;
