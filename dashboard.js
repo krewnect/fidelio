@@ -1227,7 +1227,6 @@ let saveTimeout = null;
         if (state && state.restaurantName && currentEmail !== 'hola@fideliorewards.com') {
                 document.getElementById('header-restaurant-name').textContent = state.restaurantName;
                 document.getElementById('header-business-category').textContent = state.category || "Restaurante";
-            }
         }
 
         // Inicializar UI
