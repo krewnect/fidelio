@@ -21,7 +21,7 @@ let saveTimeout = null;
     const categoryPresets = {
         restaurant: {
             label: "Restaurantes & Gastronomía",
-            name: "Don Pedro Gourmet",
+            name: "Mi Negocio",
             color: "#090d16",
             accent: "#5b0eb8",
             icon: "fa-burger",
