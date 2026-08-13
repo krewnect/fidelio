@@ -452,8 +452,8 @@
                 </nav>
 
                 <div style="display:flex; gap:16px;">
-                    <button class="btn-secondary" style="font-size:14px; padding:10px 20px;" onclick="document.getElementById('registerModal').classList.add('active')">Únete a Fidelio</button>
-                    <button class="btn-primary" style="font-size:14px; padding:10px 20px;" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
+                    <button class="btn-secondary" style="font-size:14px; padding:10px 20px;" data-modal-open="registerModal">Únete a Fidelio</button>
+                    <button class="btn-primary" style="font-size:14px; padding:10px 20px;" data-modal-open="loginModal">Iniciar Sesión</button>
                 </div>
             </div>
         </header>
@@ -464,7 +464,7 @@
                 <h1>Haz que tus clientes <span>vuelvan.</span></h1>
                 <p class="hero-desc">Fidelio es una plataforma de fidelización digital para negocios que quieren crear hábito, volver medible la lealtad y hacer que sus clientes regresen.</p>
                 <div style="display:flex; gap: 16px;">
-                    <a href="#" class="btn-primary" onclick="document.getElementById('demoModal').classList.add('active'); return false;">
+                    <a href="#" class="btn-primary" data-modal-open="demoModal">
                         Solicita una demo &nbsp;&rarr;
                     </a>
                 </div>
@@ -574,7 +574,7 @@
                     <li><i class="fa-solid fa-check"></i> Soporte prioritario por WhatsApp</li>
                 </ul>
 
-                <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('registerModal').classList.add('active')">
+                <button class="btn-primary" style="width: 100%; justify-content: center;" data-modal-open="registerModal">
                     Comenzar Ahora &nbsp;&rarr;
                 </button>
             </div>
@@ -586,7 +586,7 @@
         <section class="cta-bottom">
             <h2>Qué bueno que <span>volviste.</span></h2>
             <p>Conoce Fidelio y agenda una videollamada.</p>
-            <a href="#" class="btn-primary" onclick="document.getElementById('demoModal').classList.add('active'); return false;">
+            <a href="#" class="btn-primary" data-modal-open="demoModal">
                 Solicita una demo &nbsp;&rarr;
             </a>
 
@@ -613,7 +613,7 @@
         <div class="modal-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
                 <h3 style="font-size:24px; font-weight:800; color:var(--text-main);">Crear Cuenta</h3>
-                <button onclick="document.getElementById('registerModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
+                <button data-modal-close="registerModal" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
             </div>
             
             <form id="registerForm">
@@ -694,7 +694,7 @@
         <div class="modal-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
                 <h3 style="font-size:24px; font-weight:800; color:var(--text-main);">Solicitar Demo</h3>
-                <button onclick="document.getElementById('demoModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
+                <button data-modal-close="demoModal" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
             </div>
             
             <form id="contactForm">
@@ -750,7 +750,7 @@
         <div class="modal-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
                 <h3 style="font-size:24px; font-weight:800; color:var(--text-main);">Iniciar Sesión</h3>
-                <button onclick="document.getElementById('loginModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
+                <button data-modal-close="loginModal" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
             </div>
             
             <form id="loginForm">
@@ -854,5 +854,27 @@
         // Ejecutar al cargar la página
         document.addEventListener('DOMContentLoaded', loadClientLogos);
     </script>
+
+    <script>
+        // Manejo de Modales (Evita bloqueos de CSP por onclick en línea)
+        document.querySelectorAll('[data-modal-open]').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                const modalId = el.getAttribute('data-modal-open');
+                const modal = document.getElementById(modalId);
+                if (modal) modal.classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('[data-modal-close]').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                const modalId = el.getAttribute('data-modal-close');
+                const modal = document.getElementById(modalId);
+                if (modal) modal.classList.remove('active');
+            });
+        });
+    </script>
 </body>
+
 </html>
