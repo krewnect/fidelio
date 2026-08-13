@@ -830,7 +830,7 @@ let saveTimeout = null;
         const cPri = document.getElementById('color-primary')?.value || state.colorPrimary || "#1e1b4b";
         const cAcc = document.getElementById('color-accent')?.value || state.colorAccent || "#8b5cf6";
         const pIcon = document.getElementById('rest-icon')?.value || state.iconClass || "fa-crown";
-        const pReward = document.getElementById('stamps-reward')?.value || state.stampsReward || "Bebida de Cortesía";
+        const pReward = document.getElementById('stamps-reward')?.value || state.stampsReward || "Bebida de Cortesía Gratis";
         const pPolicies = document.getElementById('pass-policies')?.value || "";
 
         const rName = document.getElementById('render-name');
@@ -850,16 +850,15 @@ let saveTimeout = null;
         if (rIcon) rIcon.className = 'fa-solid ' + pIcon;
         if (rFront) rFront.style.background = `linear-gradient(135deg, ${cPri}, ${cAcc})`;
         
-        // Safely update legacy UI elements if they exist
         const bannerContainer = document.getElementById('render-banner-container');
         const bannerImg = document.getElementById('render-banner-img');
         if (bannerContainer && bannerImg) {
             if (state.customBannerUrl) {
-                bannerContainer.classList.remove('hidden');
+                bannerContainer.style.display = 'block';
                 bannerImg.src = state.customBannerUrl;
             } else {
-                bannerContainer.classList.add('hidden');
-                bannerImg.src = '';
+                bannerContainer.style.display = 'block';
+                bannerImg.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=800&h=300'; // Default placeholder
             }
         }
 
@@ -868,76 +867,22 @@ let saveTimeout = null;
         let currentTierConfig = state.vipTiers.oro;
 
         if (clientTier.toLowerCase().includes('oro')) {
-            passRender.classList.add('tier-border-oro');
             currentTierConfig = state.vipTiers.oro;
         } else if (clientTier.toLowerCase().includes('plata')) {
-            passRender.classList.add('tier-border-plata');
             currentTierConfig = state.vipTiers.plata;
         } else {
-            passRender.classList.add('tier-border-bronce');
             currentTierConfig = state.vipTiers.bronce;
         }
 
         const vipCaption = document.getElementById('render-vip-caption');
         if (vipCaption) {
-            if (state.vipActive) {
-                vipCaption.style.display = 'block';
-                vipCaption.textContent = currentTierConfig.name.toUpperCase();
-            } else {
-                vipCaption.style.display = 'none';
-            }
+            vipCaption.textContent = currentTierConfig.name.toUpperCase();
         }
 
-        const cashbackContainer = document.getElementById('render-cashback-container');
-        if (cashbackContainer) {
-            if (state.cashbackActive) {
-                cashbackContainer.style.display = 'block';
-                const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
-                const rBal = document.getElementById('render-balance');
-                const rRate = document.getElementById('render-cashback-rate');
-                if (rBal) rBal.textContent = `$${bal.toFixed(2)} MXN`;
-                if (rRate) rRate.textContent = `${currentTierConfig.cashbackPercent}% acumulable (${currentTierConfig.name})`;
-            } else {
-                cashbackContainer.style.display = 'none';
-            }
-        }
-
-        const stampsContainer = document.getElementById('render-stamps-container');
-        if (stampsContainer) {
-            if (state.stampsActive) {
-                stampsContainer.style.display = 'block';
-                const stampsGrid = document.getElementById('render-stamps-grid');
-                if (stampsGrid) {
-                    stampsGrid.innerHTML = '';
-                    for (let i = 1; i <= state.stampsTotal; i++) {
-                        const node = document.createElement('div');
-                        if (i <= sampleClient.stamps) {
-                            node.className = 'stamp-coin filled';
-                            node.style.backgroundColor = state.colorAccent;
-                            node.innerHTML = '<i class="fa-solid fa-check"></i>';
-                        } else {
-                            node.className = 'stamp-coin empty';
-                            node.textContent = i;
-                        }
-                        stampsGrid.appendChild(node);
-                    }
-                }
-                const rewardTxt = document.getElementById('render-reward-text');
-                if (rewardTxt) rewardTxt.textContent = `Premio: ${state.stampsReward}`;
-            } else {
-                stampsContainer.style.display = 'none';
-            }
-        }
-
-        const promoStrip = document.getElementById('render-promo-strip');
-        if (promoStrip) {
-            if (state.dynamicActive && state.dynamicDesc.trim() !== '') {
-                promoStrip.style.display = 'flex';
-                const rPromoText = document.getElementById('render-promo-text');
-                if (rPromoText) rPromoText.textContent = state.dynamicDesc;
-            } else {
-                promoStrip.style.display = 'none';
-            }
+        const rBal = document.getElementById('render-balance');
+        if (rBal) {
+            const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
+            rBal.textContent = `$${bal.toFixed(2)}`;
         }
     }
 
