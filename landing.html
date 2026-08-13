@@ -291,7 +291,6 @@
             border-top: 1px solid var(--border-light);
             overflow: hidden;
             text-align: center;
-            display: none; /* Oculto a petición del cliente */
         }
         
         .marquee-section p {
@@ -340,21 +339,33 @@
         @keyframes marquee {
             0% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
-        }
-
         .marquee-item {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            margin: 0 40px;
-            font-size: 20px;
+            justify-content: center;
+            gap: 12px;
+            font-size: 18px;
             font-weight: 700;
-            color: #9CA3AF; /* Gris sutil */
+            color: var(--text-muted);
+            white-space: nowrap;
+            padding: 0 40px;
             opacity: 0.6;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
         }
         .marquee-item:hover { opacity: 1; color: var(--text-main); }
         .marquee-item i { font-size: 24px; }
+        
+        /* Reglas mágicas para homogeneizar todos los logos de los clientes */
+        .marquee-item img {
+            max-height: 35px;
+            width: auto;
+            /* Lo convierte a gris, le quita contraste y lo mezcla con el fondo crema */
+            filter: grayscale(100%) opacity(0.6) brightness(0.5);
+            transition: filter 0.3s;
+        }
+        .marquee-item:hover img {
+            filter: grayscale(0%) opacity(1) brightness(1); /* Al pasar el mouse revela su color */
+        }
 
         /* FOOTER */
         footer {
@@ -467,26 +478,14 @@
         <div class="container">
             <p>Negocios que confían en Fidelio</p>
         </div>
-        <div class="marquee-container">
+        <div class="marquee-container" id="clients-marquee-container">
             <!-- Pista 1 -->
-            <div class="marquee-content">
-                <div class="marquee-item"><i class="fa-solid fa-mug-hot"></i> Don Pedro Gourmet</div>
-                <div class="marquee-item"><i class="fa-solid fa-dumbbell"></i> FitStudio Mx</div>
-                <div class="marquee-item"><i class="fa-solid fa-scissors"></i> Bella Salon</div>
-                <div class="marquee-item"><i class="fa-solid fa-burger"></i> Smash Bros</div>
-                <div class="marquee-item"><i class="fa-solid fa-ice-cream"></i> Heladería Polar</div>
-                <div class="marquee-item"><i class="fa-solid fa-martini-glass"></i> Nébula Bar</div>
-                <div class="marquee-item"><i class="fa-solid fa-bag-shopping"></i> Boutique 1990</div>
+            <div class="marquee-content" id="marquee-track-1">
+                <!-- Se inyectará por JS -->
             </div>
             <!-- Pista 2 (clon exacto para loop infinito) -->
-            <div class="marquee-content duplicate">
-                <div class="marquee-item"><i class="fa-solid fa-mug-hot"></i> Don Pedro Gourmet</div>
-                <div class="marquee-item"><i class="fa-solid fa-dumbbell"></i> FitStudio Mx</div>
-                <div class="marquee-item"><i class="fa-solid fa-scissors"></i> Bella Salon</div>
-                <div class="marquee-item"><i class="fa-solid fa-burger"></i> Smash Bros</div>
-                <div class="marquee-item"><i class="fa-solid fa-ice-cream"></i> Heladería Polar</div>
-                <div class="marquee-item"><i class="fa-solid fa-martini-glass"></i> Nébula Bar</div>
-                <div class="marquee-item"><i class="fa-solid fa-bag-shopping"></i> Boutique 1990</div>
+            <div class="marquee-content duplicate" id="marquee-track-2">
+                <!-- Se inyectará por JS -->
             </div>
         </div>
     </div>
@@ -815,5 +814,54 @@
         </div>
     </div>
 
+    <script>
+        // Cargar Logos Dinámicos de Clientes (Marquee)
+        async function loadClientLogos() {
+            const track1 = document.getElementById('marquee-track-1');
+            const track2 = document.getElementById('marquee-track-2');
+            if (!track1 || !track2) return;
+            
+            try {
+                const configRes = await fetch('/api/config');
+                const configData = await configRes.json();
+                
+                const response = await fetch(`${configData.supabaseUrl}/rest/v1/merchants?select=business_name,logo_url&logo_url=not.is.null`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': configData.supabaseAnonKey,
+                        'Authorization': `Bearer ${configData.supabaseAnonKey}`
+                    }
+                });
+                
+                let data = await response.json();
+                let html = '';
+
+                // Si no hay logos reales todavía, usamos unos dummies para que no se vea vacío
+                if (!data || data.length === 0) {
+                    html = `
+                        <div class="marquee-item"><i class="fa-solid fa-mug-hot"></i> Don Pedro Gourmet</div>
+                        <div class="marquee-item"><i class="fa-solid fa-dumbbell"></i> FitStudio Mx</div>
+                        <div class="marquee-item"><i class="fa-solid fa-scissors"></i> Bella Salon</div>
+                        <div class="marquee-item"><i class="fa-solid fa-burger"></i> Smash Bros</div>
+                        <div class="marquee-item"><i class="fa-solid fa-ice-cream"></i> Heladería Polar</div>
+                        <div class="marquee-item"><i class="fa-solid fa-martini-glass"></i> Nébula Bar</div>
+                        <div class="marquee-item"><i class="fa-solid fa-bag-shopping"></i> Boutique 1990</div>
+                    `;
+                } else {
+                    data.forEach(merchant => {
+                        html += `<div class="marquee-item"><img src="${merchant.logo_url}" alt="${merchant.business_name} Logo"></div>`;
+                    });
+                }
+                
+                track1.innerHTML = html;
+                track2.innerHTML = html;
+            } catch (error) {
+                console.error('Error fetching client logos:', error);
+            }
+        }
+        
+        // Ejecutar al cargar la página
+        document.addEventListener('DOMContentLoaded', loadClientLogos);
+    </script>
 </body>
 </html>
