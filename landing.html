@@ -697,7 +697,19 @@
             
             <form id="contactForm">
                 <div class="input-group">
-                    <label>Nombre Completo</label>
+                    <label>Nombre del Negocio</label>
+                    <input type="text" id="demo-business" required placeholder="Ej. Mi Restaurante">
+                </div>
+                <div class="input-group">
+                    <label>Giro del Negocio</label>
+                    <input type="text" id="demo-category" required placeholder="Ej. Cafetería, Gimnasio, etc.">
+                </div>
+                <div class="input-group">
+                    <label>Número de Sucursales</label>
+                    <input type="number" id="demo-branches" required placeholder="Ej. 1" min="1">
+                </div>
+                <div class="input-group">
+                    <label>Nombre del Interesado</label>
                     <input type="text" id="demo-name" required placeholder="Tu nombre">
                 </div>
                 <div class="input-group">
@@ -709,48 +721,23 @@
                     <input type="tel" id="demo-phone" required placeholder="Tu número">
                 </div>
                 <button type="button" id="btn-submit-demo" class="btn-primary" style="width:100%; justify-content:center; margin-top:16px;">Enviar Solicitud</button>
-                <div style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted);">
-                    O escríbenos a <a href="mailto:hola@fideliorewards.com" style="color:var(--fidelio-violet); text-decoration:none;">hola@fideliorewards.com</a>
-                </div>
             </form>
             <script>
-                document.getElementById('btn-submit-demo').addEventListener('click', async () => {
+                document.getElementById('btn-submit-demo').addEventListener('click', () => {
+                    const business = document.getElementById('demo-business').value;
+                    const category = document.getElementById('demo-category').value;
+                    const branches = document.getElementById('demo-branches').value;
                     const name = document.getElementById('demo-name').value;
                     const email = document.getElementById('demo-email').value;
                     const phone = document.getElementById('demo-phone').value;
-                    const btn = document.getElementById('btn-submit-demo');
                     
-                    if(!name || !email || !phone) { alert('Llena todos los campos'); return; }
+                    if(!business || !name || !email || !phone) { alert('Llena los campos obligatorios'); return; }
                     
-                    btn.textContent = 'Enviando...';
+                    const subject = encodeURIComponent(`Solicitud de Demo - ${business}`);
+                    const body = encodeURIComponent(`Hola equipo Fidelio, me interesa una demo.\n\nDatos del prospecto:\n- Negocio: ${business}\n- Giro: ${category}\n- Sucursales: ${branches}\n- Nombre: ${name}\n- Correo: ${email}\n- Teléfono: ${phone}\n\nQuedo a la espera de su contacto.`);
                     
-                    try {
-                        const configRes = await fetch('/api/config');
-                        const configData = await configRes.json();
-                        
-                        const response = await fetch(`${configData.supabaseUrl}/rest/v1/demo_requests`, {
-                            method: 'POST',
-                            headers: {
-                                'apikey': configData.supabaseAnonKey,
-                                'Authorization': `Bearer ${configData.supabaseAnonKey}`,
-                                'Content-Type': 'application/json',
-                                'Prefer': 'return=minimal'
-                            },
-                            body: JSON.stringify({ name, email, phone })
-                        });
-                        
-                        if(response.ok) {
-                            btn.textContent = '¡Enviado!';
-                            btn.style.background = '#10b981';
-                            setTimeout(() => { document.getElementById('demoModal').classList.remove('active'); btn.style.background=''; btn.textContent='Enviar Solicitud'; }, 2000);
-                        } else {
-                            alert('Error al enviar solicitud.');
-                            btn.textContent = 'Enviar Solicitud';
-                        }
-                    } catch(err) {
-                        alert('Error de conexión');
-                        btn.textContent = 'Enviar Solicitud';
-                    }
+                    window.location.href = `mailto:hola@fideliorewards.com?subject=${subject}&body=${body}`;
+                    document.getElementById('demoModal').classList.remove('active');
                 });
             </script>
         </div>
