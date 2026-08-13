@@ -812,6 +812,7 @@ let saveTimeout = null;
     const passRender = document.getElementById('pass-render');
 
     function updatePassRender() {
+        const passRender = document.getElementById('pass-render');
         if (!passRender) return;
         scheduleAutoSave();
         
@@ -846,32 +847,25 @@ let saveTimeout = null;
         if (rReward) rReward.textContent = pReward;
         if (rPolicies) rPolicies.textContent = pPolicies;
         
-        if (rIcon) {
-            // Keep it simple
-            rIcon.className = 'fa-solid ' + pIcon;
-        }
+        if (rIcon) rIcon.className = 'fa-solid ' + pIcon;
+        if (rFront) rFront.style.background = `linear-gradient(135deg, ${cPri}, ${cAcc})`;
         
-        if (rFront) {
-            rFront.style.background = `linear-gradient(135deg, ${cPri}, ${cAcc})`;
-        }
-
+        // Safely update legacy UI elements if they exist
         const bannerContainer = document.getElementById('render-banner-container');
         const bannerImg = document.getElementById('render-banner-img');
-        if (state.customBannerUrl) {
-            bannerContainer.classList.remove('hidden');
-            bannerImg.src = state.customBannerUrl;
-        } else {
-            bannerContainer.classList.add('hidden');
-            bannerImg.src = '';
+        if (bannerContainer && bannerImg) {
+            if (state.customBannerUrl) {
+                bannerContainer.classList.remove('hidden');
+                bannerImg.src = state.customBannerUrl;
+            } else {
+                bannerContainer.classList.add('hidden');
+                bannerImg.src = '';
+            }
         }
 
         const sampleClient = state.customers[0] || { tier: "Oro VIP", balance: 0, stamps: 0 };
-
-        passRender.classList.remove('tier-border-bronce', 'tier-border-plata', 'tier-border-oro');
-        
-        let currentTierConfig = state.vipTiers.oro;
-        
         const clientTier = sampleClient.vip_tier || sampleClient.tier || 'Bronce';
+        let currentTierConfig = state.vipTiers.oro;
 
         if (clientTier.toLowerCase().includes('oro')) {
             passRender.classList.add('tier-border-oro');
@@ -885,52 +879,65 @@ let saveTimeout = null;
         }
 
         const vipCaption = document.getElementById('render-vip-caption');
-        if (state.vipActive) {
-            vipCaption.style.display = 'block';
-            vipCaption.textContent = currentTierConfig.name.toUpperCase();
-        } else {
-            vipCaption.style.display = 'none';
+        if (vipCaption) {
+            if (state.vipActive) {
+                vipCaption.style.display = 'block';
+                vipCaption.textContent = currentTierConfig.name.toUpperCase();
+            } else {
+                vipCaption.style.display = 'none';
+            }
         }
 
         const cashbackContainer = document.getElementById('render-cashback-container');
-        if (state.cashbackActive) {
-            cashbackContainer.style.display = 'block';
-            const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
-            document.getElementById('render-balance').textContent = `$${bal.toFixed(2)} MXN`;
-            document.getElementById('render-cashback-rate').textContent = `${currentTierConfig.cashbackPercent}% acumulable (${currentTierConfig.name})`;
-        } else {
-            cashbackContainer.style.display = 'none';
+        if (cashbackContainer) {
+            if (state.cashbackActive) {
+                cashbackContainer.style.display = 'block';
+                const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
+                const rBal = document.getElementById('render-balance');
+                const rRate = document.getElementById('render-cashback-rate');
+                if (rBal) rBal.textContent = `$${bal.toFixed(2)} MXN`;
+                if (rRate) rRate.textContent = `${currentTierConfig.cashbackPercent}% acumulable (${currentTierConfig.name})`;
+            } else {
+                cashbackContainer.style.display = 'none';
+            }
         }
 
         const stampsContainer = document.getElementById('render-stamps-container');
-        if (state.stampsActive) {
-            stampsContainer.style.display = 'block';
-            const stampsGrid = document.getElementById('render-stamps-grid');
-            stampsGrid.innerHTML = '';
-
-            for (let i = 1; i <= state.stampsTotal; i++) {
-                const node = document.createElement('div');
-                if (i <= sampleClient.stamps) {
-                    node.className = 'stamp-coin filled';
-                    node.style.backgroundColor = state.colorAccent;
-                    node.innerHTML = '<i class="fa-solid fa-check"></i>';
-                } else {
-                    node.className = 'stamp-coin empty';
-                    node.textContent = i;
+        if (stampsContainer) {
+            if (state.stampsActive) {
+                stampsContainer.style.display = 'block';
+                const stampsGrid = document.getElementById('render-stamps-grid');
+                if (stampsGrid) {
+                    stampsGrid.innerHTML = '';
+                    for (let i = 1; i <= state.stampsTotal; i++) {
+                        const node = document.createElement('div');
+                        if (i <= sampleClient.stamps) {
+                            node.className = 'stamp-coin filled';
+                            node.style.backgroundColor = state.colorAccent;
+                            node.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        } else {
+                            node.className = 'stamp-coin empty';
+                            node.textContent = i;
+                        }
+                        stampsGrid.appendChild(node);
+                    }
                 }
-                stampsGrid.appendChild(node);
+                const rewardTxt = document.getElementById('render-reward-text');
+                if (rewardTxt) rewardTxt.textContent = `Premio: ${state.stampsReward}`;
+            } else {
+                stampsContainer.style.display = 'none';
             }
-            document.getElementById('render-reward-text').textContent = `Premio: ${state.stampsReward}`;
-        } else {
-            stampsContainer.style.display = 'none';
         }
 
         const promoStrip = document.getElementById('render-promo-strip');
-        if (state.dynamicActive && state.dynamicDesc.trim() !== '') {
-            promoStrip.style.display = 'flex';
-            document.getElementById('render-promo-text').textContent = state.dynamicDesc;
-        } else {
-            promoStrip.style.display = 'none';
+        if (promoStrip) {
+            if (state.dynamicActive && state.dynamicDesc.trim() !== '') {
+                promoStrip.style.display = 'flex';
+                const rPromoText = document.getElementById('render-promo-text');
+                if (rPromoText) rPromoText.textContent = state.dynamicDesc;
+            } else {
+                promoStrip.style.display = 'none';
+            }
         }
     }
 
