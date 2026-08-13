@@ -11,6 +11,9 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <!-- FIDELIO V40: ORGANIC LIGHT PREMIUM DESIGN -->
     <style>
         :root {
@@ -788,24 +791,33 @@
                     const password = document.getElementById('login-password').value;
                     const btn = e.target.querySelector('button');
                     
-                    btn.textContent = 'Iniciando...';
+                    btn.textContent = 'Iniciando sesión...';
                     
                     try {
-                        const res = await fetch('/api/auth/login', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password })
-                        });
-                        const data = await res.json();
+                        // 1. Obtener credenciales de Supabase
+                        const configRes = await fetch('/api/config');
+                        const configData = await configRes.json();
                         
-                        if(data.success) {
+                        // 2. Inicializar Supabase localmente para guardar la sesión en el navegador (localStorage)
+                        const supabaseClient = supabase.createClient(configData.supabaseUrl, configData.supabaseAnonKey);
+                        
+                        // 3. Iniciar sesión directamente con Supabase Auth
+                        const { data, error } = await supabaseClient.auth.signInWithPassword({
+                            email: email,
+                            password: password
+                        });
+                        
+                        if (error) throw error;
+                        
+                        if (data.session) {
+                            // Éxito: las cookies/localStorage ya están guardadas, redirigir al panel
                             window.location.href = '/panel';
                         } else {
-                            alert('Error: ' + data.error);
-                            btn.textContent = 'Entrar a mi panel';
+                            throw new Error("No se pudo establecer la sesión");
                         }
                     } catch (error) {
-                        alert('Error de conexión.');
+                        console.error('Login error:', error);
+                        alert('Credenciales incorrectas o error de red.');
                         btn.textContent = 'Entrar a mi panel';
                     }
                 });
