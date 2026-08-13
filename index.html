@@ -795,16 +795,92 @@
             <section id="tab-metrics" class="tab-content">
                 <div class="workspace-header">
                     <div>
-                        <span class="workspace-eyebrow">MÉTRICAS</span>
-                        <h1>Análisis y Retorno de Inversión (ROI)</h1>
-                        <p>Descubre el impacto económico de tu programa de lealtad.</p>
+                        <span class="workspace-eyebrow">MÉTRICAS Y ROI</span>
+                        <h1>Inteligencia de Negocio</h1>
+                        <p>Descubre el impacto económico real de tu programa de lealtad Fidelio.</p>
+                    </div>
+                    <div style="display:flex; gap:12px;">
+                        <select class="fidelio-input" style="width:auto;">
+                            <option>Últimos 30 días</option>
+                            <option>Últimos 3 meses</option>
+                            <option>Este año</option>
+                            <option>Historico Total</option>
+                        </select>
+                        <button class="btn btn-outline"><i class="fa-solid fa-download"></i> Exportar Reporte</button>
                     </div>
                 </div>
-                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
-                    <i class="fa-solid fa-chart-pie" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
-                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
-                    <p>Aquí visualizaremos las métricas avanzadas (visitas, retorno, gasto).</p>
+
+                <!-- ROI HIGHLIGHT -->
+                <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 16px; padding: 32px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(30, 27, 75, 0.15);">
+                    <div>
+                        <span style="text-transform: uppercase; letter-spacing: 2px; font-size: 12px; opacity: 0.8; font-weight: 700;">Retorno de Inversión (ROI) Estimado</span>
+                        <h2 style="font-size: 48px; margin: 8px 0 0 0; color: white;">+342%</h2>
+                        <p style="opacity: 0.9; margin-top: 8px; max-width: 500px;">Por cada $1 invertido en Fidelio y recompensas, tus clientes fidelizados han generado $3.42 adicionales en ventas retenidas.</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 24px; border-radius: 12px; backdrop-filter: blur(10px);">
+                        <div style="font-size: 14px; opacity: 0.8; margin-bottom: 4px;">Ingreso Atribuido a Lealtad</div>
+                        <div style="font-size: 28px; font-weight: 800; color: #10B981;">+$124,500 MXN</div>
+                    </div>
                 </div>
+                
+                <!-- BENTO GRID METRICS -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-value">1,248</div>
+                        <div class="stat-label">Clientes en Wallet</div>
+                        <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 12% vs mes anterior</div>
+                    </div>
+                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;"><i class="fa-solid fa-wallet"></i></div>
+                        <div class="stat-value">$42,300</div>
+                        <div class="stat-label">Cashback Emitido</div>
+                        <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 5% vs mes anterior</div>
+                    </div>
+                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B;"><i class="fa-solid fa-fire"></i></div>
+                        <div class="stat-value">$18,400</div>
+                        <div class="stat-label">Cashback Redimido (Usado)</div>
+                        <div class="stat-trend trend-down" style="color:var(--text-muted);"><i class="fa-solid fa-minus"></i> Estable</div>
+                    </div>
+                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #EF4444;"><i class="fa-solid fa-repeat"></i></div>
+                        <div class="stat-value">2.4x</div>
+                        <div class="stat-label">Frecuencia de Visita Mensual</div>
+                        <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 0.3x vs trimestre anterior</div>
+                    </div>
+                </div>
+
+                <!-- CHARTS ROW -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                    <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                        <h3 style="margin-bottom: 24px; color: var(--text-main); font-size: 16px;">Crecimiento de Ventas por Clientes Leales</h3>
+                        <div style="height: 250px; background: repeating-linear-gradient(0deg, transparent, transparent 49px, var(--border-light) 49px, var(--border-light) 50px); display:flex; align-items:flex-end; gap:20px; padding-top:20px;">
+                            <!-- Fake chart bars -->
+                            <div style="flex:1; background: var(--surface-light); border-radius: 4px 4px 0 0; height: 30%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Ene</div></div>
+                            <div style="flex:1; background: var(--surface-light); border-radius: 4px 4px 0 0; height: 45%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Feb</div></div>
+                            <div style="flex:1; background: var(--accent-violet); opacity: 0.6; border-radius: 4px 4px 0 0; height: 60%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Mar</div></div>
+                            <div style="flex:1; background: var(--accent-violet); opacity: 0.8; border-radius: 4px 4px 0 0; height: 75%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Abr</div></div>
+                            <div style="flex:1; background: var(--accent-violet); opacity: 1; border-radius: 4px 4px 0 0; height: 90%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">May</div></div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                        <h3 style="margin-bottom: 24px; color: var(--text-main); font-size: 16px;">Demografía de Usuarios</h3>
+                        <div style="display:flex; align-items:center; justify-content:center; height:150px; margin-bottom:20px;">
+                            <!-- Fake Donut Chart -->
+                            <div style="width:120px; height:120px; border-radius:50%; background: conic-gradient(var(--accent-violet) 0% 65%, #F59E0B 65% 85%, #E5E7EB 85% 100%); border: 10px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                <div style="width:80px; height:80px; background:white; border-radius:50%;"></div>
+                            </div>
+                        </div>
+                        <ul style="list-style:none; padding:0; margin:0; font-size:13px; color:var(--text-muted);">
+                            <li style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:var(--accent-violet);"></div> 18-35 años</span> <strong>65%</strong></li>
+                            <li style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:#F59E0B;"></div> 36-50 años</span> <strong>20%</strong></li>
+                            <li style="display:flex; justify-content:space-between;"><span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:#E5E7EB;"></div> 50+ años</span> <strong>15%</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
             </section>
 
             <section id="tab-loyalty" class="tab-content">
