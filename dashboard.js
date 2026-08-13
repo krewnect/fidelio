@@ -615,7 +615,7 @@ let saveTimeout = null;
     }
 
     // BULLETPROOF EVENT DELEGATION DYNAMIC
-    document.body.addEventListener('click', (e) => {
+    document.body.addEventListener('click', async (e) => {
         const btn = e.target.closest('#btn-add-branch-modal');
         if (btn) {
             e.preventDefault();
@@ -649,7 +649,7 @@ let saveTimeout = null;
     });
     
     // BULLETPROOF EVENT DELEGATION DYNAMIC FOR SUBMIT
-    document.body.addEventListener('click', (e) => {
+    document.body.addEventListener('click', async (e) => {
         const btn = e.target.closest('#btn-submit-branch');
         if (btn) {
             e.preventDefault();
@@ -681,7 +681,21 @@ let saveTimeout = null;
             
             if (!state.branches) state.branches = [];
             state.branches.push(newBranch);
-            if (window.saveDesignToSupabase) window.saveDesignToSupabase();
+            try {
+                if (window.supabaseClient && state.tenantId) {
+                    const { error } = await window.supabaseClient
+                        .from('merchants')
+                        .update({ branches: state.branches })
+                        .eq('id', state.tenantId);
+                    if (!error) {
+                        console.log("Sucursal guardada en la base de datos."); alert("¡EXITO TOTAL! La base de datos aceptó la sucursal.");
+                    } else {
+                        alert("Error en DB: " + error.message);
+                    }
+                }
+            } catch (ex) {
+                alert("Crash inline DB: " + ex.message);
+            }
             
             if (addModal) addModal.style.display = 'none';
             renderBranches();
@@ -689,12 +703,26 @@ let saveTimeout = null;
         }
     });
 
-    window.removeBranch = function(id) {
+    window.removeBranch = async function(id) {
         if(confirm("¿Estás seguro de eliminar esta sucursal de la red de Wallet?")) {
             state.branches = state.branches.filter(b => b.id !== id);
             
             renderBranches();
-            if (window.saveDesignToSupabase) window.saveDesignToSupabase();
+            try {
+                if (window.supabaseClient && state.tenantId) {
+                    const { error } = await window.supabaseClient
+                        .from('merchants')
+                        .update({ branches: state.branches })
+                        .eq('id', state.tenantId);
+                    if (!error) {
+                        console.log("Sucursal guardada en la base de datos."); alert("¡EXITO TOTAL! La base de datos aceptó la sucursal.");
+                    } else {
+                        alert("Error en DB: " + error.message);
+                    }
+                }
+            } catch (ex) {
+                alert("Crash inline DB: " + ex.message);
+            }
             showToast("Sucursal eliminada. Los clientes ya no recibirán push en esta ubicación.", "info");
         }
     };// --- CUSTOMER ONBOARDING FORM MODAL ---
@@ -1103,7 +1131,21 @@ let saveTimeout = null;
         });
         
         btnConfirmPush.addEventListener('click', () => {
-            if (window.saveDesignToSupabase) window.saveDesignToSupabase();
+            try {
+                if (window.supabaseClient && state.tenantId) {
+                    const { error } = await window.supabaseClient
+                        .from('merchants')
+                        .update({ branches: state.branches })
+                        .eq('id', state.tenantId);
+                    if (!error) {
+                        console.log("Sucursal guardada en la base de datos."); alert("¡EXITO TOTAL! La base de datos aceptó la sucursal.");
+                    } else {
+                        alert("Error en DB: " + error.message);
+                    }
+                }
+            } catch (ex) {
+                alert("Crash inline DB: " + ex.message);
+            }
             step1.style.display = 'none';
             step2.style.display = 'block';
             
