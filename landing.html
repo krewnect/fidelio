@@ -234,6 +234,53 @@
             height: auto;
         }
 
+        /* PRICING SECTION */
+        .pricing-section {
+            padding: 100px 0;
+            background-color: var(--card-bg);
+            text-align: center;
+        }
+
+        .pricing-card {
+            background: var(--bg-base);
+            border: 1px solid var(--border-light);
+            border-radius: 32px;
+            padding: 60px 40px;
+            max-width: 480px;
+            margin: 40px auto 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+            text-align: left;
+        }
+
+        .price-tag {
+            display: flex;
+            align-items: flex-start;
+            margin: 24px 0 32px;
+        }
+        
+        .price-currency { font-size: 24px; font-weight: 600; color: var(--text-muted); margin-top: 8px;}
+        .price-amount { font-size: 72px; font-weight: 800; letter-spacing: -3px; line-height: 1; color: var(--text-main); }
+        .price-period { font-size: 16px; color: var(--text-muted); align-self: flex-end; margin-bottom: 12px; margin-left: 8px; }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+        
+        .pricing-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        
+        .pricing-features i {
+            color: var(--fidelio-violet);
+            font-size: 14px;
+        }
+
         /* FOOTER */
         footer {
             padding: 40px 0;
@@ -307,10 +354,15 @@
         <header>
             <a href="#" class="brand-logo">
                 <!-- Fallback a imagen de Fidelio Logo -->
-                <img src="fidelio_logo.png" alt="Fidelio Logo" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=FDFBF7&color=4C1D95&size=64'">
+                <img src="fidelio_logo.png" alt="Fidelio Logo" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=FDFBF7&color=4C1D95&size=64&rounded=true'">
             </a>
             
-            <div style="display:flex; gap: 16px;">
+            <nav style="display:none; /* Desktop only */ gap:32px; font-weight:500;">
+                <!-- Will make visible with CSS media queries if needed, but for now let's just add it inline -->
+            </nav>
+
+            <div style="display:flex; gap: 16px; align-items:center;">
+                <a href="#pricing" style="color:var(--text-main); font-weight:600; text-decoration:none; margin-right:16px;">Precios</a>
                 <button class="btn-secondary" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
             </div>
         </header>
@@ -391,6 +443,36 @@
         </div>
     </div>
 
+    <!-- PRICING SECTION -->
+    <div id="pricing" class="pricing-section">
+        <div class="container">
+            <h2 style="font-size: 42px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px;">Simple y Transparente</h2>
+            <p style="font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">Todo el poder de la plataforma, sin comisiones ocultas.</p>
+            
+            <div class="pricing-card">
+                <div style="font-size: 14px; font-weight: 700; color: var(--fidelio-violet); letter-spacing: 1px; text-transform: uppercase;">Fidelio Pro</div>
+                
+                <div class="price-tag">
+                    <span class="price-currency">$</span>
+                    <span class="price-amount">999</span>
+                    <span class="price-period">MXN / mes</span>
+                </div>
+
+                <ul class="pricing-features">
+                    <li><i class="fa-solid fa-check"></i> Pases ilimitados en Apple & Google Wallet</li>
+                    <li><i class="fa-solid fa-check"></i> Hasta 20 Sucursales (Geofencing GPS)</li>
+                    <li><i class="fa-solid fa-check"></i> Campañas automatizadas por Inteligencia Artificial</li>
+                    <li><i class="fa-solid fa-check"></i> Panel de control y Métricas en tiempo real</li>
+                    <li><i class="fa-solid fa-check"></i> Soporte prioritario por WhatsApp</li>
+                </ul>
+
+                <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('registerModal').classList.add('active')">
+                    Comenzar Ahora &nbsp;&rarr;
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- CTA BOTTOM -->
     <div class="container">
         <section class="cta-bottom">
@@ -414,6 +496,87 @@
             &copy; 2026 Fidelio Inc.
         </div>
     </footer>
+
+    <!-- TRUE DEMO MODAL (Contact Form) -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="font-size:24px; font-weight:800; color:var(--text-main);">Crear Cuenta</h3>
+                <button onclick="document.getElementById('registerModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
+            </div>
+            
+            <form id="registerForm">
+                <div class="input-group">
+                    <label>Nombre del Negocio</label>
+                    <input type="text" id="reg-business" required placeholder="Ej. Don Pedro Gourmet">
+                </div>
+                <div class="input-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="reg-email" required placeholder="tu@empresa.com">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="reg-password" required placeholder="Mín. 8 caracteres, 1 mayúscula, 1 número">
+                    <div id="pwd-error" style="color:#ef4444; font-size:12px; margin-top:4px; display:none;">La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial (@$!%*?&).</div>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:16px;">Continuar al Pago &nbsp;&rarr;</button>
+            </form>
+            <script>
+                document.getElementById('registerForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const businessName = document.getElementById('reg-business').value;
+                    const email = document.getElementById('reg-email').value;
+                    const password = document.getElementById('reg-password').value;
+                    const pwdError = document.getElementById('pwd-error');
+                    
+                    // Validación Fuerte de Contraseña
+                    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                    if (!strongPasswordRegex.test(password)) {
+                        pwdError.style.display = 'block';
+                        return;
+                    }
+                    pwdError.style.display = 'none';
+                    
+                    const btn = e.target.querySelector('button');
+                    btn.textContent = 'Procesando...';
+                    
+                    try {
+                        const res = await fetch('/api/auth/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ businessName, email, password })
+                        });
+                        const data = await res.json();
+                        
+                        if(data.success) {
+                            const merchantId = data.user.id;
+                            // Llamar a Stripe Checkout
+                            const stripeRes = await fetch('/api/stripe/checkout', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ merchantId, email })
+                            });
+                            const stripeData = await stripeRes.json();
+                            
+                            if (stripeData.success) {
+                                window.location.href = stripeData.url;
+                            } else {
+                                alert('Error al iniciar el pago: ' + stripeData.error);
+                                btn.textContent = 'Continuar al Pago';
+                            }
+                        } else {
+                            alert('Error: ' + data.error);
+                            btn.textContent = 'Continuar al Pago';
+                        }
+                    } catch (error) {
+                        alert('Error de conexión.');
+                        btn.textContent = 'Continuar al Pago';
+                    }
+                });
+            </script>
+        </div>
+    </div>
 
     <!-- TRUE DEMO MODAL (Contact Form) -->
     <div class="modal-overlay" id="demoModal">
