@@ -634,7 +634,6 @@ let saveTimeout = null;
         if (btn) {
             e.preventDefault();
             console.log("Btn submit branch clicked!");
-            try {
             const dynName = document.getElementById('branch-name');
             const dynManager = document.getElementById('branch-manager');
             const dynPhone = document.getElementById('branch-phone');
