@@ -412,30 +412,24 @@
                             <div class="accordion-card">
                                 <div class="card-title-bar">
                                     <span class="card-step-badge">01</span>
-                                    <h2>Dinámica de Lealtad</h2>
+                                    <h2>Información del Establecimiento</h2>
                                 </div>
                                 <div class="form-group">
-                                    <label>Industria del Comercio</label>
+                                    <label>Nombre Comercial</label>
+                                    <input type="text" id="rest-name" value="Don Pedro Gourmet">
+                                </div>
+                                <div class="form-group">
+                                    <label>Categoría / Industria</label>
                                     <select id="business-category-select">
                                         <option value="restaurant" selected>Restaurantes / Gastronomía</option>
                                         <option value="cafe">Cafeterías & Panaderías</option>
                                         <option value="barbershop">Barbershops & Barberías</option>
+                                        <option value="retail">Boutiques & Retail</option>
                                     </select>
                                 </div>
-                                <div class="mechanics-grid">
-                                    <div class="mode-tile active featured" data-mode="hybrid">
-                                        <i class="fa-solid fa-layer-group"></i>
-                                        <strong>Modo Completo</strong>
-                                        <small>Cashback, Sellos, Promos, VIP</small>
-                                    </div>
-                                    <div class="mode-tile" data-mode="cashback">
-                                        <i class="fa-solid fa-percent"></i>
-                                        <strong>Cashback %</strong>
-                                    </div>
-                                    <div class="mode-tile" data-mode="stamps">
-                                        <i class="fa-solid fa-stamp"></i>
-                                        <strong>Sellos</strong>
-                                    </div>
+                                <div class="form-group">
+                                    <label>Mensaje Corto (Aparece en la tarjeta)</label>
+                                    <input type="text" id="rest-desc" value="El mejor café de la ciudad">
                                 </div>
                             </div>
 
@@ -443,11 +437,7 @@
                             <div class="accordion-card">
                                 <div class="card-title-bar">
                                     <span class="card-step-badge">02</span>
-                                    <h2>Marca & Colores</h2>
-                                </div>
-                                <div class="form-group">
-                                    <label>Nombre Comercial</label>
-                                    <input type="text" id="rest-name" value="Don Pedro Gourmet">
+                                    <h2>Diseño Visual y Logo</h2>
                                 </div>
                                 <div class="form-row-2">
                                     <div class="form-group">
@@ -491,57 +481,23 @@
                             <div class="accordion-card">
                                 <div class="card-title-bar">
                                     <span class="card-step-badge">03</span>
-                                    <h2>Beneficios</h2>
+                                    <h2>Estilos Adicionales y Políticas</h2>
                                 </div>
                                 
-                                <div class="param-card">
-                                    <div class="param-card-head">
-                                        <label class="switch"><input type="checkbox" id="mech-cashback-check" checked><span class="slider"></span></label>
-                                        <strong>Cashback %</strong>
-                                    </div>
-                                    <div class="form-group" id="mech-cashback-body">
-                                        <label>Porcentaje devuelto:</label>
-                                        <input type="number" id="cashback-percent" value="10">
+                                <div class="form-group">
+                                    <label>Diseño del Sello (Icono para tarjeta de sellos)</label>
+                                    <div class="preset-selector-bar" style="margin-top:8px;">
+                                        <button class="btn-preset active"><i class="fa-solid fa-star"></i> Estrella</button>
+                                        <button class="btn-preset"><i class="fa-solid fa-mug-hot"></i> Café</button>
+                                        <button class="btn-preset"><i class="fa-solid fa-heart"></i> Corazón</button>
+                                        <button class="btn-preset"><i class="fa-solid fa-stamp"></i> Clásico</button>
                                     </div>
                                 </div>
 
-                                <div class="param-card">
-                                    <div class="param-card-head">
-                                        <label class="switch"><input type="checkbox" id="mech-stamps-check" checked><span class="slider"></span></label>
-                                        <strong>Tarjeta de Sellos</strong>
-                                    </div>
-                                    <div class="form-row-2" id="mech-stamps-body">
-                                        <div class="form-group"><label>Sellos</label><input type="number" id="stamps-total" value="5"></div>
-                                        <div class="form-group"><label>Premio</label><input type="text" id="stamps-reward" value="Hamburguesa Gratis"></div>
-                                    </div>
+                                <div class="form-group" style="margin-top: 24px;">
+                                    <label>Políticas y Condiciones Legales</label>
+                                    <textarea id="pass-policies" class="fidelio-input" rows="4" placeholder="Ejem: Las recompensas no son transferibles. El cashback caduca en 90 días.">Las recompensas no son transferibles ni canjeables por efectivo. Nos reservamos el derecho de modificar el programa.</textarea>
                                 </div>
-                                
-                                <div class="param-card">
-                                    <div class="param-card-head">
-                                        <label class="switch"><input type="checkbox" id="mech-dynamic-check" checked><span class="slider"></span></label>
-                                        <strong>Promoción</strong>
-                                    </div>
-                                    <div class="form-group" id="mech-dynamic-body">
-                                        <input type="text" id="dynamic-desc" value="Martes y Jueves: Doble Cashback">
-                                    </div>
-                                </div>
-                                
-                                <div class="param-card">
-                                    <div class="param-card-head">
-                                        <label class="switch"><input type="checkbox" id="mech-vip-check" checked><span class="slider"></span></label>
-                                        <strong>Niveles VIP</strong>
-                                    </div>
-                                    <div id="mech-vip-body">
-                                        <div class="tier-config-card oro-card">
-                                            <span class="tier-pill" onclick="setDemoTier('oro')"><i class="fa-solid fa-crown"></i> ORO VIP</span>
-                                            <div class="form-row-2">
-                                                <div class="form-group"><label>Gasto Mín</label><input type="number" id="tier-oro-min" value="3000"></div>
-                                                <div class="form-group"><label>Cashback %</label><input type="number" id="tier-oro-cb" value="15"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
                         </form>
                     </div>
