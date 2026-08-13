@@ -216,7 +216,7 @@ let saveTimeout = null;
                 plata: { name: "Plata VIP", minSpent: 1000, cashbackPercent: 10, perk: "Beneficio Plata" },
                 oro: { name: "Oro VIP", minSpent: 3000, cashbackPercent: 15, perk: "Beneficio Oro" }
             },
-            branches: [],
+            branches: merchantData.branches || [],
             customers: custData || [],
             transactions: transData || [],
             activeWallet: "apple"
@@ -287,7 +287,8 @@ let saveTimeout = null;
             stamps_total: state.stampsTotal,
             stamps_reward_text: state.stampsReward,
             logo_url: state.customLogoUrl,
-            banner_url: state.customBannerUrl
+            banner_url: state.customBannerUrl,
+            branches: state.branches
         };
 
         const { error } = await window.supabaseClient
