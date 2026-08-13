@@ -1152,7 +1152,7 @@ let saveTimeout = null;
             showToast("Diseño guardado y sincronizado con éxito", "success");
         });
         
-        btnConfirmPush.addEventListener('click', () => {
+        btnConfirmPush.addEventListener('click', async () => {
             try {
                 if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
