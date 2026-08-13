@@ -849,8 +849,6 @@ let saveTimeout = null;
         if (rCat) rCat.textContent = pCat;
         if (rDesc) rDesc.textContent = pDesc;
         if (rReward) rReward.textContent = pReward;
-        const rIcon = document.getElementById('render-icon');
-        
         // Handle Custom Logo vs Icon
         const passLogoCircle = document.querySelector('.pass-logo-circle');
         if (passLogoCircle) {
