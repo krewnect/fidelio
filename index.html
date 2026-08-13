@@ -1066,13 +1066,44 @@
                     <div>
                         <span class="workspace-eyebrow">TIENDA FIDELIO</span>
                         <h1>Hardware y Material Promocional</h1>
-                        <p>Pide lectores NFC, acrílicos y accesorios oficiales para tu negocio.</p>
+                        <p>Adquiere lectores NFC, QRs en acrílico y herramientas premium para tu negocio.</p>
+                    </div>
+                    <div style="display:flex; gap: 12px;">
+                        <button class="btn btn-outline"><i class="fa-solid fa-box-open"></i> Mis Pedidos</button>
+                        <button class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Carrito (0)</button>
                     </div>
                 </div>
-                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
-                    <i class="fa-solid fa-shop" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
-                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
-                    <p>Catálogo E-commerce interno para escalar tus herramientas físicas.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; margin-top: 24px;">
+                    <!-- Producto 1 -->
+                    <div class="product-card" style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;">
+                        <div style="height: 200px; background: var(--surface-light); display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-brands fa-nfc-symbol" style="font-size: 64px; color: var(--text-muted);"></i>
+                        </div>
+                        <div style="padding: 20px; display: flex; flex-direction: column; flex: 1;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main);">Lector NFC Premium</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; flex: 1;">Lector USB/Bluetooth para escanear Apple Wallet o Google Wallet con un toque en la caja.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 18px; font-weight: 800;">$899 MXN</span>
+                                <button class="btn btn-primary" style="padding: 8px 16px;"><i class="fa-solid fa-plus"></i> Añadir</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Producto 2 -->
+                    <div class="product-card" style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;">
+                        <div style="height: 200px; background: var(--surface-light); display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-qrcode" style="font-size: 64px; color: var(--text-muted);"></i>
+                        </div>
+                        <div style="padding: 20px; display: flex; flex-direction: column; flex: 1;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main);">Acrílico QR de Mesa (Pack 5)</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; flex: 1;">Acrílicos elegantes con tu código QR oficial para que los clientes se registren desde su lugar.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 18px; font-weight: 800;">$450 MXN</span>
+                                <button class="btn btn-primary" style="padding: 8px 16px;"><i class="fa-solid fa-plus"></i> Añadir</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -1081,13 +1112,55 @@
                     <div>
                         <span class="workspace-eyebrow">SOPORTE</span>
                         <h1>Centro de Ayuda</h1>
-                        <p>Resuelve tus dudas con nuestro bot de IA o contáctanos por correo.</p>
+                        <p>Resuelve tus dudas al instante con nuestra IA o contacta al equipo humano.</p>
                     </div>
                 </div>
-                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
-                    <i class="fa-solid fa-headset" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
-                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
-                    <p>Chatbot inteligente y ticket de atención técnica.</p>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-top: 24px;">
+                    <!-- Chat IA -->
+                    <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; display: flex; flex-direction: column; height: 600px; overflow: hidden;">
+                        <div style="padding: 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; background: var(--accent-violet); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h3 style="margin:0; font-size: 16px;">Asistente Fidelio AI</h3>
+                                <span style="font-size: 12px; color: #10B981;">● En línea</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: var(--surface-light); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+                            <div style="background: white; padding: 16px; border-radius: 12px 12px 12px 0; max-width: 80%; border: 1px solid var(--border-light); font-size: 14px; line-height: 1.5;">
+                                ¡Hola! Soy el asistente inteligente de Fidelio. Estoy entrenado con toda la documentación de la plataforma. ¿En qué te puedo ayudar hoy? ¿Tienes dudas sobre cómo emitir cashback o instalar un lector NFC?
+                            </div>
+                        </div>
+                        <div style="padding: 16px; border-top: 1px solid var(--border-light); background: white;">
+                            <div style="display: flex; gap: 12px;">
+                                <input type="text" class="fidelio-input" placeholder="Escribe tu duda aquí..." style="flex: 1;">
+                                <button class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ayuda Humana -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px;">
+                            <div style="width: 48px; height: 48px; background: rgba(0,0,0,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                                <i class="fa-solid fa-envelope" style="font-size: 20px; color: var(--text-main);"></i>
+                            </div>
+                            <h3 style="margin:0 0 8px 0; font-size: 18px;">Soporte Humano</h3>
+                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">Si el asistente IA no pudo resolver tu problema, levanta un ticket y nuestro equipo te responderá en menos de 24 horas hábiles.</p>
+                            <button class="btn btn-outline" style="width: 100%; justify-content: center;"><i class="fa-solid fa-ticket"></i> Crear Ticket</button>
+                        </div>
+                        
+                        <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px;">
+                            <div style="width: 48px; height: 48px; background: rgba(0,0,0,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                                <i class="fa-solid fa-book" style="font-size: 20px; color: var(--text-main);"></i>
+                            </div>
+                            <h3 style="margin:0 0 8px 0; font-size: 18px;">Documentación</h3>
+                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">Guías paso a paso, videos tutoriales y manuales de instalación.</p>
+                            <button class="btn btn-outline" style="width: 100%; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Portal</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
