@@ -72,3 +72,19 @@ CREATE POLICY "Clientes_Update" ON public.customers FOR UPDATE USING (true);
 
 CREATE POLICY "Transacciones_Select" ON public.transactions FOR SELECT USING (true);
 CREATE POLICY "Transacciones_Insert" ON public.transactions FOR INSERT WITH CHECK (true);
+
+-- 4. Tabla de Códigos Promocionales (Suscripciones SaaS)
+CREATE TABLE public.promo_codes (
+    code TEXT PRIMARY KEY,
+    reward_type TEXT NOT NULL, -- '1_month_free', 'lifetime_free', 'discount'
+    discount_pct NUMERIC DEFAULT 0,
+    max_uses INTEGER DEFAULT 1,
+    used_count INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.promo_codes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Promo_Codes_Select" ON public.promo_codes FOR SELECT USING (true);
+CREATE POLICY "Promo_Codes_Update" ON public.promo_codes FOR UPDATE USING (true);
+CREATE POLICY "Promo_Codes_Insert" ON public.promo_codes FOR INSERT WITH CHECK (true);

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Lealtad</title>
+    <!-- FontAwesome y Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --bg-color: #111111;
+            --surface-color: #1a1a1a;
+            --text-color: #ffffff;
+            --text-muted: #888888;
+            --primary: #8b5cf6; /* Se sobreescribirá dinámicamente */
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Banner Dinámico */
+        .merchant-banner {
+            width: 100%;
+            height: 200px;
+            background-color: var(--primary);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Logo superpuesto */
+        .merchant-logo-container {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background-color: var(--surface-color);
+            padding: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .merchant-logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 16px;
+        }
+
+        .content-container {
+            flex: 1;
+            padding: 60px 24px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .merchant-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .merchant-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Formulario */
+        .form-group {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 80%, black));
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 16px;
+            box-shadow: 0 8px 20px color-mix(in srgb, var(--primary) 40%, transparent);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* Pantalla de Éxito */
+        .success-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            padding-top: 20px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            color: #10b981;
+            margin-bottom: 24px;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .btn-apple-wallet {
+            background-color: #000;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 32px;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-apple-wallet i { font-size: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Los estilos en línea se inyectarán desde EJS o JS -->
+    <div class="merchant-banner" id="banner">
+        <div class="merchant-logo-container">
+            <img src="" alt="Logo" id="logo">
+        </div>
+    </div>
+
+    <div class="content-container">
+        
+        <!-- Formulario -->
+        <div id="registration-form-container" style="width: 100%;">
+            <h1 class="merchant-name" id="merchant-name">Cargando...</h1>
+            <p class="merchant-subtitle" id="merchant-subtitle">Únete a nuestro programa de lealtad y empieza a ganar recompensas exclusivas.</p>
+
+            <form id="public-register-form">
+                <input type="hidden" id="merchant_id" name="merchant_id">
+                
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" class="form-input" name="full_name" required placeholder="Ej. Juan Pérez">
+                </div>
+
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" class="form-input" name="email" required placeholder="juan@correo.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono (WhatsApp)</label>
+                    <input type="tel" class="form-input" name="phone" required placeholder="55 1234 5678">
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de Nacimiento (Opcional)</label>
+                    <input type="date" class="form-input" name="birthday">
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-submit">Unirme Ahora</button>
+            </form>
+        </div>
+
+        <!-- Pantalla de Éxito -->
+        <div class="success-screen" id="success-screen">
+            <i class="fa-solid fa-circle-check success-icon"></i>
+            <h1 class="success-title">¡Registro Exitoso!</h1>
+            <p class="merchant-subtitle">Ya eres parte del club. Muestra tu tarjeta digital cada vez que nos visites para acumular recompensas.</p>
+            
+            <button class="btn-apple-wallet" id="btn-download-wallet" style="display:none;">
+                <i class="fa-brands fa-apple"></i> Añadir a Apple Wallet
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // The server will serve this HTML and we fetch merchant details via the slug from the URL path
+        document.addEventListener('DOMContentLoaded', async () => {
+            const slug = window.location.pathname.replace('/', '');
+            
+            if (!slug) {
+                Swal.fire('Error', 'Página no válida', 'error');
+                return;
+            }
+
+            try {
+                // Obtener datos del restaurante por slug
+                const response = await fetch(`/api/merchants/public/${slug}`);
+                const data = await response.json();
+
+                if (!response.ok) throw new Error(data.error || 'Restaurante no encontrado');
+
+                const merchant = data.merchant;
+
+                // Aplicar marca visual
+                document.getElementById('merchant_id').value = merchant.id;
+                document.getElementById('merchant-name').textContent = merchant.business_name;
+                document.title = `${merchant.business_name} - Lealtad`;
+                
+                document.documentElement.style.setProperty('--primary', merchant.color_primary || '#8b5cf6');
+                
+                if (merchant.banner_url) {
+                    document.getElementById('banner').style.backgroundImage = `url('${merchant.banner_url}')`;
+                }
+                
+                const logoEl = document.getElementById('logo');
+                logoEl.src = merchant.logo_url || `https://ui-avatars.com/api/?name=${merchant.business_name}&background=${(merchant.color_primary||'8b5cf6').replace('#','')}&color=fff&size=128`;
+
+            } catch (err) {
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Restaurante no encontrado',
+                    text: 'Revisa que el enlace sea correcto.',
+                    confirmButtonColor: '#8b5cf6'
+                });
+                document.getElementById('public-register-form').style.display = 'none';
+            }
+        });
+
+        document.getElementById('public-register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando...';
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/customers/register-public', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Error al registrar');
+                }
+
+                // Mostrar éxito
+                document.getElementById('registration-form-container').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'flex';
+
+                // Botón Apple Wallet
+                if (result.customer && result.customer.id) {
+                    const btnWallet = document.getElementById('btn-download-wallet');
+                    btnWallet.style.display = 'flex';
+                    btnWallet.onclick = async () => {
+                        btnWallet.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+                        try {
+                            const pkRes = await fetch(`/api/wallet/generate/${result.customer.id}`);
+                            if (!pkRes.ok) throw new Error('Error al generar la tarjeta');
+                            const pkData = await pkRes.json();
+                            if (pkData.pass_url) {
+                                window.location.href = pkData.pass_url;
+                            } else {
+                                Swal.fire('Error', 'No se pudo generar la tarjeta', 'error');
+                            }
+                        } catch (err) {
+                            Swal.fire('Error', err.message, 'error');
+                        } finally {
+                            btnWallet.innerHTML = '<i class="fa-brands fa-apple"></i> Añadir a Apple Wallet';
+                        }
+                    };
+                }
+
+            } catch (err) {
+                Swal.fire('Error', err.message, 'error');
+                btn.innerHTML = 'Unirme Ahora';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
