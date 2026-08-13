@@ -281,6 +281,77 @@
             font-size: 14px;
         }
 
+        /* CLIENTS MARQUEE */
+        .marquee-section {
+            padding: 40px 0;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-light);
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .marquee-section p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        /* Fade edges */
+        .marquee-container::before, .marquee-container::after {
+            content: '';
+            position: absolute;
+            top: 0; width: 100px; height: 100%;
+            z-index: 2;
+        }
+        .marquee-container::before {
+            left: 0;
+            background: linear-gradient(to right, var(--card-bg), transparent);
+        }
+        .marquee-container::after {
+            right: 0;
+            background: linear-gradient(to left, var(--card-bg), transparent);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+        
+        /* Duplicate content for seamless loop */
+        .marquee-content.duplicate {
+            position: absolute;
+            top: 0; left: 100%;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .marquee-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 40px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #9CA3AF; /* Gris sutil */
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .marquee-item:hover { opacity: 1; color: var(--text-main); }
+        .marquee-item i { font-size: 24px; }
+
         /* FOOTER */
         footer {
             padding: 40px 0;
@@ -384,6 +455,35 @@
                 <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=1200&h=800" alt="Barista entregando pedido">
             </div>
         </section>
+    </div>
+
+    <!-- CLIENTS MARQUEE -->
+    <div class="marquee-section">
+        <div class="container">
+            <p>Negocios que confían en Fidelio</p>
+        </div>
+        <div class="marquee-container">
+            <!-- Pista 1 -->
+            <div class="marquee-content">
+                <div class="marquee-item"><i class="fa-solid fa-mug-hot"></i> Don Pedro Gourmet</div>
+                <div class="marquee-item"><i class="fa-solid fa-dumbbell"></i> FitStudio Mx</div>
+                <div class="marquee-item"><i class="fa-solid fa-scissors"></i> Bella Salon</div>
+                <div class="marquee-item"><i class="fa-solid fa-burger"></i> Smash Bros</div>
+                <div class="marquee-item"><i class="fa-solid fa-ice-cream"></i> Heladería Polar</div>
+                <div class="marquee-item"><i class="fa-solid fa-martini-glass"></i> Nébula Bar</div>
+                <div class="marquee-item"><i class="fa-solid fa-bag-shopping"></i> Boutique 1990</div>
+            </div>
+            <!-- Pista 2 (clon exacto para loop infinito) -->
+            <div class="marquee-content duplicate">
+                <div class="marquee-item"><i class="fa-solid fa-mug-hot"></i> Don Pedro Gourmet</div>
+                <div class="marquee-item"><i class="fa-solid fa-dumbbell"></i> FitStudio Mx</div>
+                <div class="marquee-item"><i class="fa-solid fa-scissors"></i> Bella Salon</div>
+                <div class="marquee-item"><i class="fa-solid fa-burger"></i> Smash Bros</div>
+                <div class="marquee-item"><i class="fa-solid fa-ice-cream"></i> Heladería Polar</div>
+                <div class="marquee-item"><i class="fa-solid fa-martini-glass"></i> Nébula Bar</div>
+                <div class="marquee-item"><i class="fa-solid fa-bag-shopping"></i> Boutique 1990</div>
+            </div>
+        </div>
     </div>
 
     <!-- FEATURES GRID -->
