@@ -811,7 +811,8 @@ let saveTimeout = null;
     // --- PASS RENDER FUNCTION WITH METALLIC BORDERS & DYNAMIC CONFIGURABLE TIERS ---
     const passRender = document.getElementById('pass-render');
 
-    function updatePassRender() {
+        function updatePassRender() {
+        window._updatePassRenderGlobal = true; // Debug flag
         const passRender = document.getElementById('pass-render');
         if (!passRender) return;
         scheduleAutoSave();
@@ -924,9 +925,16 @@ let saveTimeout = null;
     }
 
     
-    safeAdd('program-type-select', 'change', updatePassRender);
-    safeAdd('stamps-total', 'input', updatePassRender);
     
+    
+    
+    
+    
+    window.updatePassRender = updatePassRender;
+    safeAdd('program-type-select', 'change', updatePassRender);
+    safeAdd('program-type-select', 'input', updatePassRender);
+    safeAdd('stamps-total', 'input', updatePassRender);
+    safeAdd('stamps-total', 'change', updatePassRender);
     // --- UPLOAD HANDLERS ---
     const logoFileInput = document.getElementById('logo-file-input');
     const bannerFileInput = document.getElementById('banner-file-input');

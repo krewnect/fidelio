@@ -633,7 +633,7 @@
                                 
                                 <div>
                                     <label class="premium-label">Tipo de Programa</label>
-                                    <select id="program-type-select" class="premium-input" style="font-weight:600;">
+                                    <select id="program-type-select" class="premium-input" style="font-weight:600;" onchange="if(window.updatePassRender) window.updatePassRender();">
                                         <option value="cashback" selected>Monedero Digital (Cashback & QR)</option>
                                         <option value="stamps">Tarjeta de Sellos (Visitas frecuentes)</option>
                                     </select>
@@ -641,7 +641,7 @@
                                 <div id="stamps-config-group" style="display:none; flex-direction:column; gap:16px;">
                                     <div>
                                         <label class="premium-label">Total de Sellos (Meta)</label>
-                                        <input type="number" id="stamps-total" class="premium-input" value="5" min="3" max="10">
+                                        <input type="number" id="stamps-total" class="premium-input" value="5" min="3" max="10" oninput="if(window.updatePassRender) window.updatePassRender();">
                                     </div>
                                 </div>
                                 
@@ -1583,7 +1583,7 @@
                 
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
-                script.src = 'dashboard.js?v=15';
+                script.src = 'dashboard.js?v=16';
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));
