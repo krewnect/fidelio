@@ -442,15 +442,15 @@
                 <img src="./fidelio_logo_purple.png?v=4" alt="Fidelio Logo" style="height: 44px; width: auto;" />
             </a>
             
-            <nav style="display:none; /* Desktop only */ gap:32px; font-weight:500;">
-                <!-- Will make visible with CSS media queries if needed, but for now let's just add it inline -->
+            <nav style="display:flex; align-items:center; gap:24px; font-weight:500; font-size: 14px;">
+                <a href="#features" style="color:var(--text-main); text-decoration:none;">Características</a>
+                <a href="#pricing" style="color:var(--text-main); text-decoration:none;">Precios</a>
+                <a href="#contact" style="color:var(--text-main); text-decoration:none;">Contacto</a>
             </nav>
 
-            <div style="display:flex; gap: 16px; align-items:center;">
-                <a href="#pricing" style="color:var(--text-main); font-weight:600; text-decoration:none; margin-right:8px;">Precios</a>
-                <a href="#" style="color:var(--text-main); font-weight:600; text-decoration:none; margin-right:8px;" onclick="document.getElementById('demoModal').classList.add('active'); return false;">Solicitar Demo</a>
+            <div style="display:flex; gap:16px; margin-left: auto;">
                 <button class="btn-secondary" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
-                <button class="btn-primary" onclick="document.getElementById('registerModal').classList.add('active')">Unirme Ahora</button>
+                <button class="btn-primary" onclick="document.getElementById('registerModal').classList.add('active')">Comenzar Gratis</button>
             </div>
         </header>
 
@@ -804,31 +804,30 @@
                             
                             if (window.PublicKeyCredential) {
                                 try {
-                                    // Desafiamos al dispositivo para que abra FaceID / TouchID
-                                    const challenge = new Uint8Array(32);
-                                    window.crypto.getRandomValues(challenge);
-                                    
-                                    // En un entorno real, esto viene del servidor.
-                                    // Aquí usamos WebAuthn API estándar para forzar el prompt nativo.
-                                    await navigator.credentials.create({
+                                    // Safari blocks WebAuthn if it loses the user gesture context due to previous await calls.
+                                    // To prevent hanging, we set a 3 second timeout fallback
+                                    let bioPromise = navigator.credentials.create({
                                         publicKey: {
-                                            challenge: challenge,
+                                            challenge: new Uint8Array(32),
                                             rp: { name: "Fidelio Rewards" },
                                             user: {
                                                 id: new Uint8Array(16),
                                                 name: email,
                                                 displayName: email
                                             },
-                                            pubKeyCredParams: [{ type: "public-key", alg: -7 }], // ES256
+                                            pubKeyCredParams: [{ type: "public-key", alg: -7 }],
                                             authenticatorSelection: { userVerification: "required" },
                                             timeout: 60000,
                                         }
                                     });
-                                    // Si pasa la validación biométrica, redirigimos:
+                                    
+                                    await Promise.race([
+                                        bioPromise,
+                                        new Promise(resolve => setTimeout(resolve, 3000))
+                                    ]);
+                                    
                                     window.location.href = '/panel';
                                 } catch (bioError) {
-                                    console.log("Biometría cancelada o no soportada, haciendo fallback a panel:", bioError);
-                                    // Fallback de seguridad o continuar si el dispositivo no soporta biometría
                                     window.location.href = '/panel';
                                 }
                             } else {
