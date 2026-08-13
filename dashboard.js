@@ -2,10 +2,12 @@
 window.saveDesignToSupabase = async function saveDesignToSupabase() {
     console.log("Global saveDesignToSupabase triggered!");
     if (!window.supabaseClient) {
+        alert("CRASH: window.supabaseClient es nulo!");
         console.error("No supabase client!");
         return;
     }
     if (!state.tenantId) {
+        alert("CRASH: state.tenantId es nulo!");
         console.error("No tenantId in state!");
         return;
     }
@@ -31,6 +33,7 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
             
         if (!error) {
             console.log("Guardado automático exitoso");
+            alert("¡ÉXITO! Supabase confirmó que la sucursal se guardó en la nube.");
             if (typeof showToast === 'function') showToast("Guardado automático en la nube ☁️", "success");
         } else {
             console.error("Supabase Save Error:", error);
