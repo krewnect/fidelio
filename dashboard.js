@@ -1214,11 +1214,11 @@ let saveTimeout = null;
         const sbRole = document.getElementById('header-business-category');
         const sbAvatar = document.getElementById('header-business-icon');
         // Debug alert to help identify why the string is not matching for the user
-        if (currentEmail.toLowerCase().includes('hola') && currentEmail.trim().toLowerCase() !== 'hola@fideliorewards.com') {
+        if (currentEmail.toLowerCase().includes('hola') && !(currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
             alert("Atención (Fidelio Debug): Estás intentando entrar como Super Admin, pero tu correo en base de datos es exactamente: '" + currentEmail + "'. Hay un error de escritura o un espacio extra que impide que te reconozca como 'hola@fideliorewards.com'.");
         }
 
-        if (currentEmail.trim().toLowerCase() === 'hola@fideliorewards.com') {
+        if ((currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
             if (sbName) sbName.textContent = 'Fidelio Super Admin';
             if (sbRole) sbRole.textContent = 'Master Account';
             if (sbAvatar) {
@@ -1237,7 +1237,7 @@ let saveTimeout = null;
         updateDashboardMetrics();
 
         // Actualizar encabezados (solo si no es admin)
-        if (state && state.restaurantName && currentEmail.trim().toLowerCase() !== 'hola@fideliorewards.com') {
+        if (state && state.restaurantName && !(currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
                 document.getElementById('header-restaurant-name').textContent = state.restaurantName;
                 document.getElementById('header-business-category').textContent = state.category || "Restaurante";
         }
