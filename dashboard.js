@@ -812,17 +812,48 @@ let saveTimeout = null;
     const passRender = document.getElementById('pass-render');
 
     function updatePassRender() {
-        if (!passRender) return;
-        scheduleAutoSave(); // Trigger auto-save debouncer
-        passRender.style.backgroundColor = state.colorPrimary;
-        document.getElementById('render-name').textContent = state.restaurantName;
+        const pName = document.getElementById('rest-name')?.value || "Mi Negocio";
         
-        const logoContainer = document.getElementById('render-logo-container');
-        if (state.customLogoUrl) {
-            logoContainer.innerHTML = `<img src="${state.customLogoUrl}" style="width:28px; height:28px; border-radius:6px; object-fit:cover;"> <span id="render-name">${state.restaurantName}</span>`;
+        // Use the new free-text category input
+        const catInput = document.getElementById('business-category-input');
+        let pCat = "Restaurante & Gastronomía";
+        if (catInput) {
+            pCat = catInput.value;
         } else {
-            logoContainer.innerHTML = `<i class="fa-solid ${state.iconClass}" id="render-icon" style="color:${state.colorAccent}"></i> <span id="render-name">${state.restaurantName}</span>`;
+            // Fallback for old select if it still exists somewhere
+            const oldCatSel = document.getElementById('business-category-select');
+            if (oldCatSel) pCat = oldCatSel.options[oldCatSel.selectedIndex]?.text;
         }
+        
+        const pDesc = document.getElementById('rest-desc')?.value || "";
+        const cPri = document.getElementById('color-primary')?.value || "#1e1b4b";
+        const cAcc = document.getElementById('color-accent')?.value || "#8b5cf6";
+        const pIcon = document.getElementById('rest-icon')?.value || "fa-crown";
+        const pReward = document.getElementById('stamps-reward')?.value || "Bebida de Cortesía";
+        const pPolicies = document.getElementById('pass-policies')?.value || "";
+
+        const rName = document.getElementById('render-name');
+        const rCat = document.getElementById('render-category');
+        const rDesc = document.getElementById('render-promo-text');
+        const rIcon = document.getElementById('render-icon');
+        const rReward = document.getElementById('render-reward-text');
+        const rPolicies = document.getElementById('render-policies-text');
+        const rFront = document.getElementById('pass-front-face');
+
+        if (rName) rName.textContent = pName;
+        if (rCat) rCat.textContent = pCat;
+        if (rDesc) rDesc.textContent = pDesc;
+        if (rReward) rReward.textContent = pReward;
+        if (rPolicies) rPolicies.textContent = pPolicies;
+        
+        if (rIcon) {
+            rIcon.className = 'fa-solid ' + pIcon;
+        }
+        
+        if (rFront) {
+            rFront.style.background = `linear-gradient(135deg, ${cPri}, ${cAcc})`;
+        }
+    }
 
         const bannerContainer = document.getElementById('render-banner-container');
         const bannerImg = document.getElementById('render-banner-img');
@@ -1295,3 +1326,28 @@ window.selectCampaign = function(type) {
         txt.focus();
     }
 };
+
+    // --- 3D CARD FLIP LOGIC ---
+    const btnFlipCard = document.getElementById('btn-flip-card');
+    const card3d = document.getElementById('pass-render');
+    if (btnFlipCard && card3d) {
+        btnFlipCard.addEventListener('click', () => {
+            card3d.classList.toggle('is-flipped');
+            if (card3d.classList.contains('is-flipped')) {
+                btnFlipCard.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Ver Frente';
+            } else {
+                btnFlipCard.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Ver Reverso (3D)';
+            }
+        });
+        
+        // Also allow clicking the card itself to flip
+        card3d.addEventListener('click', (e) => {
+            // Don't flip if they are trying to click something else inside, just flip on generic card clicks
+            card3d.classList.toggle('is-flipped');
+            if (card3d.classList.contains('is-flipped')) {
+                btnFlipCard.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Ver Frente';
+            } else {
+                btnFlipCard.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Ver Reverso (3D)';
+            }
+        });
+    }
