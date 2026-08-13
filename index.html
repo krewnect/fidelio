@@ -1470,6 +1470,22 @@ curl -X POST https://api.fidelio.com/v1/orders \
                 
                 window.merchantSession = data.session;
                 
+                // SUPER ADMIN INLINE OVERRIDE (Failsafe)
+                const currentEmail = data.session.user.email.toLowerCase();
+                if (currentEmail.includes('hola') || currentEmail.includes('fidelio')) {
+                    const sbName = document.getElementById('header-restaurant-name');
+                    const sbRole = document.getElementById('header-business-category');
+                    const sbAvatar = document.getElementById('header-business-icon');
+                    if (sbName) sbName.textContent = 'Fidelio Super Admin';
+                    if (sbRole) sbRole.textContent = 'Master Account';
+                    if (sbAvatar) {
+                        sbAvatar.innerHTML = '<i class="fa-solid fa-crown"></i>';
+                        sbAvatar.style.background = 'linear-gradient(135deg, #F59E0B 0%, #B45309 100%)';
+                    }
+                    const leadsTab = document.getElementById('admin-leads-tab');
+                    if (leadsTab) leadsTab.style.display = 'flex';
+                }
+                
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
                 script.src = 'dashboard.js?v=6';
