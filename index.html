@@ -299,22 +299,31 @@
             </div>
 
             <nav class="sidebar-menu">
-                <div class="menu-label">Plataforma</div>
-                <button class="nav-tab active" data-tab="tab-home"><i class="fa-solid fa-chart-line"></i> Resumen General</button>
-                <button class="nav-tab" data-tab="tab-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Wallet</button>
-                <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></button>
+                <div class="menu-label">Gestión y Rendimiento</div>
+                <button class="nav-tab active" data-tab="tab-home"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+                <button class="nav-tab" data-tab="tab-metrics"><i class="fa-solid fa-chart-pie"></i> Métricas</button>
+
+                <div class="menu-label mt-20">Operación del Negocio</div>
+                <button class="nav-tab" data-tab="tab-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Card</button>
                 <button class="nav-tab" data-tab="tab-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
+                <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></button>
+                <button class="nav-tab" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
+
+                <div class="menu-label mt-20">Estrategia y Crecimiento</div>
+                <button class="nav-tab" data-tab="tab-loyalty"><i class="fa-solid fa-gift"></i> Fidelización</button>
+                <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas IA</button>
+                <button class="nav-tab" data-tab="tab-mybusiness"><i class="fa-solid fa-bullhorn"></i> My Business</button>
+
+                <div class="menu-label mt-20">Herramientas Externas</div>
                 <button class="nav-tab" onclick="window.open('scanner.html', '_blank')"><i class="fa-solid fa-qrcode"></i> Escáner Staff <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px; margin-left:auto;"></i></button>
+                <button class="nav-tab" data-tab="tab-store"><i class="fa-solid fa-shop"></i> Tienda Fidelio</button>
                 
                 <div class="menu-label mt-20" id="admin-leads-menu" style="display:none;">Administración Central</div>
                 <button class="nav-tab" data-tab="tab-leads" id="admin-leads-tab" style="display:none;"><i class="fa-solid fa-envelope-open-text"></i> Prospectos (Leads)</button>
-                
-                <div class="menu-label mt-20">Automatización</div>
-                <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas IA</button>
-                <button class="nav-tab" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
-                
-                <div class="menu-label mt-20">Configuración</div>
+
+                <div class="menu-label mt-20">Configuración y Ayuda</div>
                 <button class="nav-tab" data-tab="tab-account"><i class="fa-solid fa-user-gear"></i> Mi Cuenta</button>
+                <button class="nav-tab" data-tab="tab-support"><i class="fa-solid fa-headset"></i> Soporte</button>
             </nav>
 
             <div class="sidebar-footer">
@@ -825,6 +834,83 @@
                     </table>
                 </div>
             </section>
+
+            <!-- NEW TABS PLACEHOLDERS -->
+            <section id="tab-metrics" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">MÉTRICAS</span>
+                        <h1>Análisis y Retorno de Inversión (ROI)</h1>
+                        <p>Descubre el impacto económico de tu programa de lealtad.</p>
+                    </div>
+                </div>
+                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
+                    <i class="fa-solid fa-chart-pie" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
+                    <p>Aquí visualizaremos las métricas avanzadas (visitas, retorno, gasto).</p>
+                </div>
+            </section>
+
+            <section id="tab-loyalty" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">FIDELIZACIÓN</span>
+                        <h1>Motor de Reglas y Recompensas</h1>
+                        <p>Configura modalidades: Visitas, CashBack, o Personalizado.</p>
+                    </div>
+                </div>
+                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
+                    <i class="fa-solid fa-gift" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
+                    <p>Aquí estará el panel de configuración de la lógica de recompensas.</p>
+                </div>
+            </section>
+
+            <section id="tab-mybusiness" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">MY BUSINESS</span>
+                        <h1>Difusión y Adquisición</h1>
+                        <p>Descarga QRs para tus mesas y configura tu Landing Page pública.</p>
+                    </div>
+                </div>
+                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
+                    <i class="fa-solid fa-bullhorn" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
+                    <p>Aquí podrás generar plantillas de PDF para exhibidores de mesa y editar tu perfil público.</p>
+                </div>
+            </section>
+
+            <section id="tab-store" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">TIENDA FIDELIO</span>
+                        <h1>Hardware y Material Promocional</h1>
+                        <p>Pide lectores NFC, acrílicos y accesorios oficiales para tu negocio.</p>
+                    </div>
+                </div>
+                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
+                    <i class="fa-solid fa-shop" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
+                    <p>Catálogo E-commerce interno para escalar tus herramientas físicas.</p>
+                </div>
+            </section>
+
+            <section id="tab-support" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">SOPORTE</span>
+                        <h1>Centro de Ayuda</h1>
+                        <p>Resuelve tus dudas con nuestro bot de IA o contáctanos por correo.</p>
+                    </div>
+                </div>
+                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
+                    <i class="fa-solid fa-headset" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
+                    <p>Chatbot inteligente y ticket de atención técnica.</p>
+                </div>
+            </section>
+
 
         </main>
     </div>
