@@ -816,6 +816,9 @@ let saveTimeout = null;
         if (!passRender) return;
         scheduleAutoSave();
         
+        const pType = document.getElementById('program-type-select')?.value || 'cashback';
+        const sTotal = parseInt(document.getElementById('stamps-total')?.value || '5', 10);
+        
         const pName = document.getElementById('rest-name')?.value || state.restaurantName || "Mi Negocio";
         const catInput = document.getElementById('business-category-input');
         let pCat = "Restaurante & Gastronomía";
@@ -858,11 +861,11 @@ let saveTimeout = null;
                 bannerImg.src = state.customBannerUrl;
             } else {
                 bannerContainer.style.display = 'block';
-                bannerImg.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=800&h=300'; // Default placeholder
+                bannerImg.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=800&h=300';
             }
         }
 
-        const sampleClient = state.customers[0] || { tier: "Oro VIP", balance: 0, stamps: 0 };
+        const sampleClient = state.customers[0] || { tier: "Oro VIP", balance: 0, stamps: 3 };
         const clientTier = sampleClient.vip_tier || sampleClient.tier || 'Bronce';
         let currentTierConfig = state.vipTiers.oro;
 
@@ -884,8 +887,46 @@ let saveTimeout = null;
             const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
             rBal.textContent = `$${bal.toFixed(2)}`;
         }
+        
+        // --- PROGRAM TYPE TOGGLE (QR vs Stamps) ---
+        const qrView = document.getElementById('render-qr-view');
+        const stampsView = document.getElementById('render-stamps-view');
+        const configStamps = document.getElementById('stamps-config-group');
+        
+        if (pType === 'stamps') {
+            if (qrView) qrView.style.display = 'none';
+            if (stampsView) stampsView.style.display = 'flex';
+            if (configStamps) configStamps.style.display = 'flex';
+            
+            // Generate stamps
+            const stampsGrid = document.getElementById('render-stamps-grid');
+            if (stampsGrid) {
+                stampsGrid.innerHTML = '';
+                const userStamps = sampleClient.stamps || 3; // Demo default
+                for (let i = 1; i <= sTotal; i++) {
+                    const node = document.createElement('div');
+                    if (i <= userStamps) {
+                        node.className = 'stamp-coin filled';
+                        node.style.backgroundColor = cAcc;
+                        node.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    } else {
+                        node.className = 'stamp-coin empty';
+                        node.textContent = i;
+                    }
+                    stampsGrid.appendChild(node);
+                }
+            }
+        } else {
+            if (qrView) qrView.style.display = 'flex';
+            if (stampsView) stampsView.style.display = 'none';
+            if (configStamps) configStamps.style.display = 'none';
+        }
     }
 
+    
+    safeAdd('program-type-select', 'change', updatePassRender);
+    safeAdd('stamps-total', 'input', updatePassRender);
+    
     // --- UPLOAD HANDLERS ---
     const logoFileInput = document.getElementById('logo-file-input');
     const bannerFileInput = document.getElementById('banner-file-input');

@@ -541,6 +541,12 @@
                     .pass-field-value { font-size: 16px; font-weight: 600; color: #111827; letter-spacing:-0.5px; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
                     .pass-qr-section { margin-top: auto; display: flex; flex-direction: column; align-items: center; padding-top: 20px; border-top: 1px dashed #e5e7eb; }
                     
+                    
+                    /* Stamp Styles */
+                    .stamp-coin { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: all 0.3s; }
+                    .stamp-coin.filled { background: #8b5cf6; color: white; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4); }
+                    .stamp-coin.empty { background: #f3f4f6; color: #9ca3af; border: 2px dashed #d1d5db; }
+                    
                     /* Back of Wallet Pass */
                     .card-back { transform: rotateY(180deg); background: #1c1c1e; padding: 24px; color:white; overflow-y:auto; border-radius: 16px; }
                     
@@ -624,6 +630,21 @@
                             <div class="premium-section-title">Beneficios Visibles</div>
                             
                             <div style="display:flex; flex-direction:column; gap:16px;">
+                                
+                                <div>
+                                    <label class="premium-label">Tipo de Programa</label>
+                                    <select id="program-type-select" class="premium-input" style="font-weight:600;">
+                                        <option value="cashback" selected>Monedero Digital (Cashback & QR)</option>
+                                        <option value="stamps">Tarjeta de Sellos (Visitas frecuentes)</option>
+                                    </select>
+                                </div>
+                                <div id="stamps-config-group" style="display:none; flex-direction:column; gap:16px;">
+                                    <div>
+                                        <label class="premium-label">Total de Sellos (Meta)</label>
+                                        <input type="number" id="stamps-total" class="premium-input" value="5" min="3" max="10">
+                                    </div>
+                                </div>
+                                
                                 <div>
                                     <label class="premium-label">Siguiente Premio a Desbloquear</label>
                                     <input type="text" id="stamps-reward" class="premium-input" value="Bebida de Cortesía Gratis">
@@ -713,7 +734,15 @@
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="pass-qr-section">
+                                                
+                                                <div id="render-stamps-view" style="display:none; flex-direction:column; align-items:center; padding-top:20px; border-top: 1px dashed #e5e7eb;">
+                                                    <div style="font-size:11px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Tus Visitas</div>
+                                                    <div id="render-stamps-grid" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; max-width:280px;">
+                                                        <!-- Stamps will be generated here -->
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="pass-qr-section" id="render-qr-view">
                                                     <!-- Use a REAL active QR code API so it never breaks -->
                                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FidelioRewards123&bgcolor=ffffff&color=000000" alt="QR Code" style="width:130px; height:130px; mix-blend-mode:multiply;">
                                                     <div style="margin-top:8px; font-size:10px; font-weight:700; color:#9ca3af; letter-spacing:1px; font-family:monospace;">FIDELIO-8842-MEX</div>
@@ -1554,7 +1583,7 @@
                 
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
-                script.src = 'dashboard.js?v=14';
+                script.src = 'dashboard.js?v=15';
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));
