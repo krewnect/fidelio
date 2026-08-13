@@ -443,9 +443,15 @@
             </a>
             
             <div style="display:flex; align-items:center; gap:32px; margin-left: auto;">
+                <nav style="display:flex; align-items:center; gap:24px; font-weight:500; font-size: 14px;">
+                    <a href="#features" style="color:var(--text-main); text-decoration:none;">Características</a>
+                    <a href="#pricing" style="color:var(--text-main); text-decoration:none;">Precios</a>
+                    <a href="mailto:hola@fideliorewards.com" style="color:var(--text-main); text-decoration:none;">Contacto</a>
+                </nav>
+
                 <div style="display:flex; gap:16px;">
-                    <button class="btn-primary" style="font-size:14px; padding:10px 20px;" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
                     <button class="btn-secondary" style="font-size:14px; padding:10px 20px;" onclick="document.getElementById('registerModal').classList.add('active')">Únete a Fidelio</button>
+                    <button class="btn-primary" style="font-size:14px; padding:10px 20px;" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
                 </div>
             </div>
         </header>
@@ -487,7 +493,7 @@
     </div>
 
     <!-- FEATURES GRID -->
-    <div class="features-section">
+    <div id="features" class="features-section">
         <div class="container">
             <div class="features-grid">
                 
@@ -594,7 +600,7 @@
         </section>
     </div>
 
-    <footer>
+    <footer id="contact">
         <div class="container">
             <p>&copy; 2026 Fidelio Inc. | <a href="mailto:hola@fideliorewards.com" style="color:var(--fidelio-violet); text-decoration:none;">hola@fideliorewards.com</a></p>
         </div>
