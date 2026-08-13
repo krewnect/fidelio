@@ -735,7 +735,7 @@
                                 <p style="margin:0; font-size:13px; color:var(--text-muted);">Administra la información, responsables y enlaces de Google Maps de cada ubicación.</p>
                             </div>
                         </div>
-                        <button class="btn btn-primary" id="btn-add-branch-modal" style="background:var(--text-main);"><i class="fa-solid fa-plus"></i> Añadir Sucursal</button>
+                        <button class="btn btn-primary" id="btn-add-branch-modal" style="background:var(--accent-violet);"><i class="fa-solid fa-plus"></i> Añadir Sucursal</button>
                     </div>
                     
                     <div style="background:var(--bg-input); border-radius:16px; padding:24px; border:1px solid rgba(0,0,0,0.03);">
@@ -1553,7 +1553,7 @@
                 
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
-                script.src = 'dashboard.js?v=26';
+                script.src = 'dashboard.js?v=27';
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));

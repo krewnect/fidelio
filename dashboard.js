@@ -572,7 +572,7 @@ let saveTimeout = null;
                 btnAddBranchModal.style.color = 'white';
             } else {
                 btnAddBranchModal.innerHTML = '<i class="fa-solid fa-plus"></i> Añadir Sucursal';
-                btnAddBranchModal.style.background = 'var(--text-main)';
+                btnAddBranchModal.style.background = 'var(--accent-violet)';
                 btnAddBranchModal.style.border = 'none';
                 btnAddBranchModal.style.color = 'white';
             }
