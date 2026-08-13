@@ -443,8 +443,10 @@
             </nav>
 
             <div style="display:flex; gap: 16px; align-items:center;">
-                <a href="#pricing" style="color:var(--text-main); font-weight:600; text-decoration:none; margin-right:16px;">Precios</a>
+                <a href="#pricing" style="color:var(--text-main); font-weight:600; text-decoration:none; margin-right:8px;">Precios</a>
+                <a href="#" style="color:var(--text-main); font-weight:600; text-decoration:none; margin-right:8px;" onclick="document.getElementById('demoModal').classList.add('active'); return false;">Solicitar Demo</a>
                 <button class="btn-secondary" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
+                <button class="btn-primary" onclick="document.getElementById('registerModal').classList.add('active')">Unirme Ahora</button>
             </div>
         </header>
 
@@ -606,7 +608,7 @@
 
     <footer>
         <div class="container">
-            &copy; 2026 Fidelio Inc.
+            <p>&copy; 2026 Fidelio Inc. | <a href="mailto:hola@fideliorewards.com" style="color:var(--fidelio-violet); text-decoration:none;">hola@fideliorewards.com</a></p>
         </div>
     </footer>
 
@@ -713,6 +715,9 @@
                     <input type="tel" id="demo-phone" required placeholder="Tu número">
                 </div>
                 <button type="button" id="btn-submit-demo" class="btn-primary" style="width:100%; justify-content:center; margin-top:16px;">Enviar Solicitud</button>
+                <div style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted);">
+                    O escríbenos a <a href="mailto:hola@fideliorewards.com" style="color:var(--fidelio-violet); text-decoration:none;">hola@fideliorewards.com</a>
+                </div>
             </form>
             <script>
                 document.getElementById('btn-submit-demo').addEventListener('click', async () => {
