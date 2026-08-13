@@ -214,13 +214,9 @@ let saveTimeout = null;
                         vipTiers: {
                 bronce: { name: "Bronce", minSpent: 0, cashbackPercent: 5, perk: "Beneficio Base" },
                 plata: { name: "Plata VIP", minSpent: 1000, cashbackPercent: 10, perk: "Beneficio Plata" },
-                oro: { name: "Oro Elite", minSpent: 5000, cashbackPercent: 15, perk: "Beneficio Oro" }
-            },
-            branches: tenantDatabase[merchantData.id]?.branches || [],
-                plata: { name: "Plata VIP", minSpent: 1000, cashbackPercent: 10, perk: "Beneficio Plata" },
                 oro: { name: "Oro VIP", minSpent: 3000, cashbackPercent: 15, perk: "Beneficio Oro" }
             },
-            branches: [],
+            branches: tenantDatabase[merchantData.id]?.branches || [],
             customers: custData || [],
             transactions: transData || [],
             activeWallet: "apple"
