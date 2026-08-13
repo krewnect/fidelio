@@ -1470,7 +1470,7 @@ curl -X POST https://api.fidelio.com/v1/orders \
                 
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
-                script.src = 'dashboard.js?v=' + new Date().getTime();
+                script.src = 'dashboard.js?v=3';
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));
