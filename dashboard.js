@@ -1201,9 +1201,9 @@ let saveTimeout = null;
     try {
         // --- LOGICA DE SIDEBAR FOOTER (SUPER ADMIN) ---
         const currentEmail = (window.merchantSession && window.merchantSession.user) ? window.merchantSession.user.email : '';
-        const sbName = document.getElementById('sidebar-user-name');
-        const sbRole = document.getElementById('sidebar-user-role');
-        const sbAvatar = document.getElementById('sidebar-user-avatar');
+        const sbName = document.getElementById('header-restaurant-name');
+        const sbRole = document.getElementById('header-business-category');
+        const sbAvatar = document.getElementById('header-business-icon');
         
         if (currentEmail === 'hola@fideliorewards.com') {
             if (sbName) sbName.textContent = 'Fidelio Super Admin';
