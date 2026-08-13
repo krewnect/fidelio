@@ -971,12 +971,18 @@ let saveTimeout = null;
 
     navTabs.forEach(tab => {
         tab.addEventListener('click', () => {
+            // Cerrar sidebar en móviles
+            const sidebar = document.querySelector('.app-sidebar');
+            if(sidebar) sidebar.classList.remove('mobile-open');
+
             navTabs.forEach(t => t.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
 
             tab.classList.add('active');
             const targetTab = tab.getAttribute('data-tab');
-            document.getElementById(targetTab).classList.add('active');
+            if (targetTab) {
+                document.getElementById(targetTab).classList.add('active');
+            }
         });
     });
 

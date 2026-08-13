@@ -319,9 +319,60 @@
             0% { opacity: 0; transform: scale(0.95) translateY(20px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
+
+        /* RESPONSIVE DESIGN (MOBILE) */
+        .mobile-menu-btn { display: none; }
+        
+        @media (max-width: 900px) {
+            /* Layout general */
+            .app-shell { flex-direction: column; overflow-y: auto; }
+            
+            /* Sidebar pasa a ser un menú oculto por defecto */
+            .app-sidebar {
+                position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
+                z-index: 100; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+                transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .app-sidebar.mobile-open { left: 0; }
+            
+            /* Botón de hamburguesa flotante */
+            .mobile-menu-btn {
+                display: flex; align-items: center; justify-content: center;
+                position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px;
+                background: linear-gradient(135deg, var(--accent-violet) 0%, #3b1675 100%);
+                color: white; border-radius: 50%; font-size: 24px; z-index: 99;
+                box-shadow: var(--shadow-float); border: none; cursor: pointer;
+            }
+
+            /* Workspace y Grids */
+            .app-workspace { padding: 24px 16px; overflow-y: visible; padding-bottom: 100px; }
+            .workspace-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+            .workspace-header h1 { font-size: 26px; }
+            
+            .builder-split-grid { grid-template-columns: 1fr; }
+            .phone-studio-panel { position: relative; top: 0; max-width: 100%; }
+            
+            .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+            .mechanics-grid { grid-template-columns: 1fr; }
+            
+            /* Bento grid Métricas */
+            #tab-metrics > div:nth-child(2) { flex-direction: column; gap: 16px; align-items: flex-start; padding: 24px; }
+            #tab-metrics > div:nth-child(2) > div:last-child { width: 100%; }
+            #tab-metrics > div:nth-child(3) { grid-template-columns: 1fr; }
+            #tab-metrics > div:nth-child(4) { grid-template-columns: 1fr; }
+            
+            /* Tienda y Soporte */
+            #tab-store > div:nth-child(2) { grid-template-columns: 1fr; }
+            #tab-support > div:nth-child(2) { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 <body>
+
+    <button class="mobile-menu-btn" onclick="document.querySelector('.app-sidebar').classList.toggle('mobile-open')">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 
     <div class="ambient-mesh"></div>
 
