@@ -275,7 +275,7 @@ let saveTimeout = null;
         document.getElementById('metric-scans').textContent = scansToday.toLocaleString();
     }
 
-    async function saveDesignToSupabase() {
+    window.saveDesignToSupabase = async function saveDesignToSupabase() {
         if (!window.supabaseClient || !state.tenantId) return;
         
         const updates = {
@@ -659,6 +659,7 @@ let saveTimeout = null;
             
             if (!state.branches) state.branches = [];
             state.branches.push(newBranch);
+            if (window.saveDesignToSupabase) window.saveDesignToSupabase();
             
             if (addModal) addModal.style.display = 'none';
             renderBranches();
@@ -671,6 +672,7 @@ let saveTimeout = null;
             state.branches = state.branches.filter(b => b.id !== id);
             
             renderBranches();
+            if (window.saveDesignToSupabase) window.saveDesignToSupabase();
             showToast("Sucursal eliminada. Los clientes ya no recibirán push en esta ubicación.", "info");
         }
     };// --- CUSTOMER ONBOARDING FORM MODAL ---
@@ -1079,6 +1081,7 @@ let saveTimeout = null;
         });
         
         btnConfirmPush.addEventListener('click', () => {
+            if (window.saveDesignToSupabase) window.saveDesignToSupabase();
             step1.style.display = 'none';
             step2.style.display = 'block';
             
