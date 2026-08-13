@@ -1205,7 +1205,7 @@ let saveTimeout = null;
         const sbRole = document.getElementById('header-business-category');
         const sbAvatar = document.getElementById('header-business-icon');
         
-        if (currentEmail === 'hola@fideliorewards.com') {
+        if (currentEmail === 'hola@fideliorewards.com' || currentEmail.includes('fidelio')) {
             if (sbName) sbName.textContent = 'Fidelio Super Admin';
             if (sbRole) sbRole.textContent = 'Master Account';
             if (sbAvatar) {
@@ -1224,7 +1224,7 @@ let saveTimeout = null;
         updateDashboardMetrics();
 
         // Actualizar encabezados (solo si no es admin)
-        if (state && state.restaurantName && currentEmail !== 'hola@fideliorewards.com') {
+        if (state && state.restaurantName && currentEmail !== 'hola@fideliorewards.com' && !currentEmail.includes('fidelio')) {
                 document.getElementById('header-restaurant-name').textContent = state.restaurantName;
                 document.getElementById('header-business-category').textContent = state.category || "Restaurante";
         }
