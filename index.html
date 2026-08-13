@@ -484,7 +484,7 @@
                     /* Premium Clean Builder */
                     .tab-builder-container { display: flex; height: calc(100vh - 100px); overflow: hidden; background: #fafafa; margin: -24px; }
                     .builder-sidebar { width: 420px; background: white; border-right: 1px solid var(--border-glass); overflow-y: auto; padding: 32px; display:flex; flex-direction:column; gap:24px; box-shadow: 10px 0 30px rgba(0,0,0,0.02); z-index:10; }
-                    .builder-preview-area { flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #f3f4f6 0%, #e5e7eb 100%); position: relative; overflow: hidden; }
+                    .builder-preview-area { flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #f4f4f5 0%, #e4e4e7 100%); position: relative; overflow: hidden; }
                     
                     .premium-label { font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px; display: block; }
                     .premium-input { width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-family: var(--font-main); font-size: 14px; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
@@ -494,36 +494,55 @@
                     .premium-section-desc { font-size: 13px; color: #6b7280; margin-bottom: 20px; line-height: 1.4; }
                     .premium-divider { height: 1px; background: #e5e7eb; margin: 8px 0; }
                     
-                    /* iPhone Realistic Mockup - Thin Bezel, Focus on Card */
-                    .iphone-device.premium-mockup { width: 375px; height: 812px; background: #000; border: 6px solid #1a1a1a; box-shadow: 0 50px 100px rgba(0,0,0,0.3), inset 0 0 4px rgba(255,255,255,0.2); border-radius: 44px; display:flex; flex-direction:column; position:relative; overflow:hidden; transform: scale(0.85); transform-origin: center; transition: all 0.3s ease; }
+                    /* PHOTOREALISTIC IPHONE PRO MOCKUP */
+                    .iphone-pro-mockup { width: 380px; height: 820px; border-radius: 55px; background: #000; position: relative; box-shadow: 0 0 0 4px #1a1a1a, 0 0 0 5px #2a2a2a, 0 0 0 6px #3a3a3a, 0 30px 60px rgba(0,0,0,0.4), inset 0 0 8px rgba(255,255,255,0.2); transform: scale(0.85); transform-origin: center; display:flex; flex-direction:column; overflow:hidden; }
                     
-                    /* Make slightly larger on big screens, but never gigantic */
-                    @media (min-width: 1400px) { .iphone-device.premium-mockup { transform: scale(0.95); } }
+                    @media (min-width: 1400px) { .iphone-pro-mockup { transform: scale(0.95); } }
                     
-                    .premium-mockup .dynamic-island { background: #000; border-radius: 20px; height: 28px; width: 100px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 100; box-shadow: inset 0 -1px 1px rgba(255,255,255,0.1); }
-                    .premium-mockup .iphone-screen { flex: 1; border-radius: 38px; background: #000; overflow: hidden; position: relative; padding: 70px 16px 20px 16px; display:flex; flex-direction:column; align-items:center; }
+                    /* Dynamic Island */
+                    .iphone-pro-mockup .dynamic-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 35px; background: #000; border-radius: 20px; z-index: 100; display:flex; align-items:center; justify-content:space-between; padding:0 12px; box-shadow: inset 0 0 2px rgba(255,255,255,0.2); }
+                    .dynamic-island::before { content:''; width:12px; height:12px; background:#111; border-radius:50%; box-shadow: inset 0 0 4px rgba(255,255,255,0.1); }
+                    .dynamic-island::after { content:''; width:12px; height:12px; background:#1a1a3a; border-radius:50%; box-shadow: inset 0 0 4px rgba(255,255,255,0.2); }
                     
-                    /* Card 3D Flip Mechanics restored but elegant */
-                    .card-3d-scene { perspective: 1200px; width: 100%; flex:1; position: relative; z-index: 10; margin-bottom:10px; }
+                    /* Power/Volume Buttons (Visual only, on the sides of the outer box if we want, but keeping it inside is safer for clipping) */
+                    
+                    /* Screen Content Area */
+                    .iphone-screen { width:100%; height:100%; border: 12px solid #000; border-radius: 55px; background: #0a0a0c; overflow: hidden; position: relative; display:flex; flex-direction:column; padding-top: 60px; box-sizing:border-box; }
+                    
+                    /* Screen Glare (Glass effect) */
+                    .iphone-screen::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(105deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%); pointer-events: none; z-index: 1000; border-radius: 43px; }
+                    
+                    /* Wallet Header inside iPhone */
+                    .wallet-header { display:flex; justify-content:space-between; align-items:center; padding: 10px 20px 20px 20px; position:relative; z-index:20; }
+                    .wallet-title { color:white; font-size:28px; font-weight:800; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing:-0.5px; }
+                    .wallet-icon-plus { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; cursor:pointer; backdrop-filter:blur(10px); }
+                    
+                    /* 3D Scene inside Screen */
+                    .card-3d-scene { perspective: 1200px; flex:1; position: relative; z-index: 10; margin: 0 16px 20px 16px; }
                     .card-3d-object { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); transform-style: preserve-3d; cursor:pointer; }
                     .card-3d-object.is-flipped { transform: rotateY(180deg); }
                     
-                    .card-face { position: absolute; width: 100%; height: 95%; backface-visibility: hidden; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+                    /* The Pass Design (Apple Wallet accurate) */
+                    .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden; }
                     
-                    /* Front of Wallet Pass inside phone */
                     .card-front { background: white; }
-                    .pass-top-section { padding: 20px 20px 16px 20px; color: white; background: linear-gradient(135deg, #1e1b4b, #8b5cf6); }
-                    .pass-brand-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-                    .pass-logo-circle { width: 36px; height: 36px; background: rgba(0,0,0,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
+                    .pass-top-section { padding: 20px 20px 20px 20px; color: white; background: linear-gradient(135deg, #1e1b4b, #8b5cf6); border-top-left-radius: 16px; border-top-right-radius: 16px; position:relative; }
                     
-                    .pass-banner-img { width: 100%; height: 120px; object-fit: cover; background: rgba(0,0,0,0.1); }
-                    .pass-body-section { flex: 1; background: white; padding: 20px; display: flex; flex-direction: column; }
-                    .pass-field-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; font-weight: 600; margin-bottom: 4px; }
-                    .pass-field-value { font-size: 18px; font-weight: 700; color: #111827; letter-spacing:-0.5px; }
-                    .pass-qr-section { margin-top: auto; display: flex; flex-direction: column; align-items: center; padding-top: 16px; border-top: 1px dashed #e5e7eb; }
+                    /* Apple Wallet cutouts (fake) */
+                    .pass-top-section::before { content:''; position:absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: #0a0a0c; border-radius: 50%; z-index:5; }
+                    .pass-top-section::after { content:''; position:absolute; top: -10px; right: -10px; width: 20px; height: 20px; background: #0a0a0c; border-radius: 50%; z-index:5; }
+                    
+                    .pass-brand-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+                    .pass-logo-circle { width: 40px; height: 40px; background: rgba(0,0,0,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+                    
+                    .pass-banner-img { width: 100%; height: 130px; object-fit: cover; background: rgba(0,0,0,0.1); }
+                    .pass-body-section { flex: 1; background: white; padding: 20px; display: flex; flex-direction: column; border-bottom-left-radius:16px; border-bottom-right-radius:16px; }
+                    .pass-field-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; font-weight: 700; margin-bottom: 4px; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+                    .pass-field-value { font-size: 16px; font-weight: 600; color: #111827; letter-spacing:-0.5px; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+                    .pass-qr-section { margin-top: auto; display: flex; flex-direction: column; align-items: center; padding-top: 20px; border-top: 1px dashed #e5e7eb; }
                     
                     /* Back of Wallet Pass */
-                    .card-back { transform: rotateY(180deg); background: #1a1a1c; padding: 24px; color:white; overflow-y:auto; }
+                    .card-back { transform: rotateY(180deg); background: #1c1c1e; padding: 24px; color:white; overflow-y:auto; border-radius: 16px; }
                     
                     /* Color Pickers */
                     .color-picker-wrapper { display:flex; gap:12px; align-items:center; }
@@ -621,19 +640,20 @@
                         </div>
                     </div>
                     
-                    <!-- RIGHT AREA: REALISTIC PHONE MOCKUP -->
+                    <!-- RIGHT AREA: PHOTOREALISTIC IPHONE -->
                     <div class="builder-preview-area">
-                        <!-- Floating Background Elements -->
-                        <div style="position:absolute; top:-10%; left:-10%; width:50%; height:50%; background:radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%); pointer-events:none;"></div>
+                        <!-- Ambient Blur Background -->
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:600px; height:600px; background:radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%); filter:blur(40px); pointer-events:none;"></div>
                         
-                        <!-- REALISTIC PHONE -->
-                        <div class="iphone-device premium-mockup">
-                            <div class="dynamic-island"><div class="lens"></div></div>
+                        <!-- REALISTIC PHONE MOCKUP -->
+                        <div class="iphone-pro-mockup">
+                            
                             <div class="iphone-screen">
+                                <div class="dynamic-island"></div>
                                 
-                                <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:16px; z-index:20;">
-                                    <div style="color:white; font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-wallet"></i> Wallet</div>
-                                    <button id="btn-flip-card" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); color:white; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-rotate-right"></i> Giro 3D</button>
+                                <div class="wallet-header">
+                                    <div class="wallet-title">Wallet</div>
+                                    <button id="btn-flip-card" class="wallet-icon-plus" title="Girar Tarjeta (Reverso)"><i class="fa-solid fa-rotate"></i></button>
                                 </div>
 
                                 <!-- THE PASS -->
@@ -645,25 +665,25 @@
                                             <!-- Header Area -->
                                             <div class="pass-top-section" id="pass-front-face">
                                                 <div class="pass-brand-row">
-                                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
                                                         <div class="pass-logo-circle">
                                                             <i class="fa-solid fa-crown" id="render-icon"></i>
                                                         </div>
                                                         <div>
-                                                            <div id="render-name" style="font-weight:700; font-size:16px; letter-spacing:-0.5px;">Mi Negocio</div>
-                                                            <div id="render-category" style="font-size:11px; opacity:0.8; font-weight:500;">Restaurante & Gastronomía</div>
+                                                            <div id="render-name" style="font-weight:700; font-size:17px; letter-spacing:-0.5px;">Mi Negocio</div>
+                                                            <div id="render-category" style="font-size:12px; opacity:0.8; font-weight:500;">Restaurante & Gastronomía</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 
                                                 <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                                                     <div>
-                                                        <div style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Nivel Actual</div>
-                                                        <div id="render-vip-caption" style="font-size:18px; font-weight:800; letter-spacing:-0.5px;">ORO VIP</div>
+                                                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Nivel Actual</div>
+                                                        <div id="render-vip-caption" style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;">ORO VIP</div>
                                                     </div>
                                                     <div style="text-align:right;">
-                                                        <div style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Cashback</div>
-                                                        <div style="font-size:18px; font-weight:800; letter-spacing:-0.5px;" id="render-balance">$145.00</div>
+                                                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Cashback</div>
+                                                        <div style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;" id="render-balance">$145.00</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -678,48 +698,53 @@
                                                 <div style="display:flex; gap:16px; margin-bottom:16px;">
                                                     <div style="flex:1;">
                                                         <div class="pass-field-label">Próxima Recompensa</div>
-                                                        <div class="pass-field-value" style="font-size:14px; color:#10B981;" id="render-reward-text">Bebida de Cortesía Gratis</div>
+                                                        <div class="pass-field-value" style="color:#10B981;" id="render-reward-text">Bebida de Cortesía Gratis</div>
                                                     </div>
                                                     <div style="text-align:right;">
                                                         <div class="pass-field-label">Visitas</div>
-                                                        <div class="pass-field-value" style="font-size:14px;">3 / 5</div>
+                                                        <div class="pass-field-value">3 / 5</div>
                                                     </div>
                                                 </div>
                                                 
                                                 <div style="margin-bottom:16px;">
                                                     <div class="pass-field-label">Notificación Flash</div>
-                                                    <div class="pass-field-value" style="font-size:13px; font-weight:600; background:#f3f4f6; padding:8px; border-radius:8px; display:inline-block; width:100%;">
+                                                    <div class="pass-field-value" style="font-size:14px; font-weight:600; background:#f3f4f6; padding:10px 12px; border-radius:10px; display:inline-block; width:100%; box-sizing:border-box;">
                                                         <i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i> <span id="render-promo-text">Martes Doble Cashback</span>
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="pass-qr-section">
-                                                    <img src="dummy_qr.png" alt="QR Code" style="width:100px; height:100px; mix-blend-mode:multiply; opacity:0.9;">
-                                                    <div style="margin-top:8px; font-size:10px; font-weight:700; color:#9ca3af; letter-spacing:1px;">FIDELIO-8842-MEX</div>
+                                                    <!-- Use a REAL active QR code API so it never breaks -->
+                                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FidelioRewards123&bgcolor=ffffff&color=000000" alt="QR Code" style="width:130px; height:130px; mix-blend-mode:multiply;">
+                                                    <div style="margin-top:8px; font-size:10px; font-weight:700; color:#9ca3af; letter-spacing:1px; font-family:monospace;">FIDELIO-8842-MEX</div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- Back of Card -->
                                         <div class="card-face card-back">
-                                            <div style="background:rgba(255,255,255,0.1); padding:8px 12px; border-radius:12px; font-size:11px; font-weight:600; text-align:center; margin-bottom:20px; display:inline-block;">
+                                            <div style="background:rgba(255,255,255,0.1); padding:8px 12px; border-radius:12px; font-size:12px; font-weight:600; text-align:center; margin-bottom:24px; display:inline-block;">
                                                 <i class="fa-brands fa-apple"></i> Apple Wallet &nbsp;|&nbsp; <i class="fa-brands fa-google"></i> Google Wallet
                                             </div>
                                             
-                                            <h4 style="font-size:13px; color:#ddd; margin-bottom:6px;">Términos y Políticas Legales</h4>
-                                            <p id="render-policies-text" style="font-size:11px; color:#999; line-height:1.5;">Las recompensas no son transferibles ni canjeables por efectivo.</p>
+                                            <h4 style="font-size:14px; color:#fff; margin-bottom:8px;">Términos y Políticas Legales</h4>
+                                            <p id="render-policies-text" style="font-size:12px; color:#a1a1aa; line-height:1.6;">Las recompensas no son transferibles ni canjeables por efectivo.</p>
                                             
-                                            <div style="width:100%; height:1px; background:#333; margin:20px 0;"></div>
+                                            <div style="width:100%; height:1px; background:#333; margin:24px 0;"></div>
                                             
-                                            <h4 style="font-size:13px; color:#ddd; margin-bottom:6px;">Acerca de este Pase</h4>
-                                            <p style="font-size:11px; color:#999; line-height:1.5;">Este pase digital está administrado por Fidelio Rewards. Cualquier modificación de saldo se refleja automáticamente mediante tecnología Push.</p>
+                                            <h4 style="font-size:14px; color:#fff; margin-bottom:8px;">Acerca de este Pase</h4>
+                                            <p style="font-size:12px; color:#a1a1aa; line-height:1.6;">Este pase digital está administrado por Fidelio Rewards. Cualquier modificación de saldo se refleja automáticamente mediante tecnología Push.</p>
+                                            
+                                            <div style="margin-top:40px; text-align:center; opacity:0.5;">
+                                                <img src="./fidelio_logo_purple.png" style="width:60px; filter:grayscale(1) brightness(2);">
+                                            </div>
                                         </div>
 
                                     </div>
                                 </div>
                                 
                                 <div style="width:100%; display:flex; justify-content:center; padding-top:10px;">
-                                    <div style="width:120px; height:4px; background:white; border-radius:2px;"></div>
+                                    <div style="width:120px; height:5px; background:rgba(255,255,255,0.8); border-radius:3px;"></div>
                                 </div>
                             </div>
                         </div>
