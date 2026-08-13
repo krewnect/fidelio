@@ -814,11 +814,102 @@
                         <h1>Motor de Reglas y Recompensas</h1>
                         <p>Configura modalidades: Visitas, CashBack, o Personalizado.</p>
                     </div>
+                    <button class="btn btn-primary"><i class="fa-solid fa-save"></i> Guardar Reglas</button>
                 </div>
-                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
-                    <i class="fa-solid fa-gift" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
-                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
-                    <p>Aquí estará el panel de configuración de la lógica de recompensas.</p>
+                
+                <div class="builder-controls-panel" style="max-width: 800px; margin: 0 auto; background: white; padding: 32px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    
+                    <div class="form-group" style="margin-bottom: 32px;">
+                        <label>Selecciona las modalidades activas para tu programa (puedes activar varias al mismo tiempo)</label>
+                        <div class="mechanics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-top: 12px;">
+                            <div class="mode-tile active featured" data-mode="hybrid">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <strong>Modo Completo</strong>
+                                <small>Cashback, Sellos, Promos, VIP</small>
+                            </div>
+                            <div class="mode-tile" data-mode="cashback">
+                                <i class="fa-solid fa-percent"></i>
+                                <strong>Solo Cashback</strong>
+                            </div>
+                            <div class="mode-tile" data-mode="stamps">
+                                <i class="fa-solid fa-stamp"></i>
+                                <strong>Solo Sellos (Visitas)</strong>
+                            </div>
+                            <div class="mode-tile" data-mode="custom">
+                                <i class="fa-solid fa-pen-ruler"></i>
+                                <strong>Custom 100%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border:none; border-top: 1px dashed var(--border-glass); margin: 32px 0;">
+
+                    <!-- Cashback Config -->
+                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
+                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
+                            <label class="switch"><input type="checkbox" id="mech-cashback-check" checked><span class="slider"></span></label>
+                            <h3 style="margin:0; font-size: 16px;">Recompensa por Consumo (CashBack %)</h3>
+                        </div>
+                        <div class="form-group" id="mech-cashback-body">
+                            <label>Porcentaje devuelto en dinero electrónico por cada compra:</label>
+                            <input type="number" class="fidelio-input" id="cashback-percent" value="10" style="width: 150px;">
+                        </div>
+                    </div>
+
+                    <!-- Stamps Config -->
+                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
+                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
+                            <label class="switch"><input type="checkbox" id="mech-stamps-check" checked><span class="slider"></span></label>
+                            <h3 style="margin:0; font-size: 16px;">Recompensa por Frecuencia (Sellos)</h3>
+                        </div>
+                        <div class="form-row-2" id="mech-stamps-body" style="display: grid; grid-template-columns: 1fr 2fr; gap: 16px;">
+                            <div class="form-group">
+                                <label>Número de Visitas (Sellos)</label>
+                                <input type="number" class="fidelio-input" id="stamps-total" value="5">
+                            </div>
+                            <div class="form-group">
+                                <label>Premio a Desbloquear</label>
+                                <input type="text" class="fidelio-input" id="stamps-reward" value="Hamburguesa Gratis">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP Tiers Config -->
+                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
+                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
+                            <label class="switch"><input type="checkbox" id="mech-vip-check" checked><span class="slider"></span></label>
+                            <h3 style="margin:0; font-size: 16px;">Niveles de Lealtad (VIP Tiers)</h3>
+                        </div>
+                        <div id="mech-vip-body">
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Incentiva el gasto creando categorías de clientes. Entre más gastan, mejores beneficios obtienen.</p>
+                            
+                            <div class="tier-config-card" style="background: white; border: 1px solid #FCD34D; border-left: 4px solid #F59E0B; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                                    <strong style="color: #B45309;"><i class="fa-solid fa-crown"></i> Nivel Oro (VIP)</strong>
+                                    <button class="btn-preset"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                                <div class="form-row-2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                                    <div class="form-group"><label>Gasto Acumulado Mínimo</label><input type="number" class="fidelio-input" value="3000"></div>
+                                    <div class="form-group"><label>Cashback % en este nivel</label><input type="number" class="fidelio-input" value="15"></div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-outline btn-block"><i class="fa-solid fa-plus"></i> Agregar Nuevo Nivel</button>
+                        </div>
+                    </div>
+
+                    <!-- Custom / Promos -->
+                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
+                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
+                            <label class="switch"><input type="checkbox" id="mech-dynamic-check" checked><span class="slider"></span></label>
+                            <h3 style="margin:0; font-size: 16px;">Promoción Dinámica / Custom</h3>
+                        </div>
+                        <div class="form-group" id="mech-dynamic-body">
+                            <label>Texto Promocional Adicional en Tarjeta (Ej: Martes Doble Puntaje):</label>
+                            <input type="text" class="fidelio-input" id="dynamic-desc" value="Martes y Jueves: Doble Cashback">
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
