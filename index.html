@@ -918,13 +918,70 @@
                     <div>
                         <span class="workspace-eyebrow">MY BUSINESS</span>
                         <h1>Difusión y Adquisición</h1>
-                        <p>Descarga QRs para tus mesas y configura tu Landing Page pública.</p>
+                        <p>Descarga el código QR para tu sucursal y configura el enlace web de tu negocio.</p>
                     </div>
                 </div>
-                <div style="padding: 60px; text-align: center; color: var(--text-muted); border: 2px dashed var(--border-glass); border-radius: 12px; margin-top: 20px;">
-                    <i class="fa-solid fa-bullhorn" style="font-size: 40px; margin-bottom: 20px; color: var(--accent-violet);"></i>
-                    <h3 style="color: var(--text-main); margin-bottom: 8px;">Módulo en Construcción</h3>
-                    <p>Aquí podrás generar plantillas de PDF para exhibidores de mesa y editar tu perfil público.</p>
+                
+                <div class="builder-split-grid">
+                    <!-- CONTROLS -->
+                    <div class="builder-controls-panel">
+                        <div class="accordion-card">
+                            <div class="card-title-bar">
+                                <span class="card-step-badge">01</span>
+                                <h2>Generador de Código QR</h2>
+                            </div>
+                            <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
+                                Imprime este código y colócalo en tus mesas, cajas o menús. Tus clientes lo escanearán para descargar su tarjeta digital directamente en su Apple/Google Wallet.
+                            </p>
+                            
+                            <div class="form-group">
+                                <label>Formato de Descarga</label>
+                                <select class="fidelio-input">
+                                    <option value="png">PNG (Transparente, para diseñadores)</option>
+                                    <option value="pdf_table">PDF - Tent Card para Mesas</option>
+                                    <option value="pdf_sticker">PDF - Etiqueta para Caja</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 12px;">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> Generar y Descargar Material
+                            </button>
+                        </div>
+
+                        <div class="accordion-card" style="margin-top: 24px;">
+                            <div class="card-title-bar">
+                                <span class="card-step-badge">02</span>
+                                <h2>Perfil Web Público</h2>
+                            </div>
+                            <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
+                                Los clientes que no pueden escanear el QR, pueden entrar a esta URL para unirse a tu programa. ¡Ponlo en tu biografía de Instagram!
+                            </p>
+                            
+                            <div class="form-group">
+                                <label>Enlace Personalizado</label>
+                                <div style="display:flex; align-items:center; background:var(--surface-light); border:1px solid var(--border-light); border-radius:8px; overflow:hidden;">
+                                    <span style="padding: 0 12px; color:var(--text-muted); font-size:14px;">fidelio.com/</span>
+                                    <input type="text" value="don-pedro" style="flex:1; border:none; padding:12px; font-weight:bold; outline:none; background:transparent;">
+                                </div>
+                            </div>
+
+                            <button class="btn btn-outline" style="width:100%; justify-content:center; margin-top: 12px;">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar Enlace
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW -->
+                    <div style="display:flex; flex-direction:column; gap:24px;">
+                        <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 40px; text-align: center; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                            <h3 style="margin-bottom: 16px; color:var(--text-main);">QR Oficial</h3>
+                            <div style="background: white; padding: 16px; border: 1px solid var(--border-light); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                                <!-- Placeholder QR genérico -->
+                                <img src="/scratch/dummy_qr.png" alt="QR" style="width: 200px; height: 200px; opacity: 0.8;">
+                            </div>
+                            <p style="color:var(--text-muted); font-size:13px; margin-top: 16px;">Apunta con la cámara para probar</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
