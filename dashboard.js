@@ -849,9 +849,18 @@ let saveTimeout = null;
         if (rCat) rCat.textContent = pCat;
         if (rDesc) rDesc.textContent = pDesc;
         if (rReward) rReward.textContent = pReward;
-        if (rPolicies) rPolicies.textContent = pPolicies;
+        const rIcon = document.getElementById('render-icon');
         
-        if (rIcon) rIcon.className = 'fa-solid ' + pIcon;
+        // Handle Custom Logo vs Icon
+        const passLogoCircle = document.querySelector('.pass-logo-circle');
+        if (passLogoCircle) {
+            if (state.customLogoUrl) {
+                passLogoCircle.innerHTML = `<img src="${state.customLogoUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+            } else {
+                passLogoCircle.innerHTML = `<i class="fa-solid ${pIcon}" id="render-icon"></i>`;
+            }
+        }
+        
         if (rFront) rFront.style.background = `linear-gradient(135deg, ${cPri}, ${cAcc})`;
         
         const bannerContainer = document.getElementById('render-banner-container');

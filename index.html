@@ -465,6 +465,15 @@
                                     <label class="premium-label">Giro o Categoría (Opcional)</label>
                                     <input type="text" id="business-category-input" class="premium-input" value="Restaurante & Gastronomía" placeholder="Ej: Barbería, Spa...">
                                 </div>
+                                <div>
+                                    <label class="premium-label">Logo del Negocio</label>
+                                    <div class="file-dropzone">
+                                        <input type="file" id="logo-file-input" accept="image/png, image/jpeg">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span>Haz clic o arrastra tu logotipo aquí</span>
+                                    </div>
+                                    <button id="btn-remove-logo" class="btn btn-outline" style="display:none; margin-top:8px; padding:6px 12px; font-size:12px; width:100%; justify-content:center;">Quitar Logo</button>
+                                </div>
                             </div>
                         </div>
                         
@@ -475,6 +484,15 @@
                             <div class="premium-section-title">Apariencia Visual</div>
                             
                             <div style="display:flex; flex-direction:column; gap:16px;">
+                                <div>
+                                    <label class="premium-label">Imagen de Portada (Banner Wallet)</label>
+                                    <div class="file-dropzone">
+                                        <input type="file" id="banner-file-input" accept="image/png, image/jpeg">
+                                        <i class="fa-regular fa-image"></i>
+                                        <span>Haz clic o arrastra una imagen ancha (1125x432 px recom.)</span>
+                                    </div>
+                                    <button id="btn-remove-banner" class="btn btn-outline" style="display:none; margin-top:8px; padding:6px 12px; font-size:12px; width:100%; justify-content:center;">Quitar Portada</button>
+                                </div>
                                 <div style="display:flex; gap:24px;">
                                     <div>
                                         <label class="premium-label">Color Principal</label>
