@@ -298,6 +298,9 @@ let saveTimeout = null;
             
         if (!error) {
             showToast("Guardado automático en la nube ☁️", "success");
+        } else {
+            console.error("Supabase Save Error:", error);
+            showToast("Error de conexión BD: " + (error.message || "Fallo desconocido"), "error");
         }
     }
 
