@@ -442,15 +442,17 @@
                 <img src="./fidelio_logo_purple.png?v=4" alt="Fidelio Logo" style="height: 44px; width: auto;" />
             </a>
             
-            <nav style="display:flex; align-items:center; gap:24px; font-weight:500; font-size: 14px;">
-                <a href="#features" style="color:var(--text-main); text-decoration:none;">Características</a>
-                <a href="#pricing" style="color:var(--text-main); text-decoration:none;">Precios</a>
-                <a href="#contact" style="color:var(--text-main); text-decoration:none;">Contacto</a>
-            </nav>
+            <div style="display:flex; align-items:center; gap:32px; margin-left: auto;">
+                <nav style="display:flex; align-items:center; gap:24px; font-weight:500; font-size: 14px;">
+                    <a href="#features" style="color:var(--text-main); text-decoration:none;">Características</a>
+                    <a href="#pricing" style="color:var(--text-main); text-decoration:none;">Precios</a>
+                    <a href="#contact" style="color:var(--text-main); text-decoration:none;">Contacto</a>
+                </nav>
 
-            <div style="display:flex; gap:16px; margin-left: auto;">
-                <button class="btn-secondary" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
-                <button class="btn-primary" onclick="document.getElementById('registerModal').classList.add('active')">Comenzar Gratis</button>
+                <div style="display:flex; gap:16px;">
+                    <button class="btn-secondary" style="font-size:14px; padding:10px 20px;" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
+                    <button class="btn-primary" style="font-size:14px; padding:10px 20px;" onclick="document.getElementById('registerModal').classList.add('active')">Comenzar Gratis</button>
+                </div>
             </div>
         </header>
 
@@ -799,41 +801,8 @@
                         if (error) throw error;
                         
                         if (data.session) {
-                            // Éxito con contraseña. Ahora solicitamos validación Biométrica (2FA)
-                            btn.innerHTML = '<i class="fa-solid fa-fingerprint"></i> Validando Biometría...';
-                            
-                            if (window.PublicKeyCredential) {
-                                try {
-                                    // Safari blocks WebAuthn if it loses the user gesture context due to previous await calls.
-                                    // To prevent hanging, we set a 3 second timeout fallback
-                                    let bioPromise = navigator.credentials.create({
-                                        publicKey: {
-                                            challenge: new Uint8Array(32),
-                                            rp: { name: "Fidelio Rewards" },
-                                            user: {
-                                                id: new Uint8Array(16),
-                                                name: email,
-                                                displayName: email
-                                            },
-                                            pubKeyCredParams: [{ type: "public-key", alg: -7 }],
-                                            authenticatorSelection: { userVerification: "required" },
-                                            timeout: 60000,
-                                        }
-                                    });
-                                    
-                                    await Promise.race([
-                                        bioPromise,
-                                        new Promise(resolve => setTimeout(resolve, 3000))
-                                    ]);
-                                    
-                                    window.location.href = '/panel';
-                                } catch (bioError) {
-                                    window.location.href = '/panel';
-                                }
-                            } else {
-                                // Dispositivo sin hardware biométrico, redirigir directo
-                                window.location.href = '/panel';
-                            }
+                            // Éxito con contraseña. Redirección inmediata sin biometría para evitar congelamientos.
+                            window.location.href = '/panel';
                         } else {
                             throw new Error("No se pudo establecer la sesión");
                         }
