@@ -1064,7 +1064,7 @@ let saveTimeout = null;
 
     // --- LEADS MANAGEMENT (ADMIN ONLY) ---
     window.loadLeads = async function() {
-        if (!window.merchantSession || window.merchantSession.user.email !== 'admin@fidelio.com') return;
+        if (!window.merchantSession || window.merchantSession.user.email !== 'hola@fideliorewards.com') return;
         
         const tbody = document.getElementById('leads-table-body');
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando prospectos...</td></tr>';
@@ -1113,7 +1113,7 @@ let saveTimeout = null;
         accEmail.value = window.merchantSession.user.email;
         
         // ADMIN CHECK FOR LEADS TAB
-        if (window.merchantSession.user.email === 'admin@fidelio.com') {
+        if (window.merchantSession.user.email === 'hola@fideliorewards.com') {
             document.getElementById('admin-leads-menu').style.display = 'block';
             document.getElementById('admin-leads-tab').style.display = 'block';
             
@@ -1191,7 +1191,7 @@ let saveTimeout = null;
         // Actualizar encabezados (solo si no es admin)
         if (state && state.restaurantName) {
             const currentEmail = (window.merchantSession && window.merchantSession.user) ? window.merchantSession.user.email : '';
-            if (currentEmail !== 'admin@fidelio.com') {
+            if (currentEmail !== 'hola@fideliorewards.com') {
                 document.getElementById('header-restaurant-name').textContent = state.restaurantName;
                 document.getElementById('header-business-category').textContent = state.category || "Restaurante";
             }
