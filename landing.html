@@ -4,35 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fidelio | Enterprise Loyalty Platform</title>
-    <!-- Google Fonts: Inter & Space Grotesk -->
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- FIDELIO V30: ULTRA-PREMIUM OBSIDIAN NEON DESIGN -->
+    <!-- FIDELIO V40: ORGANIC LIGHT PREMIUM DESIGN -->
     <style>
         :root {
-            --bg-deep: #030303;
-            --bg-panel: rgba(18, 18, 24, 0.6);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-base: #FDFBF7;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
             
-            --accent-violet: #8b5cf6;
-            --accent-neon: #d946ef;
-            --accent-cyan: #06b6d4;
+            --fidelio-violet: #4C1D95; /* Color Violeta Principal */
+            --fidelio-violet-hover: #3b147a;
             
-            --glow-violet: rgba(139, 92, 246, 0.4);
-            --glow-neon: rgba(217, 70, 239, 0.3);
-            --glow-cyan: rgba(6, 182, 212, 0.3);
+            --border-light: #E5E7EB;
+            --card-bg: #FFFFFF;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background-color: var(--bg-deep);
+            background-color: var(--bg-base);
             color: var(--text-main);
             font-family: 'Inter', -apple-system, sans-serif;
             line-height: 1.6;
@@ -40,395 +36,218 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* DYNAMIC MESH GRADIENT BACKGROUND */
-        .ambient-mesh {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 0;
-            pointer-events: none;
-            background: 
-                radial-gradient(circle at 15% 0%, var(--glow-violet), transparent 50%),
-                radial-gradient(circle at 85% 30%, var(--glow-cyan), transparent 40%),
-                radial-gradient(circle at 50% 80%, var(--glow-neon), transparent 50%);
-            filter: blur(100px);
-            opacity: 0.6;
-            animation: meshBreath 12s ease-in-out infinite alternate;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
         }
 
-        @keyframes meshBreath {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
-            50% { transform: scale(1.1) translate(2%, 2%); opacity: 0.7; }
-            100% { transform: scale(1) translate(-2%, -2%); opacity: 0.5; }
-        }
-
-        .noise-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .layout-wrapper { position: relative; z-index: 10; }
-
-        /* GLASS HEADER */
-        .nav-header {
+        /* HEADER */
+        header {
+            padding: 24px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 40px;
-            background: rgba(3, 3, 3, 0.7);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border-glass);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
 
         .brand-logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #fff;
             text-decoration: none;
         }
         
         .brand-logo img {
+            height: 32px;
             width: auto;
-            height: 44px;
-            border-radius: 8px;
             object-fit: contain;
         }
-
-        .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a { 
-            color: var(--text-muted); 
-            text-decoration: none; 
-            font-size: 14px; 
-            font-weight: 500; 
-            transition: color 0.3s ease; 
-        }
-        .nav-links a:hover { color: #fff; }
 
         /* PREMIUM BUTTONS */
         .btn-primary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: linear-gradient(135deg, var(--accent-violet), #c026d3);
+            background: var(--fidelio-violet);
             color: #fff;
-            padding: 12px 24px;
-            border-radius: 100px;
-            font-size: 14px;
+            padding: 14px 28px;
+            border-radius: 9999px; /* Pill shape */
+            font-size: 15px;
             font-weight: 600;
             text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 24px var(--glow-violet), inset 0 1px 0 rgba(255,255,255,0.3);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: none;
+            transition: all 0.3s ease;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
         }
-        .btn-primary::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
-            transform: skewX(-20deg);
-            transition: left 0.5s ease;
+        .btn-primary:hover { 
+            background: var(--fidelio-violet-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 29, 149, 0.15);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px var(--glow-neon); }
-        .btn-primary:hover::after { left: 150%; }
 
         .btn-secondary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: var(--bg-panel);
-            backdrop-filter: blur(12px);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 100px;
-            font-size: 14px;
-            font-weight: 500;
+            background: transparent;
+            color: var(--text-main);
+            padding: 14px 28px;
+            border-radius: 9999px;
+            font-size: 15px;
+            font-weight: 600;
             text-decoration: none;
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-light);
             transition: all 0.3s ease;
             cursor: pointer;
         }
         .btn-secondary:hover { 
-            background: rgba(255,255,255,0.1); 
-            border-color: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
+            background: #F3F4F6;
         }
 
         /* HERO SECTION */
         .hero {
-            padding: 120px 40px 80px;
-            max-width: 1300px;
-            margin: 0 auto;
+            padding: 80px 0 100px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 64px;
+            gap: 60px;
             align-items: center;
         }
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 6px 16px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #c4b5fd;
-            letter-spacing: 1px;
-            margin-bottom: 24px;
-            text-transform: uppercase;
-        }
-
-        .hero-title {
-            font-size: 64px;
+        .hero-content h1 {
+            font-size: 68px;
             font-weight: 800;
-            letter-spacing: -2.5px;
+            letter-spacing: -2px;
             line-height: 1.05;
             margin-bottom: 24px;
-            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
         }
 
-        .hero-title span {
-            background: linear-gradient(135deg, #a78bfa, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hero-content h1 span {
+            color: var(--fidelio-violet);
         }
 
         .hero-desc {
-            font-size: 18px;
+            font-size: 20px;
             color: var(--text-muted);
-            line-height: 1.7;
+            line-height: 1.6;
             margin-bottom: 40px;
-            max-width: 540px;
+            max-width: 500px;
+            font-weight: 400;
         }
 
-        .hero-actions { display: flex; gap: 16px; margin-bottom: 48px; }
-
-        .stats-row {
-            display: flex;
-            gap: 40px;
-            padding-top: 32px;
-            border-top: 1px solid var(--border-glass);
-        }
-        .stat-item strong {
-            display: block;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .stat-item span { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-
-        /* HERO IPHONE 3D STAGE */
-        .stage-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            perspective: 1000px;
-        }
-
-        .iphone-mockup {
-            width: 320px;
-            height: 650px;
-            background: #000;
-            border-radius: 50px;
-            border: 4px solid #333;
-            box-shadow: 
-                inset 0 0 10px rgba(255,255,255,0.2),
-                0 30px 60px rgba(0,0,0,0.8),
-                0 0 80px rgba(139, 92, 246, 0.4);
-            position: relative;
-            transform: rotateY(-15deg) rotateX(5deg);
-            transform-style: preserve-3d;
-            animation: float3D 6s ease-in-out infinite alternate;
+        .hero-image {
+            width: 100%;
+            height: 600px;
+            border-radius: 24px;
             overflow: hidden;
-            padding: 12px;
+            position: relative;
         }
-        
-        .iphone-inner {
+
+        .hero-image img {
             width: 100%;
             height: 100%;
-            border-radius: 38px;
-            background: linear-gradient(180deg, #1e1b4b, #000);
-            position: relative;
-            overflow: hidden;
+            object-fit: cover;
+            border-radius: 24px;
         }
 
-        @keyframes float3D {
-            0% { transform: translateY(0) rotateY(-15deg) rotateX(5deg); }
-            100% { transform: translateY(-20px) rotateY(-10deg) rotateX(2deg); box-shadow: 0 50px 80px rgba(0,0,0,0.9), 0 0 100px rgba(217, 70, 239, 0.3); }
+        /* FEATURES GRID */
+        .features-section {
+            background-color: var(--bg-base);
+            padding: 100px 0;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
         }
 
-        .dynamic-island {
-            position: absolute;
-            top: 12px; left: 50%;
-            transform: translateX(-50%);
-            width: 100px; height: 30px;
-            background: #000;
-            border-radius: 20px;
-            z-index: 20;
-            display: flex; justify-content: space-between; align-items: center; padding: 0 10px;
-        }
-        .lens { width: 10px; height: 10px; background: #111; border-radius: 50%; box-shadow: inset 0 0 2px rgba(255,255,255,0.1); }
-
-        .pass-preview {
-            margin-top: 60px;
-            margin-inline: 16px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .pass-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
-        .pass-logo { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ef4444); }
-        .pass-tier { font-size: 10px; font-weight: 700; color: #fcd34d; letter-spacing: 1px; }
-        
-        .pass-balance { text-align: center; margin-bottom: 20px; }
-        .pass-balance-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-        .pass-balance-amount { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: #fff; }
-        
-        .qr-placeholder {
-            width: 120px; height: 120px;
-            background: #fff;
-            border-radius: 12px;
-            margin: 0 auto;
-            display: flex; align-items: center; justify-content: center;
-            color: #000; font-size: 48px;
-        }
-
-        /* BENTO GRID */
-        .section-padding { padding: 100px 40px; max-width: 1300px; margin: 0 auto; }
-        .section-head { text-align: center; margin-bottom: 64px; }
-        .section-head h2 { font-size: 42px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 16px; }
-        .section-head p { font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
-
-        .bento-grid {
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 0;
         }
 
-        .bento-card {
-            background: var(--bg-panel);
-            backdrop-filter: blur(32px);
-            -webkit-backdrop-filter: blur(32px);
-            border: 1px solid var(--border-glass);
-            border-radius: 32px;
-            padding: 40px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        
-        .bento-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 60%);
-            z-index: 0; pointer-events: none;
-        }
-
-        .bento-card:hover {
-            transform: translateY(-4px) scale(1.01);
-            border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(139,92,246,0.1);
-        }
-
-        .bento-card.wide { grid-column: span 2; }
-        .bento-card.tall { grid-row: span 2; }
-
-        .bento-icon {
-            width: 48px; height: 48px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-            color: #fff;
-            margin-bottom: 24px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .bento-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; position: relative; z-index: 1; }
-        .bento-card p { font-size: 15px; color: var(--text-muted); line-height: 1.6; position: relative; z-index: 1; }
-
-        /* BLACK CARD PRICING */
-        .pricing-container {
+        .feature-card {
+            padding: 60px 40px;
             display: flex;
-            justify-content: center;
-            padding-top: 40px;
+            flex-direction: row;
+            gap: 20px;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border-light);
+            border-right: 1px solid var(--border-light);
         }
-        
-        .black-card {
-            background: linear-gradient(145deg, #111, #000);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 36px;
-            padding: 56px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 
-                0 30px 60px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(255,255,255,0.1);
+
+        /* Remove right border for every 3rd item */
+        .feature-card:nth-child(3n) { border-right: none; }
+        /* Remove bottom border for the last row */
+        .feature-card:nth-last-child(-n+3) { border-bottom: none; }
+
+        .feature-icon {
+            font-size: 32px;
+            color: var(--fidelio-violet);
+            flex-shrink: 0;
+        }
+
+        .feature-text h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .feature-text p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* BOTTOM CTA */
+        .cta-bottom {
+            padding: 120px 0;
+            text-align: left;
             position: relative;
             overflow: hidden;
         }
-        
-        .black-card::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(from 180deg at 50% 50%, transparent 0deg, rgba(139,92,246,0.15) 180deg, transparent 360deg);
-            animation: spin 10s linear infinite;
-            pointer-events: none;
+
+        .cta-bottom h2 {
+            font-size: 64px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            color: var(--text-main);
         }
         
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .cta-bottom h2 span {
+            color: var(--fidelio-violet);
+        }
 
-        .card-content { position: relative; z-index: 10; }
+        .cta-bottom p {
+            font-size: 22px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
 
-        .price-tag { display: flex; align-items: flex-start; margin: 32px 0; }
-        .currency { font-size: 24px; font-weight: 500; color: var(--text-muted); margin-top: 8px;}
-        .amount { font-family: 'Space Grotesk', sans-serif; font-size: 72px; font-weight: 800; line-height: 1; letter-spacing: -3px; }
-        .period { font-size: 16px; color: var(--text-muted); align-self: flex-end; margin-bottom: 12px; margin-left: 8px; }
-
-        .feature-list { list-style: none; margin-bottom: 40px; display: flex; flex-direction: column; gap: 16px; }
-        .feature-list li { display: flex; align-items: center; gap: 12px; font-size: 15px; color: #cbd5e1; }
-        .feature-list i { color: #10b981; font-size: 14px; }
+        /* DECORATIVE SMILE (Like the image) */
+        .smile-decor {
+            position: absolute;
+            right: 10%;
+            bottom: 20%;
+            opacity: 0.8;
+            pointer-events: none;
+            width: 200px;
+            height: auto;
+        }
 
         /* FOOTER */
         footer {
-            border-top: 1px solid var(--border-glass);
-            padding: 40px;
+            padding: 40px 0;
             text-align: center;
             font-size: 14px;
             color: var(--text-muted);
-            background: #000;
+            border-top: 1px solid var(--border-light);
         }
 
-        /* MODAL */
+        /* MODALES */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(20px);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
             z-index: 9999;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; visibility: hidden;
@@ -437,248 +256,171 @@
         .modal-overlay.active { opacity: 1; visibility: visible; }
         
         .modal-box {
-            background: #0a0a0c;
-            border: 1px solid var(--border-glass);
+            background: #fff;
             border-radius: 24px;
             padding: 40px;
             width: 100%; max-width: 440px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             transform: scale(0.95);
             transition: all 0.3s ease;
         }
         .modal-overlay.active .modal-box { transform: scale(1); }
 
         .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; }
+        .input-group label { display: block; font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
         .input-group input {
             width: 100%; padding: 14px 16px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #F9FAFB;
+            border: 1px solid var(--border-light);
             border-radius: 12px;
-            color: #fff; font-family: 'Inter', sans-serif; font-size: 14px;
-            outline: none; transition: border-color 0.2s;
+            color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 15px;
+            outline: none; transition: all 0.2s;
         }
-        .input-group input:focus { border-color: var(--accent-violet); background: rgba(139,92,246,0.05); }
+        .input-group input:focus { border-color: var(--fidelio-violet); background: #fff; box-shadow: 0 0 0 4px rgba(76, 29, 149, 0.1); }
 
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .hero { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .hero-desc { margin: 0 auto 40px; }
+            .hero-image { height: 400px; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .feature-card:nth-child(3n) { border-right: 1px solid var(--border-light); }
+            .feature-card:nth-child(2n) { border-right: none; }
+            .feature-card:nth-last-child(-n+3) { border-bottom: 1px solid var(--border-light); }
+            .feature-card:nth-last-child(-n+2) { border-bottom: none; }
+            .cta-bottom h2 { font-size: 48px; }
+            .smile-decor { display: none; }
+        }
+        @media (max-width: 768px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .feature-card { border-right: none !important; border-bottom: 1px solid var(--border-light) !important; padding: 40px 20px; }
+            .feature-card:last-child { border-bottom: none !important; }
+            .hero-content h1 { font-size: 48px; }
+            header { flex-direction: column; gap: 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="ambient-mesh"></div>
-    <div class="noise-overlay"></div>
-
-    <div class="layout-wrapper">
-        <header class="nav-header">
+    <div class="container">
+        <!-- HEADER -->
+        <header>
             <a href="#" class="brand-logo">
-                <img src="fidelio_logo.jpg" alt="Fidelio" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=8b5cf6&color=fff&size=64'">
+                <!-- Fallback a imagen de Fidelio Logo -->
+                <img src="fidelio_logo.png" alt="Fidelio Logo" onerror="this.src='https://ui-avatars.com/api/?name=Fidelio&background=FDFBF7&color=4C1D95&size=64'">
             </a>
             
-            <nav class="nav-links">
-                <a href="#features">Características</a>
-                <a href="#pricing">Precios</a>
-                <a href="#" onclick="document.getElementById('demoModal').classList.add('active'); return false;">Solicitar Demo</a>
-            </nav>
-
-            <div style="display:flex; gap: 12px;">
+            <div style="display:flex; gap: 16px;">
                 <button class="btn-secondary" onclick="document.getElementById('loginModal').classList.add('active')">Iniciar Sesión</button>
-                <a href="#pricing" class="btn-primary">Empezar</a>
             </div>
         </header>
 
+        <!-- HERO -->
         <section class="hero">
             <div class="hero-content">
-                <div class="hero-badge"><i class="fa-solid fa-sparkles"></i> Enterprise Loyalty Platform</div>
-                <h1 class="hero-title">Fidelización <span>Inteligente</span> para tu Negocio.</h1>
-                <p class="hero-desc">Reemplaza el papel por pases nativos en Apple y Google Wallet. Aumenta la retención con notificaciones geolocalizadas, IA y experiencias de alta gama.</p>
-                
-                <div class="hero-actions">
-                    <a href="#pricing" class="btn-primary">Empezar Ahora</a>
-                    <button class="btn-secondary" onclick="document.getElementById('demoModal').classList.add('active')"><i class="fa-solid fa-envelope"></i> Contáctanos</button>
-                </div>
-
-                <div class="stats-row">
-                    <div class="stat-item"><strong>99.8%</strong><span>Instalación Exitosa</span></div>
-                    <div class="stat-item"><strong>20x</strong><span>Retorno de Inversión</span></div>
-                    <div class="stat-item"><strong><i class="fa-brands fa-apple"></i></strong><span>Wallet Native</span></div>
+                <h1>Haz que tus clientes <span>vuelvan.</span></h1>
+                <p class="hero-desc">Fidelio es una plataforma de fidelización digital para negocios que quieren crear hábito, volver medible la lealtad y hacer que sus clientes regresen.</p>
+                <div style="display:flex; gap: 16px;">
+                    <a href="#" class="btn-primary" onclick="document.getElementById('demoModal').classList.add('active'); return false;">
+                        Solicita una demo &nbsp;&rarr;
+                    </a>
                 </div>
             </div>
 
-            <div class="stage-container">
-                <div class="iphone-mockup">
-                    <div class="iphone-inner">
-                        <div class="dynamic-island"><div class="lens"></div></div>
-                        
-                        <div class="pass-preview">
-                            <div class="pass-header">
-                                <div class="pass-logo"></div>
-                                <div class="pass-tier">VIP MEMBER</div>
-                            </div>
-                            <div class="pass-balance">
-                                <div class="pass-balance-label">Cashback Balance</div>
-                                <div class="pass-balance-amount">$145.00</div>
-                            </div>
-                            <div class="qr-placeholder">
-                                <i class="fa-solid fa-qrcode"></i>
-                            </div>
-                            <div style="text-align:center; margin-top:16px; font-size:10px; color:#64748b;">Scan to redeem</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="hero-image">
+                <!-- Imagen fotográfica cálida tipo café/restaurante -->
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=1200&h=800" alt="Barista entregando pedido">
             </div>
         </section>
-
-        <section id="features" class="section-padding">
-            <div class="section-head">
-                <h2>Arquitectura Diseñada para Crecer</h2>
-                <p>Una suite completa con herramientas profesionales para administrar, analizar y automatizar tu programa de lealtad.</p>
-            </div>
-
-            <div class="bento-grid">
-                <div class="bento-card wide">
-                    <div class="bento-icon" style="color: #a855f7;"><i class="fa-brands fa-apple"></i></div>
-                    <h3>Integración Nativa Wallet</h3>
-                    <p>Olvídate de obligar a tus clientes a descargar una App más. Fidelio genera pases en formato .pkpass nativos para iOS y Android que se instalan con un solo clic. Cero fricción, máxima adopción.</p>
-                </div>
-                
-                <div class="bento-card tall">
-                    <div class="bento-icon" style="color: #06b6d4;"><i class="fa-solid fa-location-dot"></i></div>
-                    <h3>Geofencing Inteligente</h3>
-                    <p>Registra hasta 20 ubicaciones GPS. Cuando tu cliente pase a menos de 100 metros de tu negocio, su iPhone mostrará una notificación en la pantalla de bloqueo invitándolo a entrar y usar su saldo acumulado.</p>
-                </div>
-                
-                <div class="bento-card">
-                    <div class="bento-icon" style="color: #f59e0b;"><i class="fa-solid fa-bolt"></i></div>
-                    <h3>Motor de Reglas Dinámico</h3>
-                    <p>Configura Cashback %, Tarjetas de Sellos, o Puntos. Ajusta las reglas en tiempo real sin necesidad de que el cliente actualice su pase.</p>
-                </div>
-                
-                <div class="bento-card">
-                    <div class="bento-icon" style="color: #ec4899;"><i class="fa-solid fa-robot"></i></div>
-                    <h3>Automatización IA</h3>
-                    <p>Fidelito IA envía regalos de cumpleaños automáticamente y lanza campañas de recuperación para clientes inactivos por más de 30 días.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="pricing" class="section-padding">
-            <div class="section-head">
-                <h2>Precio Simple y Transparente</h2>
-                <p>Todo el poder de la plataforma Enterprise, sin comisiones ocultas.</p>
-            </div>
-
-            <div class="pricing-container">
-                <div class="black-card">
-                    <div class="card-content">
-                        <div style="font-size: 13px; font-weight: 700; color: #a855f7; letter-spacing: 1px;">FIDELIO UNLIMITED</div>
-                        
-                        <div class="price-tag">
-                            <span class="currency">$</span>
-                            <span class="amount">999</span>
-                            <span class="period">MXN / mes</span>
-                        </div>
-
-                        <ul class="feature-list">
-                            <li><i class="fa-solid fa-check"></i> Pases ilimitados para Apple & Google</li>
-                            <li><i class="fa-solid fa-check"></i> 20 Sucursales GPS (Geofencing)</li>
-                            <li><i class="fa-solid fa-check"></i> Panel CRM y Analítica en tiempo real</li>
-                            <li><i class="fa-solid fa-check"></i> Automatizaciones e Inteligencia Artificial</li>
-                            <li><i class="fa-solid fa-check"></i> Soporte VIP 24/7</li>
-                        </ul>
-
-                        <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('registerModal').classList.add('active')">
-                            Suscribirme Ahora
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            <div>&copy; 2026 Fidelio Inc. Creado con precisión y diseño.</div>
-        </footer>
     </div>
 
-    <!-- REGISTER MODAL (Antes Demo Modal) -->
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal-box">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="font-size:20px; font-weight:700;">Registro Enterprise</h3>
-                <button onclick="document.getElementById('registerModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:24px;">&times;</button>
+    <!-- FEATURES GRID -->
+    <div class="features-section">
+        <div class="container">
+            <div class="features-grid">
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <div class="feature-text">
+                        <h3>Sin apps especiales</h3>
+                        <p>Tus clientes guardan su tarjeta en su Wallet y la usan de forma simple.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                    <div class="feature-text">
+                        <h3>Campañas flexibles</h3>
+                        <p>Crea programas por visitas, cashback o campañas personalizadas.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-chart-column"></i></div>
+                    <div class="feature-text">
+                        <h3>Métricas y ROI</h3>
+                        <p>Mide uso, frecuencia y retorno para entender el valor real de tu programa.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-rss"></i></div>
+                    <div class="feature-text">
+                        <h3>Escaneo o NFC</h3>
+                        <p>Las tarjetas pueden usarse con nuestro escáner o por medio de NFC.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-store"></i></div>
+                    <div class="feature-text">
+                        <h3>1 a 20 sucursales incluidas</h3>
+                        <p>Nuestro precio contempla de 1 a 20 sucursales.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-regular fa-heart"></i></div>
+                    <div class="feature-text">
+                        <h3>Ideal para</h3>
+                        <p>Restaurantes, cafeterías, studios de ejercicio, tiendas, heladerías, healthy studios, hoteles y teatros.</p>
+                    </div>
+                </div>
+
             </div>
-            
-            <form id="registerForm">
-                <div class="input-group">
-                    <label>Nombre del Negocio</label>
-                    <input type="text" id="reg-business" required placeholder="Ej. Don Pedro Gourmet">
-                </div>
-                <div class="input-group">
-                    <label>Correo Electrónico</label>
-                    <input type="email" id="reg-email" required placeholder="tu@empresa.com">
-                </div>
-                <div class="input-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="reg-password" required placeholder="Crea una contraseña segura">
-                    <div id="pwd-error" style="color:#ef4444; font-size:12px; margin-top:4px; display:none;">La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial (@$!%*?&).</div>
-                </div>
-                <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Crear Cuenta & Pagar</button>
-            </form>
-            <script>
-                document.getElementById('registerForm').addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const businessName = document.getElementById('reg-business').value;
-                    const email = document.getElementById('reg-email').value;
-                    const password = document.getElementById('reg-password').value;
-                    const pwdError = document.getElementById('pwd-error');
-                    
-                    // Validación Fuerte de Contraseña
-                    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                    if (!strongPasswordRegex.test(password)) {
-                        pwdError.style.display = 'block';
-                        return;
-                    }
-                    pwdError.style.display = 'none';
-                    
-                    try {
-                        const res = await fetch('/api/auth/register', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ businessName, email, password })
-                        });
-                        const data = await res.json();
-                        
-                        if(data.success) {
-                            const merchantId = data.user.id;
-                            // Llamar a Stripe Checkout
-                            const stripeRes = await fetch('/api/stripe/checkout', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ merchantId, email })
-                            });
-                            const stripeData = await stripeRes.json();
-                            
-                            if (stripeData.success) {
-                                window.location.href = stripeData.url; // Redirige al pago de Stripe
-                            } else {
-                                alert('Error al iniciar el pago: ' + stripeData.error);
-                            }
-                        } else {
-                            alert('Error: ' + data.error);
-                        }
-                    } catch (error) {
-                        alert('Error de conexión.');
-                    }
-                });
-            </script>
         </div>
     </div>
+
+    <!-- CTA BOTTOM -->
+    <div class="container">
+        <section class="cta-bottom">
+            <h2>Qué bueno que <span>volviste.</span></h2>
+            <p>Conoce Fidelio y agenda una videollamada.</p>
+            <a href="#" class="btn-primary" onclick="document.getElementById('demoModal').classList.add('active'); return false;">
+                Solicita una demo &nbsp;&rarr;
+            </a>
+
+            <!-- Decoración sutil de sonrisa estilo el arte de Instagram (Hecho con SVGs ligeros o texto) -->
+            <svg class="smile-decor" viewBox="0 0 100 100" fill="none" stroke="#E5E7EB" stroke-width="4" stroke-linecap="round">
+                <path d="M 20 50 Q 50 80 80 50" />
+                <path d="M 30 30 L 30 40" />
+                <path d="M 70 30 L 70 40" />
+            </svg>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            &copy; 2026 Fidelio Inc.
+        </div>
+    </footer>
 
     <!-- TRUE DEMO MODAL (Contact Form) -->
     <div class="modal-overlay" id="demoModal">
         <div class="modal-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="font-size:20px; font-weight:700;">Solicitar Demo</h3>
-                <button onclick="document.getElementById('demoModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:24px;">&times;</button>
+                <h3 style="font-size:24px; font-weight:800; color:var(--text-main);">Solicitar Demo</h3>
+                <button onclick="document.getElementById('demoModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
             </div>
             
             <form id="contactForm">
@@ -694,7 +436,7 @@
                     <label>Teléfono</label>
                     <input type="tel" id="demo-phone" required placeholder="Tu número">
                 </div>
-                <button type="button" id="btn-submit-demo" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Enviar Solicitud</button>
+                <button type="button" id="btn-submit-demo" class="btn-primary" style="width:100%; justify-content:center; margin-top:16px;">Enviar Solicitud</button>
             </form>
             <script>
                 document.getElementById('btn-submit-demo').addEventListener('click', async () => {
@@ -707,12 +449,10 @@
                     
                     btn.textContent = 'Enviando...';
                     
-                    // Conectando directo a Supabase via REST desde la Landing (Opcion rápida)
-                    // Para mayor seguridad en producción esto iría por el backend, pero como es una inserción simple:
-                    const configRes = await fetch('/api/config');
-                    const configData = await configRes.json();
-                    
                     try {
+                        const configRes = await fetch('/api/config');
+                        const configData = await configRes.json();
+                        
                         const response = await fetch(`${configData.supabaseUrl}/rest/v1/demo_requests`, {
                             method: 'POST',
                             headers: {
@@ -727,7 +467,7 @@
                         if(response.ok) {
                             btn.textContent = '¡Enviado!';
                             btn.style.background = '#10b981';
-                            setTimeout(() => { document.getElementById('demoModal').classList.remove('active'); }, 2000);
+                            setTimeout(() => { document.getElementById('demoModal').classList.remove('active'); btn.style.background=''; btn.textContent='Enviar Solicitud'; }, 2000);
                         } else {
                             alert('Error al enviar solicitud.');
                             btn.textContent = 'Enviar Solicitud';
@@ -745,8 +485,8 @@
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="font-size:20px; font-weight:700;">Iniciar Sesión</h3>
-                <button onclick="document.getElementById('loginModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:24px;">&times;</button>
+                <h3 style="font-size:24px; font-weight:800; color:var(--text-main);">Iniciar Sesión</h3>
+                <button onclick="document.getElementById('loginModal').classList.remove('active')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:28px;">&times;</button>
             </div>
             
             <form id="loginForm">
@@ -758,43 +498,34 @@
                     <label>Contraseña</label>
                     <input type="password" id="login-password" required placeholder="Tu contraseña">
                 </div>
-                <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Entrar al Dashboard</button>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:16px;">Entrar a mi panel</button>
             </form>
-            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
             <script>
                 document.getElementById('loginForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const email = document.getElementById('login-email').value;
                     const password = document.getElementById('login-password').value;
+                    const btn = e.target.querySelector('button');
+                    
+                    btn.textContent = 'Iniciando...';
                     
                     try {
-                        const btn = e.target.querySelector('button[type="submit"]');
-                        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cargando...';
-                        btn.disabled = true;
-
-                        // Pedir configuración de Supabase al backend
-                        const configRes = await fetch('/api/config');
-                        const config = await configRes.json();
-                        const supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
-
-                        // Iniciar sesión directamente en el cliente para que guarde las cookies/tokens
-                        const { data, error } = await supabaseClient.auth.signInWithPassword({
-                            email,
-                            password
+                        const res = await fetch('/api/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
                         });
+                        const data = await res.json();
                         
-                        if(error) {
-                            alert('Error: ' + error.message);
-                            btn.innerHTML = 'Iniciar Sesión';
-                            btn.disabled = false;
+                        if(data.success) {
+                            window.location.href = '/panel';
                         } else {
-                            window.location.href = '/panel'; // Redirige al Dashboard
+                            alert('Error: ' + data.error);
+                            btn.textContent = 'Entrar a mi panel';
                         }
                     } catch (error) {
-                        alert('Error de conexión al iniciar sesión.');
-                        const btn = e.target.querySelector('button[type="submit"]');
-                        btn.innerHTML = 'Iniciar Sesión';
-                        btn.disabled = false;
+                        alert('Error de conexión.');
+                        btn.textContent = 'Entrar a mi panel';
                     }
                 });
             </script>
