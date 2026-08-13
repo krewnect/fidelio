@@ -1198,6 +1198,15 @@ let saveTimeout = null;
         });
     }
 
+    const sbBtnLogout = document.getElementById('sidebar-btn-logout');
+    if (sbBtnLogout) {
+        sbBtnLogout.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await window.supabaseClient.auth.signOut();
+            window.location.href = '/';
+        });
+    }
+
     try {
         // --- LOGICA DE SIDEBAR FOOTER (SUPER ADMIN) ---
         const currentEmail = (window.merchantSession && window.merchantSession.user) ? window.merchantSession.user.email : '';
