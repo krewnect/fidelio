@@ -411,10 +411,10 @@
                 <button class="nav-tab" data-tab="tab-account"><i class="fa-solid fa-user-gear"></i> Mi Cuenta</button>
                 <button class="nav-tab" data-tab="tab-support"><i class="fa-solid fa-headset"></i> Soporte</button>
                 <div class="menu-divider">SISTEMA</div>
-                <a href="#" class="menu-item" id="sidebar-btn-logout" style="color: #ef4444;">
+                <button onclick="window.supabaseClient.auth.signOut().then(() => { window.location.href = '/landing.html'; })" class="menu-item" style="width: 100%; border: none; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 12px; margin-top: 8px; cursor: pointer; transition: all 0.2s;">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Cerrar Sesión</span>
-                </a>
+                </button>
             </nav>
 
             <div class="sidebar-footer">
