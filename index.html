@@ -901,460 +901,189 @@
                 </div>
 
                 <!-- ROI HIGHLIGHT -->
-                <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 16px; padding: 32px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(30, 27, 75, 0.15);">
+                <div style="background: linear-gradient(135deg, var(--accent-violet) 0%, #2e0d5f 100%); border-radius: var(--radius-md); padding: 32px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; box-shadow: var(--shadow-lg);">
                     <div>
                         <span style="text-transform: uppercase; letter-spacing: 2px; font-size: 12px; opacity: 0.8; font-weight: 700;">Retorno de Inversión (ROI) Estimado</span>
                         <h2 style="font-size: 48px; margin: 8px 0 0 0; color: white;">+342%</h2>
-                        <p style="opacity: 0.9; margin-top: 8px; max-width: 500px;">Por cada $1 invertido en Fidelio y recompensas, tus clientes fidelizados han generado $3.42 adicionales en ventas retenidas.</p>
+                        <p style="opacity: 0.9; margin-top: 8px; max-width: 500px;">Por cada $1 invertido en Fidelio, tus clientes fidelizados han generado $3.42 adicionales en ventas.</p>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); padding: 24px; border-radius: 12px; backdrop-filter: blur(10px);">
+                    <div style="background: rgba(255,255,255,0.1); padding: 24px; border-radius: var(--radius-md); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
                         <div style="font-size: 14px; opacity: 0.8; margin-bottom: 4px;">Ingreso Atribuido a Lealtad</div>
-                        <div style="font-size: 28px; font-weight: 800; color: #10B981;">+$124,500 MXN</div>
+                        <div style="font-size: 32px; font-weight: 800; color: #10B981;">+$124,500 <span style="font-size:16px; font-weight:600; opacity:0.8;">MXN</span></div>
                     </div>
                 </div>
                 
                 <!-- BENTO GRID METRICS -->
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
-                        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-card" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
+                        <div class="stat-icon" style="background: rgba(76, 29, 149, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
                         <div class="stat-value">1,248</div>
                         <div class="stat-label">Clientes en Wallet</div>
                         <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 12% vs mes anterior</div>
                     </div>
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    <div class="stat-card" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;"><i class="fa-solid fa-wallet"></i></div>
                         <div class="stat-value">$42,300</div>
                         <div class="stat-label">Cashback Emitido</div>
                         <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 5% vs mes anterior</div>
                     </div>
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    <div class="stat-card" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B;"><i class="fa-solid fa-fire"></i></div>
                         <div class="stat-value">$18,400</div>
                         <div class="stat-label">Cashback Redimido (Usado)</div>
-                        <div class="stat-trend trend-down" style="color:var(--text-muted);"><i class="fa-solid fa-minus"></i> Estable</div>
+                        <div class="stat-trend trend-down" style="color:var(--text-muted);"><i class="fa-solid fa-arrow-up"></i> 2% vs mes anterior</div>
                     </div>
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    <div class="stat-card" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #EF4444;"><i class="fa-solid fa-repeat"></i></div>
                         <div class="stat-value">2.4x</div>
-                        <div class="stat-label">Frecuencia de Visita Mensual</div>
+                        <div class="stat-label">Visitas Mensuales Promedio</div>
                         <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-up"></i> 0.3x vs trimestre anterior</div>
+                    </div>
+                </div>
+
+                <!-- CAMPAIGNS & PROMOTIONS -->
+                <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 24px; margin-bottom: 40px;">
+                    <!-- MARKETING CAMPAIGNS -->
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+                            <h3 style="color: var(--text-main); font-size: 18px; margin:0;"><i class="fa-solid fa-robot" style="color:var(--accent-violet); margin-right:8px;"></i>Rendimiento de Campañas IA</h3>
+                            <button style="background:none; border:none; color:var(--accent-violet); font-weight:600; cursor:pointer;">Ver Todas</button>
+                        </div>
+                        
+                        <div style="display:flex; flex-direction:column; gap:16px;">
+                            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items:center; padding:12px; background:var(--bg-input); border-radius:8px; font-size:14px; font-weight:600; color:var(--text-muted);">
+                                <div>Campaña</div>
+                                <div style="text-align:right;">Apertura</div>
+                                <div style="text-align:right;">Conversión</div>
+                                <div style="text-align:right;">Retorno</div>
+                            </div>
+                            
+                            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items:center; padding:12px; border-bottom:1px solid var(--border-glass); font-size:14px;">
+                                <div><div style="font-weight:600; color:var(--text-main);">Recuperación de Clientes</div><div style="font-size:12px; color:var(--text-muted);">Doble Cashback Fin de Semana</div></div>
+                                <div style="text-align:right; font-weight:600;">68%</div>
+                                <div style="text-align:right; font-weight:600; color:var(--accent-emerald);">14.2%</div>
+                                <div style="text-align:right; font-weight:700;">$12,400</div>
+                            </div>
+                            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items:center; padding:12px; border-bottom:1px solid var(--border-glass); font-size:14px;">
+                                <div><div style="font-weight:600; color:var(--text-main);">Feliz Cumpleaños (Agosto)</div><div style="font-size:12px; color:var(--text-muted);">Cortesía Sorpresa Automática</div></div>
+                                <div style="text-align:right; font-weight:600;">85%</div>
+                                <div style="text-align:right; font-weight:600; color:var(--accent-emerald);">42.5%</div>
+                                <div style="text-align:right; font-weight:700;">$5,800</div>
+                            </div>
+                            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items:center; padding:12px; font-size:14px;">
+                                <div><div style="font-weight:600; color:var(--text-main);">Martes Locos (Días Lentos)</div><div style="font-size:12px; color:var(--text-muted);">Upgrade Nivel VIP 4pm-7pm</div></div>
+                                <div style="text-align:right; font-weight:600;">52%</div>
+                                <div style="text-align:right; font-weight:600; color:var(--accent-emerald);">8.1%</div>
+                                <div style="text-align:right; font-weight:700;">$3,200</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REWARD SUCCESS -->
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
+                        <h3 style="margin-bottom: 24px; color: var(--text-main); font-size: 18px;"><i class="fa-solid fa-gift" style="color:var(--accent-amber); margin-right:8px;"></i>Recompensas Más Exitosas</h3>
+                        
+                        <div style="display:flex; flex-direction:column; gap:20px;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:600;">
+                                    <span>Cashback Puntos (General)</span>
+                                    <span>54%</span>
+                                </div>
+                                <div style="width:100%; height:8px; background:var(--bg-input); border-radius:4px; overflow:hidden;">
+                                    <div style="width:54%; height:100%; background:var(--accent-violet); border-radius:4px;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:600;">
+                                    <span>Cortesía de Cumpleaños</span>
+                                    <span>28%</span>
+                                </div>
+                                <div style="width:100%; height:8px; background:var(--bg-input); border-radius:4px; overflow:hidden;">
+                                    <div style="width:28%; height:100%; background:var(--accent-emerald); border-radius:4px;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:600;">
+                                    <span>Beneficio VIP Oro (Filas)</span>
+                                    <span>12%</span>
+                                </div>
+                                <div style="width:100%; height:8px; background:var(--bg-input); border-radius:4px; overflow:hidden;">
+                                    <div style="width:12%; height:100%; background:var(--accent-amber); border-radius:4px;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:600;">
+                                    <span>Otros (Regalos de Temporada)</span>
+                                    <span>6%</span>
+                                </div>
+                                <div style="width:100%; height:8px; background:var(--bg-input); border-radius:4px; overflow:hidden;">
+                                    <div style="width:6%; height:100%; background:var(--text-muted); border-radius:4px;"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- CHARTS ROW -->
                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
-                    <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid var(--border-glass);">
-                        <h3 style="margin-bottom: 24px; color: var(--text-main); font-size: 16px;">Crecimiento de Ventas por Clientes Leales</h3>
-                        <div style="height: 250px; background: repeating-linear-gradient(0deg, transparent, transparent 49px, var(--border-light) 49px, var(--border-light) 50px); display:flex; align-items:flex-end; gap:20px; padding-top:20px;">
-                            <!-- Fake chart bars -->
-                            <div style="flex:1; background: var(--surface-light); border-radius: 4px 4px 0 0; height: 30%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Ene</div></div>
-                            <div style="flex:1; background: var(--surface-light); border-radius: 4px 4px 0 0; height: 45%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Feb</div></div>
-                            <div style="flex:1; background: var(--accent-violet); opacity: 0.6; border-radius: 4px 4px 0 0; height: 60%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Mar</div></div>
-                            <div style="flex:1; background: var(--accent-violet); opacity: 0.8; border-radius: 4px 4px 0 0; height: 75%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">Abr</div></div>
-                            <div style="flex:1; background: var(--accent-violet); opacity: 1; border-radius: 4px 4px 0 0; height: 90%; position:relative;"><div style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; color:var(--text-muted); padding-bottom:4px;">May</div></div>
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+                            <h3 style="color: var(--text-main); font-size: 18px; margin:0;">Crecimiento de Ventas Atribuidas a Lealtad</h3>
+                            <div style="font-size:12px; color:var(--text-muted);"><i class="fa-solid fa-circle" style="color:var(--accent-violet); font-size:8px; margin-right:4px;"></i> 2026 vs <i class="fa-solid fa-circle" style="color:var(--border-glass); font-size:8px; margin-right:4px;"></i> 2025</div>
+                        </div>
+                        <div style="height: 250px; background: repeating-linear-gradient(0deg, transparent, transparent 49px, var(--border-glass) 49px, var(--border-glass) 50px); display:flex; align-items:flex-end; gap:24px; padding-top:20px; padding-bottom:0;">
+                            <!-- Fake chart bars with beautiful design -->
+                            <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
+                                <div style="width:50%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: 20%;"></div>
+                                <div style="width:50%; background: var(--accent-violet); opacity: 0.9; border-radius: 6px 6px 0 0; height: 35%;"></div>
+                                <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:11px; font-weight:600; color:var(--text-muted);">Ene</div>
+                            </div>
+                            <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
+                                <div style="width:50%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: 25%;"></div>
+                                <div style="width:50%; background: var(--accent-violet); opacity: 0.9; border-radius: 6px 6px 0 0; height: 42%;"></div>
+                                <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:11px; font-weight:600; color:var(--text-muted);">Feb</div>
+                            </div>
+                            <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
+                                <div style="width:50%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: 22%;"></div>
+                                <div style="width:50%; background: var(--accent-violet); opacity: 0.9; border-radius: 6px 6px 0 0; height: 50%;"></div>
+                                <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:11px; font-weight:600; color:var(--text-muted);">Mar</div>
+                            </div>
+                            <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
+                                <div style="width:50%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: 30%;"></div>
+                                <div style="width:50%; background: var(--accent-violet); opacity: 0.9; border-radius: 6px 6px 0 0; height: 65%;"></div>
+                                <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:11px; font-weight:600; color:var(--text-muted);">Abr</div>
+                            </div>
+                            <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
+                                <div style="width:50%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: 35%;"></div>
+                                <div style="width:50%; background: var(--accent-violet); opacity: 1; border-radius: 6px 6px 0 0; height: 85%; box-shadow: 0 0 15px rgba(76,29,149,0.3);"></div>
+                                <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:11px; font-weight:600; color:var(--text-main);">May</div>
+                            </div>
+                            <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
+                                <div style="width:50%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: 28%;"></div>
+                                <div style="width:50%; background: var(--accent-violet); opacity: 0.9; border-radius: 6px 6px 0 0; height: 75%;"></div>
+                                <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:11px; font-weight:600; color:var(--text-muted);">Jun</div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid var(--border-glass);">
-                        <h3 style="margin-bottom: 24px; color: var(--text-main); font-size: 16px;">Demografía de Usuarios</h3>
-                        <div style="display:flex; align-items:center; justify-content:center; height:150px; margin-bottom:20px;">
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm); display:flex; flex-direction:column;">
+                        <h3 style="margin-bottom: 24px; color: var(--text-main); font-size: 18px;">Demografía y Lealtad</h3>
+                        <div style="flex:1; display:flex; align-items:center; justify-content:center; position:relative;">
                             <!-- Fake Donut Chart -->
-                            <div style="width:120px; height:120px; border-radius:50%; background: conic-gradient(var(--accent-violet) 0% 65%, #F59E0B 65% 85%, #E5E7EB 85% 100%); border: 10px solid white; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                <div style="width:80px; height:80px; background:white; border-radius:50%;"></div>
-                            </div>
-                        </div>
-                        <ul style="list-style:none; padding:0; margin:0; font-size:13px; color:var(--text-muted);">
-                            <li style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:var(--accent-violet);"></div> 18-35 años</span> <strong>65%</strong></li>
-                            <li style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:#F59E0B;"></div> 36-50 años</span> <strong>20%</strong></li>
-                            <li style="display:flex; justify-content:space-between;"><span style="display:flex; align-items:center; gap:8px;"><div style="width:10px; height:10px; border-radius:50%; background:#E5E7EB;"></div> 50+ años</span> <strong>15%</strong></li>
-                        </ul>
-                    </div>
-                </div>
-
-            </section>
-
-            <section id="tab-loyalty" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <span class="workspace-eyebrow">FIDELIZACIÓN</span>
-                        <h1>Motor de Reglas y Recompensas</h1>
-                        <p>Configura modalidades: Visitas, CashBack, o Personalizado.</p>
-                    </div>
-                    <button class="btn btn-primary"><i class="fa-solid fa-save"></i> Guardar Reglas</button>
-                </div>
-                
-                <div class="builder-controls-panel" style="max-width: 800px; margin: 0 auto; background: white; padding: 32px; border-radius: 16px; border: 1px solid var(--border-glass);">
-                    
-                    <div class="form-group" style="margin-bottom: 32px;">
-                        <label>Selecciona las modalidades activas para tu programa (puedes activar varias al mismo tiempo)</label>
-                        <div class="mechanics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-top: 12px;">
-                            <div class="mode-tile active featured" data-mode="hybrid">
-                                <i class="fa-solid fa-layer-group"></i>
-                                <strong>Modo Completo</strong>
-                                <small>Cashback, Sellos, Promos, VIP</small>
-                            </div>
-                            <div class="mode-tile" data-mode="cashback">
-                                <i class="fa-solid fa-percent"></i>
-                                <strong>Solo Cashback</strong>
-                            </div>
-                            <div class="mode-tile" data-mode="stamps">
-                                <i class="fa-solid fa-stamp"></i>
-                                <strong>Solo Sellos (Visitas)</strong>
-                            </div>
-                            <div class="mode-tile" data-mode="custom">
-                                <i class="fa-solid fa-pen-ruler"></i>
-                                <strong>Custom 100%</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr style="border:none; border-top: 1px dashed var(--border-glass); margin: 32px 0;">
-
-                    <!-- Cashback Config -->
-                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
-                            <label class="switch"><input type="checkbox" id="mech-cashback-check" checked><span class="slider"></span></label>
-                            <h3 style="margin:0; font-size: 16px;">Recompensa por Consumo (CashBack %)</h3>
-                        </div>
-                        <div class="form-group" id="mech-cashback-body">
-                            <label>Porcentaje devuelto en dinero electrónico por cada compra:</label>
-                            <input type="number" class="fidelio-input" id="cashback-percent" value="10" style="width: 150px;">
-                        </div>
-                    </div>
-
-                    <!-- Stamps Config -->
-                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
-                            <label class="switch"><input type="checkbox" id="mech-stamps-check" checked><span class="slider"></span></label>
-                            <h3 style="margin:0; font-size: 16px;">Recompensa por Frecuencia (Sellos)</h3>
-                        </div>
-                        <div class="form-row-2" id="mech-stamps-body" style="display: grid; grid-template-columns: 1fr 2fr; gap: 16px;">
-                            <div class="form-group">
-                                <label>Número de Visitas (Sellos)</label>
-                                <input type="number" class="fidelio-input" id="stamps-total" value="5">
-                            </div>
-                            <div class="form-group">
-                                <label>Premio a Desbloquear</label>
-                                <input type="text" class="fidelio-input" id="stamps-reward" value="Hamburguesa Gratis">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- VIP Tiers Config -->
-                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
-                            <label class="switch"><input type="checkbox" id="mech-vip-check" checked><span class="slider"></span></label>
-                            <h3 style="margin:0; font-size: 16px;">Niveles de Lealtad (VIP Tiers)</h3>
-                        </div>
-                        <div id="mech-vip-body">
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Incentiva el gasto creando categorías de clientes. Entre más gastan, mejores beneficios obtienen.</p>
-                            
-                            <div class="tier-config-card" style="background: white; border: 1px solid #FCD34D; border-left: 4px solid #F59E0B; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-                                    <strong style="color: #B45309;"><i class="fa-solid fa-crown"></i> Nivel Oro (VIP)</strong>
-                                    <button class="btn-preset"><i class="fa-solid fa-trash"></i></button>
-                                </div>
-                                <div class="form-row-2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                                    <div class="form-group"><label>Gasto Acumulado Mínimo</label><input type="number" class="fidelio-input" value="3000"></div>
-                                    <div class="form-group"><label>Cashback % en este nivel</label><input type="number" class="fidelio-input" value="15"></div>
-                                </div>
-                            </div>
-
-                            <button class="btn btn-outline btn-block"><i class="fa-solid fa-plus"></i> Agregar Nuevo Nivel</button>
-                        </div>
-                    </div>
-
-                    <!-- Custom / Promos -->
-                    <div class="param-card" style="background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                        <div class="param-card-head" style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
-                            <label class="switch"><input type="checkbox" id="mech-dynamic-check" checked><span class="slider"></span></label>
-                            <h3 style="margin:0; font-size: 16px;">Promoción Dinámica / Custom</h3>
-                        </div>
-                        <div class="form-group" id="mech-dynamic-body">
-                            <label>Texto Promocional Adicional en Tarjeta (Ej: Martes Doble Puntaje):</label>
-                            <input type="text" class="fidelio-input" id="dynamic-desc" value="Martes y Jueves: Doble Cashback">
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <section id="tab-mybusiness" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <span class="workspace-eyebrow">MY BUSINESS</span>
-                        <h1>Difusión y Adquisición</h1>
-                        <p>Descarga el código QR para tu sucursal y configura el enlace web de tu negocio.</p>
-                    </div>
-                </div>
-                
-                <div class="builder-split-grid">
-                    <!-- CONTROLS -->
-                    <div class="builder-controls-panel">
-                        <div class="accordion-card">
-                            <div class="card-title-bar">
-                                <span class="card-step-badge">01</span>
-                                <h2>Generador de Código QR</h2>
-                            </div>
-                            <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
-                                Imprime este código y colócalo en tus mesas, cajas o menús. Tus clientes lo escanearán para descargar su tarjeta digital directamente en su Apple/Google Wallet.
-                            </p>
-                            
-                            <div class="form-group">
-                                <label>Formato de Descarga</label>
-                                <select class="fidelio-input">
-                                    <option value="png">PNG (Transparente, para diseñadores)</option>
-                                    <option value="pdf_table">PDF - Tent Card para Mesas</option>
-                                    <option value="pdf_sticker">PDF - Etiqueta para Caja</option>
-                                </select>
-                            </div>
-
-                            <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 12px;">
-                                <i class="fa-solid fa-cloud-arrow-down"></i> Generar y Descargar Material
-                            </button>
-                        </div>
-
-                        <div class="accordion-card" style="margin-top: 24px;">
-                            <div class="card-title-bar">
-                                <span class="card-step-badge">02</span>
-                                <h2>Perfil Web Público</h2>
-                            </div>
-                            <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
-                                Los clientes que no pueden escanear el QR, pueden entrar a esta URL para unirse a tu programa. ¡Ponlo en tu biografía de Instagram!
-                            </p>
-                            
-                            <div class="form-group">
-                                <label>Enlace Personalizado</label>
-                                <div style="display:flex; align-items:center; background:var(--surface-light); border:1px solid var(--border-light); border-radius:8px; overflow:hidden;">
-                                    <span style="padding: 0 12px; color:var(--text-muted); font-size:14px;">fidelio.com/</span>
-                                    <input type="text" value="don-pedro" style="flex:1; border:none; padding:12px; font-weight:bold; outline:none; background:transparent;">
-                                </div>
-                            </div>
-
-                            <button class="btn btn-outline" style="width:100%; justify-content:center; margin-top: 12px;">
-                                <i class="fa-solid fa-floppy-disk"></i> Guardar Enlace
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- PREVIEW -->
-                    <div style="display:flex; flex-direction:column; gap:24px;">
-                        <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 40px; text-align: center; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                            <h3 style="margin-bottom: 16px; color:var(--text-main);">QR Oficial</h3>
-                            <div style="background: white; padding: 16px; border: 1px solid var(--border-light); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-                                <!-- QR Dinámico apuntando a Fidelio -->
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://fidelio.com/download&color=4C1D95" alt="QR Code Oficial" style="width: 200px; height: 200px;">
-                            </div>
-                            <p style="color:var(--text-muted); font-size:13px; margin-top: 16px;">Apunta con la cámara para probar</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tab-ecommerce" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <span class="workspace-eyebrow">DESARROLLADORES</span>
-                        <h1>Integración E-Commerce</h1>
-                        <p>Conecta tu tienda online (Shopify, WooCommerce, Custom) para dar recompensas automáticamente.</p>
-                    </div>
-                </div>
-                
-                <div class="builder-split-grid">
-                    <!-- CONTROLS -->
-                    <div class="builder-controls-panel">
-                        <div class="accordion-card">
-                            <div class="card-title-bar">
-                                <span class="card-step-badge"><i class="fa-solid fa-key"></i></span>
-                                <h2>Tus Llaves de API (Tokens)</h2>
-                            </div>
-                            <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">
-                                Estas llaves son únicas para tu negocio. Nunca las compartas públicamente (excepto la Public Key).
-                            </p>
-                            
-                            <div class="form-group">
-                                <label>Public Key (Para Frontend/Widgets)</label>
-                                <div style="display:flex; align-items:center; background:var(--bg-input); border:1px solid var(--border-glass); border-radius:8px; overflow:hidden;">
-                                    <input type="text" value="pk_live_8f7d6a5s4d3f2g1h" readonly style="flex:1; border:none; padding:12px; font-family:var(--font-mono); font-size:12px; outline:none; background:transparent;">
-                                    <button class="btn btn-outline" style="border:none; border-left:1px solid var(--border-glass); border-radius:0;"><i class="fa-solid fa-copy"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group" style="margin-top: 16px;">
-                                <label>Secret API Key (Backend - ¡No compartir!)</label>
-                                <div style="display:flex; align-items:center; background:var(--bg-input); border:1px solid var(--border-glass); border-radius:8px; overflow:hidden;">
-                                    <input type="password" value="sk_live_1234567890abcdef" readonly style="flex:1; border:none; padding:12px; font-family:var(--font-mono); font-size:12px; outline:none; background:transparent;">
-                                    <button class="btn btn-outline" style="border:none; border-left:1px solid var(--border-glass); border-radius:0;"><i class="fa-regular fa-eye"></i></button>
-                                    <button class="btn btn-outline" style="border:none; border-left:1px solid var(--border-glass); border-radius:0;"><i class="fa-solid fa-copy"></i></button>
-                                </div>
-                            </div>
-
-                            <button class="btn btn-outline" style="width:100%; justify-content:center; margin-top: 12px; color: #EF4444; border-color: rgba(239, 68, 68, 0.2);">
-                                <i class="fa-solid fa-rotate"></i> Revocar y Generar Nuevas Llaves
-                            </button>
-                        </div>
-
-                        <div class="accordion-card">
-                            <div class="card-title-bar">
-                                <span class="card-step-badge"><i class="fa-solid fa-code"></i></span>
-                                <h2>Fragmento de Código (Snippet cURL)</h2>
-                            </div>
-                            <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
-                                Ejemplo de cómo tu tienda en línea debe avisarnos cuando un cliente realiza una compra.
-                            </p>
-                            
-                            <div style="background: #1E1E1E; border-radius: 8px; padding: 16px; position: relative;">
-                                <button class="btn btn-primary" style="position: absolute; top: 8px; right: 8px; padding: 4px 8px; font-size: 11px;"><i class="fa-solid fa-copy"></i> Copiar</button>
-<pre style="color: #A3A3A3; font-family: var(--font-mono); font-size: 11px; overflow-x: auto; margin:0;">
-curl -X POST https://api.fidelio.com/v1/orders \
-  -H "Authorization: Bearer sk_live_***" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customer_email": "juan@example.com",
-    "order_id": "ORDER-992",
-    "amount_cents": 150000,
-    "currency": "MXN"
-  }'
-</pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PREVIEW WIDGET -->
-                    <div style="display:flex; flex-direction:column; gap:24px;">
-                        <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 40px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                            <h3 style="margin-bottom: 8px; color:var(--text-main);">Widget Checkout (Frontend)</h3>
-                            <p style="color:var(--text-muted); font-size:13px; text-align:center; margin-bottom: 24px;">Pega el script `fidelio-widget.js` en tu página de confirmación de compra y se verá así:</p>
-                            
-                            <!-- Fake E-commerce thank you page preview -->
-                            <div style="background: #F9FAFB; padding: 32px; border: 1px solid #E5E7EB; border-radius: 12px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-                                <div style="color: #10B981; font-size: 40px; text-align:center; margin-bottom:12px;"><i class="fa-solid fa-circle-check"></i></div>
-                                <h4 style="text-align:center; margin-bottom: 8px;">¡Gracias por tu compra!</h4>
-                                <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom: 24px;">Tu pedido #992 ha sido confirmado.</p>
-                                
-                                <!-- Fidelio Inject -->
-                                <div style="background: white; border: 1px solid var(--border-accent); border-radius: 8px; padding: 16px; border-left: 4px solid var(--accent-violet);">
-                                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 12px;">
-                                        <div>
-                                            <strong style="font-size: 13px; display:block; color:var(--accent-violet);">Recompensa Desbloqueada</strong>
-                                            <span style="font-size: 11px; color:var(--text-muted);">Gana $150 de Cashback por esta compra.</span>
-                                        </div>
-                                        <img src="./fidelio-logo-official.png" style="height: 16px; opacity: 0.5;">
-                                    </div>
-                                    <input type="email" placeholder="Ingresa tu correo para reclamar" class="fidelio-input" style="font-size: 12px; padding: 8px 12px; margin-bottom: 8px;">
-                                    <button class="btn btn-primary btn-block" style="font-size: 12px; padding: 8px;">Abonar a mi Monedero</button>
+                            <div style="width: 160px; height: 160px; border-radius: 50%; background: conic-gradient(var(--accent-violet) 0% 65%, var(--accent-emerald) 65% 85%, var(--accent-amber) 85% 100%); display:flex; align-items:center; justify-content:center; box-shadow: var(--shadow-md);">
+                                <div style="width: 120px; height: 120px; border-radius: 50%; background: white; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                    <div style="font-size:24px; font-weight:800; color:var(--text-main);">65%</div>
+                                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; text-align:center;">Clientes<br>Frecuentes</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tab-store" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <span class="workspace-eyebrow">TIENDA FIDELIO</span>
-                        <h1>Hardware y Material Promocional</h1>
-                        <p>Adquiere lectores NFC, QRs en acrílico y herramientas premium para tu negocio.</p>
-                    </div>
-                    <div style="display:flex; gap: 12px;">
-                        <button class="btn btn-outline"><i class="fa-solid fa-box-open"></i> Mis Pedidos</button>
-                        <button class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Carrito (0)</button>
-                    </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; margin-top: 24px;">
-                    <!-- Producto 1 -->
-                    <div class="product-card" style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;">
-                        <div style="height: 200px; background: var(--surface-light); display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-brands fa-nfc-symbol" style="font-size: 64px; color: var(--text-muted);"></i>
-                        </div>
-                        <div style="padding: 20px; display: flex; flex-direction: column; flex: 1;">
-                            <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main);">Lector NFC Premium</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; flex: 1;">Lector USB/Bluetooth para escanear Apple Wallet o Google Wallet con un toque en la caja.</p>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 18px; font-weight: 800;">$899 MXN</span>
-                                <button class="btn btn-primary" style="padding: 8px 16px;"><i class="fa-solid fa-plus"></i> Añadir</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Producto 2 -->
-                    <div class="product-card" style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;">
-                        <div style="height: 200px; background: var(--surface-light); display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-qrcode" style="font-size: 64px; color: var(--text-muted);"></i>
-                        </div>
-                        <div style="padding: 20px; display: flex; flex-direction: column; flex: 1;">
-                            <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main);">Acrílico QR de Mesa (Pack 5)</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; flex: 1;">Acrílicos elegantes con tu código QR oficial para que los clientes se registren desde su lugar.</p>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 18px; font-weight: 800;">$450 MXN</span>
-                                <button class="btn btn-primary" style="padding: 8px 16px;"><i class="fa-solid fa-plus"></i> Añadir</button>
-                            </div>
+                        <div style="margin-top:24px; display:flex; flex-direction:column; gap:8px; font-size:13px;">
+                            <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);"><i class="fa-solid fa-circle" style="color:var(--accent-violet); font-size:8px; margin-right:8px;"></i>Frecuentes (>3 visitas/mes)</span> <strong>65%</strong></div>
+                            <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);"><i class="fa-solid fa-circle" style="color:var(--accent-emerald); font-size:8px; margin-right:8px;"></i>Ocasionales (1-2 visitas/mes)</span> <strong>20%</strong></div>
+                            <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);"><i class="fa-solid fa-circle" style="color:var(--accent-amber); font-size:8px; margin-right:8px;"></i>Nuevos (Último mes)</span> <strong>15%</strong></div>
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <section id="tab-support" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <span class="workspace-eyebrow">SOPORTE</span>
-                        <h1>Centro de Ayuda</h1>
-                        <p>Resuelve tus dudas al instante con nuestra IA o contacta al equipo humano.</p>
-                    </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-top: 24px;">
-                    <!-- Chat IA -->
-                    <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; display: flex; flex-direction: column; height: 600px; overflow: hidden;">
-                        <div style="padding: 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 40px; height: 40px; background: var(--accent-violet); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
-                                <i class="fa-solid fa-robot"></i>
-                            </div>
-                            <div>
-                                <h3 style="margin:0; font-size: 16px;">Asistente Fidelio AI</h3>
-                                <span style="font-size: 12px; color: #10B981;">● En línea</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; background: var(--surface-light); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
-                            <div style="background: white; padding: 16px; border-radius: 12px 12px 12px 0; max-width: 80%; border: 1px solid var(--border-light); font-size: 14px; line-height: 1.5;">
-                                ¡Hola! Soy el asistente inteligente de Fidelio. Estoy entrenado con toda la documentación de la plataforma. ¿En qué te puedo ayudar hoy? ¿Tienes dudas sobre cómo emitir cashback o instalar un lector NFC?
-                            </div>
-                        </div>
-                        <div style="padding: 16px; border-top: 1px solid var(--border-light); background: white;">
-                            <div style="display: flex; gap: 12px;">
-                                <input type="text" class="fidelio-input" placeholder="Escribe tu duda aquí..." style="flex: 1;">
-                                <button class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Ayuda Humana -->
-                    <div style="display: flex; flex-direction: column; gap: 24px;">
-                        <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px;">
-                            <div style="width: 48px; height: 48px; background: rgba(0,0,0,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                                <i class="fa-solid fa-envelope" style="font-size: 20px; color: var(--text-main);"></i>
-                            </div>
-                            <h3 style="margin:0 0 8px 0; font-size: 18px;">Soporte Humano</h3>
-                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">Si el asistente IA no pudo resolver tu problema, levanta un ticket y nuestro equipo te responderá en menos de 24 horas hábiles.</p>
-                            <button class="btn btn-outline" style="width: 100%; justify-content: center;"><i class="fa-solid fa-ticket"></i> Crear Ticket</button>
-                        </div>
-                        
-                        <div style="background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px;">
-                            <div style="width: 48px; height: 48px; background: rgba(0,0,0,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                                <i class="fa-solid fa-book" style="font-size: 20px; color: var(--text-main);"></i>
-                            </div>
-                            <h3 style="margin:0 0 8px 0; font-size: 18px;">Documentación</h3>
-                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">Guías paso a paso, videos tutoriales y manuales de instalación.</p>
-                            <button class="btn btn-outline" style="width: 100%; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Portal</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-        </main>
+            </section></main>
     </div>
     
     <!-- ADD BRANCH MODAL -->
