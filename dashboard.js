@@ -216,7 +216,7 @@ let saveTimeout = null;
                 plata: { name: "Plata VIP", minSpent: 1000, cashbackPercent: 10, perk: "Beneficio Plata" },
                 oro: { name: "Oro VIP", minSpent: 3000, cashbackPercent: 15, perk: "Beneficio Oro" }
             },
-            branches: tenantDatabase[merchantData.id]?.branches || [],
+            branches: [],
             customers: custData || [],
             transactions: transData || [],
             activeWallet: "apple"
@@ -474,7 +474,7 @@ let saveTimeout = null;
 
             const mode = tile.getAttribute('data-mode');
             state.activeMode = mode;
-            tenantDatabase[currentTenantId].activeMode = mode;
+            
 
             applyModeToParams(mode);
             updatePassRender();
@@ -632,7 +632,7 @@ let saveTimeout = null;
             };
             
             state.branches.push(newBranch);
-            tenantDatabase[currentTenantId].branches = state.branches;
+            
             
             modalAddBranch.style.display = 'none';
             renderBranches();
@@ -643,7 +643,7 @@ let saveTimeout = null;
     window.removeBranch = function(id) {
         if(confirm("¿Estás seguro de eliminar esta sucursal de la red de Wallet?")) {
             state.branches = state.branches.filter(b => b.id !== id);
-            tenantDatabase[currentTenantId].branches = state.branches;
+            
             renderBranches();
             showToast("Sucursal eliminada. Los clientes ya no recibirán push en esta ubicación.", "info");
         }
@@ -1092,7 +1092,7 @@ let saveTimeout = null;
                 const reader = new FileReader();
                 reader.onload = (evt) => {
                     state.customLogoUrl = evt.target.result;
-                    tenantDatabase[currentTenantId].customLogoUrl = evt.target.result;
+                    
                     btnRemoveLogo.style.display = 'inline-block';
                     updatePassRender();
                     showToast("Logo cargado con éxito en la tarjeta digital.", "success");
@@ -1105,7 +1105,7 @@ let saveTimeout = null;
     if (btnRemoveLogo) {
         btnRemoveLogo.addEventListener('click', () => {
             state.customLogoUrl = null;
-            tenantDatabase[currentTenantId].customLogoUrl = null;
+            
             logoFileInput.value = '';
             btnRemoveLogo.style.display = 'none';
             updatePassRender();
@@ -1120,7 +1120,7 @@ let saveTimeout = null;
                 const reader = new FileReader();
                 reader.onload = (evt) => {
                     state.customBannerUrl = evt.target.result;
-                    tenantDatabase[currentTenantId].customBannerUrl = evt.target.result;
+                    
                     btnRemoveBanner.style.display = 'inline-block';
                     updatePassRender();
                     showToast("Imagen de portada de tarjeta aplicada.", "success");
@@ -1133,7 +1133,7 @@ let saveTimeout = null;
     if (btnRemoveBanner) {
         btnRemoveBanner.addEventListener('click', () => {
             state.customBannerUrl = null;
-            tenantDatabase[currentTenantId].customBannerUrl = null;
+            
             bannerFileInput.value = '';
             btnRemoveBanner.style.display = 'none';
             updatePassRender();
