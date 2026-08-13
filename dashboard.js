@@ -982,9 +982,17 @@ let saveTimeout = null;
             const targetTab = tab.getAttribute('data-tab');
             if (targetTab) {
                 document.getElementById(targetTab).classList.add('active');
+                localStorage.setItem('activeFidelioTab', targetTab);
             }
         });
     });
+
+    // Restaurar pestaña activa al recargar (si existe)
+    const savedTab = localStorage.getItem('activeFidelioTab');
+    if (savedTab) {
+        const tabToClick = Array.from(navTabs).find(t => t.getAttribute('data-tab') === savedTab);
+        if (tabToClick) tabToClick.click();
+    }
 
     // --- WALLET SELECTOR ---
     const btnApple = document.getElementById('btn-apple-wallet');
@@ -1191,13 +1199,32 @@ let saveTimeout = null;
     }
 
     try {
+        // --- LOGICA DE SIDEBAR FOOTER (SUPER ADMIN) ---
+        const currentEmail = (window.merchantSession && window.merchantSession.user) ? window.merchantSession.user.email : '';
+        const sbName = document.getElementById('sidebar-user-name');
+        const sbRole = document.getElementById('sidebar-user-role');
+        const sbAvatar = document.getElementById('sidebar-user-avatar');
+        
+        if (currentEmail === 'hola@fideliorewards.com') {
+            if (sbName) sbName.textContent = 'Fidelio Super Admin';
+            if (sbRole) sbRole.textContent = 'Master Account';
+            if (sbAvatar) {
+                sbAvatar.innerHTML = '<i class="fa-solid fa-crown"></i>';
+                sbAvatar.style.background = 'linear-gradient(135deg, #F59E0B 0%, #B45309 100%)';
+            }
+            
+            // Mostrar pestaña oculta de Leads para el admin
+            const leadsTab = document.getElementById('admin-leads-tab');
+            if (leadsTab) leadsTab.style.display = 'flex';
+        } else {
+            if (state && state.restaurantName && sbName) sbName.textContent = state.restaurantName;
+        }
+
         // Actualizar métricas del dashboard principal
         updateDashboardMetrics();
 
         // Actualizar encabezados (solo si no es admin)
-        if (state && state.restaurantName) {
-            const currentEmail = (window.merchantSession && window.merchantSession.user) ? window.merchantSession.user.email : '';
-            if (currentEmail !== 'hola@fideliorewards.com') {
+        if (state && state.restaurantName && currentEmail !== 'hola@fideliorewards.com') {
                 document.getElementById('header-restaurant-name').textContent = state.restaurantName;
                 document.getElementById('header-business-category').textContent = state.category || "Restaurante";
             }
