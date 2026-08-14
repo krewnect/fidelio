@@ -912,44 +912,141 @@ let saveTimeout = null;
     const crmFilterStatus = document.getElementById('crm-filter-status');
     const crmCountBadge = document.getElementById('crm-count-badge');
 
-    function renderCRMTable() {
+    
+    // Listeners para CRM
+    document.getElementById('crm-search-input')?.addEventListener('input', renderCRMTable);
+    document.getElementById('crm-filter-tier')?.addEventListener('change', renderCRMTable);
+    document.getElementById('crm-filter-status')?.addEventListener('change', renderCRMTable);
+    document.getElementById('crm-filter-month')?.addEventListener('change', renderCRMTable);
+    
+function renderCRMTable() {
+        const crmTableBody = document.getElementById('crm-table-body');
+        const crmSearchInput = document.getElementById('crm-search-input');
+        const crmFilterTier = document.getElementById('crm-filter-tier');
+        const crmFilterStatus = document.getElementById('crm-filter-status');
+        const crmFilterMonth = document.getElementById('crm-filter-month');
+        const crmCountBadge = document.getElementById('crm-count-badge');
+        
         if (!crmTableBody) return;
-        const searchTerm = crmSearchInput.value.toLowerCase();
-        const tierFilter = crmFilterTier.value;
-        const statusFilter = crmFilterStatus.value;
 
-        const filtered = state.customers.filter(c => {
-            const matchesSearch = c.name.toLowerCase().includes(searchTerm) || 
-                                  c.phone.includes(searchTerm) || 
-                                  c.email.toLowerCase().includes(searchTerm) ||
-                                  (c.birthday && c.birthday.toLowerCase().includes(searchTerm)) ||
-                                  c.id.toLowerCase().includes(searchTerm);
+        const searchTerm = (crmSearchInput?.value || '').toLowerCase();
+        const tierFilter = crmFilterTier?.value || 'all';
+        const statusFilter = crmFilterStatus?.value || 'all';
+        const monthFilter = crmFilterMonth?.value || 'all';
+        
+        const now = new Date();
+        const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+
+        let totalLTV = 0;
+        let totalFreqDays = 0;
+        let validFreqCount = 0;
+        let churnRiskCount = 0;
+
+        // PRE-PROCESS CUSTOMERS FOR METRICS
+        const processedCustomers = state.customers.map(c => {
+            const balance = c.current_balance || 0;
+            const spent = parseFloat(c.lifetime_value || 0);
+            totalLTV += spent;
             
-            const matchesTier = tierFilter === 'all' || c.tier === tierFilter;
-            const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
+            const tier = spent > 3000 ? 'Oro VIP' : (spent > 1000 ? 'Plata VIP' : 'Bronce VIP');
+            
+            const createdDate = new Date(c.created_at || now);
+            const lastVisitDate = new Date(c.last_visit || c.created_at || now);
+            const daysSinceRegistration = Math.max(1, Math.floor((now - createdDate) / (1000 * 60 * 60 * 24)));
+            const daysSinceLastVisit = Math.floor((now - lastVisitDate) / (1000 * 60 * 60 * 24));
+            
+            const visits = parseInt(c.visits || 0);
+            
+            // Frequency calculation (days per visit)
+            let freqDays = 0;
+            let freqText = 'Nuevo';
+            if (visits > 1) {
+                freqDays = daysSinceRegistration / visits;
+                freqText = `1 visita c/${Math.round(freqDays)} días`;
+                totalFreqDays += freqDays;
+                validFreqCount++;
+            } else if (visits === 1) {
+                freqText = '1 visita';
+            }
+            
+            // Churn Risk (if they haven't visited in 2x their normal frequency, or > 60 days)
+            let status = 'activo';
+            let statusClass = 'activo';
+            let statusText = 'Activo';
+            
+            if (visits === 0) {
+                status = 'nuevo';
+                statusClass = 'bronce';
+                statusText = 'Nuevo';
+            } else if (daysSinceLastVisit > 60 || (freqDays > 0 && daysSinceLastVisit > (freqDays * 2.5))) {
+                status = 'riesgo';
+                statusClass = 'riesgo';
+                statusText = 'En Riesgo';
+                churnRiskCount++;
+            }
+            
+            // Birthday formatting
+            let bdayFormatted = 'N/A';
+            let bdayMonth = null;
+            let isBirthdayMonth = false;
+            if (c.birthday) {
+                const bDate = new Date(c.birthday + 'T12:00:00Z'); // force midday to avoid timezone shift
+                bdayFormatted = bDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                bdayMonth = String(bDate.getMonth() + 1).padStart(2, '0');
+                isBirthdayMonth = (bdayMonth === currentMonth);
+            }
+            
+            // Anniversary
+            const annivFormatted = createdDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+            const lastVisitFormatted = lastVisitDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
 
-            return matchesSearch && matchesTier && matchesStatus;
+            return {
+                ...c,
+                computed: {
+                    balance, spent, tier, status, statusClass, statusText, freqText,
+                    bdayFormatted, bdayMonth, isBirthdayMonth, annivFormatted, lastVisitFormatted, daysSinceLastVisit
+                }
+            };
         });
 
-        crmCountBadge.textContent = state.customers.length;
+        // UPDATE KPI CARDS
+        const kpiTotal = document.getElementById('kpi-total-customers');
+        const kpiAvgSpent = document.getElementById('kpi-avg-spent');
+        const kpiAvgFreq = document.getElementById('kpi-avg-freq');
+        const kpiChurn = document.getElementById('kpi-churn-risk');
+        
+        if (kpiTotal) kpiTotal.textContent = state.customers.length;
+        if (kpiAvgSpent) kpiAvgSpent.textContent = `$${state.customers.length ? (totalLTV / state.customers.length).toFixed(2) : 0} MXN`;
+        if (kpiAvgFreq) kpiAvgFreq.textContent = validFreqCount ? `${Math.round(totalFreqDays / validFreqCount)} días` : 'N/A';
+        if (kpiChurn) kpiChurn.textContent = churnRiskCount;
+
+        // FILTER
+        const filtered = processedCustomers.filter(c => {
+            const matchesSearch = c.name.toLowerCase().includes(searchTerm) || 
+                                  (c.phone && c.phone.includes(searchTerm)) || 
+                                  (c.email && c.email.toLowerCase().includes(searchTerm)) ||
+                                  (c.id && c.id.toLowerCase().includes(searchTerm));
+            
+            const matchesTier = tierFilter === 'all' || c.computed.tier === tierFilter;
+            const matchesStatus = statusFilter === 'all' || c.computed.status === statusFilter;
+            const matchesMonth = monthFilter === 'all' || c.computed.bdayMonth === monthFilter;
+
+            return matchesSearch && matchesTier && matchesStatus && matchesMonth;
+        });
+
+        if (crmCountBadge) crmCountBadge.textContent = filtered.length;
         crmTableBody.innerHTML = '';
 
         if (filtered.length === 0) {
-            crmTableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; color: var(--text-muted); padding: 30px;">No se encontraron registros de clientes.</td></tr>`;
+            crmTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color: var(--text-muted); padding: 30px;">No se encontraron registros de clientes.</td></tr>`;
             return;
         }
 
         filtered.forEach(c => {
             const tr = document.createElement('tr');
-            
-            // Map Supabase variables
-            const balance = c.current_balance || 0;
-            const spent = c.lifetime_value || 0;
-            const tier = spent > 3000 ? 'Oro VIP' : (spent > 1000 ? 'Plata VIP' : 'Bronce VIP');
-            const tierClass = tier.includes('Oro') ? 'oro' : tier.includes('Plata') ? 'plata' : 'bronce';
-            const statusClass = c.visits > 0 ? 'activo' : 'riesgo';
-            const walletIcon = 'fa-apple';
-            const lastVisit = c.created_at ? new Date(c.created_at).toISOString().split('T')[0] : 'N/A';
+            const comp = c.computed;
+            const tierClass = comp.tier.includes('Oro') ? 'oro' : comp.tier.includes('Plata') ? 'plata' : 'bronce';
+            const bdayAlert = comp.isBirthdayMonth ? `<i class="fa-solid fa-cake-candles" style="color:var(--accent-violet); margin-right:4px;" title="¡Cumpleaños este mes!"></i>` : `<i class="fa-solid fa-cake-candles" style="color:var(--text-muted); margin-right:4px;"></i>`;
 
             tr.innerHTML = `
                 <td>
@@ -962,24 +1059,35 @@ let saveTimeout = null;
                     </div>
                 </td>
                 <td>
-                    <strong>${c.phone}</strong>
+                    <strong>${c.phone || 'N/A'}</strong>
                     <small style="display:block; color:var(--text-muted);">${c.email || 'Sin correo'}</small>
                 </td>
-                <td><strong style="color:var(--cyan);"><i class="fa-solid fa-cake-candles"></i> N/A</strong></td>
-                <td><span class="tier-pill ${tierClass}">${tier}</span></td>
-                <td><i class="fa-brands ${walletIcon}"></i> Apple Wallet</td>
-                <td><strong class="text-emerald">$${balance.toFixed(2)} MXN</strong></td>
-                <td><strong>${c.visits}/${state.stampsTotal}</strong></td>
-                <td>$${spent.toFixed(2)} MXN</td>
-                <td>${lastVisit}</td>
-                <td><span class="badge-status ${statusClass}">${c.visits > 0 ? 'Activo' : 'Nuevo'}</span></td>
                 <td>
-                    <button class="btn btn-outline" style="padding:6px 12px; font-size:12px; margin-right: 4px;" title="Ver QR del Cliente" onclick="window.showCustomerQR('${c.id}', '${c.name.replace(/'/g, "\\'")}')">
-                        <i class="fa-solid fa-qrcode"></i> QR
-                    </button>
-                    <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" title="Enviar Correo" onclick="alert('Iniciando envío de correo directo a ${c.email}')">
-                        <i class="fa-solid fa-envelope"></i>
-                    </button>
+                    <div style="font-size:13px;">
+                        <strong>${bdayAlert} ${comp.bdayFormatted}</strong>
+                        <small style="display:block; color:var(--text-muted); margin-top:2px;"><i class="fa-solid fa-calendar-plus" style="margin-right:4px;"></i>${comp.annivFormatted}</small>
+                    </div>
+                </td>
+                <td><span class="tier-pill ${tierClass}">${comp.tier}</span></td>
+                <td>
+                    <strong><i class="fa-solid fa-stamp" style="color:var(--accent-violet);"></i> ${c.visits || 0}/${state.stampsTotal || 5}</strong>
+                    <small style="display:block; color:var(--text-muted);">$${comp.balance.toFixed(2)} cash</small>
+                </td>
+                <td><strong>$${comp.spent.toFixed(2)} MXN</strong></td>
+                <td>
+                    <strong style="color:var(--fidelio-violet);">${comp.freqText}</strong>
+                    <small style="display:block; color:var(--text-muted);">Última: ${comp.lastVisitFormatted}</small>
+                </td>
+                <td><span class="badge-status ${comp.statusClass}">${comp.statusText}</span></td>
+                <td>
+                    <div style="display:flex; gap: 4px;">
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px;" title="Ver QR de Cliente" onclick="window.showCustomerQR('${c.id}', '${c.name.replace(/'/g, "\'")}')">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px;" title="Enviar Promo" onclick="alert('Iniciando envío de promo directo a ${c.email || c.phone}')">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </button>
+                    </div>
                 </td>
             `;
             crmTableBody.appendChild(tr);
