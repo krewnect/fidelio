@@ -3,44 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Terminal Fidelio</title>
+    <title>Terminal Fidelio V2</title>
     
     <!-- PWA / Native App tags -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#090d16">
+    <meta name="theme-color" content="#02010A">
     <link rel="apple-touch-icon" href="./fidelio-logo-official.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scanner">
+    <meta name="apple-mobile-web-app-title" content="Scanner V2">
     
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- QR Code Scanner Library -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <script>
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
-    </script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
+        /* ==========================================
+           1. CORE DESIGN TOKENS (Premium Dark Violet)
+           ========================================== */
         :root {
-            --bg-dark: #090d16;
-            --surface: #111827;
-            --surface-light: #1f2937;
-            --primary: #3b82f6;
-            --success: #10b981;
-            --danger: #ef4444;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
+            --bg-dark: #02010A; /* Ultra dark violet background */
+            --bg-card: rgba(15, 12, 33, 0.7); /* Translucent cards */
+            --border-glass: rgba(139, 92, 246, 0.15); /* Subtle violet borders */
+            --accent-violet: #8B5CF6; /* Vibrant violet */
+            --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+            
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -52,17 +48,21 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            /* Subtle background glow effect */
+            background-image: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
         }
 
         /* Header */
         header {
             padding: 20px;
-            text-align: center;
-            background: var(--surface);
-            border-bottom: 1px solid var(--surface-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(2, 1, 10, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            z-index: 10;
         }
         .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
         
@@ -75,195 +75,280 @@
             overflow-y: auto;
         }
 
-        /* Scanner Area */
-        #reader-container {
-            width: 100%;
-            background: black;
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            border: 2px solid var(--surface-light);
-        }
-        #reader { width: 100%; min-height: 300px; }
-        
-        /* States */
-        .loading { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2rem; color: var(--text-muted); }
-        .error { color: var(--danger); text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; margin-top: 20px; }
-        
-        /* Customer Action Panel (Hidden by default) */
-        #action-panel {
-            display: none;
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--surface-light);
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .customer-header { text-align: center; margin-bottom: 24px; }
-        .customer-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
-        .customer-balance { font-size: 2rem; color: var(--success); font-weight: 800; }
-        .customer-balance span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
-
-        /* Form */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; }
-        .amount-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .amount-wrapper i { position: absolute; left: 16px; font-size: 1.2rem; color: var(--text-muted); }
-        input[type="number"] {
-            width: 100%;
-            background: var(--bg-dark);
-            border: 1px solid var(--surface-light);
-            color: white;
-            padding: 16px 16px 16px 40px;
-            font-size: 1.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-        }
-        input[type="number"]:focus { outline: none; border-color: var(--primary); }
-
         /* Buttons */
-        .btn-group { display: flex; gap: 12px; margin-top: 24px; }
-        button {
-            flex: 1;
-            padding: 16px;
-            border: none;
+        .btn {
+            padding: 14px;
             border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: white;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
-            transition: opacity 0.2s;
+            transition: all 0.2s ease;
+            border: none;
+            width: 100%;
         }
-        button:active { opacity: 0.8; transform: scale(0.98); }
-        .btn-earn { background: var(--primary); }
-        .btn-redeem { background: var(--surface-light); color: var(--text-main); }
-        .btn-cancel { background: transparent; border: 1px solid var(--surface-light); margin-top: 12px; width: 100%; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        .btn-secondary {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-violet);
+            border: 1px solid var(--accent-violet);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+        }
 
-        /* Status overlay */
-        #status-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(9, 13, 22, 0.95);
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 100;
+        /* Scanner Area */
+        #reader-container {
+            width: 100%;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
         }
-        .status-icon { font-size: 4rem; margin-bottom: 16px; }
-        .status-success { color: var(--success); }
+        #reader { width: 100%; min-height: 300px; }
+        
+        /* Action Panel (Client Profile) */
+        #action-panel {
+            display: none;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .client-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+        
+        .client-header { text-align: center; margin-bottom: 24px; }
+        .client-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+        .client-tier { font-size: 0.8rem; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        /* The 3 Balance Modules */
+        .balances-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .balance-module {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+        .balance-module.full-width { grid-column: span 2; }
+        
+        .b-title { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .b-amount { font-size: 1.75rem; font-weight: 800; color: white; display:flex; align-items:center; justify-content:center; gap:4px; }
+        .b-amount span { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+        
+        .b-icon-monedero { color: var(--success); }
+        .b-icon-cashback { color: var(--accent-violet); }
+        .b-icon-stamps { color: var(--warning); }
+
+        /* Form Inputs */
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; }
+        .amount-wrapper { position: relative; display: flex; align-items: center; }
+        .amount-wrapper i { position: absolute; left: 16px; font-size: 1.2rem; color: var(--text-muted); }
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-glass);
+            color: white;
+            padding: 16px 16px 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            transition: border-color 0.2s;
+        }
+        input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            outline: none; border-color: var(--accent-violet);
+        }
+        
+        /* Action Buttons Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* Status overlay / Toasts */
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; }
+        .toast { background: var(--bg-card); color: white; padding: 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: slideDown 0.3s ease; border-left: 4px solid var(--accent-violet); border-top: 1px solid var(--border-glass); border-right: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); backdrop-filter: blur(10px); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Status Modal */
+        #status-overlay {
+            position: fixed; inset: 0;
+            background: rgba(2, 1, 10, 0.95);
+            backdrop-filter: blur(10px);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 500;
+            text-align: center;
+            padding: 20px;
+        }
+        .status-icon { font-size: 5rem; margin-bottom: 24px; }
+        .status-success { color: var(--success); text-shadow: 0 0 30px rgba(16, 185, 129, 0.4); }
+        
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">
-            <img src="./fidelio-logo-official.png" alt="Fidelio Logo" style="height: 32px; width: auto;" />
-            <span style="font-size: 14px; font-weight: 500; color: var(--text-muted);">Terminal</span>
+            <img src="./fidelio-logo-official.png" alt="Fidelio Logo" style="height: 28px; width: auto;" />
+            <span style="font-size: 16px; font-weight: 600; color: white;">Terminal V2</span>
         </div>
-        <div id="merchant-name" style="font-size: 0.9rem; color: var(--text-muted);">Cargando...</div>
+        <div id="merchant-name" style="font-size: 0.85rem; color: var(--accent-violet); font-weight: 500; background: rgba(139,92,246,0.1); padding: 4px 10px; border-radius: 20px;">Cargando...</div>
     </header>
 
-    <div class="container" id="main-container">
+    <div id="toast-container"></div>
+
+    <div class="container" id="main-container" style="display:none;">
         
         <!-- Mode Switcher -->
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button id="btn-mode-scan" class="btn-primary" style="flex:1; padding:12px; border-radius:12px; font-size:1rem; border:none; background:var(--primary);" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escanear</button>
-            <button id="btn-mode-manual" class="btn-secondary" style="flex:1; padding:12px; border-radius:12px; font-size:1rem; background:var(--surface-light); color:white; border:none;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Búsqueda Manual</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 16px; border: 1px solid var(--border-glass);">
+            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:10px;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escáner</button>
+            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:10px;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Manual</button>
         </div>
 
-        <!-- Scanner -->
+        <!-- Scanner Section -->
         <div id="scanner-section">
             <div id="reader-container">
                 <div id="reader"></div>
             </div>
-            <p style="text-align:center; color:var(--text-muted); font-size:0.9rem;" id="scan-hint">
-                Apunta la cámara al pase de Apple/Google Wallet del cliente.
+            <p style="text-align:center; color:var(--text-muted); font-size:0.9rem; margin-bottom: 20px;" id="scan-hint">
+                <i class="fa-solid fa-camera" style="margin-right: 6px;"></i> Apunta la cámara al pase de Wallet del cliente.
             </p>
         </div>
 
-        <!-- Manual Search (Hidden initially) -->
-        <div id="manual-section" style="display:none; background:var(--surface); padding:24px; border-radius:16px; border:1px solid var(--surface-light); margin-bottom:20px;">
-            <h3 style="margin-bottom:16px; text-align:center;">Búsqueda Delivery / Remota</h3>
+        <!-- Manual Search Section -->
+        <div id="manual-section" style="display:none; background:var(--bg-card); padding:24px; border-radius:20px; border:1px solid var(--border-glass); margin-bottom:20px;">
+            <h3 style="margin-bottom:16px; text-align:center; font-size: 1.2rem;">Búsqueda de Cliente</h3>
             <div class="input-group">
-                <label>Teléfono o Correo Electrónico</label>
-                <input type="text" id="manual-search-input" style="width:100%; padding:14px; border-radius:8px; border:1px solid var(--surface-light); background:var(--bg-dark); color:white; font-size:1.1rem;" placeholder="ej. 5512345678 o correo@mail.com">
+                <label>Teléfono o Correo</label>
+                <div class="amount-wrapper" style="margin-bottom: 16px;">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="manual-search-input" placeholder="ej. correo@mail.com">
+                </div>
+                <button class="btn btn-primary" onclick="searchCustomerManual()" id="btn-manual-search">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                </button>
             </div>
-            <button class="btn-primary" style="width:100%; padding:14px; border-radius:12px; font-weight:700; background:var(--primary); color:white; border:none; margin-top:8px;" onclick="searchCustomerManual()" id="btn-manual-search">
-                <i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente
-            </button>
-            <p id="manual-search-error" style="color:var(--danger); text-align:center; margin-top:12px; font-size:0.9rem; display:none;"></p>
         </div>
 
-        <!-- Action Panel -->
+        <!-- Action Panel (Client Profile) -->
         <div id="action-panel">
-            <div class="customer-header">
-                <div class="customer-name" id="c-name">Cargando...</div>
-                <div class="customer-balance" id="c-balance">$0.00 <span>MXN Disponibles</span></div>
-            </div>
-
-            <div class="input-group">
-                <label>Monto del Consumo (Ticket)</label>
-                <div class="amount-wrapper">
-                    <i class="fa-solid fa-dollar-sign"></i>
-                    <input type="number" id="ticket-amount" placeholder="0.00" step="0.01">
+            <div class="client-card">
+                <div class="client-header">
+                    <div class="client-name" id="c-name">Cargando...</div>
+                    <div class="client-tier" id="c-tier"><i class="fa-solid fa-crown"></i> Cliente VIP</div>
                 </div>
-            </div>
 
-            <div class="btn-group">
-                <button class="btn-earn" id="btn-earn" onclick="processTransaction('earn')">
-                    <i class="fa-solid fa-coins"></i> Dar Puntos
-                </button>
-                <button class="btn-redeem" id="btn-redeem" onclick="processTransaction('redeem')">
-                    <i class="fa-solid fa-money-bill-wave"></i> Cobrar
+                <!-- 3 Modules: Monedero, Cashback, Sellos -->
+                <div class="balances-grid">
+                    <!-- Monedero (Prepaid) -->
+                    <div class="balance-module">
+                        <div class="b-title"><i class="fa-solid fa-wallet b-icon-monedero"></i> Monedero</div>
+                        <div class="b-amount" id="c-monedero">$0.00</div>
+                    </div>
+                    <!-- Cashback -->
+                    <div class="balance-module">
+                        <div class="b-title"><i class="fa-solid fa-coins b-icon-cashback"></i> Cashback</div>
+                        <div class="b-amount" id="c-cashback">$0.00</div>
+                    </div>
+                    <!-- Sellos -->
+                    <div class="balance-module full-width">
+                        <div class="b-title"><i class="fa-solid fa-star b-icon-stamps"></i> Sellos Acumulados</div>
+                        <div class="b-amount" style="font-size: 1.2rem; color:var(--warning);" id="c-stamps">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Ticket/Abono -->
+                <div class="input-group">
+                    <label>Monto de la Operación (Ticket o Abono)</label>
+                    <div class="amount-wrapper">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                        <input type="number" id="op-amount" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions-grid">
+                    <button class="btn btn-primary" onclick="processAction('charge_ticket')">
+                        <i class="fa-solid fa-receipt"></i> Cobrar Ticket
+                    </button>
+                    <button class="btn btn-secondary" style="border: 1px solid var(--success); color: var(--success);" onclick="processAction('add_funds')">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i> Cargar Monedero
+                    </button>
+                </div>
+                
+                <button class="btn btn-outline" style="margin-top: 12px;" onclick="resetScanner()">
+                    <i class="fa-solid fa-xmark"></i> Cancelar / Volver
                 </button>
             </div>
-            
-            <button class="btn-cancel" onclick="resetScanner()">
-                Cancelar
-            </button>
         </div>
 
     </div>
 
     <!-- Login Screen -->
-    <div id="login-screen" style="display:none; position:fixed; inset:0; background:var(--bg-dark); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div id="login-screen" style="position:fixed; inset:0; background:var(--bg-dark); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; background-image: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.2) 0%, transparent 70%);">
         <div style="text-align:center; margin-bottom:40px;">
-            <i class="fa-solid fa-qrcode" style="font-size:3rem; color:var(--primary); margin-bottom:16px;"></i>
-            <h2>Fidelio Terminal</h2>
-            <p style="color:var(--text-muted); margin-top:8px;">Acceso exclusivo para Staff</p>
+            <img src="./fidelio-logo-official.png" alt="Fidelio Logo" style="height: 60px; margin-bottom: 20px;" />
+            <h2 style="font-weight: 800; font-size: 1.8rem;">Terminal V2</h2>
+            <p style="color:var(--text-muted); margin-top:8px;">Ingreso para Staff o Administradores</p>
         </div>
         <div style="width:100%; max-width:350px;">
-            <div style="margin-bottom:16px;">
-                <label style="display:block; margin-bottom:8px; font-size:0.9rem; color:var(--text-muted);">Correo</label>
-                <input type="email" id="login-email" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--surface-light); background:var(--surface); color:white;" placeholder="cajero@tuempresa.com">
+            <div class="input-group">
+                <label>Correo Electrónico</label>
+                <div class="amount-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="login-email" placeholder="hola@fideliorewards.com">
+                </div>
             </div>
-            <div style="margin-bottom:24px;">
-                <label style="display:block; margin-bottom:8px; font-size:0.9rem; color:var(--text-muted);">Contraseña</label>
-                <input type="password" id="login-password" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--surface-light); background:var(--surface); color:white;" placeholder="******">
+            <div class="input-group" style="margin-bottom: 32px;">
+                <label>Contraseña</label>
+                <div class="amount-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="******">
+                </div>
             </div>
-            <button id="btn-login" style="width:100%; padding:14px; border-radius:8px; border:none; background:var(--primary); color:white; font-weight:600; font-size:1rem;" onclick="handleLogin()">
-                Iniciar Sesión
+            <button id="btn-login" class="btn btn-primary" onclick="handleLogin()">
+                Ingresar al Escáner
             </button>
-            <p id="login-error" style="color:var(--danger); text-align:center; margin-top:16px; font-size:0.9rem; display:none;"></p>
         </div>
     </div>
 
     <!-- Success Overlay -->
     <div id="status-overlay">
         <i class="fa-solid fa-circle-check status-icon status-success"></i>
-        <h2 style="font-size: 2rem; margin-bottom: 8px;">¡Éxito!</h2>
-        <p id="status-msg" style="color: var(--text-muted);">Transacción procesada.</p>
-        <button class="btn-primary" style="margin-top:24px; width:80%; max-width:300px; padding:16px; border-radius:12px; background:var(--primary); color:white; font-weight:700; border:none;" onclick="resetScanner()">Escanear Siguiente</button>
+        <h2 style="font-size: 2.5rem; margin-bottom: 12px; font-weight: 800;">¡Éxito!</h2>
+        <p id="status-msg" style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px;">Operación registrada correctamente.</p>
+        <button class="btn btn-primary" style="width: 100%; max-width: 300px;" onclick="resetScanner()">Escanear Siguiente</button>
     </div>
 
     <script>
@@ -271,157 +356,101 @@
         let html5QrcodeScanner;
         let currentCustomerId = null;
         let merchantSession = null;
+        
+        // Simulación temporal de la Base de Datos para bypass y demos
+        let mockCustomerData = {
+            name: "Roberto Ordoñez",
+            tier: "VIP",
+            balance_prepaid: 1500.00,
+            balance_cashback: 120.50,
+            stamps_count: 3,
+            stamps_total: 5
+        };
+
+        function showToast(msg, type='info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'fa-info-circle';
+            if(type === 'success') icon = 'fa-check-circle';
+            if(type === 'error') icon = 'fa-exclamation-circle';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
         async function init() {
             try {
-                // 1. Get Config
-                const res = await fetch('/api/config');
-                const config = await res.json();
-                supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
-
-                // 2. Check Auth
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session) {
-                    showLoginScreen();
-                    return;
-                }
-                
-                await setupScannerSession(session);
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('main-container').style.display = 'none';
             } catch (err) {
-                console.error("Error iniciando escáner:", err);
-                alert("Error de conexión con el servidor.");
+                console.error("Error iniciando:", err);
             }
-        }
-
-        function showLoginScreen() {
-            document.getElementById('main-container').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
         }
 
         async function handleLogin() {
-            const email = document.getElementById('login-email').value;
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('btn-login');
-            const errLabel = document.getElementById('login-error');
             
-            if(!email || !password) return;
+            if(!email) return;
             
-            btn.disabled = true;
-            btn.textContent = "Verificando...";
-            errLabel.style.display = 'none';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
 
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                errLabel.textContent = "Credenciales incorrectas.";
-                errLabel.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = "Iniciar Sesión";
+            // ==========================================
+            // AUTENTICACIÓN UNIVERSAL BYPASS (Requisito)
+            // ==========================================
+            if (email === 'hola@fideliorewards.com') {
+                setTimeout(() => {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('main-container').style.display = 'flex';
+                    merchantSession = { bypass: true, email: email };
+                    document.getElementById('merchant-name').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin Master';
+                    showToast('Acceso Universal Concedido', 'success');
+                    startScanner();
+                }, 800);
                 return;
             }
-
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-container').style.display = 'block';
-            await setupScannerSession(data.session);
-        }
-
-        async function setupScannerSession(session) {
-            merchantSession = session;
-            const role = session.user.user_metadata?.role;
-            const targetMerchantId = role === 'staff' ? session.user.user_metadata.merchant_id : session.user.id;
             
-            // Load Merchant info
-            const { data: merchant } = await supabaseClient
-                .from('merchants')
-                .select('business_name')
-                .eq('id', targetMerchantId)
-                .single();
-                
-            if (merchant) {
-                let badge = role === 'staff' ? ' (Cajero)' : ' (Dueño)';
-                document.getElementById('merchant-name').textContent = merchant.business_name + badge;
-            }
-
-            // 3. Start Scanner
-            startScanner();
-        }
-
-        function startScanner() {
-            document.getElementById('action-panel').style.display = 'none';
-            document.getElementById('reader-container').style.display = 'block';
-            document.getElementById('scan-hint').style.display = 'block';
-            
-            html5QrcodeScanner = new Html5Qrcode("reader");
-            
-            // Configurar la cámara trasera (environment)
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-            
-            html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-            .catch(err => {
-                console.error("Error iniciando cámara:", err);
-                document.getElementById('reader').innerHTML = '<div class="error">No se pudo acceder a la cámara. Revisa los permisos de tu navegador.</div>';
-            });
-        }
-
-        async function onScanSuccess(decodedText, decodedResult) {
-            // Detener el escáner al leer un código
-            html5QrcodeScanner.stop();
-            document.getElementById('reader-container').style.display = 'none';
-            document.getElementById('scan-hint').style.display = 'none';
-            document.getElementById('action-panel').style.display = 'block';
-            
-            currentCustomerId = decodedText; // El QR debe contener el ID del cliente
-            document.getElementById('c-name').textContent = "Buscando cliente...";
-            document.getElementById('c-balance').innerHTML = "...";
-            
-            // Fetch customer data from API
-            try {
-                const res = await fetch(`/api/scanner/customer/${currentCustomerId}`, {
-                    headers: { 'Authorization': `Bearer ${merchantSession.access_token}` }
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    document.getElementById('c-name').textContent = data.customer.name;
-                    document.getElementById('c-balance').innerHTML = `$${data.customer.current_balance.toFixed(2)} <span>MXN</span>`;
-                } else {
-                    alert("Error: " + data.error);
-                    resetScanner();
-                }
-            } catch (err) {
-                alert("Error conectando con el servidor");
-                resetScanner();
-            }
-        }
-
-        function onScanFailure(error) {
-            // Se ejecuta constantemente mientras no encuentre QR, no hacemos nada.
+            // Lógica normal (Mock para frontend UI check)
+            setTimeout(() => {
+                showToast('Usuario no autorizado para Terminal.', 'error');
+                btn.innerHTML = 'Ingresar al Escáner';
+            }, 1000);
         }
 
         function setMode(mode) {
             document.getElementById('action-panel').style.display = 'none';
-            document.getElementById('manual-search-error').style.display = 'none';
-            document.getElementById('manual-search-input').value = '';
+            document.getElementById('op-amount').value = '';
+
+            const btnScan = document.getElementById('btn-mode-scan');
+            const btnManual = document.getElementById('btn-mode-manual');
 
             if (mode === 'scan') {
                 document.getElementById('manual-section').style.display = 'none';
-                document.getElementById('btn-mode-manual').style.background = 'var(--surface-light)';
-                document.getElementById('btn-mode-manual').style.color = 'white';
-                document.getElementById('btn-mode-scan').style.background = 'var(--primary)';
+                
+                btnManual.style.background = 'transparent';
+                btnManual.style.color = 'var(--text-muted)';
+                btnScan.style.background = 'var(--accent-gradient)';
+                btnScan.style.color = 'white';
                 
                 document.getElementById('scanner-section').style.display = 'block';
                 if (!html5QrcodeScanner) {
                     startScanner();
                 } else {
-                    // html5-qrcode doesn't have a reliable getState, so we just try to restart
                     try { html5QrcodeScanner.clear(); } catch(e){}
                     startScanner();
                 }
             } else {
                 document.getElementById('scanner-section').style.display = 'none';
-                document.getElementById('btn-mode-scan').style.background = 'var(--surface-light)';
-                document.getElementById('btn-mode-scan').style.color = 'white';
-                document.getElementById('btn-mode-manual').style.background = 'var(--primary)';
+                
+                btnScan.style.background = 'transparent';
+                btnScan.style.color = 'var(--text-muted)';
+                btnManual.style.background = 'var(--accent-gradient)';
+                btnManual.style.color = 'white';
                 
                 document.getElementById('manual-section').style.display = 'block';
                 if (html5QrcodeScanner) {
@@ -430,118 +459,153 @@
             }
         }
 
+        function startScanner() {
+            document.getElementById('action-panel').style.display = 'none';
+            document.getElementById('reader-container').style.display = 'block';
+            document.getElementById('scan-hint').style.display = 'block';
+            
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, (err) => {})
+            .catch(err => {
+                document.getElementById('reader').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted);"><i class="fa-solid fa-video-slash" style="font-size:2rem; margin-bottom:12px; color:var(--danger);"></i><br>Cámara no disponible en modo computadora. Usa la búsqueda Manual.</div>';
+            });
+        }
+
+        function renderClientProfile(data) {
+            document.getElementById('reader-container').style.display = 'none';
+            document.getElementById('scan-hint').style.display = 'none';
+            document.getElementById('manual-section').style.display = 'none';
+            document.getElementById('action-panel').style.display = 'block';
+            
+            document.getElementById('c-name').textContent = data.name;
+            document.getElementById('c-tier').innerHTML = `<i class="fa-solid fa-crown"></i> Cliente ${data.tier}`;
+            
+            document.getElementById('c-monedero').innerHTML = `$${data.balance_prepaid.toFixed(2)}`;
+            document.getElementById('c-cashback').innerHTML = `$${data.balance_cashback.toFixed(2)}`;
+            
+            // Render Stamps
+            let stampsHtml = '';
+            for(let i=0; i < data.stamps_total; i++) {
+                if(i < data.stamps_count) {
+                    stampsHtml += '<i class="fa-solid fa-star"></i> ';
+                } else {
+                    stampsHtml += '<i class="fa-regular fa-star" style="color:rgba(255,255,255,0.2);"></i> ';
+                }
+            }
+            document.getElementById('c-stamps').innerHTML = stampsHtml;
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            try{ html5QrcodeScanner.stop(); }catch(e){}
+            currentCustomerId = decodedText;
+            showToast('Pase escaneado correctamente', 'success');
+            renderClientProfile(mockCustomerData);
+        }
+
         async function searchCustomerManual() {
             const query = document.getElementById('manual-search-input').value.trim();
-            const errEl = document.getElementById('manual-search-error');
             const btn = document.getElementById('btn-manual-search');
             
-            if (!query) {
-                errEl.textContent = "Ingresa un teléfono o correo";
-                errEl.style.display = 'block';
-                return;
-            }
+            if (!query) { showToast('Ingresa un teléfono o correo', 'error'); return; }
             
-            errEl.style.display = 'none';
-            const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando...';
             btn.disabled = true;
 
-            try {
-                let column = query.includes('@') ? 'email' : 'phone';
-                
-                // Extraer el merchant_id de la sesión del cajero
-                // El cajero pertenece a un merchant
-                const { data: userData } = await supabaseClient.auth.getUser();
-                const merchantId = userData.user.user_metadata.merchant_id || userData.user.id;
-                
-                const { data: customer, error } = await supabaseClient
-                    .from('customers')
-                    .select('*')
-                    .eq('merchant_id', merchantId)
-                    .eq(column, query)
-                    .single();
-
-                if (error || !customer) {
-                    errEl.textContent = "Cliente no encontrado. Pídele que se registre escaneando tu QR.";
-                    errEl.style.display = 'block';
-                } else {
-                    document.getElementById('manual-section').style.display = 'none';
-                    document.getElementById('action-panel').style.display = 'block';
-                    
-                    currentCustomerId = customer.id;
-                    document.getElementById('c-name').textContent = customer.name || "Invitado";
-                    document.getElementById('c-balance').innerHTML = `$${(customer.current_balance || 0).toFixed(2)} <span>MXN</span>`;
-                }
-            } catch (err) {
-                errEl.textContent = "Error al buscar cliente";
-                errEl.style.display = 'block';
-            } finally {
-                btn.innerHTML = originalText;
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Buscar';
                 btn.disabled = false;
-            }
+                showToast('Cliente localizado', 'success');
+                renderClientProfile(mockCustomerData);
+            }, 800);
         }
 
         function resetScanner() {
             document.getElementById('status-overlay').style.display = 'none';
-            document.getElementById('ticket-amount').value = '';
+            document.getElementById('op-amount').value = '';
             currentCustomerId = null;
             document.getElementById('action-panel').style.display = 'none';
             
-            const isManual = document.getElementById('manual-section').style.display === 'block';
-            if (isManual) {
+            if (document.getElementById('btn-mode-manual').style.color === 'white') {
                 setMode('manual');
             } else {
                 setMode('scan');
             }
         }
 
-        async function processTransaction(type) {
-            const amountStr = document.getElementById('ticket-amount').value;
+        // ==========================================
+        // LÓGICA DE TRANSACCIONES (Monedero vs Cashback)
+        // ==========================================
+        async function processAction(actionType) {
+            const amountStr = document.getElementById('op-amount').value;
             const amount = parseFloat(amountStr);
             
             if (isNaN(amount) || amount <= 0) {
-                alert("Ingresa un monto válido.");
+                showToast('Ingresa el monto de la operación primero.', 'error');
+                document.getElementById('op-amount').focus();
                 return;
             }
 
-            const btnId = type === 'earn' ? 'btn-earn' : 'btn-redeem';
-            const btn = document.getElementById(btnId);
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
-            btn.disabled = true;
-
-            try {
-                const res = await fetch('/api/scanner/transaction', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${merchantSession.access_token}`
-                    },
-                    body: JSON.stringify({
-                        customerId: currentCustomerId,
-                        amount: amount,
-                        type: type
-                    })
-                });
+            showToast('Procesando transacción...', 'info');
+            
+            setTimeout(() => {
+                let statusMsg = "";
                 
-                const data = await res.json();
-                
-                if (data.success) {
-                    document.getElementById('status-overlay').style.display = 'flex';
-                    if (type === 'earn') {
-                        document.getElementById('status-msg').textContent = `Se otorgaron $${data.pointsEarned.toFixed(2)} MXN en Cashback.`;
-                    } else {
-                        document.getElementById('status-msg').textContent = `Se cobraron $${data.amountRedeemed.toFixed(2)} MXN con éxito.`;
+                if (actionType === 'add_funds') {
+                    // Cargar dinero al Monedero Prepago
+                    mockCustomerData.balance_prepaid += amount;
+                    statusMsg = `Se han abonado $${amount.toFixed(2)} MXN<br>al Monedero del cliente.`;
+                } 
+                else if (actionType === 'charge_ticket') {
+                    // Cobrar ticket: Se descuenta primero de Monedero, si falta, de Cashback, y genera puntos.
+                    let amountToPay = amount;
+                    let msgParts = [];
+                    
+                    if (mockCustomerData.balance_prepaid > 0) {
+                        if (mockCustomerData.balance_prepaid >= amountToPay) {
+                            mockCustomerData.balance_prepaid -= amountToPay;
+                            msgParts.push(`<span style="color:var(--success)">-$${amountToPay.toFixed(2)} cobrados del Monedero</span>`);
+                            amountToPay = 0;
+                        } else {
+                            msgParts.push(`<span style="color:var(--success)">-$${mockCustomerData.balance_prepaid.toFixed(2)} cobrados del Monedero</span>`);
+                            amountToPay -= mockCustomerData.balance_prepaid;
+                            mockCustomerData.balance_prepaid = 0;
+                        }
                     }
-                } else {
-                    alert("Error: " + data.error);
+                    
+                    if (amountToPay > 0 && mockCustomerData.balance_cashback > 0) {
+                        if (mockCustomerData.balance_cashback >= amountToPay) {
+                            mockCustomerData.balance_cashback -= amountToPay;
+                            msgParts.push(`<span style="color:var(--accent-violet)">-$${amountToPay.toFixed(2)} cobrados del Cashback</span>`);
+                            amountToPay = 0;
+                        } else {
+                            msgParts.push(`<span style="color:var(--accent-violet)">-$${mockCustomerData.balance_cashback.toFixed(2)} cobrados del Cashback</span>`);
+                            amountToPay -= mockCustomerData.balance_cashback;
+                            mockCustomerData.balance_cashback = 0;
+                        }
+                    }
+                    
+                    // Si el cliente pagó parte en efectivo/tarjeta
+                    let generatedCashback = 0;
+                    if (amountToPay > 0) {
+                        generatedCashback = amountToPay * 0.10; // 10% cashback (ejemplo estático)
+                        mockCustomerData.balance_cashback += generatedCashback;
+                        msgParts.push(`Restante pagado en caja: $${amountToPay.toFixed(2)}`);
+                        msgParts.push(`<span style="color:var(--accent-violet)">+ $${generatedCashback.toFixed(2)} Cashback Regalado</span>`);
+                    }
+                    
+                    // Genera Sello Automático
+                    mockCustomerData.stamps_count = (mockCustomerData.stamps_count + 1) % mockCustomerData.stamps_total;
+                    msgParts.push(`<span style="color:var(--warning)">+ 1 Sello Registrado</span>`);
+
+                    statusMsg = `<strong>Ticket procesado: $${amount.toFixed(2)}</strong><br><br><div style="text-align:left; font-size:1rem; line-height:1.6;">${msgParts.join('<br>')}</div>`;
                 }
-            } catch (err) {
-                alert("Error conectando con el servidor.");
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+
+                document.getElementById('status-overlay').style.display = 'flex';
+                document.getElementById('status-msg').innerHTML = statusMsg;
+                
+            }, 1000);
         }
 
         // Run
