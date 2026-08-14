@@ -312,6 +312,7 @@
                 <button class="nav-tab admin-only-item" data-tab="tab-merchants-control" style="display:none;"><i class="fa-solid fa-building-user"></i> Control de Negocios</button>
                 <button class="nav-tab admin-only-item" data-tab="tab-master-admin" style="display:none;"><i class="fa-solid fa-money-check-dollar"></i> Finanzas y Promos</button>
                 <button class="nav-tab admin-only-item" data-tab="tab-inbox" style="display:none;"><i class="fa-solid fa-inbox"></i> Inbox de Soporte</button>
+                <button class="nav-tab admin-only-item" data-tab="tab-fidelio-team" id="admin-team-tab" style="display:none;"><i class="fa-solid fa-users-gear"></i> Equipo Fidelio</button>
 
                 <div class="menu-label mt-20">Configuración y Ayuda</div>
                 <button class="nav-tab" data-tab="tab-account"><i class="fa-solid fa-user-gear"></i> Mi Cuenta</button>
@@ -2304,6 +2305,53 @@
                             <li><i class="fa-solid fa-check" style="color: var(--success); margin-right: 12px;"></i> Flyers y Posters de Promoción</li>
                         </ul>
                         <button class="btn btn-primary btn-block" disabled style="opacity: 0.6; cursor: not-allowed; justify-content: center;"><i class="fa-solid fa-lock"></i> Ver Materiales</button>
+                    </div>
+                </div>
+            </section>
+            <!-- EQUIPO FIDELIO (SUPER ADMIN ONLY) -->
+            <section id="tab-fidelio-team" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">MASTER ADMIN</span>
+                        <h1>Equipo Fidelio</h1>
+                        <p>Gestión de cuentas con acceso al panel de Administración Central.</p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+                    <!-- Formulario para agregar -->
+                    <div style="background: var(--surface); padding: 32px; border-radius: 20px; box-shadow: var(--shadow-sm); align-self: start;">
+                        <h3 style="font-size: 1.4rem; margin-bottom: 16px; font-weight: 800;"><i class="fa-solid fa-user-plus"></i> Invitar Miembro</h3>
+                        <div class="input-group" style="margin-bottom: 16px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Correo Electrónico</label>
+                            <input type="email" id="new-admin-email" class="fidelio-input" placeholder="ejemplo@fideliorewards.com">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 16px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Rol de Acceso</label>
+                            <select id="new-admin-role" class="fidelio-input">
+                                <option value="admin">Administrador (Ventas/Soporte)</option>
+                                <option value="super_admin">Super Admin (Dueño)</option>
+                            </select>
+                        </div>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom: 20px; line-height: 1.5;">El usuario debe registrarse previamente o iniciar sesión con este correo para que pueda entrar.</p>
+                        <button class="btn btn-primary" style="width: 100%; justify-content:center;" onclick="addFidelioAdmin()"><i class="fa-solid fa-shield-check"></i> Otorgar Permisos</button>
+                    </div>
+
+                    <!-- Lista de Equipo -->
+                    <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
+                        <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
+                                    <th style="padding: 16px;">Correo</th>
+                                    <th style="padding: 16px;">Rol</th>
+                                    <th style="padding: 16px;">Fecha Alta</th>
+                                    <th style="padding: 16px; text-align: right;">Revocar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fidelio-team-body">
+                                <tr><td colspan="4" style="text-align:center;">Cargando equipo...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>

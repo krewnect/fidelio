@@ -1468,6 +1468,7 @@ function updatePassRender() {
                 else if(targetTab === 'tab-global-db' && typeof window.loadGlobalDatabase === 'function') window.loadGlobalDatabase();
                 else if(targetTab === 'tab-merchants-control' && typeof window.loadMerchantsControl === 'function') window.loadMerchantsControl();
                 else if(targetTab === 'tab-inbox' && typeof window.loadInbox === 'function') window.loadInbox();
+                else if(targetTab === 'tab-fidelio-team' && typeof window.loadFidelioTeam === 'function') window.loadFidelioTeam();
 
                 localStorage.setItem('activeFidelioTab', targetTab);
             }
@@ -1589,10 +1590,77 @@ function updatePassRender() {
 
     // --- MASTER ADMIN SUITE (ADMIN ONLY) ---
     const checkMasterAdmin = () => {
-        return window.merchantSession && window.merchantSession.user.email === 'hola@fideliorewards.com';
+        return window.fidelioAdminRole === 'admin' || window.fidelioAdminRole === 'super_admin';
     };
 
-    // 1. LEADS (PROSPECTOS)
+    
+    // 0. EQUIPO FIDELIO (SUPER ADMIN ONLY)
+    window.loadFidelioTeam = async function() {
+        if (window.fidelioAdminRole !== 'super_admin') return; // Solo super_admin hardcodeado puede verlo por ahora
+        
+        const tbody = document.getElementById('fidelio-team-body');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando equipo...</td></tr>';
+        
+        const { data, error } = await window.supabaseClient.from('fidelio_admins').select('*').order('created_at', { ascending: false });
+        if (error) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        if(!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay miembros del equipo.</td></tr>';
+            return;
+        }
+        
+        data.forEach(m => {
+            const date = new Date(m.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' });
+            let roleBadge = m.role === 'super_admin' ? '<span class="menu-badge" style="background:var(--accent-violet);color:#fff;font-size:10px;">SUPER ADMIN</span>' : '<span class="menu-badge" style="background:#3b82f6;color:#fff;font-size:10px;">ADMINISTRADOR</span>';
+            
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid var(--border-soft);">
+                    <td style="padding: 16px;"><strong>${m.email}</strong></td>
+                    <td style="padding: 16px;">${roleBadge}</td>
+                    <td style="padding: 16px;">${date}</td>
+                    <td style="padding: 16px; text-align: right;">
+                        ${m.email === 'hola@fideliorewards.com' ? '<span style="color:var(--text-muted);font-size:12px;">Dueño</span>' : `<button class="btn-preset" onclick="removeFidelioAdmin('${m.id}')" title="Revocar Acceso" style="border-color:#ef4444; color:#ef4444;"><i class="fa-solid fa-trash"></i></button>`}
+                    </td>
+                </tr>
+            `;
+        });
+    };
+
+    window.addFidelioAdmin = async function() {
+        if (window.fidelioAdminRole !== 'super_admin') return;
+        const emailInput = document.getElementById('new-admin-email');
+        const roleSelect = document.getElementById('new-admin-role');
+        
+        const email = emailInput.value.trim().toLowerCase();
+        if(!email) return showToast('Ingresa un correo electrónico.', 'error');
+        
+        const { error } = await window.supabaseClient.from('fidelio_admins').insert([{
+            email: email,
+            role: roleSelect.value
+        }]);
+        
+        if (error) {
+            showToast('Error al agregar: ' + error.message, 'error');
+        } else {
+            showToast('Miembro agregado correctamente', 'success');
+            emailInput.value = '';
+            loadFidelioTeam();
+        }
+    };
+
+    window.removeFidelioAdmin = async function(id) {
+        if (window.fidelioAdminRole !== 'super_admin') return;
+        if(!confirm('¿Estás seguro de revocar el acceso a este miembro del equipo?')) return;
+        const { error } = await window.supabaseClient.from('fidelio_admins').delete().eq('id', id);
+        if(error) showToast('Error al revocar: ' + error.message, 'error');
+        else { showToast('Acceso revocado', 'success'); loadFidelioTeam(); }
+    };
+
+// 1. LEADS (PROSPECTOS)
     window.loadLeads = async function() {
         if (!checkMasterAdmin()) return;
         const tbody = document.getElementById('leads-table-body');
@@ -1882,30 +1950,56 @@ function updatePassRender() {
     if (accEmail && window.merchantSession) {
         accEmail.value = window.merchantSession.user.email;
         
-        // ADMIN CHECK FOR LEADS TAB
-        if (window.merchantSession.user.email === 'hola@fideliorewards.com') {
-            document.querySelectorAll('.admin-only-item').forEach(el => el.style.display = 'block');
-            
-            // Override UI for Admin
-            const adminName = document.getElementById('header-restaurant-name');
-            if (adminName) adminName.textContent = "Fidelio Admin";
-            const adminCategory = document.getElementById('header-business-category');
-            if (adminCategory) adminCategory.textContent = "Backoffice Central";
-            const adminIcon = document.getElementById('header-business-icon');
-            if (adminIcon) adminIcon.innerHTML = '<img src="fidelio_logo.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
-            
+        // ADMIN CHECK FOR LEADS TAB & TEAM FIDELIO
+        const initializeAdminUI = async () => {
+            const userEmail = window.merchantSession.user.email;
+            let isAdmin = false;
+            let isSuperAdmin = false;
 
+            // Fallback seguro por si la BD falla
+            if (userEmail === 'hola@fideliorewards.com') {
+                isAdmin = true;
+                isSuperAdmin = true;
+            }
 
-            
-            // Re-attach listeners explicitly just in case for new tab
-            document.getElementById('admin-leads-tab').addEventListener('click', (e) => {
-                document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                document.getElementById('tab-leads').classList.add('active');
-                window.loadLeads();
-            });
-        }
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('fidelio_admins')
+                    .select('role')
+                    .eq('email', userEmail)
+                    .single();
+                
+                if (data) {
+                    isAdmin = true;
+                    if (data.role === 'super_admin') isSuperAdmin = true;
+                }
+            } catch (e) { console.error("Error fetching admin role:", e); }
+
+            if (isAdmin) {
+                // Configurar variable global para funciones del Master Admin
+                window.fidelioAdminRole = isSuperAdmin ? 'super_admin' : 'admin';
+                
+                // Mostrar botones base de administración
+                document.querySelectorAll('.admin-only-item').forEach(el => {
+                    // Ocultar pestaña Equipo Fidelio a menos que sea super admin
+                    if (el.id === 'admin-team-tab' && !isSuperAdmin) {
+                        el.style.display = 'none';
+                    } else {
+                        el.style.display = 'block';
+                    }
+                });
+                
+                // Override UI for Admin
+                const adminName = document.getElementById('header-restaurant-name');
+                if (adminName) adminName.textContent = isSuperAdmin ? "Fidelio Owner" : "Fidelio Staff";
+                const adminCategory = document.getElementById('header-business-category');
+                if (adminCategory) adminCategory.textContent = "Backoffice Central";
+                const adminIcon = document.getElementById('header-business-icon');
+                if (adminIcon) adminIcon.innerHTML = '<img src="fidelio_logo.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+            }
+        };
+        initializeAdminUI();
+    }
 
         // --- SESSION HEARTBEAT ---
         // Verificar periódicamente que el token no haya sido revocado
