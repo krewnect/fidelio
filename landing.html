@@ -798,7 +798,8 @@
                         }
                     } catch (error) {
                         console.error('Login error:', error);
-                        alert('Credenciales incorrectas o error de red.');
+                        alert('Error al iniciar sesión: ' + (error.message || 'Verifica tu correo o contraseña. Si usaste hola@fideliorewards.com, asegúrate de escribirlo completo.'));
+                    } finally {
                         btn.textContent = 'Entrar a mi panel';
                     }
                 });
