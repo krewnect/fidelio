@@ -1603,7 +1603,11 @@ function updatePassRender() {
         
         const { data, error } = await window.supabaseClient.from('fidelio_admins').select('*').order('created_at', { ascending: false });
         if (error) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            if(error.code === '42P01') {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">La tabla fidelio_admins no existe aún. Por favor corre el script SQL de Master Admin.</td></tr>';
+            } else {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            }
             return;
         }
         
@@ -1962,9 +1966,21 @@ function updatePassRender() {
     window.loadInbox = async function() {
         if (!checkMasterAdmin()) return;
         const tbody = document.getElementById('inbox-table-body');
+        const themeFilter = document.getElementById('inbox-theme-filter')?.value || 'all';
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando tickets...</td></tr>';
         
-        const { data, error } = await window.supabaseClient.from('support_tickets').select('*').order('created_at', { ascending: false });
+        let query = window.supabaseClient.from('support_tickets').select('*').order('created_at', { ascending: false });
+        
+        // Simple mapping for theme keywords if we had a dedicated theme column, 
+        // since we don't, we might filter by subject keywords for demo purposes.
+        if (themeFilter !== 'all') {
+            if (themeFilter === 'soporte') query = query.ilike('subject', '%soport%');
+            else if (themeFilter === 'facturacion') query = query.ilike('subject', '%pago%');
+            else if (themeFilter === 'reporte') query = query.ilike('subject', '%error%');
+        }
+
+        const { data, error } = await query;
+        
         if (error) {
             if(error.code === '42P01') {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">La tabla support_tickets no existe aún. Corre el script SQL primero.</td></tr>';
@@ -1974,13 +1990,19 @@ function updatePassRender() {
             return;
         }
         
-        if (!data || data.length === 0) {
+        // Client-side filtering if ilike didn't catch everything perfectly
+        let filteredData = data;
+        if (themeFilter === 'dudas') {
+            filteredData = data.filter(t => !t.subject.toLowerCase().includes('soport') && !t.subject.toLowerCase().includes('pago') && !t.subject.toLowerCase().includes('error'));
+        }
+        
+        if (!filteredData || filteredData.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Bandeja de entrada limpia. No hay tickets.</td></tr>';
             return;
         }
         
         tbody.innerHTML = '';
-        data.forEach(t => {
+        filteredData.forEach(t => {
             const date = new Date(t.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour:'2-digit', minute:'2-digit' });
             let statusBadge = t.status === 'abierto' ? '<span class="menu-badge" style="background:#ef4444;color:#fff;font-size:10px;">ABIERTO</span>' : '<span class="menu-badge" style="background:#10b981;color:#fff;font-size:10px;">RESUELTO</span>';
             
@@ -1997,8 +2019,8 @@ function updatePassRender() {
                     </td>
                     <td style="padding: 16px;">${statusBadge}</td>
                     <td style="padding: 16px; text-align: right;">
-                        <button class="btn-preset" onclick="alert('Mensaje completo:\n\n' + \`${t.message}\`)" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--text-main);"></i></button>
-                        ${t.status === 'abierto' ? `<button class="btn-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--success);"></i></button>` : ''}
+                        <button class="btn-preset" onclick="alert('Mensaje completo:\n\n' + \`${t.message}\`)" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
+                        ${t.status === 'abierto' ? `<button class="btn-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--accent-violet);"></i></button>` : ''}
                     </td>
                 </tr>
             `;
