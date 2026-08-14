@@ -77,6 +77,7 @@
             grid-template-columns: 380px 1fr;
             gap: 20px;
             padding: 20px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
             overflow: hidden;
             max-width: 1400px;
             margin: 0 auto;
@@ -84,12 +85,25 @@
             height: calc(100vh - 70px); /* Restar el alto aproximado del header */
         }
 
-        /* Mobile adaptation */
+        /* Mobile & Tablet adaptation (iOS App Style) */
         @media (max-width: 900px) {
-            .pos-layout {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr;
+            body {
+                height: auto;
                 overflow-y: auto;
+                -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
+            }
+            .pos-layout {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                overflow: visible;
+                padding: 16px;
+                padding-bottom: calc(30px + env(safe-area-inset-bottom));
+            }
+            .action-panel {
+                height: auto !important;
+                overflow-y: visible !important;
+                min-height: 500px;
             }
         }
 
@@ -275,10 +289,10 @@
         <div class="scanner-panel">
             
         <!-- Mode Switcher -->
-        <div style="display: flex; gap: 10px; margin-bottom: 24px; background: var(--bg-card); padding: 6px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm);">
-            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escáner QR</button>
-            <button id="btn-mode-nfc" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('nfc')"><i class="fa-solid fa-wifi"></i> Lector NFC</button>
-            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Buscar Manual</button>
+        <div style="display: flex; gap: 8px; margin-bottom: 24px; background: var(--bg-card); padding: 6px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm); flex-wrap: wrap; justify-content: center;">
+            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:12px; font-size:0.9rem; flex:1; min-width:110px;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Cámara</button>
+            <button id="btn-mode-nfc" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem; flex:1; min-width:110px;" onclick="setMode('nfc')"><i class="fa-solid fa-wifi"></i> NFC</button>
+            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem; flex:1; min-width:110px;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Manual</button>
         </div>
 
             <!-- Scanner Section -->
