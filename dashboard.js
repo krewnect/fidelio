@@ -2908,10 +2908,10 @@ function updateTutorialView() {
 
     dots.forEach((dot, index) => {
         if (index === currentTutSlide) {
-            dot.style.background = 'var(--accent-violet)';
+            dot.style.background = '#8b5cf6'; // var(--accent-violet) hex
             dot.style.transform = 'scale(1.2)';
         } else {
-            dot.style.background = 'rgba(255,255,255,0.2)';
+            dot.style.background = '#d1d5db'; // light grey for stark contrast
             dot.style.transform = 'scale(1)';
         }
     });
