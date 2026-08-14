@@ -1952,8 +1952,9 @@ function updatePassRender() {
         
         if (cashbackSlider) {
             cashbackSlider.addEventListener('input', (e) => {
-                cashbackDisplay.textContent = e.target.value + '%';
-                cashbackExample.textContent = e.target.value;
+                if(cashbackDisplay) cashbackDisplay.textContent = e.target.value + '%';
+                if(cashbackExample) cashbackExample.textContent = e.target.value;
+                if (window.updatePassRender) window.updatePassRender();
             });
         }
         
