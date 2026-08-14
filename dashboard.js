@@ -2084,6 +2084,9 @@ window.selectAICampaign = function(type, element) {
         'cumpleanos': '<i class="fa-solid fa-cake-candles" style="color:var(--accent-violet); margin-right:8px;"></i> Cumpleañeros del Mes',
         'dias_lentos': '<i class="fa-solid fa-clock" style="color:var(--accent-violet); margin-right:8px;"></i> Inyección Días Lentos',
         'vip_exclusivo': '<i class="fa-solid fa-crown" style="color:var(--accent-violet); margin-right:8px;"></i> Recompensa VIP',
+        'geofencing': '<i class="fa-solid fa-location-dot" style="color:var(--accent-violet); margin-right:8px;"></i> Cerca de Ti (Geocerca)',
+        'clima': '<i class="fa-solid fa-cloud-sun-rain" style="color:var(--accent-violet); margin-right:8px;"></i> Promos del Clima',
+        'winback': '<i class="fa-solid fa-gem" style="color:var(--accent-violet); margin-right:8px;"></i> Win-back Premium',
         'manual': '<i class="fa-solid fa-pen-nib" style="color:var(--accent-violet); margin-right:8px;"></i> Campaña Libre'
     };
     
@@ -2092,6 +2095,9 @@ window.selectAICampaign = function(type, element) {
         'cumpleanos': 'Celebra tu cumpleaños con nosotros. Muestra este mensaje para tu postre de cortesía.',
         'dias_lentos': '¡Hora feliz secreta! Solo por hoy de 4 a 6 PM tienes doble puntaje en todo.',
         'vip_exclusivo': 'Como miembro Oro, tienes un beneficio esperando. Actívalo en tu próxima compra.',
+        'geofencing': 'Vimos que andas por aquí 👀 Pasa a saludarnos y te invitamos la bebida en la compra de un plato fuerte.',
+        'clima': '¡Ideal para este clima! Pide a domicilio o ven a visitarnos y disfruta un descuento especial del 15%.',
+        'winback': 'Nos has hecho mucha falta. Te depositamos $200 de saldo a tu Monedero de regalo si nos visitas antes de fin de mes.',
         'manual': ''
     };
     
@@ -2104,9 +2110,9 @@ window.selectAICampaign = function(type, element) {
         manualSelector.style.display = 'block';
     } else {
         manualSelector.style.display = 'none';
-        if(type === 'recuperacion') select.value = 'risk';
+        if(type === 'recuperacion' || type === 'winback') select.value = 'risk';
         if(type === 'dias_lentos' || type === 'vip_exclusivo') select.value = 'active';
-        if(type === 'cumpleanos') select.value = 'all';
+        if(type === 'cumpleanos' || type === 'geofencing' || type === 'clima') select.value = 'all';
     }
     
     document.getElementById('camp-push-message').value = defaultTexts[type] || '';
