@@ -67,38 +67,34 @@
                 <div class="grid-4col">
                     <div class="accordion-card">
                         <span>Negocios Suscritos</span>
-                        <strong class="font-giant block mt-12">142 Comercios</strong>
-                        <small class="text-emerald font-bold">+12 este mes</small>
+                        <strong class="font-giant block mt-12" id="sa-metric-merchants">0 Comercios</strong>
+                        <small class="text-emerald font-bold" id="sa-metric-merchants-sub">Cargando...</small>
                     </div>
 
                     <div class="accordion-card">
                         <span>Pases Wallet Emitidos</span>
-                        <strong class="font-giant block mt-12">48,920 Pases</strong>
-                        <small class="text-emerald font-bold">99.8% Instalados</small>
+                        <strong class="font-giant block mt-12" id="sa-metric-passes">0 Pases</strong>
+                        <small class="text-emerald font-bold" id="sa-metric-passes-sub">Cargando...</small>
                     </div>
 
                     <div class="accordion-card">
                         <span>Sucursales GPS Activas</span>
-                        <strong class="font-giant block mt-12">384 Ubicaciones</strong>
+                        <strong class="font-giant block mt-12" id="sa-metric-branches">0 Ubicaciones</strong>
                         <small class="font-bold">Hasta 20 por negocio</small>
                     </div>
 
                     <div class="accordion-card">
                         <span>MRR Mensual SaaS</span>
-                        <strong class="font-giant block mt-12 text-emerald">$141,858 MXN</strong>
-                        <small class="font-bold">$999 MXN / mes por cuenta</small>
+                        <strong class="font-giant block mt-12 text-emerald" id="sa-metric-mrr">$0 MXN</strong>
+                        <small class="font-bold">Ingreso recurrente</small>
                     </div>
                 </div>
 
                 <div class="grid-2col mt-20">
                     <div class="accordion-card">
                         <div class="card-title-bar"><h2><i class="fa-solid fa-chart-pie"></i> Distribución por Giro Comercial</h2></div>
-                        <div class="activity-list mt-16">
-                            <div class="calc-row"><span>Restaurantes & Gastronomía</span><strong>42%</strong></div>
-                            <div class="calc-row"><span>Barbershops & Peluquerías</span><strong>24%</strong></div>
-                            <div class="calc-row"><span>Salones de Uñas & Estéticas</span><strong>18%</strong></div>
-                            <div class="calc-row"><span>Cafeterías & Panaderías</span><strong>10%</strong></div>
-                            <div class="calc-row"><span>Arcades, Spas & Otros</span><strong>6%</strong></div>
+                        <div class="activity-list mt-16" id="sa-metric-distribution">
+                            <div class="calc-row"><span>Cargando datos...</span><strong></strong></div>
                         </div>
                     </div>
 
@@ -196,11 +192,10 @@
                         <div class="card-title-bar"><h2><i class="fa-solid fa-chart-column"></i> Consumo de IA</h2></div>
 
                         <div class="status-indicator-box indigo mt-16">
-                            <span>Tokens Procesados Hoy: <strong>184,290 Tokens</strong></span>
+                            <span>Tokens Procesados Hoy: <strong id="sa-metric-tokens">0 Tokens</strong></span>
                         </div>
-
                         <div class="status-indicator-box cyan mt-16">
-                            <span>Costo API DeepSeek: <strong class="text-emerald">$0.00 USD (Incluido)</strong></span>
+                            <span>Costo API DeepSeek: <strong class="text-emerald" id="sa-metric-cost">$0.00 USD (Incluido)</strong></span>
                         </div>
                     </div>
                 </div>
