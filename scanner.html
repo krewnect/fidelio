@@ -7,8 +7,8 @@
     
     <!-- PWA / Native App tags -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#02010A">
-    <link rel="apple-touch-icon" href="./fidelio-logo-official.png">
+    <meta name="theme-color" content="#f9fafb">
+    <link rel="apple-touch-icon" href="./fidelio_logo_purple.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Scanner V2">
@@ -22,46 +22,51 @@
     
     <style>
         /* ==========================================
-           1. CORE DESIGN TOKENS (Premium Dark Violet)
+           1. CORE DESIGN TOKENS (Premium Light Theme)
            ========================================== */
         :root {
-            --bg-dark: #02010A; /* Ultra dark violet background */
-            --bg-card: rgba(15, 12, 33, 0.7); /* Translucent cards */
-            --border-glass: rgba(139, 92, 246, 0.15); /* Subtle violet borders */
+            --bg-main: #f9fafb; /* Light background */
+            --bg-card: #ffffff; /* White cards */
+            --border-soft: rgba(0,0,0,0.06); /* Soft borders */
             --accent-violet: #8B5CF6; /* Vibrant violet */
             --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
             
-            --text-main: #FFFFFF;
-            --text-muted: #A1A1AA;
+            --text-main: #111827; /* Dark text */
+            --text-muted: #6b7280; /* Gray text */
             
             --success: #10B981;
+            --success-bg: rgba(16, 185, 129, 0.1);
             --warning: #F59E0B;
+            --warning-bg: rgba(245, 158, 11, 0.1);
             --danger: #EF4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.02);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-main);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            /* Subtle background glow effect */
-            background-image: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Header */
         header {
-            padding: 20px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(2, 1, 10, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-glass);
+            border-bottom: 1px solid var(--border-soft);
             z-index: 10;
         }
         .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
@@ -80,7 +85,7 @@
             padding: 14px;
             border-radius: 12px;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             justify-content: center;
@@ -94,28 +99,28 @@
         .btn-primary {
             background: var(--accent-gradient);
             color: white;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
         }
         .btn-secondary {
-            background: rgba(139, 92, 246, 0.1);
-            color: var(--accent-violet);
-            border: 1px solid var(--accent-violet);
+            background: var(--bg-main);
+            color: var(--text-main);
+            border: 1px solid var(--border-soft);
         }
         .btn-outline {
             background: transparent;
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-soft);
             color: var(--text-muted);
         }
 
         /* Scanner Area */
         #reader-container {
             width: 100%;
-            background: #000;
+            background: #ffffff;
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 20px;
-            border: 1px solid var(--border-glass);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-md);
             position: relative;
         }
         #reader { width: 100%; min-height: 300px; }
@@ -129,17 +134,16 @@
 
         .client-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-soft);
             border-radius: 20px;
             padding: 24px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
             margin-bottom: 20px;
         }
         
         .client-header { text-align: center; margin-bottom: 24px; }
-        .client-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
-        .client-tier { font-size: 0.8rem; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .client-name { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+        .client-tier { font-size: 0.8rem; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; background: rgba(139,92,246,0.1); padding: 4px 12px; border-radius: 20px; display: inline-block;}
 
         /* The 3 Balance Modules */
         .balances-grid {
@@ -149,16 +153,16 @@
             margin-bottom: 24px;
         }
         .balance-module {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-glass);
+            background: var(--bg-main);
+            border: 1px solid var(--border-soft);
             border-radius: 16px;
             padding: 16px;
             text-align: center;
         }
         .balance-module.full-width { grid-column: span 2; }
         
-        .b-title { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .b-amount { font-size: 1.75rem; font-weight: 800; color: white; display:flex; align-items:center; justify-content:center; gap:4px; }
+        .b-title { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;}
+        .b-amount { font-size: 1.75rem; font-weight: 800; color: var(--text-main); display:flex; align-items:center; justify-content:center; gap:4px; }
         .b-amount span { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
         
         .b-icon-monedero { color: var(--success); }
@@ -167,21 +171,22 @@
 
         /* Form Inputs */
         .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;}
         .amount-wrapper { position: relative; display: flex; align-items: center; }
         .amount-wrapper i { position: absolute; left: 16px; font-size: 1.2rem; color: var(--text-muted); }
         input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border-glass);
-            color: white;
+            background: var(--bg-main);
+            border: 1px solid var(--border-soft);
+            color: var(--text-main);
             padding: 16px 16px 16px 40px;
             font-size: 1.2rem;
             border-radius: 12px;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            font-weight: 600;
         }
         input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
-            outline: none; border-color: var(--accent-violet);
+            outline: none; border-color: var(--accent-violet); background: #ffffff; box-shadow: 0 0 0 4px rgba(139,92,246,0.1);
         }
         
         /* Action Buttons Grid */
@@ -194,7 +199,7 @@
 
         /* Status overlay / Toasts */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; }
-        .toast { background: var(--bg-card); color: white; padding: 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: slideDown 0.3s ease; border-left: 4px solid var(--accent-violet); border-top: 1px solid var(--border-glass); border-right: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); backdrop-filter: blur(10px); }
+        .toast { background: #ffffff; color: var(--text-main); padding: 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: slideDown 0.3s ease; border-left: 4px solid var(--accent-violet); border-top: 1px solid var(--border-soft); border-right: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); font-weight: 600;}
         .toast.success { border-left-color: var(--success); }
         .toast.error { border-left-color: var(--danger); }
         @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -202,7 +207,7 @@
         /* Status Modal */
         #status-overlay {
             position: fixed; inset: 0;
-            background: rgba(2, 1, 10, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             display: none; flex-direction: column; justify-content: center; align-items: center;
             z-index: 500;
@@ -210,7 +215,7 @@
             padding: 20px;
         }
         .status-icon { font-size: 5rem; margin-bottom: 24px; }
-        .status-success { color: var(--success); text-shadow: 0 0 30px rgba(16, 185, 129, 0.4); }
+        .status-success { color: var(--success); text-shadow: 0 10px 30px rgba(16, 185, 129, 0.2); }
         
     </style>
 </head>
@@ -218,10 +223,10 @@
 
     <header>
         <div class="logo">
-            <img src="./fidelio-logo-official.png" alt="Fidelio Logo" style="height: 28px; width: auto;" />
-            <span style="font-size: 16px; font-weight: 600; color: white;">Terminal V2</span>
+            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 28px; width: auto;" />
+            <span style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-left:4px;">Terminal</span>
         </div>
-        <div id="merchant-name" style="font-size: 0.85rem; color: var(--accent-violet); font-weight: 500; background: rgba(139,92,246,0.1); padding: 4px 10px; border-radius: 20px;">Cargando...</div>
+        <div id="merchant-name" style="font-size: 0.8rem; color: var(--accent-violet); font-weight: 700; background: rgba(139,92,246,0.1); padding: 6px 12px; border-radius: 20px;">Cargando...</div>
     </header>
 
     <div id="toast-container"></div>
@@ -229,9 +234,9 @@
     <div class="container" id="main-container" style="display:none;">
         
         <!-- Mode Switcher -->
-        <div style="display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 16px; border: 1px solid var(--border-glass);">
-            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:10px;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escáner</button>
-            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:10px;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Manual</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 24px; background: var(--bg-card); padding: 6px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm);">
+            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escáner QR</button>
+            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Buscar Manual</button>
         </div>
 
         <!-- Scanner Section -->
@@ -239,14 +244,14 @@
             <div id="reader-container">
                 <div id="reader"></div>
             </div>
-            <p style="text-align:center; color:var(--text-muted); font-size:0.9rem; margin-bottom: 20px;" id="scan-hint">
+            <p style="text-align:center; color:var(--text-muted); font-size:0.95rem; font-weight:500; margin-bottom: 20px;" id="scan-hint">
                 <i class="fa-solid fa-camera" style="margin-right: 6px;"></i> Apunta la cámara al pase de Wallet del cliente.
             </p>
         </div>
 
         <!-- Manual Search Section -->
-        <div id="manual-section" style="display:none; background:var(--bg-card); padding:24px; border-radius:20px; border:1px solid var(--border-glass); margin-bottom:20px;">
-            <h3 style="margin-bottom:16px; text-align:center; font-size: 1.2rem;">Búsqueda de Cliente</h3>
+        <div id="manual-section" style="display:none; background:var(--bg-card); padding:24px; border-radius:20px; border:1px solid var(--border-soft); margin-bottom:20px; box-shadow: var(--shadow-md);">
+            <h3 style="margin-bottom:20px; text-align:center; font-size: 1.2rem; color:var(--text-main); font-weight:800;">Búsqueda de Cliente</h3>
             <div class="input-group">
                 <label>Teléfono o Correo</label>
                 <div class="amount-wrapper" style="margin-bottom: 16px;">
@@ -270,19 +275,19 @@
                 <!-- 3 Modules: Monedero, Cashback, Sellos -->
                 <div class="balances-grid">
                     <!-- Monedero (Prepaid) -->
-                    <div class="balance-module">
-                        <div class="b-title"><i class="fa-solid fa-wallet b-icon-monedero"></i> Monedero</div>
-                        <div class="b-amount" id="c-monedero">$0.00</div>
+                    <div class="balance-module" style="background:var(--success-bg); border-color:rgba(16, 185, 129, 0.2);">
+                        <div class="b-title" style="color:var(--success);"><i class="fa-solid fa-wallet b-icon-monedero"></i> Monedero</div>
+                        <div class="b-amount" style="color:var(--success);" id="c-monedero">$0.00</div>
                     </div>
                     <!-- Cashback -->
-                    <div class="balance-module">
-                        <div class="b-title"><i class="fa-solid fa-coins b-icon-cashback"></i> Cashback</div>
-                        <div class="b-amount" id="c-cashback">$0.00</div>
+                    <div class="balance-module" style="background:rgba(139,92,246,0.05); border-color:rgba(139,92,246,0.15);">
+                        <div class="b-title" style="color:var(--accent-violet);"><i class="fa-solid fa-coins b-icon-cashback"></i> Cashback</div>
+                        <div class="b-amount" style="color:var(--accent-violet);" id="c-cashback">$0.00</div>
                     </div>
                     <!-- Sellos -->
-                    <div class="balance-module full-width">
-                        <div class="b-title"><i class="fa-solid fa-star b-icon-stamps"></i> Sellos Acumulados</div>
-                        <div class="b-amount" style="font-size: 1.2rem; color:var(--warning);" id="c-stamps">
+                    <div class="balance-module full-width" style="background:var(--warning-bg); border-color:rgba(245, 158, 11, 0.2);">
+                        <div class="b-title" style="color:var(--warning);"><i class="fa-solid fa-star b-icon-stamps"></i> Sellos Acumulados</div>
+                        <div class="b-amount" style="font-size: 1.5rem; color:var(--warning);" id="c-stamps">
                             <!-- Injected via JS -->
                         </div>
                     </div>
@@ -302,12 +307,12 @@
                     <button class="btn btn-primary" onclick="processAction('charge_ticket')">
                         <i class="fa-solid fa-receipt"></i> Cobrar Ticket
                     </button>
-                    <button class="btn btn-secondary" style="border: 1px solid var(--success); color: var(--success);" onclick="processAction('add_funds')">
-                        <i class="fa-solid fa-arrow-up-from-bracket"></i> Cargar Monedero
+                    <button class="btn btn-secondary" style="background:var(--success-bg); border: 1px solid rgba(16,185,129,0.3); color: var(--success);" onclick="processAction('add_funds')">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i> Cargar Saldo
                     </button>
                 </div>
                 
-                <button class="btn btn-outline" style="margin-top: 12px;" onclick="resetScanner()">
+                <button class="btn btn-outline" style="margin-top: 12px; background:var(--bg-main);" onclick="resetScanner()">
                     <i class="fa-solid fa-xmark"></i> Cancelar / Volver
                 </button>
             </div>
@@ -316,11 +321,11 @@
     </div>
 
     <!-- Login Screen -->
-    <div id="login-screen" style="position:fixed; inset:0; background:var(--bg-dark); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; background-image: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.2) 0%, transparent 70%);">
+    <div id="login-screen" style="position:fixed; inset:0; background:var(--bg-card); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
         <div style="text-align:center; margin-bottom:40px;">
-            <img src="./fidelio-logo-official.png" alt="Fidelio Logo" style="height: 60px; margin-bottom: 20px;" />
-            <h2 style="font-weight: 800; font-size: 1.8rem;">Terminal V2</h2>
-            <p style="color:var(--text-muted); margin-top:8px;">Ingreso para Staff o Administradores</p>
+            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 50px; margin-bottom: 24px;" />
+            <h2 style="font-weight: 800; font-size: 1.8rem; color:var(--text-main);">Terminal V2</h2>
+            <p style="color:var(--text-muted); margin-top:8px; font-weight:500;">Ingreso exclusivo para Staff</p>
         </div>
         <div style="width:100%; max-width:350px;">
             <div class="input-group">
@@ -346,8 +351,8 @@
     <!-- Success Overlay -->
     <div id="status-overlay">
         <i class="fa-solid fa-circle-check status-icon status-success"></i>
-        <h2 style="font-size: 2.5rem; margin-bottom: 12px; font-weight: 800;">¡Éxito!</h2>
-        <p id="status-msg" style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px;">Operación registrada correctamente.</p>
+        <h2 style="font-size: 2.5rem; margin-bottom: 12px; font-weight: 800; color:var(--text-main);">¡Éxito!</h2>
+        <p id="status-msg" style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; font-weight:500;">Operación registrada correctamente.</p>
         <button class="btn btn-primary" style="width: 100%; max-width: 300px;" onclick="resetScanner()">Escanear Siguiente</button>
     </div>
 
@@ -536,7 +541,7 @@
                 if(i < data.stamps_count) {
                     stampsHtml += '<i class="fa-solid fa-star"></i> ';
                 } else {
-                    stampsHtml += '<i class="fa-regular fa-star" style="color:rgba(255,255,255,0.2);"></i> ';
+                    stampsHtml += '<i class="fa-regular fa-star" style="color:var(--text-muted); opacity:0.3;"></i> ';
                 }
             }
             document.getElementById('c-stamps').innerHTML = stampsHtml;
@@ -600,7 +605,7 @@
                 if (actionType === 'add_funds') {
                     // Cargar dinero al Monedero Prepago
                     mockCustomerData.balance_prepaid += amount;
-                    statusMsg = `Se han abonado $${amount.toFixed(2)} MXN<br>al Monedero del cliente.`;
+                    statusMsg = `<strong style="color:var(--text-main);">Operación Exitosa</strong><br><br>Se han abonado <span style="color:var(--success); font-weight:800;">$${amount.toFixed(2)} MXN</span><br>al Monedero del cliente.`;
                 } 
                 else if (actionType === 'charge_ticket') {
                     // Cobrar ticket: Se descuenta primero de Monedero, si falta, de Cashback, y genera puntos.
@@ -610,10 +615,10 @@
                     if (mockCustomerData.balance_prepaid > 0) {
                         if (mockCustomerData.balance_prepaid >= amountToPay) {
                             mockCustomerData.balance_prepaid -= amountToPay;
-                            msgParts.push(`<span style="color:var(--success)">-$${amountToPay.toFixed(2)} cobrados del Monedero</span>`);
+                            msgParts.push(`<span style="color:var(--success); font-weight:700;">-$${amountToPay.toFixed(2)} pagados con Monedero</span>`);
                             amountToPay = 0;
                         } else {
-                            msgParts.push(`<span style="color:var(--success)">-$${mockCustomerData.balance_prepaid.toFixed(2)} cobrados del Monedero</span>`);
+                            msgParts.push(`<span style="color:var(--success); font-weight:700;">-$${mockCustomerData.balance_prepaid.toFixed(2)} agotados del Monedero</span>`);
                             amountToPay -= mockCustomerData.balance_prepaid;
                             mockCustomerData.balance_prepaid = 0;
                         }
@@ -622,10 +627,10 @@
                     if (amountToPay > 0 && mockCustomerData.balance_cashback > 0) {
                         if (mockCustomerData.balance_cashback >= amountToPay) {
                             mockCustomerData.balance_cashback -= amountToPay;
-                            msgParts.push(`<span style="color:var(--accent-violet)">-$${amountToPay.toFixed(2)} cobrados del Cashback</span>`);
+                            msgParts.push(`<span style="color:var(--accent-violet); font-weight:700;">-$${amountToPay.toFixed(2)} cobrados del Cashback</span>`);
                             amountToPay = 0;
                         } else {
-                            msgParts.push(`<span style="color:var(--accent-violet)">-$${mockCustomerData.balance_cashback.toFixed(2)} cobrados del Cashback</span>`);
+                            msgParts.push(`<span style="color:var(--accent-violet); font-weight:700;">-$${mockCustomerData.balance_cashback.toFixed(2)} agotados del Cashback</span>`);
                             amountToPay -= mockCustomerData.balance_cashback;
                             mockCustomerData.balance_cashback = 0;
                         }
@@ -636,15 +641,15 @@
                     if (amountToPay > 0) {
                         generatedCashback = amountToPay * 0.10; // 10% cashback (ejemplo estático)
                         mockCustomerData.balance_cashback += generatedCashback;
-                        msgParts.push(`Restante pagado en caja: $${amountToPay.toFixed(2)}`);
-                        msgParts.push(`<span style="color:var(--accent-violet)">+ $${generatedCashback.toFixed(2)} Cashback Regalado</span>`);
+                        msgParts.push(`<span style="color:var(--text-main); font-weight:600;">Restante pagado en caja: $${amountToPay.toFixed(2)}</span>`);
+                        msgParts.push(`<span style="color:var(--accent-violet); font-weight:700;">+ $${generatedCashback.toFixed(2)} Cashback Regalado</span>`);
                     }
                     
                     // Genera Sello Automático
                     mockCustomerData.stamps_count = (mockCustomerData.stamps_count + 1) % mockCustomerData.stamps_total;
-                    msgParts.push(`<span style="color:var(--warning)">+ 1 Sello Registrado</span>`);
+                    msgParts.push(`<span style="color:var(--warning); font-weight:700;">+ 1 Sello Registrado</span>`);
 
-                    statusMsg = `<strong>Ticket procesado: $${amount.toFixed(2)}</strong><br><br><div style="text-align:left; font-size:1rem; line-height:1.6;">${msgParts.join('<br>')}</div>`;
+                    statusMsg = `<strong style="color:var(--text-main); font-size:1.2rem;">Ticket procesado: $${amount.toFixed(2)}</strong><br><br><div style="text-align:left; font-size:1rem; line-height:1.6; background:var(--bg-main); padding:16px; border-radius:12px; border:1px solid var(--border-soft); margin-top:12px;">${msgParts.join('<br>')}</div>`;
                 }
 
                 document.getElementById('status-overlay').style.display = 'flex';
