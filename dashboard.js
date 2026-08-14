@@ -47,7 +47,12 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
 
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
 
-let state = {};
+let state = {
+    team: [
+        { id: 'usr-001', name: 'Master Admin', email: 'hola@fideliorewards.com', role: 'system', status: 'activo' },
+        { id: 'usr-002', name: 'Caja Sucursal 1', email: 'caja1@fidelio.com', role: 'scanner', status: 'activo' }
+    ]
+};
 let saveTimeout = null;
 
 (async function initFidelio() {
@@ -806,51 +811,6 @@ let saveTimeout = null;
                 document.getElementById('cust-email').value = '';
 
                 
-    // --- TEAM MANAGEMENT (RBAC) ---
-    renderTeamTable();
-    
-    // Role selector UI
-    const roleCards = document.querySelectorAll('.role-card');
-    roleCards.forEach(card => {
-        card.addEventListener('click', () => {
-            roleCards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            card.querySelector('input').checked = true;
-        });
-    });
-    
-    // Create button mockup
-    const btnCreateStaff = document.getElementById('btn-create-staff');
-    if (btnCreateStaff) {
-        btnCreateStaff.addEventListener('click', () => {
-            const name = document.getElementById('staff-name').value;
-            const email = document.getElementById('staff-email').value;
-            const pwd = document.getElementById('staff-password').value;
-            const role = document.querySelector('input[name="staff_role"]:checked').value;
-            
-            if (!name || !email || !pwd) {
-                alert('Por favor completa todos los campos.');
-                return;
-            }
-            
-            // Check permissions mockup
-            if (role === 'system' && window.merchantSession?.user?.email !== 'hola@fideliorewards.com') {
-                alert('ACCESO DENEGADO: Solo la cuenta Master Admin puede crear otros usuarios de Acceso Sistema.');
-                return;
-            }
-            
-            state.team.push({
-                id: 'usr-' + Math.floor(Math.random() * 10000),
-                name, email, role, status: 'activo'
-            });
-            renderTeamTable();
-            
-            document.getElementById('staff-name').value = '';
-            document.getElementById('staff-email').value = '';
-            document.getElementById('staff-password').value = '';
-            alert('¡Invitación enviada y usuario ' + role + ' registrado exitosamente!');
-        });
-    }
 renderCRMTable();
                 updateDashboardMetrics(); // update stats
                 
@@ -1764,6 +1724,51 @@ function updatePassRender() {
     } catch (err) {
         console.error("Dashboard UI init error:", err);
         alert("CRASH LOG UI (por favor muéstrale esto a tu asistente):\n" + err.stack);
+    }
+    // --- TEAM MANAGEMENT (RBAC) ---
+    renderTeamTable();
+    
+    // Role selector UI
+    const roleCards = document.querySelectorAll('.role-card');
+    roleCards.forEach(card => {
+        card.addEventListener('click', () => {
+            roleCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            card.querySelector('input').checked = true;
+        });
+    });
+    
+    // Create button mockup
+    const btnCreateStaff = document.getElementById('btn-create-staff');
+    if (btnCreateStaff) {
+        btnCreateStaff.addEventListener('click', () => {
+            const name = document.getElementById('staff-name').value;
+            const email = document.getElementById('staff-email').value;
+            const pwd = document.getElementById('staff-password').value;
+            const role = document.querySelector('input[name="staff_role"]:checked').value;
+            
+            if (!name || !email || !pwd) {
+                alert('Por favor completa todos los campos.');
+                return;
+            }
+            
+            // Check permissions mockup
+            if (role === 'system' && window.merchantSession?.user?.email !== 'hola@fideliorewards.com') {
+                alert('ACCESO DENEGADO: Solo la cuenta Master Admin puede crear otros usuarios de Acceso Sistema.');
+                return;
+            }
+            
+            state.team.push({
+                id: 'usr-' + Math.floor(Math.random() * 10000),
+                name, email, role, status: 'activo'
+            });
+            renderTeamTable();
+            
+            document.getElementById('staff-name').value = '';
+            document.getElementById('staff-email').value = '';
+            document.getElementById('staff-password').value = '';
+            alert('¡Invitación enviada y usuario ' + role + ' registrado exitosamente!');
+        });
     }
 })();
 
