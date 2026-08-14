@@ -2119,6 +2119,49 @@ window.selectAICampaign = function(type, element) {
     document.getElementById('camp-push-message').value = defaultTexts[type] || '';
 };
 
+// CUSTOM FILTER LOGIC
+window.openCustomFilterModal = function() {
+    document.getElementById('modal-custom-filter').style.display = 'flex';
+};
+
+window.closeCustomFilterModal = function() {
+    document.getElementById('modal-custom-filter').style.display = 'none';
+};
+
+window.saveCustomFilter = function() {
+    const filterName = document.getElementById('custom-filter-name').value.trim();
+    if(!filterName) {
+        alert("Por favor, ponle un nombre a tu filtro personalizado.");
+        return;
+    }
+    
+    const select = document.getElementById('camp-segment-select');
+    
+    // Check if optgroup exists
+    let optgroup = Array.from(select.querySelectorAll('optgroup')).find(group => group.label === 'Filtros Personalizados');
+    if(!optgroup) {
+        optgroup = document.createElement('optgroup');
+        optgroup.label = 'Filtros Personalizados';
+        select.appendChild(optgroup);
+    }
+    
+    // Add option
+    const option = document.createElement('option');
+    const filterId = 'custom_' + Date.now();
+    option.value = filterId;
+    option.text = filterName;
+    optgroup.appendChild(option);
+    
+    // Select it and close
+    select.value = filterId;
+    window.closeCustomFilterModal();
+    
+    // Show toast
+    if(typeof showToast === 'function') {
+        showToast("Filtro '" + filterName + "' creado exitosamente.", "success");
+    }
+};
+
 window.toggleChannel = function(checkbox) {
     const label = checkbox.parentElement;
     if(checkbox.checked) {

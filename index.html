@@ -473,7 +473,7 @@
                         <div>
                             <div class="premium-section-title">Identidad de Marca</div>
                             
-                            <div style="display:flex; flex-direction:column; gap:16px;">
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
                                 <div>
                                     <label class="premium-label">Nombre del Negocio</label>
                                     <input type="text" id="rest-name" class="premium-input" value="Mi Negocio">
@@ -500,7 +500,7 @@
                         <div>
                             <div class="premium-section-title">Apariencia Visual</div>
                             
-                            <div style="display:flex; flex-direction:column; gap:16px;">
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
                                 <div>
                                     <label class="premium-label">Imagen de Portada (Banner Wallet)</label>
                                     <div class="file-dropzone">
@@ -549,7 +549,7 @@
                         <div>
                             <div class="premium-section-title">Beneficios Visibles</div>
                             
-                            <div style="display:flex; flex-direction:column; gap:16px;">
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
                                 
                                 <div>
                                     <label class="premium-label">Tipo de Programa</label>
@@ -856,93 +856,69 @@
                 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
                     <!-- LEFT COLUMN: AI MODULES LIST -->
-                    <div style="display:flex; flex-direction:column; gap:16px;">
+                    <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
                         
-                        <div class="accordion-card campaign-module active" onclick="selectAICampaign('recuperacion', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-heart-crack"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Recuperar Perdidos</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Clientes sin visitas en >30 días</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module active" onclick="selectAICampaign('recuperacion', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-heart-crack"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Recuperar Perdidos</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Clientes sin visitas en >30 días</p>
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('cumpleanos', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-cake-candles"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Cumpleañeros del Mes</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Envía regalo en su mes de cumpleaños</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module" onclick="selectAICampaign('cumpleanos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-cake-candles"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Cumpleañeros del Mes</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Envía regalo en su mes de cumpleaños</p>
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('dias_lentos', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-clock"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Inyección Días Lentos</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Aumenta tráfico en horas valle</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module" onclick="selectAICampaign('dias_lentos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-clock"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Inyección Días Lentos</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Aumenta tráfico en horas valle</p>
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('vip_exclusivo', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-crown"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Recompensa VIP</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Trato preferencial solo para Nivel Oro</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module" onclick="selectAICampaign('vip_exclusivo', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-crown"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Recompensa VIP</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Trato preferencial solo para Nivel Oro</p>
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('geofencing', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-location-dot"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Cerca de Ti (Geocerca)</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Notifica cuando pasen cerca del local</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module" onclick="selectAICampaign('geofencing', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-location-dot"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Cerca de Ti (Geocerca)</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Notifica cuando pasen cerca del local</p>
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('aniversario', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-gift"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Aniversario</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">A clientes que cumplen un año en Fidelio</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module" onclick="selectAICampaign('aniversario', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gift"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Aniversario</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">A clientes que cumplen un año en Fidelio</p>
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('winback', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-gem"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Win-back Premium</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Rescata a los clientes que más gastaban</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module" onclick="selectAICampaign('winback', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gem"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Win-back Premium</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Rescata a los clientes que más gastaban</p>
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('manual', this)">
-                            <div style="display:flex; align-items:center; gap: 16px;">
-                                <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet);"><i class="fa-solid fa-pen-nib"></i></div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0; font-size:16px;">Campaña Libre</h4>
-                                    <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Segmentación y mensaje manual</p>
-                                </div>
-                                <div style="color:var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="accordion-card campaign-module" onclick="selectAICampaign('manual', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-pen-nib"></i></div>
+                            <div>
+                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Campaña Libre</h4>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Segmentación y mensaje manual</p>
                             </div>
                         </div>
 
@@ -1014,6 +990,7 @@
                                     <option value="geofencing">Clientes Cerca (Geocerca)</option>
                                 </optgroup>
                             </select>
+                            <button class="btn btn-outline" style="width:100%; margin-top:12px; font-size:12px; padding:8px; border:1px dashed var(--accent-violet); color:var(--accent-violet); background:transparent;" onclick="window.openCustomFilterModal()"><i class="fa-solid fa-plus"></i> Crear Filtro Personalizado</button>
                         </div>
                         
                         <!-- AI GENERATOR -->
@@ -1983,6 +1960,48 @@
         }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
+
+    <!-- MODAL CUSTOM FILTER -->
+    <div id="modal-custom-filter" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; backdrop-filter:blur(5px); align-items:center; justify-content:center;">
+        <div style="background:white; border-radius:16px; width:90%; max-width:500px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:16px; margin-bottom:20px;">
+                <h3 style="margin:0; font-size:18px; color:var(--text-main);"><i class="fa-solid fa-filter" style="color:var(--accent-violet);"></i> Constructor de Filtros</h3>
+                <button class="btn-icon" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('modal-custom-filter').style.display='none'"><i class="fa-solid fa-times"></i></button>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:8px;">Nombre del Filtro</label>
+                    <input type="text" id="custom-filter-name" class="fidelio-input" placeholder="Ej. Ballenas de fin de semana" />
+                </div>
+                
+                <div style="background:#f9fafb; padding:16px; border-radius:8px; border:1px solid #eee;">
+                    <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:12px;">Condiciones (Se deben cumplir todas)</label>
+                    
+                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <select class="fidelio-input" style="flex:1;" id="custom-filter-var-1">
+                            <option value="last_visit">Última Visita</option>
+                            <option value="ticket_avg">Ticket Promedio</option>
+                            <option value="total_spent">Total Gastado</option>
+                        </select>
+                        <select class="fidelio-input" style="flex:1;" id="custom-filter-op-1">
+                            <option value=">">Mayor a</option>
+                            <option value="<">Menor a</option>
+                            <option value="==">Igual a</option>
+                        </select>
+                        <input type="number" class="fidelio-input" style="flex:1;" placeholder="Valor" id="custom-filter-val-1"/>
+                    </div>
+                    
+                    <button class="btn" style="background:transparent; color:var(--text-muted); font-size:12px; padding:0;" onclick="alert('Funcionalidad de múltiples reglas en desarrollo.')">+ Agregar condición</button>
+                </div>
+            </div>
+            
+            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+                <button class="btn btn-outline" style="border:1px solid #ccc; background:white; color:var(--text-main);" onclick="document.getElementById('modal-custom-filter').style.display='none'">Cancelar</button>
+                <button class="btn" style="background:var(--accent-violet); color:white;" onclick="alert('Guardado')">Guardar y Aplicar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Supabase & App Logic -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
