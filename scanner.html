@@ -270,10 +270,12 @@
         <!-- Panel Izquierdo: Herramientas de Búsqueda -->
         <div class="scanner-panel">
             
-            <div style="display: flex; gap: 10px; margin-bottom: 24px; background: var(--bg-main); padding: 8px; border-radius: 16px; border: 1px solid var(--border-soft);">
-                <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:12px; padding:12px; font-size:1rem;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Cámara QR</button>
-                <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:12px; padding:12px; font-size:1rem; box-shadow:none;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Buscar</button>
-            </div>
+        <!-- Mode Switcher -->
+        <div style="display: flex; gap: 10px; margin-bottom: 24px; background: var(--bg-card); padding: 6px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm);">
+            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escáner QR</button>
+            <button id="btn-mode-nfc" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('nfc')"><i class="fa-solid fa-wifi"></i> Lector NFC</button>
+            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Buscar Manual</button>
+        </div>
 
             <!-- Scanner Section -->
             <div id="scanner-section">
@@ -292,6 +294,20 @@
                     <i class="fa-solid fa-camera-viewfinder" style="margin-right: 8px; color:var(--accent-violet);"></i> Apunta al pase del cliente.
                 </p>
             </div>
+
+            <!-- NFC Section -->
+            <div id="nfc-section" style="display:none; flex:1; flex-direction:column; justify-content:center; align-items:center;">
+                <div style="background:var(--bg-card); border-radius:20px; border:1px solid var(--border-soft); box-shadow:var(--shadow-md); padding:40px; text-align:center; width:100%;">
+                    <i class="fa-solid fa-wifi" style="font-size: 5rem; color: var(--accent-violet); margin-bottom: 20px; animation: pulse 2s infinite;"></i>
+                    <h3 style="margin-bottom:12px; font-size: 1.5rem; color:var(--text-main); font-weight:800;">Acerca el Dispositivo</h3>
+                    <p style="color:var(--text-muted); margin-bottom:24px; font-weight:500;">Mantén la tarjeta o celular del cliente cerca de la antena NFC de esta terminal.</p>
+                    <button class="btn btn-primary" onclick="startNfcReader()" id="btn-nfc-start" style="padding:16px; font-size:1.1rem;">
+                        <i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC
+                    </button>
+                    <p id="nfc-error" style="color:var(--danger); margin-top:16px; font-weight:600; display:none;"></p>
+                </div>
+            </div>
+            <style>@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }</style>
 
             <!-- Manual Search Section -->
             <div id="manual-section" style="display:none; flex:1; display:flex; flex-direction:column; justify-content:center;">
@@ -512,34 +528,93 @@
         function setMode(mode) {
             const btnScan = document.getElementById('btn-mode-scan');
             const btnManual = document.getElementById('btn-mode-manual');
+            const btnNfc = document.getElementById('btn-mode-nfc');
+
+            // Reset all buttons to default state
+            [btnScan, btnManual, btnNfc].forEach(btn => {
+                btn.style.background = 'transparent';
+                btn.style.color = 'var(--text-muted)';
+                btn.style.boxShadow = 'none';
+            });
+
+            // Hide all sections
+            document.getElementById('scanner-section').style.display = 'none';
+            document.getElementById('manual-section').style.display = 'none';
+            document.getElementById('nfc-section').style.display = 'none';
 
             if (mode === 'scan') {
-                document.getElementById('manual-section').style.display = 'none';
                 document.getElementById('scanner-section').style.display = 'block';
-                
-                btnManual.style.background = 'transparent';
-                btnManual.style.color = 'var(--text-muted)';
-                btnManual.style.boxShadow = 'none';
-                
                 btnScan.style.background = 'var(--accent-gradient)';
                 btnScan.style.color = 'white';
                 btnScan.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
                 
                 if (!html5QrcodeScanner) { startScanner(); } 
                 else { try { html5QrcodeScanner.clear(); } catch(e){} startScanner(); }
+            } else if (mode === 'nfc') {
+                document.getElementById('nfc-section').style.display = 'flex';
+                btnNfc.style.background = 'var(--accent-gradient)';
+                btnNfc.style.color = 'white';
+                btnNfc.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
+                if (html5QrcodeScanner) { try { html5QrcodeScanner.stop(); } catch(e){} }
             } else {
-                document.getElementById('scanner-section').style.display = 'none';
                 document.getElementById('manual-section').style.display = 'flex';
-                
-                btnScan.style.background = 'transparent';
-                btnScan.style.color = 'var(--text-muted)';
-                btnScan.style.boxShadow = 'none';
-                
                 btnManual.style.background = 'var(--accent-gradient)';
                 btnManual.style.color = 'white';
                 btnManual.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
-                
                 if (html5QrcodeScanner) { try { html5QrcodeScanner.stop(); } catch(e){} }
+            }
+        }
+
+        async function startNfcReader() {
+            const errEl = document.getElementById('nfc-error');
+            const btn = document.getElementById('btn-nfc-start');
+            errEl.style.display = 'none';
+
+            if (!('NDEFReader' in window)) {
+                errEl.textContent = "Tu navegador o dispositivo no soporta lectura NFC (Requiere Chrome en Android).";
+                errEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const ndef = new NDEFReader();
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Escaneando NFC...';
+                await ndef.scan();
+                
+                showToast('Escáner NFC Activado. Acerca la tarjeta.', 'info');
+                
+                ndef.addEventListener("readingerror", () => {
+                    errEl.textContent = "No se pudo leer la tarjeta. Intenta acercarla más.";
+                    errEl.style.display = 'block';
+                });
+
+                ndef.addEventListener("reading", ({ message, serialNumber }) => {
+                    // Buscar en el payload el texto
+                    let nfcText = "";
+                    for (const record of message.records) {
+                        if (record.recordType === "text") {
+                            const textDecoder = new TextDecoder(record.encoding);
+                            nfcText = textDecoder.decode(record.data);
+                            break;
+                        }
+                    }
+                    
+                    if (nfcText) {
+                        showToast('Tarjeta NFC Leída con éxito', 'success');
+                        btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC';
+                        // Simular que el texto leído es el ID del cliente
+                        onScanSuccess(nfcText);
+                    } else {
+                        // Si no tiene texto, usar el número de serie de la tarjeta como identificador
+                        showToast('Hardware Tag Leído', 'success');
+                        btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC';
+                        onScanSuccess(serialNumber);
+                    }
+                });
+            } catch (error) {
+                errEl.textContent = "Error iniciando NFC: " + error.message;
+                errEl.style.display = 'block';
+                btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC';
             }
         }
 
