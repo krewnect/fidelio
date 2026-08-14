@@ -2628,6 +2628,98 @@ window.updateTriggerUI = function() {
     }
 };
 
+// --- SUPPORT MODULE LOGIC ---
+window.sendSupportGeminiMessage = function() {
+    const input = document.getElementById('support-gemini-input');
+    const chatWindow = document.getElementById('support-gemini-chat');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    // User Message
+    chatWindow.innerHTML += `
+        <div style="background: var(--accent-violet); color: white; padding: 12px 16px; border-radius: 12px 12px 0 12px; max-width: 85%; align-self: flex-end;">
+            ${msg}
+        </div>
+    `;
+    input.value = '';
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // AI "Typing"
+    const typingId = 'typing-' + Date.now();
+    chatWindow.innerHTML += `
+        <div id="${typingId}" style="background: var(--bg-hover); color: var(--text-muted); padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start; font-style: italic;">
+            Escribiendo...
+        </div>
+    `;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    setTimeout(() => {
+        document.getElementById(typingId)?.remove();
+        
+        const lowerMsg = msg.toLowerCase();
+        let response = 'Entiendo. ¿Podrías darme más detalles sobre lo que intentas hacer? Estoy aquí para ayudarte con la configuración de Fidelio.';
+        
+        if (lowerMsg.includes('error') || lowerMsg.includes('no funciona') || lowerMsg.includes('falla') || lowerMsg.includes('bug')) {
+            response = 'Parece que estás experimentando un problema técnico. Para que nuestro equipo de ingeniería pueda investigarlo y darle seguimiento, te recomiendo levantar un ticket detallado en el formulario de la derecha, o dando clic en el botón de abajo. <br><br><button class="btn btn-outline" style="margin-top: 10px; width: 100%; justify-content:center; border-color: var(--accent-violet); color: var(--accent-violet);" onclick="document.getElementById(\'ticket-subject\').focus()">Escalar a un Humano</button>';
+        } else if (lowerMsg.includes('factura') || lowerMsg.includes('pago') || lowerMsg.includes('tarjeta') || lowerMsg.includes('cobro')) {
+            response = 'Para temas relacionados con pagos, facturación o suscripciones, nuestro equipo de finanzas es el indicado. Puedes enviarles un correo directo a <strong>hola@fideliorewards.com</strong> y ellos te ayudarán lo antes posible.';
+        } else if (lowerMsg.includes('wallet') || lowerMsg.includes('apple') || lowerMsg.includes('google')) {
+            response = 'Las tarjetas para Apple Wallet y Google Wallet se gestionan automáticamente en la pestaña "Mi Negocio". Si tus clientes tienen problemas para instalarlas, verifica que tu enlace de suscripción esté activo en la sección de CRM.';
+        } else if (lowerMsg.includes('hola') || lowerMsg.includes('buenos dias') || lowerMsg.includes('buenas tardes')) {
+            response = '¡Hola! Qué gusto saludarte. ¿En qué te puedo ayudar hoy con tu programa de recompensas?';
+        }
+
+        chatWindow.innerHTML += `
+            <div style="background: var(--bg-hover); color: var(--text-main); padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start;">
+                ${response}
+            </div>
+        `;
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }, 1500);
+};
+
+window.submitSupportTicket = async function(type) {
+    if (!window.merchantSession) return showToast('Por favor inicia sesión', 'error');
+
+    let subjectEl, messageEl, successMsg;
+    if (type === 'soporte') {
+        subjectEl = document.getElementById('ticket-subject');
+        messageEl = document.getElementById('ticket-message');
+        successMsg = 'Ticket de soporte enviado. Te contactaremos pronto.';
+    } else {
+        subjectEl = { value: '[SUGERENCIA]' }; // Dummy element to pass the value
+        messageEl = document.getElementById('feature-message');
+        successMsg = '¡Gracias por tu sugerencia! La hemos enviado a producto.';
+    }
+
+    const subjectText = type === 'soporte' ? subjectEl.value.trim() : '[SUGERENCIA] ' + messageEl.value.trim().substring(0, 30) + '...';
+    const messageText = messageEl.value.trim();
+
+    if (!messageText || (type === 'soporte' && !subjectEl.value.trim())) {
+        return showToast('Por favor llena los campos requeridos', 'warning');
+    }
+
+    const { error } = await window.supabaseClient.from('support_tickets').insert([{
+        merchant_id: window.merchantSession.user.id,
+        email: window.merchantSession.user.email,
+        subject: subjectText,
+        message: messageText,
+        status: 'abierto'
+    }]);
+
+    if (error) {
+        showToast('Error enviando la solicitud: ' + error.message, 'error');
+    } else {
+        showToast(successMsg, 'success');
+        if (type === 'soporte') {
+            subjectEl.value = '';
+            messageEl.value = '';
+        } else {
+            messageEl.value = '';
+        }
+    }
+};
+
 window.generateAIPush = function() {
     const loading = document.getElementById('ai-loading');
     const txt = document.getElementById('camp-push-message');

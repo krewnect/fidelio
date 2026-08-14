@@ -1699,6 +1699,65 @@
                 </div>
             </section>
 
+            <!-- SOPORTE TAB -->
+            <section id="tab-support" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">CENTRO DE AYUDA</span>
+                        <h1>Soporte y Asistencia</h1>
+                        <p>Resuelve tus dudas rápidamente o contacta a nuestro equipo.</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1000px;">
+                    <!-- Columna Izquierda: Asistente Gemini -->
+                    <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; height: 500px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft);">
+                            <img src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif" alt="Gemini" style="width: 24px; height: 24px; margin-right: 12px; border-radius: 50%;">
+                            <h3 style="font-size: 1.2rem; font-weight: 700;">Asistente Fidelio (IA)</h3>
+                        </div>
+                        
+                        <div id="support-gemini-chat" style="flex: 1; overflow-y: auto; padding-right: 8px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+                            <div style="background: var(--bg-hover); padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start; color: var(--text-main);">
+                                ¡Hola! Soy el asistente inteligente de Fidelio. Conozco todo sobre la plataforma. ¿En qué te puedo ayudar hoy?
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="support-gemini-input" class="fidelio-input" placeholder="Escribe tu pregunta aquí..." style="flex: 1; border-radius: 20px; padding: 12px 16px;" onkeypress="if(event.key === 'Enter') sendSupportGeminiMessage()">
+                            <button class="btn btn-primary" style="background: var(--accent-violet); border: none; border-radius: 50%; width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center;" onclick="sendSupportGeminiMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Opciones Humanas -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        
+                        <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm);">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 8px; font-weight: 700;"><i class="fa-solid fa-ticket" style="color: var(--accent-violet);"></i> Levantar Ticket de Soporte</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Si enfrentas un problema técnico que la IA no pudo resolver, abre un ticket directo con nuestros ingenieros.</p>
+                            <input type="text" id="ticket-subject" class="fidelio-input" placeholder="Asunto del problema" style="margin-bottom: 12px;">
+                            <textarea id="ticket-message" class="fidelio-input" placeholder="Describe detalladamente el problema..." style="height: 80px; margin-bottom: 12px; resize: none;"></textarea>
+                            <button class="btn btn-outline" style="width: 100%; justify-content:center; border-color: var(--accent-violet); color: var(--accent-violet);" onclick="submitSupportTicket('soporte')">Enviar Ticket</button>
+                        </div>
+
+                        <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm);">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 8px; font-weight: 700;"><i class="fa-solid fa-lightbulb" style="color: #eab308;"></i> Buzón de Sugerencias</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">¿Tienes una idea para mejorar Fidelio? ¡Nos encantaría escucharla!</p>
+                            <textarea id="feature-message" class="fidelio-input" placeholder="Me gustaría que la app pudiera..." style="height: 60px; margin-bottom: 12px; resize: none;"></textarea>
+                            <button class="btn btn-outline" style="width: 100%; justify-content:center; border-color: #eab308; color: #ca8a04;" onclick="submitSupportTicket('sugerencia')">Enviar Sugerencia</button>
+                        </div>
+
+                        <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <h3 style="font-size: 1.1rem; margin-bottom: 4px; font-weight: 700;"><i class="fa-solid fa-envelope" style="color: var(--accent-violet);"></i> Correo Directo</h3>
+                                <p style="font-size: 12px; color: var(--text-muted);">Para asuntos urgentes o facturación.</p>
+                            </div>
+                            <a href="mailto:hola@fideliorewards.com" class="btn btn-primary" style="background: var(--accent-violet); border: none; text-decoration: none;">Enviar Email</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- LEADS TAB (ADMIN ONLY) -->
             
             <!-- LEADS (PROSPECTOS) -->
