@@ -578,6 +578,77 @@ let saveTimeout = null;
     const bNotes = document.getElementById('branch-notes');
     const btnSubmitBranch = document.getElementById('btn-submit-branch');
 
+    window.downloadBranchesLayout = function() {
+        const headers = "Nombre Sucursal,Dirección,Teléfono\n";
+        const sample1 = "Sucursal Centro,Av. Principal 123 Centro,5551234567\n";
+        const sample2 = "Sucursal Norte,Plaza Norte Local 4,5559876543\n";
+        
+        const blob = new Blob([headers + sample1 + sample2], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "Plantilla_Sucursales_Fidelio.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    window.uploadBranchesCSV = async function(event) {
+        if (!window.merchantSession) return showToast('Inicia sesión primero', 'error');
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const text = e.target.result;
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            if (lines.length <= 1) {
+                showToast('El archivo está vacío o solo tiene cabeceras.', 'warning');
+                return;
+            }
+
+            const newBranches = [];
+            // Skip header (i=1)
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length >= 2) {
+                    const name = row[0].trim();
+                    const address = row[1].trim(); // Or manager if they put it there, but we map it to notes or manager later. Let's use it as address/notes.
+                    const phone = row.length >= 3 ? row[2].trim() : '';
+
+                    if (name) {
+                        newBranches.push({
+                            merchant_id: window.merchantSession.user.id,
+                            name: name,
+                            notes: address, // Store address in notes for now
+                            phone: phone,
+                            is_active: true
+                        });
+                    }
+                }
+            }
+
+            if (newBranches.length === 0) return showToast('No se encontraron sucursales válidas.', 'warning');
+
+            showToast(`Importando ${newBranches.length} sucursales...`, 'success');
+            
+            const { error } = await window.supabaseClient.from('merchant_branches').insert(newBranches);
+            
+            if (error) {
+                showToast('Error al importar: ' + error.message, 'error');
+            } else {
+                showToast('¡Sucursales importadas correctamente!', 'success');
+                // Refresh branches list
+                const { data } = await window.supabaseClient.from('merchant_branches').select('*').eq('merchant_id', window.merchantSession.user.id);
+                if (data) state.branches = data;
+                renderBranches();
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = ''; // Reset input
+    };
+
     function renderBranches() {
         try {
             const dynBranchesContainer = document.getElementById('branches-list-container');
@@ -1587,6 +1658,68 @@ function updatePassRender() {
             modalOnboarding.classList.remove('hidden');
         });
     }
+
+    // --- THE BANK MODULE ---
+    window.loadBankStats = async function() {
+        if (!window.merchantSession) return;
+        const merchantId = window.merchantSession.user.id;
+        
+        const tbody = document.getElementById('bank-table-body');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Calculando saldos...</td></tr>';
+        
+        // Fetch customers with wallet info
+        const { data: customers, error } = await window.supabaseClient
+            .from('customers')
+            .select('full_name, email, wallet_balance, wallet_deposited, wallet_spent')
+            .eq('merchant_id', merchantId)
+            .order('wallet_balance', { ascending: false });
+            
+        if (error) {
+            if (error.code === '42703') {
+                if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#ef4444;">Faltan las columnas del Monedero. Corre el script SQL primero.</td></tr>';
+            } else {
+                if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            }
+            return;
+        }
+
+        let totalDeposited = 0;
+        let totalUnspent = 0;
+
+        if (!customers || customers.length === 0) {
+            if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay clientes registrados.</td></tr>';
+        } else {
+            if (tbody) tbody.innerHTML = '';
+            customers.forEach(c => {
+                const deposited = parseFloat(c.wallet_deposited || 0);
+                const spent = parseFloat(c.wallet_spent || 0);
+                const balance = parseFloat(c.wallet_balance || 0);
+                
+                totalDeposited += deposited;
+                totalUnspent += balance;
+
+                if (tbody) {
+                    tbody.innerHTML += `
+                        <tr style="border-bottom: 1px solid var(--border-soft);">
+                            <td style="padding: 16px;">
+                                <strong>${c.full_name || 'Sin Nombre'}</strong>
+                                <div style="font-size:12px; color:var(--text-muted);">${c.email}</div>
+                            </td>
+                            <td style="padding: 16px; color: #10b981; font-weight: 600;">$${deposited.toFixed(2)}</td>
+                            <td style="padding: 16px; color: #ef4444;">$${spent.toFixed(2)}</td>
+                            <td style="padding: 16px; font-weight: 700; color: var(--accent-violet);">$${balance.toFixed(2)}</td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        // Update top metrics
+        const domDeposited = document.getElementById('bank-total-deposited');
+        const domUnspent = document.getElementById('bank-total-unspent');
+        if (domDeposited) domDeposited.textContent = `$${totalDeposited.toFixed(2)}`;
+        if (domUnspent) domUnspent.textContent = `$${totalUnspent.toFixed(2)}`;
+    };
 
     // --- MASTER ADMIN SUITE (ADMIN ONLY) ---
     const checkMasterAdmin = () => {
