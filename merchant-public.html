@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Lealtad</title>
     <!-- FontAwesome y Google Fonts -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-color: #111111;
             --surface-color: #1a1a1a;
             --text-color: #ffffff;
             --text-muted: #888888;
-            --primary: #8b5cf6; /* Se sobreescribirá dinámicamente */
+            --primary: #8b5cf6; 
         }
 
         body {
@@ -48,31 +49,31 @@
             height: 80px;
             border-radius: 20px;
             background-color: var(--surface-color);
-            padding: 4px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 4px solid var(--bg-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .merchant-logo-container img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 16px;
+            object-fit: cover;
         }
 
-        .content-container {
-            flex: 1;
-            padding: 60px 24px 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        /* Contenido */
+        .content-wrapper {
+            padding: 60px 20px 20px 20px;
             max-width: 500px;
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
         }
 
         .merchant-name {
@@ -85,34 +86,41 @@
         .merchant-subtitle {
             font-size: 14px;
             color: var(--text-muted);
-            margin-bottom: 32px;
             text-align: center;
-            line-height: 1.5;
+            margin-bottom: 30px;
         }
 
         /* Formulario */
-        .form-group {
+        form {
             width: 100%;
-            margin-bottom: 16px;
+            background-color: var(--surface-color);
+            padding: 24px;
+            border-radius: 20px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text-muted);
             margin-bottom: 8px;
+            color: rgba(255,255,255,0.8);
         }
 
         .form-input {
             width: 100%;
             padding: 14px 16px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
             color: white;
-            font-size: 15px;
             font-family: inherit;
+            font-size: 15px;
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
@@ -120,84 +128,77 @@
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255,255,255,0.05);
         }
 
         .btn-primary {
             width: 100%;
             padding: 16px;
+            background-color: var(--primary);
+            color: white;
             border: none;
             border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 80%, black));
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            margin-top: 16px;
-            box-shadow: 0 8px 20px color-mix(in srgb, var(--primary) 40%, transparent);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        /* Pantalla de Éxito */
-        .success-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            width: 100%;
-            padding-top: 20px;
-        }
-
-        .success-icon {
-            font-size: 64px;
-            color: #10b981;
-            margin-bottom: 24px;
-        }
-
-        .success-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .btn-apple-wallet {
-            background-color: #000;
-            color: white;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 14px 24px;
             font-size: 16px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 32px;
+            font-family: inherit;
             cursor: pointer;
-            width: 100%;
-            justify-content: center;
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
 
-        .btn-apple-wallet i { font-size: 20px; }
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
 
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .footer img {
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            color: white;
+            font-size: 24px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Los estilos en línea se inyectarán desde EJS o JS -->
+    <div id="loading-screen"><i class="fa-solid fa-spinner fa-spin"></i></div>
+
     <div class="merchant-banner" id="banner">
         <div class="merchant-logo-container">
-            <img src="" alt="Logo" id="logo">
+            <img src="https://ui-avatars.com/api/?name=Cargando&background=333&color=fff" id="logo" alt="Logo">
         </div>
     </div>
 
-    <div class="content-container">
-        
-        <!-- Formulario -->
+    <div class="content-wrapper">
         <div id="registration-form-container" style="width: 100%;">
             <h1 class="merchant-name" id="merchant-name">Cargando...</h1>
             <p class="merchant-subtitle" id="merchant-subtitle">Únete a nuestro programa de lealtad y empieza a ganar recompensas exclusivas.</p>
@@ -206,139 +207,147 @@
                 <input type="hidden" id="merchant_id" name="merchant_id">
                 
                 <div class="form-group">
-                    <label>Nombre Completo</label>
-                    <input type="text" class="form-input" name="full_name" required placeholder="Ej. Juan Pérez">
+                    <label>Tu Nombre Completo</label>
+                    <input type="text" class="form-input" id="full_name" required placeholder="Ej. Juan Pérez">
                 </div>
 
                 <div class="form-group">
                     <label>Correo Electrónico</label>
-                    <input type="email" class="form-input" name="email" required placeholder="juan@correo.com">
+                    <input type="email" class="form-input" id="email" required placeholder="juan@correo.com">
                 </div>
 
                 <div class="form-group">
-                    <label>Teléfono (WhatsApp)</label>
-                    <input type="tel" class="form-input" name="phone" required placeholder="55 1234 5678">
+                    <label>Teléfono (Opcional)</label>
+                    <input type="tel" class="form-input" id="phone" placeholder="55 1234 5678">
                 </div>
 
-                <div class="form-group">
-                    <label>Fecha de Nacimiento (Opcional)</label>
-                    <input type="date" class="form-input" name="birthday">
-                </div>
-
-                <button type="submit" class="btn-primary" id="btn-submit">Unirme Ahora</button>
+                <button type="submit" class="btn-primary" id="btn-submit">Generar Mi Tarjeta Digital</button>
             </form>
         </div>
+    </div>
 
-        <!-- Pantalla de Éxito -->
-        <div class="success-screen" id="success-screen">
-            <i class="fa-solid fa-circle-check success-icon"></i>
-            <h1 class="success-title">¡Registro Exitoso!</h1>
-            <p class="merchant-subtitle">Ya eres parte del club. Muestra tu tarjeta digital cada vez que nos visites para acumular recompensas.</p>
-            
-            <button class="btn-apple-wallet" id="btn-download-wallet" style="display:none;">
-                <i class="fa-brands fa-apple"></i> Añadir a Apple Wallet
-            </button>
-        </div>
-
+    <div class="footer">
+        <img src="/fidelio_logo_white.png" alt="Fidelio" onerror="this.src='https://ui-avatars.com/api/?name=F&background=8b5cf6&color=fff&size=32'">
+        <span>Powered by Fidelio</span>
     </div>
 
     <script>
-        // The server will serve this HTML and we fetch merchant details via the slug from the URL path
+        let supabase;
+        let merchantData;
+
         document.addEventListener('DOMContentLoaded', async () => {
-            const slug = window.location.pathname.replace('/', '');
-            
-            if (!slug) {
-                Swal.fire('Error', 'Página no válida', 'error');
-                return;
-            }
-
             try {
-                // Obtener datos del restaurante por slug
-                const response = await fetch(`/api/merchants/public/${slug}`);
-                const data = await response.json();
-
-                if (!response.ok) throw new Error(data.error || 'Restaurante no encontrado');
-
-                const merchant = data.merchant;
-
-                // Aplicar marca visual
-                document.getElementById('merchant_id').value = merchant.id;
-                document.getElementById('merchant-name').textContent = merchant.business_name;
-                document.title = `${merchant.business_name} - Lealtad`;
+                // 1. Fetch config to init Supabase
+                const configRes = await fetch('/api/config');
+                const config = await configRes.json();
+                supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
                 
-                document.documentElement.style.setProperty('--primary', merchant.color_primary || '#8b5cf6');
+                // 2. Get slug from URL
+                const slug = window.location.pathname.replace('/', '').toLowerCase();
                 
-                if (merchant.banner_url) {
-                    document.getElementById('banner').style.backgroundImage = `url('${merchant.banner_url}')`;
+                if (!slug) {
+                    Swal.fire('Error', 'Restaurante no especificado', 'error');
+                    return;
+                }
+
+                // 3. Fetch Merchant by Slug
+                const { data, error } = await supabase
+                    .from('merchants')
+                    .select('*')
+                    .eq('slug', slug)
+                    .single();
+
+                if (error || !data) {
+                    throw new Error('Restaurante no encontrado');
+                }
+
+                merchantData = data;
+
+                // 4. Apply Visual Branding
+                document.getElementById('merchant_id').value = merchantData.id;
+                document.getElementById('merchant-name').textContent = merchantData.business_name;
+                document.title = `${merchantData.business_name} - Registro de Lealtad`;
+                
+                if (merchantData.color_primary) {
+                    document.documentElement.style.setProperty('--primary', merchantData.color_primary);
+                }
+                
+                if (merchantData.banner_url) {
+                    document.getElementById('banner').style.backgroundImage = `url('${merchantData.banner_url}')`;
                 }
                 
                 const logoEl = document.getElementById('logo');
-                logoEl.src = merchant.logo_url || `https://ui-avatars.com/api/?name=${merchant.business_name}&background=${(merchant.color_primary||'8b5cf6').replace('#','')}&color=fff&size=128`;
+                if (merchantData.logo_url) {
+                    logoEl.src = merchantData.logo_url;
+                } else {
+                    logoEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(merchantData.business_name)}&background=${(merchantData.color_primary||'8b5cf6').replace('#','')}&color=fff&size=128`;
+                }
+
+                document.getElementById('loading-screen').style.display = 'none';
 
             } catch (err) {
                 console.error(err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Restaurante no encontrado',
-                    text: 'Revisa que el enlace sea correcto.',
-                    confirmButtonColor: '#8b5cf6'
-                });
-                document.getElementById('public-register-form').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('registration-form-container').innerHTML = `
+                    <div style="text-align:center; padding: 40px 0;">
+                        <i class="fa-solid fa-store-slash" style="font-size:48px; color:var(--text-muted); margin-bottom:16px;"></i>
+                        <h2>Restaurante no encontrado</h2>
+                        <p style="color:var(--text-muted); margin-top:8px;">Verifica que la dirección web sea correcta.</p>
+                    </div>
+                `;
             }
         });
 
+        // 5. Handle Registration
         document.getElementById('public-register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creando Tarjeta...';
             btn.disabled = true;
 
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
+            const fullName = document.getElementById('full_name').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const phone = document.getElementById('phone').value.trim();
+            const merchantId = document.getElementById('merchant_id').value;
 
             try {
-                const response = await fetch('/api/customers/register-public', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
+                // Check if user already exists
+                const { data: existing } = await supabase
+                    .from('customers')
+                    .select('id')
+                    .eq('merchant_id', merchantId)
+                    .eq('email', email)
+                    .single();
 
-                if (!response.ok) {
-                    throw new Error(result.error || 'Error al registrar');
+                if (existing) {
+                    window.location.href = `/pass.html?id=${existing.id}`;
+                    return;
                 }
 
-                // Mostrar éxito
-                document.getElementById('registration-form-container').style.display = 'none';
-                document.getElementById('success-screen').style.display = 'flex';
+                // Insert new customer
+                const { data: newCustomer, error } = await supabase
+                    .from('customers')
+                    .insert([{
+                        merchant_id: merchantId,
+                        full_name: fullName,
+                        email: email,
+                        phone: phone || null,
+                        balance_cashback: 0,
+                        stamps_count: 0,
+                        vip_tier: 'Bronce'
+                    }])
+                    .select()
+                    .single();
 
-                // Botón Apple Wallet
-                if (result.customer && result.customer.id) {
-                    const btnWallet = document.getElementById('btn-download-wallet');
-                    btnWallet.style.display = 'flex';
-                    btnWallet.onclick = async () => {
-                        btnWallet.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
-                        try {
-                            const pkRes = await fetch(`/api/wallet/generate/${result.customer.id}`);
-                            if (!pkRes.ok) throw new Error('Error al generar la tarjeta');
-                            const pkData = await pkRes.json();
-                            if (pkData.pass_url) {
-                                window.location.href = pkData.pass_url;
-                            } else {
-                                Swal.fire('Error', 'No se pudo generar la tarjeta', 'error');
-                            }
-                        } catch (err) {
-                            Swal.fire('Error', err.message, 'error');
-                        } finally {
-                            btnWallet.innerHTML = '<i class="fa-brands fa-apple"></i> Añadir a Apple Wallet';
-                        }
-                    };
-                }
+                if (error) throw error;
+
+                // Success! Redirect to digital pass
+                window.location.href = `/pass.html?id=${newCustomer.id}`;
 
             } catch (err) {
-                Swal.fire('Error', err.message, 'error');
-                btn.innerHTML = 'Unirme Ahora';
+                Swal.fire('Error', 'Hubo un problema al crear tu tarjeta. Intenta de nuevo.', 'error');
+                console.error(err);
+                btn.innerHTML = 'Generar Mi Tarjeta Digital';
                 btn.disabled = false;
             }
         });

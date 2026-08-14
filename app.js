@@ -713,6 +713,16 @@ app.get('/panel', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Ruta Dinámica (Catch-all) para páginas de restaurantes (ej. fideliorewards.com/starbucks)
+app.get('/:slug', (req, res) => {
+    const slug = req.params.slug;
+    // Ignorar si es una llamada a la API o un archivo que no existe (ej. favicon.ico)
+    if (slug.startsWith('api') || slug.includes('.')) {
+        return res.status(404).send('Not found');
+    }
+    res.sendFile(path.join(__dirname, 'merchant-public.html'));
+});
+
 // --- AI (GEMINI) ENDPOINT ---
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
