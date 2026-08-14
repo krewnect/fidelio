@@ -1237,6 +1237,30 @@ function updatePassRender() {
             rBal.textContent = `$${bal.toFixed(2)}`;
         }
         
+        const rWalletBlock = document.getElementById('render-wallet-block');
+        const rWalletBal = document.getElementById('render-wallet-balance');
+        const rCashbackBlock = document.getElementById('render-cashback-block');
+        
+        // Show Wallet Block if Prepaid is Active
+        if (state.prepaidActive === true) {
+            if (rWalletBlock) {
+                rWalletBlock.style.display = 'block';
+                // Mock balance based on the bonus config
+                const demoWallet = (state.prepaidAmount || 500) + (state.prepaidBonus || 100);
+                if (rWalletBal) rWalletBal.textContent = `$${demoWallet.toFixed(2)}`;
+            }
+        } else {
+            if (rWalletBlock) rWalletBlock.style.display = 'none';
+        }
+        
+        // Hide Cashback Block if Cashback is false
+        if (state.cashbackActive === false && pType !== 'cashback' && pType !== 'hybrid') {
+            if (rCashbackBlock) rCashbackBlock.style.display = 'none';
+        } else {
+            if (rCashbackBlock) rCashbackBlock.style.display = 'block';
+        }
+
+        
         // --- PROGRAM TYPE TOGGLE (QR vs Stamps) ---
         const qrView = document.getElementById('render-qr-view');
         const stampsView = document.getElementById('render-stamps-view');
@@ -1793,6 +1817,8 @@ function updatePassRender() {
         const stampsReward = document.getElementById('stamps-reward');
         
         const toggleVip = document.getElementById('toggle-vip');
+        const togglePrepaid = document.getElementById('toggle-prepaid');
+        const panelPrepaidConfig = document.getElementById('panel-prepaid-config');
         const vipRows = document.querySelectorAll('#tab-loyalty table tbody tr');
         
         // Populate Initial Values from State
@@ -1894,21 +1920,17 @@ function updatePassRender() {
                     if(document.getElementById('mem-price')) document.getElementById('mem-price').value = state.customRules.membership.price || 199;
                     if(document.getElementById('mem-perk')) document.getElementById('mem-perk').value = state.customRules.membership.perk || '20% OFF en Tienda';
                 }
-                if(state.customRules.prepaid) {
-                    if(document.getElementById('pre-amount')) {
-                        document.getElementById('pre-amount').value = state.customRules.prepaid.amount || 500;
-                        const updatePrepaidTotal = () => {
-                            const total = (parseFloat(document.getElementById('pre-amount').value) || 0) + (parseFloat(document.getElementById('pre-bonus').value) || 0);
-                            if(document.getElementById('pre-total-display')) document.getElementById('pre-total-display').textContent = '$' + total;
-                        };
-                        updatePrepaidTotal();
-                    }
-                    if(document.getElementById('pre-bonus')) document.getElementById('pre-bonus').value = state.customRules.prepaid.bonus || 100;
-                }
+
                 if(state.customRules.custom) {
                     if(document.getElementById('cus-name')) document.getElementById('cus-name').value = state.customRules.custom.name || 'Mi Programa VIP';
                     if(document.getElementById('cus-rules')) document.getElementById('cus-rules').value = state.customRules.custom.rules || '';
                 }
+            }
+            if(togglePrepaid) {
+                togglePrepaid.checked = state.prepaidActive === true;
+                if(panelPrepaidConfig) panelPrepaidConfig.style.display = togglePrepaid.checked ? 'block' : 'none';
+                if(document.getElementById('pre-amount')) document.getElementById('pre-amount').value = state.prepaidAmount || 500;
+                if(document.getElementById('pre-bonus')) document.getElementById('pre-bonus').value = state.prepaidBonus || 100;
             }
         }
         
@@ -1939,13 +1961,27 @@ function updatePassRender() {
         const preAmount = document.getElementById('pre-amount');
         const preBonus = document.getElementById('pre-bonus');
         const preTotal = document.getElementById('pre-total-display');
+        const prePay = document.getElementById('pre-pay-display');
+        
+        if (togglePrepaid && panelPrepaidConfig) {
+            togglePrepaid.addEventListener('change', (e) => {
+                panelPrepaidConfig.style.display = e.target.checked ? 'block' : 'none';
+                if (window.updatePassRender) window.updatePassRender();
+            });
+        }
+        
         if (preAmount && preBonus && preTotal) {
             const updatePrepaidTotal = () => {
-                const total = (parseFloat(preAmount.value) || 0) + (parseFloat(preBonus.value) || 0);
+                const amount = parseFloat(preAmount.value) || 0;
+                const bonus = parseFloat(preBonus.value) || 0;
+                const total = amount + bonus;
+                if(prePay) prePay.textContent = amount;
                 preTotal.textContent = '$' + total;
+                if (window.updatePassRender) window.updatePassRender();
             };
             preAmount.addEventListener('input', updatePrepaidTotal);
             preBonus.addEventListener('input', updatePrepaidTotal);
+            updatePrepaidTotal();
         }
         
         // Save Button Logic
@@ -1993,9 +2029,11 @@ function updatePassRender() {
                         stampsReward: reward,
                         vipActive: vipActive,
                         vipTiers: vipTiers,
+                        prepaidActive: togglePrepaid ? togglePrepaid.checked : false,
+                        prepaidAmount: document.getElementById('pre-amount') ? parseFloat(document.getElementById('pre-amount').value) : 500,
+                        prepaidBonus: document.getElementById('pre-bonus') ? parseFloat(document.getElementById('pre-bonus').value) : 100,
                         customRules: {
                             membership: { price: document.getElementById('mem-price')?.value, perk: document.getElementById('mem-perk')?.value },
-                            prepaid: { amount: document.getElementById('pre-amount')?.value, bonus: document.getElementById('pre-bonus')?.value },
                             custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value }
                         }
                     }).eq('id', state.tenantId);
@@ -2011,6 +2049,9 @@ function updatePassRender() {
                     state.stampsReward = reward;
                     state.vipActive = vipActive;
                     state.vipTiers = vipTiers;
+                    state.prepaidActive = togglePrepaid ? togglePrepaid.checked : false;
+                    state.prepaidAmount = document.getElementById('pre-amount') ? parseFloat(document.getElementById('pre-amount').value) : 500;
+                    state.prepaidBonus = document.getElementById('pre-bonus') ? parseFloat(document.getElementById('pre-bonus').value) : 100;
                     
                     // Re-render card preview if mode changed
                     updatePassRender();
