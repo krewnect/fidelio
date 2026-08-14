@@ -2203,3 +2203,109 @@ window.generateAIPush = function() {
         }
     }, 1500);
 };
+
+// GEMINI CHAT LOGIC
+window.toggleGeminiChat = function() {
+    const chat = document.getElementById('gemini-chat-window');
+    if(chat.style.display === 'none' || chat.style.opacity === '0') {
+        chat.style.display = 'flex';
+        // Small delay to allow display:flex to apply before animating opacity
+        setTimeout(() => {
+            chat.style.opacity = '1';
+            chat.style.transform = 'scale(1)';
+        }, 10);
+    } else {
+        chat.style.opacity = '0';
+        chat.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            chat.style.display = 'none';
+        }, 300);
+    }
+};
+
+window.sendGeminiMessage = function() {
+    const input = document.getElementById('gemini-chat-input');
+    const msg = input.value.trim();
+    if(!msg) return;
+    
+    const container = document.getElementById('gemini-chat-messages');
+    
+    // User Message
+    const userHTML = `
+        <div style="display:flex; justify-content:flex-end;">
+            <div style="background:var(--accent-violet); border-radius:12px 12px 0 12px; padding:12px; color:white; font-size:13px; max-width:85%;">
+                ${msg}
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', userHTML);
+    input.value = '';
+    
+    // Scroll to bottom
+    container.scrollTop = container.scrollHeight;
+    
+    // Show typing indicator
+    const typingId = 'typing-' + Date.now();
+    const typingHTML = `
+        <div id="${typingId}" style="display:flex; gap:8px; opacity:0.7;">
+            <div style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; flex-shrink:0;">
+                <i class="fa-solid fa-sparkles fa-beat"></i>
+            </div>
+            <div style="background:#1A1A2E; border:1px solid rgba(139,92,246,0.2); border-radius:12px 12px 12px 0; padding:12px; color:#e2e8f0; font-size:13px;">
+                Analizando tu audiencia...
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', typingHTML);
+    container.scrollTop = container.scrollHeight;
+    
+    // Simulate Gemini Response after 2 seconds
+    setTimeout(() => {
+        document.getElementById(typingId).remove();
+        
+        // Mock intelligent response
+        const aiHTML = `
+            <div style="display:flex; gap:8px;">
+                <div style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; flex-shrink:0;">
+                    <i class="fa-solid fa-sparkles"></i>
+                </div>
+                <div style="background:#1A1A2E; border:1px solid rgba(139,92,246,0.2); border-radius:12px 12px 12px 0; padding:12px; color:#e2e8f0; font-size:13px; line-height:1.5;">
+                    <p style="margin:0 0 8px 0;">¡Excelente idea! Analicé tu base de datos y veo que tienes <strong>145 clientes</strong> que no te visitan los viernes.</p>
+                    <p style="margin:0 0 12px 0;">Te sugiero la campaña <strong>"Inyección Días Lentos"</strong> con el siguiente mensaje:</p>
+                    <div style="background:#11111A; padding:10px; border-radius:8px; border-left:3px solid #8B5CF6; margin-bottom:12px; font-style:italic; color:#a78bfa;">
+                        "¡Arranca tu fin de semana! 🍻 Hoy viernes tu ticket tiene 2x1 en cervezas mostrando este mensaje. Válido hasta las 8 PM."
+                    </div>
+                    <button class="btn btn-primary" onclick="applyGeminiSuggestion()" style="width:100%; padding:8px; font-size:12px; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); border:none; cursor:pointer; color:white; border-radius:8px;"><i class="fa-solid fa-magic"></i> Aplicar esta Sugerencia</button>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', aiHTML);
+        container.scrollTop = container.scrollHeight;
+    }, 2500);
+};
+
+window.applyGeminiSuggestion = function() {
+    // Auto-select "Días Lentos" campaign
+    const card = document.querySelector('.campaign-module[onclick*="dias_lentos"]');
+    if(card) selectAICampaign('dias_lentos', card);
+    
+    // Auto-fill the message
+    setTimeout(() => {
+        const msgBox = document.getElementById('camp-push-message');
+        if(msgBox) {
+            msgBox.value = "¡Arranca tu fin de semana! 🍻 Hoy viernes tu ticket tiene 2x1 en cervezas mostrando este mensaje. Válido hasta las 8 PM.";
+            
+            // Highlight effect
+            msgBox.style.transition = 'box-shadow 0.5s';
+            msgBox.style.boxShadow = '0 0 0 4px rgba(139, 92, 246, 0.3)';
+            setTimeout(() => msgBox.style.boxShadow = 'none', 1000);
+        }
+        
+        // Close chat
+        toggleGeminiChat();
+        
+        if(typeof showToast === 'function') {
+            showToast("Sugerencia de Gemini aplicada ✨", "success");
+        }
+    }, 100);
+};
