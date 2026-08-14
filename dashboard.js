@@ -2052,6 +2052,7 @@ function updatePassRender() {
         const codeInput = document.getElementById('promo-code-input');
         const typeSelect = document.getElementById('promo-type-select');
         const discountInput = document.getElementById('promo-discount-input');
+        const stripeLinkInput = document.getElementById('promo-stripe-link-input');
         const freeBranchesInput = document.getElementById('promo-free-branches-input');
         const customPriceInput = document.getElementById('promo-custom-price-input');
         
@@ -2060,12 +2061,14 @@ function updatePassRender() {
         
         const type = typeSelect.value;
         let discount_pct = 0;
+        let stripe_link = null;
         let free_branches_count = 0;
         let custom_branch_price = null;
 
         if (type === 'discount') {
             discount_pct = parseInt(discountInput.value) || 0;
             if (discount_pct <= 0 || discount_pct > 100) return showToast('Descuento inválido', 'error');
+            stripe_link = stripeLinkInput ? stripeLinkInput.value.trim() : null;
         } else if (type === 'free_branches') {
             free_branches_count = parseInt(freeBranchesInput.value) || 0;
             if (free_branches_count <= 0) return showToast('Cantidad de sucursales inválida', 'error');
@@ -2078,9 +2081,10 @@ function updatePassRender() {
             code: code,
             reward_type: type,
             discount_pct: discount_pct,
+            stripe_payment_link: stripe_link,
             free_branches_count: free_branches_count,
             custom_branch_price: custom_branch_price,
-            max_uses: 100, 
+            max_uses: 1, 
             is_active: true
         }]);
         
@@ -3200,7 +3204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return showToast('Código inválido o expirado', 'error');
         }
 
-        if (data.used_count >= data.max_uses) {
+        if (data.current_uses >= data.max_uses) {
             return showToast('Este código ha superado su límite de usos', 'error');
         }
 
@@ -3209,33 +3213,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.reward_type === 'free_branches') {
             showToast(`¡Código aplicado! Tienes ${data.free_branches_count} sucursales extra gratis.`, 'success');
             btnUpsell.innerHTML = '<i class="fa-solid fa-check"></i> Activar Sucursales Gratis';
-            // Cambiar comportamiento para no requerir Stripe
             btnUpsell.onclick = async () => {
-                await window.supabaseClient.from('promo_codes').update({ used_count: data.used_count + 1 }).eq('code', code);
-                // Mock: en una app real aquí actualizaríamos la base de datos para darle las sucursales
+                await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
                 showToast('Sucursales habilitadas', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             };
         } else if (data.reward_type === 'custom_branch_price') {
             showToast(`¡Código aplicado! Precio preferencial de $${data.custom_branch_price} USD.`, 'success');
             btnUpsell.innerHTML = `<i class="fa-brands fa-stripe"></i> Pagar $${data.custom_branch_price} USD / mes`;
-            // El clic de btn-upsell-stripe ya activa btnPayStripe por default en el HTML.
-            // Al hacer click, el btnPayStripe leerá el código promocional y el backend sabrá qué precio cobrar.
+            // Si tuvieras un link específico para esto en la DB, podrías reemplazarlo aquí.
         } else if (data.reward_type === 'lifetime_free' || (data.reward_type === 'discount' && data.discount_pct === 100)) {
             showToast('¡Felicidades! Tienes acceso ilimitado gratuito.', 'success');
             btnUpsell.innerHTML = '<i class="fa-solid fa-check"></i> Activar Licencia Gratuita';
             btnUpsell.onclick = async () => {
-                await window.supabaseClient.from('promo_codes').update({ used_count: data.used_count + 1 }).eq('code', code);
+                await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
                 showToast('Licencia habilitada', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             };
-        } else if (data.reward_type === 'discount') {
-            const originalPrice = 99;
-            const newPrice = originalPrice - (originalPrice * (data.discount_pct / 100));
-            showToast(`¡Descuento aplicado del ${data.discount_pct}%!`, 'success');
-            btnUpsell.innerHTML = `<i class="fa-brands fa-stripe"></i> Pagar $${newPrice.toFixed(2)} USD / mes`;
-        } else {
-            showToast('Código promocional aplicado.', 'success');
+        } else if (data.reward_type === 'discount' && data.discount_pct < 100) {
+            if (!data.stripe_payment_link) {
+                return showToast('Error: Este código no tiene un enlace de pago asignado.', 'error');
+            }
+            showToast(`¡Código aplicado! Descuento del ${data.discount_pct}%.`, 'success');
+            btnUpsell.innerHTML = `<i class="fa-brands fa-stripe"></i> Pagar con Descuento`;
+            btnUpsell.onclick = async () => {
+                // Sumamos el uso y redirigimos a la liga de Stripe que configuró el Admin
+                await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
+                window.location.href = data.stripe_payment_link;
+            };
         }
     };
 
