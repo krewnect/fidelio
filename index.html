@@ -1474,6 +1474,7 @@
                         </div>
                     </div>
                     <div style="display:flex; gap:12px;">
+                        <button class="btn" style="background:rgba(139,92,246,0.1); border:1px solid var(--accent-violet); color:var(--accent-violet);"><i class="fa-solid fa-file-invoice"></i> Solicitar Factura</button>
                         <button class="btn" style="background:rgba(139,92,246,0.1); border:1px solid var(--accent-violet); color:var(--accent-violet);"><i class="fa-solid fa-building-columns"></i> Transferencia</button>
                         <button class="btn btn-primary" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border:none;"><i class="fa-brands fa-stripe"></i> Pagar con Stripe</button>
                     </div>
@@ -1500,10 +1501,7 @@
                                 <label>RFC (Opcional - Para Facturación)</label>
                                 <input type="text" class="fidelio-input" placeholder="ABCD123456789">
                             </div>
-                            <div style="margin-top:16px; display:flex; gap:12px;">
-                                <button class="btn" style="flex:1; background:rgba(139,92,246,0.1); border:1px solid var(--accent-violet); color:var(--accent-violet);"><i class="fa-solid fa-file-invoice"></i> Solicitar Factura</button>
-                                <button class="btn btn-primary" style="flex:1; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%); border:none; color:white;">Guardar Cambios</button>
-                            </div>
+                            <button class="btn btn-primary" style="width:100%; margin-top:16px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%); border:none; color:white;">Guardar Cambios</button>
                         </div>
 
                         <!-- Social Automation Card -->
@@ -1588,9 +1586,13 @@
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                                     <h4 style="font-size:13px; margin:0; color:var(--text-muted);">Últimas Reseñas</h4>
                                     <div style="position:relative; display:inline-block;">
-                                        <button class="btn" style="background:var(--bg-input); color:white; border:1px solid rgba(139,92,246,0.3); padding:6px 12px; font-size:11px; border-radius:8px; display:flex; align-items:center; gap:8px;">
-                                            <i class="fa-solid fa-store" style="color:var(--accent-violet);"></i> Todas las sucursales <i class="fa-solid fa-chevron-down" style="font-size:9px; margin-left:4px; color:var(--text-muted);"></i>
-                                        </button>
+                                        <select style="appearance:none; background:var(--bg-input); color:var(--accent-violet); font-weight:600; border:1px solid rgba(139,92,246,0.5); padding:6px 28px 6px 12px; font-size:11px; border-radius:8px; cursor:pointer; outline:none; font-family:inherit;">
+                                            <option value="all">📍 Todas las sucursales</option>
+                                            <option value="roma">Roma Norte</option>
+                                            <option value="condesa">Condesa</option>
+                                            <option value="polanco">Polanco</option>
+                                        </select>
+                                        <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:9px; color:var(--accent-violet); pointer-events:none;"></i>
                                     </div>
                                 </div>
                                 
