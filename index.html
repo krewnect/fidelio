@@ -625,7 +625,7 @@
                                                 <div style="display:flex; gap:16px; margin-bottom:16px;">
                                                     <div style="flex:1;">
                                                         <div class="pass-field-label">Próxima Recompensa</div>
-                                                        <div class="pass-field-value" style="color:#10B981;" id="render-reward-text">Bebida de Cortesía Gratis</div>
+                                                        <div class="pass-field-value" style="color:var(--accent-violet);" id="render-reward-text">Bebida de Cortesía Gratis</div>
                                                     </div>
                                                     <div style="text-align:right;">
                                                         <div class="pass-field-label">Visitas</div>
@@ -636,7 +636,7 @@
                                                 <div style="margin-bottom:16px;">
                                                     <div class="pass-field-label">Notificación Flash</div>
                                                     <div class="pass-field-value" style="font-size:14px; font-weight:600; background:#f3f4f6; padding:10px 12px; border-radius:10px; display:inline-block; width:100%; box-sizing:border-box;">
-                                                        <i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i> <span id="render-promo-text">Martes Doble Cashback</span>
+                                                        <i class="fa-solid fa-bolt" style="color:var(--accent-violet); margin-right:6px;"></i> <span id="render-promo-text">Martes Doble Cashback</span>
                                                     </div>
                                                 </div>
                                                 
@@ -1044,7 +1044,7 @@
 
                         <label class="role-card" id="loyalty-mode-cashback">
                             <input type="radio" name="loyalty_mode" value="cashback" style="display:none;">
-                            <div class="role-icon" style="color:#10B981; background:rgba(16, 185, 129, 0.1);"><i class="fa-solid fa-wallet"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-wallet"></i></div>
                             <div class="role-info">
                                 <h4>Solo Cashback</h4>
                                 <p>Clientes acumulan saldo por compras.</p>
@@ -1054,7 +1054,7 @@
                         
                         <label class="role-card" id="loyalty-mode-stamps">
                             <input type="radio" name="loyalty_mode" value="stamps" style="display:none;">
-                            <div class="role-icon" style="color:#F59E0B; background:rgba(245, 158, 11, 0.1);"><i class="fa-solid fa-stamp"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-stamp"></i></div>
                             <div class="role-info">
                                 <h4>Solo Sellos</h4>
                                 <p>Clientes acumulan visitas por un premio.</p>
@@ -1064,7 +1064,7 @@
 
                         <label class="role-card" id="loyalty-mode-membership">
                             <input type="radio" name="loyalty_mode" value="membership" style="display:none;">
-                            <div class="role-icon" style="color:#3B82F6; background:rgba(59, 130, 246, 0.1);"><i class="fa-solid fa-id-card-clip"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-id-card-clip"></i></div>
                             <div class="role-info">
                                 <h4>Membresía VIP</h4>
                                 <p>Suscripción recurrente para acceso a descuentos y beneficios fijos.</p>
@@ -1074,7 +1074,7 @@
                         
                         <label class="role-card" id="loyalty-mode-prepaid">
                             <input type="radio" name="loyalty_mode" value="prepaid" style="display:none;">
-                            <div class="role-icon" style="color:#EC4899; background:rgba(236, 72, 153, 0.1);"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-money-bill-transfer"></i></div>
                             <div class="role-info">
                                 <h4>Monedero Prepago</h4>
                                 <p>El cliente carga saldo por adelantado a cambio de una bonificación.</p>
@@ -1084,7 +1084,7 @@
                         
                         <label class="role-card" id="loyalty-mode-custom">
                             <input type="radio" name="loyalty_mode" value="custom" style="display:none;">
-                            <div class="role-icon" style="color:var(--text-main); background:var(--bg-input);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                             <div class="role-info">
                                 <h4>Personalizado</h4>
                                 <p>Diseña tu propia mecánica, métricas y recompensas 100% a tu gusto.</p>
@@ -1099,7 +1099,7 @@
                     <!-- CASHBACK SETTINGS -->
                     <div class="accordion-card" style="flex: 1; min-width: 300px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-wallet" style="color:#10B981; margin-right:8px;"></i> Configuración de Cashback</h3>
+                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración de Cashback</h3>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-cashback" checked>
                                 <span class="toggle-slider"></span>
@@ -1109,8 +1109,8 @@
                         <div class="form-group">
                             <label>Porcentaje Base de Retorno (%)</label>
                             <div style="display:flex; align-items:center; gap: 12px;">
-                                <input type="range" id="cashback-slider" min="1" max="25" value="10" style="flex:1; accent-color: #10B981;">
-                                <span id="cashback-percent-display" style="font-size:18px; font-weight:700; color:#10B981; min-width:50px;">10%</span>
+                                <input type="range" id="cashback-slider" min="1" max="25" value="10" style="flex:1; accent-color: var(--accent-violet);">
+                                <span id="cashback-percent-display" style="font-size:18px; font-weight:700; color:var(--accent-violet); min-width:50px;">10%</span>
                             </div>
                             <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Por cada $100 gastados, el cliente recibe $<span id="cashback-example">10</span> en su saldo.</p>
                         </div>
@@ -1119,7 +1119,7 @@
                     <!-- STAMPS SETTINGS -->
                     <div class="accordion-card" style="flex: 1; min-width: 300px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-stamp" style="color:#F59E0B; margin-right:8px;"></i> Configuración de Sellos</h3>
+                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-stamp" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración de Sellos</h3>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-stamps" checked>
                                 <span class="toggle-slider"></span>
@@ -1166,7 +1166,7 @@
                         <div class="form-group">
                             <label>Bono de Regalo al Recargar (MXN)</label>
                             <input type="number" id="pre-bonus" class="fidelio-input" placeholder="Ej. 100" value="100">
-                            <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Al recargar, el cliente recibe <strong style="color:#10B981;" id="pre-total-display">$600</strong> en total.</p>
+                            <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Al recargar, el cliente recibe <strong style="color:var(--accent-violet);" id="pre-total-display">$600</strong> en total.</p>
                         </div>
                     </div>
                     
@@ -1378,12 +1378,12 @@
                                     <div style="font-size:11px; color:var(--text-muted);">Hace 2m</div>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:12px; font-size:13px;">
-                                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(16, 185, 129, 0.1); color:#10B981; display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-qrcode"></i></div>
+                                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(16, 185, 129, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-qrcode"></i></div>
                                     <div style="flex:1;"><strong>Ana G.</strong> escaneó mesa #4 (+120 pts)</div>
                                     <div style="font-size:11px; color:var(--text-muted);">Hace 5m</div>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:12px; font-size:13px; opacity:0.8;">
-                                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(245, 158, 11, 0.1); color:#F59E0B; display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-crown"></i></div>
+                                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(245, 158, 11, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-crown"></i></div>
                                     <div style="flex:1;"><strong>Carlos R.</strong> subió a VIP Oro 🏆</div>
                                     <div style="font-size:11px; color:var(--text-muted);">Hace 14m</div>
                                 </div>
@@ -1566,7 +1566,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
                         <h3 style="color: var(--text-main); font-size: 18px; margin:0;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-violet); margin-right:8px;"></i>Rendimiento de Campañas (Motor IA)</h3>
                         <div style="display:flex; gap:8px;">
-                            <span style="background:rgba(16, 185, 129, 0.1); color:#10B981; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">+24% Eficiencia vs Correos Tradicionales</span>
+                            <span style="background:rgba(16, 185, 129, 0.1); color:var(--accent-violet); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">+24% Eficiencia vs Correos Tradicionales</span>
                         </div>
                     </div>
                     
@@ -1676,7 +1676,7 @@
                         <div style="flex:1; display:flex; flex-direction:column; gap:20px; justify-content:center;">
                             <div>
                                 <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px; font-weight:700; color:var(--text-main);">
-                                    <span><i class="fa-solid fa-money-bill-wave" style="color:#10B981; margin-right:6px;"></i> Cashback (Dinero Virtual)</span>
+                                    <span><i class="fa-solid fa-money-bill-wave" style="color:var(--accent-violet); margin-right:6px;"></i> Cashback (Dinero Virtual)</span>
                                     <span>54%</span>
                                 </div>
                                 <div style="width:100%; height:12px; background:var(--bg-input); border-radius:6px; overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);">
@@ -1685,7 +1685,7 @@
                             </div>
                             <div>
                                 <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px; font-weight:700; color:var(--text-main);">
-                                    <span><i class="fa-solid fa-cake-candles" style="color:#F59E0B; margin-right:6px;"></i> Cortesía Cumpleaños</span>
+                                    <span><i class="fa-solid fa-cake-candles" style="color:var(--accent-violet); margin-right:6px;"></i> Cortesía Cumpleaños</span>
                                     <span>28%</span>
                                 </div>
                                 <div style="width:100%; height:12px; background:var(--bg-input); border-radius:6px; overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);">
@@ -1906,7 +1906,7 @@
                 
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
-                script.src = 'dashboard.js?v=53';
+                script.src = 'dashboard.js?v=54';
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));

@@ -1781,7 +1781,7 @@ function updatePassRender() {
     if (tabLoyalty) {
         // UI Selectors
         const loyaltyModes = document.querySelectorAll('input[name="loyalty_mode"]');
-        const modeCards = document.querySelectorAll('input[name="loyalty_mode"] + .role-icon').map(el => el.parentElement);
+        const modeCards = Array.from(document.querySelectorAll('input[name="loyalty_mode"] + .role-icon')).map(el => el.parentElement);
         
         const toggleCashback = document.getElementById('toggle-cashback');
         const cashbackSlider = document.getElementById('cashback-slider');
