@@ -1568,10 +1568,7 @@ function renderCRMTable() {
             const adminIcon = document.getElementById('header-business-icon');
             if (adminIcon) adminIcon.innerHTML = '<img src="fidelio_logo.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
             
-            setTimeout(() => {
-                const leadsTab = document.getElementById('admin-leads-tab');
-                if (leadsTab) leadsTab.click();
-            }, 100);
+
 
             
             // Re-attach listeners explicitly just in case for new tab
