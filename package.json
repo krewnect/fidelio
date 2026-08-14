@@ -21,5 +21,14 @@
     "passkit-generator": "^3.5.7",
     "pg": "^8.22.0",
     "stripe": "^22.4.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krewnect/Fidelio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/krewnect/Fidelio/issues"
+  },
+  "homepage": "https://github.com/krewnect/Fidelio#readme"
 }

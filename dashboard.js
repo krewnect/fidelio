@@ -2309,3 +2309,122 @@ window.applyGeminiSuggestion = function() {
         }
     }, 100);
 };
+
+// ==========================================
+// MY BUSINESS & INTEGRACIONES LOGIC
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Guardar Perfil del Negocio
+    const btnSaveBusiness = document.getElementById('btn-save-mybusiness');
+    if (btnSaveBusiness) {
+        btnSaveBusiness.addEventListener('click', async () => {
+            try {
+                const rfc = document.querySelector('input[placeholder="ABCD123456789"]').value;
+                const businessName = document.querySelector('input[value="La Pizzería del Barrio"]').value;
+                
+                btnSaveBusiness.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+                
+                const response = await fetch('/api/mybusiness/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('fidelio_token') || 'dummy'}`
+                    },
+                    body: JSON.stringify({
+                        rfc: rfc,
+                        businessName: businessName,
+                        autoInstagram: 1, 
+                        autoTiktok: 3,
+                        autoMaps: 5
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Perfil de negocio guardado exitosamente.', 'success');
+                } else {
+                    showToast('Error al guardar el perfil: ' + data.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Error de red al guardar perfil.', 'error');
+            } finally {
+                btnSaveBusiness.innerHTML = 'Guardar Cambios';
+            }
+        });
+    }
+
+    // 2. Conectar Google Maps
+    const btnConnectGoogle = document.getElementById('btn-connect-google');
+    if (btnConnectGoogle) {
+        btnConnectGoogle.addEventListener('click', () => {
+            const merchantId = localStorage.getItem('merchant_id') || 'test-merchant-123';
+            showToast('Redirigiendo a la autenticación de Google...', 'info');
+            window.location.href = `/auth/google?merchant_id=${merchantId}`;
+        });
+    }
+
+    // 3. Pagar con Stripe
+    const btnPayStripe = document.getElementById('btn-pay-stripe');
+    if (btnPayStripe) {
+        btnPayStripe.addEventListener('click', async () => {
+            try {
+                btnPayStripe.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Conectando...';
+                const response = await fetch('/api/stripe/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('fidelio_token') || 'dummy'}`
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    showToast('Error al conectar con Stripe: ' + (data.error || 'Desconocido'), 'error');
+                    btnPayStripe.innerHTML = '<i class="fa-brands fa-stripe"></i> Pagar con Stripe';
+                }
+            } catch (err) {
+                showToast('Error de red conectando con la pasarela de pagos.', 'error');
+                btnPayStripe.innerHTML = '<i class="fa-brands fa-stripe"></i> Pagar con Stripe';
+            }
+        });
+    }
+
+    // 4. Solicitar Factura
+    const btnRequestInvoice = document.getElementById('btn-request-invoice');
+    if (btnRequestInvoice) {
+        btnRequestInvoice.addEventListener('click', async () => {
+            try {
+                const rfc = document.querySelector('input[placeholder="ABCD123456789"]').value;
+                if (!rfc) {
+                    showToast('Por favor, ingresa tu RFC y Guarda los cambios primero.', 'error');
+                    return;
+                }
+                
+                btnRequestInvoice.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Solicitando...';
+                
+                const response = await fetch('/api/billing/request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('fidelio_token') || 'dummy'}`
+                    },
+                    body: JSON.stringify({ rfc })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Factura solicitada. La recibirás en tu correo.', 'success');
+                } else {
+                    showToast('Error al solicitar factura.', 'error');
+                }
+            } catch (err) {
+                showToast('Error de red.', 'error');
+            } finally {
+                btnRequestInvoice.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Solicitar Factura';
+            }
+        });
+    }
+});

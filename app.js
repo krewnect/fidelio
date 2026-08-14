@@ -558,6 +558,114 @@ app.post('/api/wallet/google', apiLimiter, requireMerchantAuth, async (req, res)
     }
 });
 
+// ==========================================
+// MY BUSINESS & INTEGRACIONES (NUEVO)
+// ==========================================
+
+// 1. Guardar Perfil del Negocio (RFC, Nombre, Automatizaciones)
+app.post('/api/mybusiness/save', apiLimiter, requireMerchantAuth, async (req, res) => {
+    try {
+        const { rfc, businessName, address, autoInstagram, autoTiktok, autoMaps } = req.body;
+        
+        const { error } = await supabase.from('merchants').update({
+            rfc: rfc,
+            business_name: businessName,
+            address: address,
+            auto_instagram_visit_trigger: autoInstagram || 0,
+            auto_tiktok_visit_trigger: autoTiktok || 0,
+            auto_maps_visit_trigger: autoMaps || 0
+        }).eq('id', req.merchantId);
+
+        if (error) throw error;
+        res.json({ success: true, message: 'Perfil actualizado correctamente.' });
+    } catch (err) {
+        console.error("Error guardando perfil:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// 2. Stripe Checkout (Pago de Suscripción)
+app.post('/api/stripe/checkout', apiLimiter, requireMerchantAuth, async (req, res) => {
+    try {
+        if (!stripe) {
+            return res.status(500).json({ success: false, error: 'Stripe no está configurado en el servidor.' });
+        }
+        
+        const { data: merchant } = await supabase.from('merchants').select('stripe_customer_id, business_name').eq('id', req.merchantId).single();
+        
+        // El Price ID debe venir del .env
+        const priceId = process.env.STRIPE_PRICE_ID; 
+        if (!priceId) {
+            return res.status(500).json({ success: false, error: 'Falta STRIPE_PRICE_ID en .env' });
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            mode: 'subscription',
+            payment_method_types: ['card'],
+            customer: merchant.stripe_customer_id || undefined,
+            line_items: [{ price: priceId, quantity: 1 }],
+            success_url: `${req.headers.origin}/panel?payment=success`,
+            cancel_url: `${req.headers.origin}/panel?payment=cancelled`,
+            metadata: { merchant_id: req.merchantId }
+        });
+
+        res.json({ success: true, url: session.url });
+    } catch (err) {
+        console.error("Error creando Checkout Stripe:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// 3. Solicitar Factura
+app.post('/api/billing/request', apiLimiter, requireMerchantAuth, async (req, res) => {
+    try {
+        const { rfc } = req.body;
+        if (!rfc) return res.status(400).json({ success: false, error: 'RFC requerido' });
+        
+        // Simulación: Envío a proveedor de facturación (PAC)
+        console.log(`[FACTURACIÓN] Solicitud recibida para RFC: ${rfc} del merchant: ${req.merchantId}`);
+        
+        res.json({ success: true, message: 'Solicitud de factura enviada al proveedor exitosamente.' });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// 4. Google Maps OAuth (Conectar Sucursal)
+app.get('/auth/google', (req, res) => {
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    if (!clientId) return res.status(500).send('Google Client ID no configurado en el servidor.');
+    
+    // merchant_id viene en query params desde el JS frontend
+    const state = req.query.merchant_id || 'unknown';
+    const redirectUri = `${req.protocol}://${req.get('host')}/auth/google/callback`;
+    const scope = encodeURIComponent('https://www.googleapis.com/auth/business.manage');
+    
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}&access_type=offline&prompt=consent&state=${state}`;
+    
+    res.redirect(googleAuthUrl);
+});
+
+// 5. Callback de Google Maps
+app.get('/auth/google/callback', async (req, res) => {
+    const { code, state, error } = req.query;
+    if (error) return res.status(400).send(`Error de Google: ${error}`);
+    
+    const merchantId = state; 
+    
+    try {
+        console.log(`[GOOGLE OAUTH] Código recibido exitosamente para el merchant: ${merchantId}`);
+        console.log(`Código para intercambiar: ${code}`);
+        
+        // TODO: Intercambiar "code" por Token usando axios.post a oauth2.googleapis.com/token
+        // Y guardar en supabase: merchants.google_access_token
+        
+        res.redirect('/panel?google_connected=true');
+    } catch (err) {
+        res.status(500).send('Error procesando autenticación de Google');
+    }
+});
+
 // Rutas principales
 app.get('/api/config', (req, res) => {
     res.json({
