@@ -1463,6 +1463,12 @@ function updatePassRender() {
                 } else {
                     console.warn(`Pestaña en construcción o no encontrada: ${targetTab}`);
                 }
+                
+                if(targetTab === 'tab-leads' && typeof window.loadLeads === 'function') window.loadLeads();
+                else if(targetTab === 'tab-global-db' && typeof window.loadGlobalDatabase === 'function') window.loadGlobalDatabase();
+                else if(targetTab === 'tab-merchants-control' && typeof window.loadMerchantsControl === 'function') window.loadMerchantsControl();
+                else if(targetTab === 'tab-inbox' && typeof window.loadInbox === 'function') window.loadInbox();
+
                 localStorage.setItem('activeFidelioTab', targetTab);
             }
         });
@@ -1581,12 +1587,16 @@ function updatePassRender() {
         });
     }
 
-    // --- LEADS MANAGEMENT (ADMIN ONLY) ---
+    // --- MASTER ADMIN SUITE (ADMIN ONLY) ---
+    const checkMasterAdmin = () => {
+        return window.merchantSession && window.merchantSession.user.email === 'hola@fideliorewards.com';
+    };
+
+    // 1. LEADS (PROSPECTOS)
     window.loadLeads = async function() {
-        if (!window.merchantSession || window.merchantSession.user.email !== 'hola@fideliorewards.com') return;
-        
+        if (!checkMasterAdmin()) return;
         const tbody = document.getElementById('leads-table-body');
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando prospectos...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando prospectos...</td></tr>';
         
         const { data, error } = await window.supabaseClient
             .from('demo_requests')
@@ -1594,30 +1604,271 @@ function updatePassRender() {
             .order('created_at', { ascending: false });
             
         if (error) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error cargando prospectos: ${error.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#ef4444;">Error cargando prospectos: ${error.message}</td></tr>`;
             return;
         }
         
         if (!data || data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay solicitudes pendientes.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay solicitudes pendientes.</td></tr>';
             return;
         }
         
         tbody.innerHTML = '';
         data.forEach(lead => {
-            const date = new Date(lead.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const date = new Date(lead.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' });
+            let statusBadge = '<span class="menu-badge" style="background:#4b5563;color:#fff;font-size:10px;">NUEVO</span>';
+            if(lead.status === 'interes') statusBadge = '<span class="menu-badge" style="background:#f59e0b;color:#fff;font-size:10px;">INTERÉS</span>';
+            if(lead.status === 'negociacion') statusBadge = '<span class="menu-badge" style="background:#3b82f6;color:#fff;font-size:10px;">NEGOCIACIÓN</span>';
+            if(lead.status === 'cerrado') statusBadge = '<span class="menu-badge" style="background:#10b981;color:#fff;font-size:10px;">CERRADO</span>';
+
             tbody.innerHTML += `
-                <tr>
-                    <td>${date}</td>
-                    <td><strong style="color:#fff;">${lead.name}</strong></td>
-                    <td>${lead.email}</td>
-                    <td>${lead.phone}</td>
+                <tr style="border-bottom: 1px solid var(--border-soft);">
+                    <td style="padding: 16px;">${date}</td>
+                    <td style="padding: 16px;"><strong style="color:var(--text-main);">${lead.name || 'Sin nombre'}</strong></td>
+                    <td style="padding: 16px;">
+                        <div style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-envelope"></i> ${lead.email}</div>
+                        <div style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-phone"></i> ${lead.phone || 'N/A'}</div>
+                    </td>
+                    <td style="padding: 16px;">${statusBadge}</td>
+                    <td style="padding: 16px; text-align: right; display: flex; gap: 8px; justify-content: flex-end;">
+                        <button class="btn-preset" onclick="updateLeadStatus('${lead.id}', 'interes')" title="Interés"><i class="fa-solid fa-fire" style="color:#f59e0b;"></i></button>
+                        <button class="btn-preset" onclick="updateLeadStatus('${lead.id}', 'negociacion')" title="Negociación"><i class="fa-solid fa-handshake" style="color:#3b82f6;"></i></button>
+                        <button class="btn-preset" onclick="updateLeadStatus('${lead.id}', 'cerrado')" title="Cerrado"><i class="fa-solid fa-check-circle" style="color:#10b981;"></i></button>
+                        <button class="btn-preset" onclick="deleteLead('${lead.id}')" title="Borrar" style="border-color:#ef4444; color:#ef4444;"><i class="fa-solid fa-trash"></i></button>
+                    </td>
                 </tr>
             `;
         });
     };
 
-    // Initial Render Calls
+    window.updateLeadStatus = async function(id, status) {
+        if (!checkMasterAdmin()) return;
+        const { error } = await window.supabaseClient.from('demo_requests').update({ status: status }).eq('id', id);
+        if(error) showToast('Error actualizando lead: ' + error.message, 'error');
+        else { showToast('Lead actualizado', 'success'); loadLeads(); }
+    };
+
+    window.deleteLead = async function(id) {
+        if (!checkMasterAdmin()) return;
+        if(!confirm('¿Estás seguro de borrar este lead permanentemente?')) return;
+        const { error } = await window.supabaseClient.from('demo_requests').delete().eq('id', id);
+        if(error) showToast('Error borrando lead: ' + error.message, 'error');
+        else { showToast('Lead borrado', 'success'); loadLeads(); }
+    };
+
+    // 2. GLOBAL DATABASE
+    let globalDBCache = [];
+    window.loadGlobalDatabase = async function() {
+        if (!checkMasterAdmin()) return;
+        const tbody = document.getElementById('global-db-body');
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando base de datos global...</td></tr>';
+        
+        const { data, error } = await window.supabaseClient.from('customers').select('id, full_name, email, merchant_id, created_at').order('created_at', { ascending: false }).limit(500); 
+        if (error) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            return;
+        }
+        globalDBCache = data || [];
+        renderGlobalDB(globalDBCache);
+    };
+
+    window.renderGlobalDB = function(data) {
+        const tbody = document.getElementById('global-db-body');
+        tbody.innerHTML = '';
+        if(data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay resultados.</td></tr>'; return; }
+        
+        data.forEach(c => {
+            const date = new Date(c.created_at).toLocaleDateString();
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid var(--border-soft);">
+                    <td style="padding: 16px; font-family:monospace; font-size:12px;">${c.id.substring(0,8)}...</td>
+                    <td style="padding: 16px;"><strong>${c.full_name}</strong></td>
+                    <td style="padding: 16px;">${c.email}</td>
+                    <td style="padding: 16px; font-size:12px; color:var(--text-muted);">${c.merchant_id}</td>
+                    <td style="padding: 16px;">${date}</td>
+                </tr>
+            `;
+        });
+    };
+
+    window.filterGlobalDB = function(query) {
+        if(!query) return renderGlobalDB(globalDBCache);
+        const q = query.toLowerCase();
+        const filtered = globalDBCache.filter(c => c.full_name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q));
+        renderGlobalDB(filtered);
+    };
+
+    // 3. MERCHANTS CONTROL
+    window.loadMerchantsControl = async function() {
+        if (!checkMasterAdmin()) return;
+        const tbody = document.getElementById('merchants-control-body');
+        const listMorosos = document.getElementById('morosos-list');
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando restaurantes...</td></tr>';
+        listMorosos.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Cargando...</div>';
+        
+        const { data, error } = await window.supabaseClient.from('merchants').select('id, business_name, plan_status, created_at');
+        if (error) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        let morososHTML = '';
+        
+        (data || []).forEach(m => {
+            const createdDate = new Date(m.created_at);
+            const now = new Date();
+            const daysSinceCreated = Math.floor((now - createdDate) / (1000 * 60 * 60 * 24));
+            
+            let daysLeft = 'N/A';
+            let paymentStatus = '<span style="color:#10b981;">Al Día</span>';
+            let planBadge = `<span class="menu-badge" style="background:var(--accent-violet);color:#fff;font-size:10px;">${m.plan_status.toUpperCase()}</span>`;
+            
+            if (m.plan_status === 'trial') {
+                daysLeft = 14 - daysSinceCreated;
+                if(daysLeft <= 0) {
+                    daysLeft = 'Expirado';
+                    paymentStatus = '<span style="color:#ef4444;font-weight:700;">Pago Requerido</span>';
+                    morososHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-soft); padding:12px 0;">
+                            <div>
+                                <strong style="display:block;">${m.business_name}</strong>
+                                <span style="font-size:12px; color:var(--text-muted);">Trial expirado hace ${Math.abs(14 - daysSinceCreated)} días</span>
+                            </div>
+                            <button class="btn-preset" onclick="contactMerchant('${m.id}')"><i class="fa-solid fa-envelope"></i> Aviso</button>
+                        </div>
+                    `;
+                } else {
+                    paymentStatus = '<span style="color:#f59e0b;">Trial Activo</span>';
+                }
+            } else if (m.plan_status === 'active' || m.plan_status === 'lifetime_free') {
+                daysLeft = '∞';
+                paymentStatus = '<span style="color:#10b981;">Pagado</span>';
+            } else if (m.plan_status === 'paused') {
+                daysLeft = '-';
+                paymentStatus = '<span style="color:#f59e0b;">Pausado</span>';
+                planBadge = `<span class="menu-badge" style="background:#f59e0b;color:#fff;font-size:10px;">PAUSED</span>`;
+            }
+
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid var(--border-soft);">
+                    <td style="padding: 16px;"><strong>${m.business_name}</strong></td>
+                    <td style="padding: 16px;">${planBadge}</td>
+                    <td style="padding: 16px;">${daysLeft}</td>
+                    <td style="padding: 16px;">${paymentStatus}</td>
+                    <td style="padding: 16px; text-align: right;">
+                        <button class="btn-preset" onclick="toggleMerchantStatus('${m.id}', '${m.plan_status}')" title="Pausar/Activar">
+                            <i class="fa-solid ${m.plan_status === 'paused' ? 'fa-play' : 'fa-pause'}" style="color:var(--text-muted);"></i>
+                        </button>
+                        <button class="btn-preset" onclick="grantFreeAccount('${m.id}')" title="Regalar Lifetime Free"><i class="fa-solid fa-gift" style="color:var(--accent-violet);"></i></button>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        if(morososHTML === '') listMorosos.innerHTML = '<div style="text-align:center;color:var(--success);padding:20px;">Todos los pagos están al día.</div>';
+        else listMorosos.innerHTML = morososHTML;
+    };
+
+    window.toggleMerchantStatus = async function(id, currentStatus) {
+        if (!checkMasterAdmin()) return;
+        const newStatus = currentStatus === 'paused' ? 'active' : 'paused';
+        const { error } = await window.supabaseClient.from('merchants').update({ plan_status: newStatus }).eq('id', id);
+        if(error) showToast('Error: ' + error.message, 'error');
+        else { showToast('Estatus actualizado', 'success'); loadMerchantsControl(); }
+    };
+
+    window.grantFreeAccount = async function(id) {
+        if (!checkMasterAdmin()) return;
+        if(!confirm('¿Estás seguro de regalar una cuenta lifetime free a este restaurante?')) return;
+        const { error } = await window.supabaseClient.from('merchants').update({ plan_status: 'lifetime_free' }).eq('id', id);
+        if(error) showToast('Error: ' + error.message, 'error');
+        else { showToast('Cuenta otorgada', 'success'); loadMerchantsControl(); }
+    };
+
+    // 4. MASTER ADMIN (PROMOS)
+    window.generatePromoCode = async function() {
+        if (!checkMasterAdmin()) return;
+        const codeInput = document.getElementById('promo-code-input');
+        const typeSelect = document.getElementById('promo-type-select');
+        
+        const code = codeInput.value.trim().toUpperCase();
+        if(!code) return showToast('Escribe un código válido', 'error');
+        
+        const { error } = await window.supabaseClient.from('promo_codes').insert([{
+            code: code,
+            reward_type: typeSelect.value,
+            max_uses: 100, 
+            is_active: true
+        }]);
+        
+        if (error) {
+            showToast('Error al crear código: ' + error.message, 'error');
+        } else {
+            showToast('Código promocional activado', 'success');
+            codeInput.value = '';
+        }
+    };
+
+    // 5. INBOX SUPPORT
+    window.loadInbox = async function() {
+        if (!checkMasterAdmin()) return;
+        const tbody = document.getElementById('inbox-table-body');
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando tickets...</td></tr>';
+        
+        const { data, error } = await window.supabaseClient.from('support_tickets').select('*').order('created_at', { ascending: false });
+        if (error) {
+            if(error.code === '42P01') {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">La tabla support_tickets no existe aún. Corre el script SQL primero.</td></tr>';
+            } else {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            }
+            return;
+        }
+        
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Bandeja de entrada limpia. No hay tickets.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        data.forEach(t => {
+            const date = new Date(t.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour:'2-digit', minute:'2-digit' });
+            let statusBadge = t.status === 'abierto' ? '<span class="menu-badge" style="background:#ef4444;color:#fff;font-size:10px;">ABIERTO</span>' : '<span class="menu-badge" style="background:#10b981;color:#fff;font-size:10px;">RESUELTO</span>';
+            
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid var(--border-soft); ${t.status === 'resuelto' ? 'opacity: 0.6;' : ''}">
+                    <td style="padding: 16px; font-size:12px; font-family:monospace;">#${t.id.substring(0,8)}</td>
+                    <td style="padding: 16px;">
+                        <strong>${t.email || 'Desconocido'}</strong>
+                        <div style="font-size:12px; color:var(--text-muted);">${t.merchant_id || 'Visitante'}</div>
+                    </td>
+                    <td style="padding: 16px;">
+                        <strong style="display:block;">${t.subject}</strong>
+                        <span style="font-size:13px; color:var(--text-muted);">${t.message.substring(0, 50)}${t.message.length>50?'...':''}</span>
+                    </td>
+                    <td style="padding: 16px;">${statusBadge}</td>
+                    <td style="padding: 16px; text-align: right;">
+                        <button class="btn-preset" onclick="alert('Mensaje completo:\n\n' + \`${t.message}\`)" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--text-main);"></i></button>
+                        ${t.status === 'abierto' ? `<button class="btn-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--success);"></i></button>` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+    };
+
+    window.resolveTicket = async function(id) {
+        if (!checkMasterAdmin()) return;
+        const { error } = await window.supabaseClient.from('support_tickets').update({ status: 'resuelto' }).eq('id', id);
+        if(error) showToast('Error al resolver: ' + error.message, 'error');
+        else { showToast('Ticket resuelto', 'success'); loadInbox(); }
+    };
+
+    window.contactMerchant = function(merchantId) {
+        alert('Funcionalidad de correo automatizado para cobranza pendiente de conectar al CRM.');
+    };
+
+    // // Initial Render Calls
     renderBranches();
     renderCRMTable();
     updatePassRender();
@@ -1633,8 +1884,7 @@ function updatePassRender() {
         
         // ADMIN CHECK FOR LEADS TAB
         if (window.merchantSession.user.email === 'hola@fideliorewards.com') {
-            document.getElementById('admin-leads-menu').style.display = 'block';
-            document.getElementById('admin-leads-tab').style.display = 'block';
+            document.querySelectorAll('.admin-only-item').forEach(el => el.style.display = 'block');
             
             // Override UI for Admin
             const adminName = document.getElementById('header-restaurant-name');

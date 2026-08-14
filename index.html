@@ -306,8 +306,12 @@
                 <button class="nav-tab" onclick="window.open('scanner.html', '_blank')"><i class="fa-solid fa-qrcode"></i> Escáner Staff <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px; margin-left:auto;"></i></button>
                 <button class="nav-tab" data-tab="tab-store"><i class="fa-solid fa-shop"></i> Tienda Fidelio</button>
                 
-                <div class="menu-label mt-20" id="admin-leads-menu" style="display:none;">Administración Central</div>
-                <button class="nav-tab" data-tab="tab-leads" id="admin-leads-tab" style="display:none;"><i class="fa-solid fa-envelope-open-text"></i> Prospectos (Leads)</button>
+                <div class="menu-label mt-20 admin-only-item" style="display:none; color: var(--accent-violet);">Administración Central</div>
+                <button class="nav-tab admin-only-item" data-tab="tab-leads" style="display:none;"><i class="fa-solid fa-envelope-open-text"></i> Prospectos (Leads)</button>
+                <button class="nav-tab admin-only-item" data-tab="tab-global-db" style="display:none;"><i class="fa-solid fa-database"></i> Base de Datos</button>
+                <button class="nav-tab admin-only-item" data-tab="tab-merchants-control" style="display:none;"><i class="fa-solid fa-building-user"></i> Control de Negocios</button>
+                <button class="nav-tab admin-only-item" data-tab="tab-master-admin" style="display:none;"><i class="fa-solid fa-money-check-dollar"></i> Finanzas y Promos</button>
+                <button class="nav-tab admin-only-item" data-tab="tab-inbox" style="display:none;"><i class="fa-solid fa-inbox"></i> Inbox de Soporte</button>
 
                 <div class="menu-label mt-20">Configuración y Ayuda</div>
                 <button class="nav-tab" data-tab="tab-account"><i class="fa-solid fa-user-gear"></i> Mi Cuenta</button>
@@ -1662,32 +1666,167 @@
             </section>
 
             <!-- LEADS TAB (ADMIN ONLY) -->
+            
+            <!-- LEADS (PROSPECTOS) -->
             <section id="tab-leads" class="tab-content">
                 <div class="workspace-header">
                     <div>
                         <span class="workspace-eyebrow">ADMINISTRACIÓN CENTRAL</span>
                         <h1>Prospectos Entrantes</h1>
-                        <p>Gestión de restaurantes interesados en obtener una Demo de Fidelio.</p>
+                        <p>Gestión del embudo de ventas para nuevos restaurantes.</p>
                     </div>
-                    <button class="btn-primary" onclick="loadLeads()"><i class="fa-solid fa-rotate-right"></i> Refrescar Lista</button>
+                    <button class="btn btn-primary" onclick="loadLeads()"><i class="fa-solid fa-rotate-right"></i> Refrescar Lista</button>
                 </div>
                 
-                <div class="content-panel">
-                    <table class="crm-table">
+                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
+                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
                         <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Nombre</th>
-                                <th>Correo Electrónico</th>
-                                <th>Teléfono</th>
+                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
+                                <th style="padding: 16px;">Fecha</th>
+                                <th style="padding: 16px;">Restaurante</th>
+                                <th style="padding: 16px;">Contacto</th>
+                                <th style="padding: 16px;">Estado</th>
+                                <th style="padding: 16px; text-align: right;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="leads-table-body">
-                            <!-- Leads dinámicos aquí -->
+                            <!-- Dynamic Content -->
                         </tbody>
                     </table>
                 </div>
             </section>
+
+            <!-- GLOBAL DB -->
+            <section id="tab-global-db" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">ADMINISTRACIÓN CENTRAL</span>
+                        <h1>Base de Datos Global</h1>
+                        <p>Visión maestra de todos los usuarios (clientes finales) registrados en todo Fidelio.</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="loadGlobalDatabase()"><i class="fa-solid fa-rotate-right"></i> Refrescar</button>
+                </div>
+                
+                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
+                    <div style="margin-bottom: 20px; display: flex; gap: 16px; align-items: center;">
+                        <input type="text" id="global-db-search" class="fidelio-input" placeholder="Buscar cliente por correo o nombre..." style="max-width: 400px;" oninput="filterGlobalDB(this.value)">
+                    </div>
+                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
+                                <th style="padding: 16px;">ID Cliente</th>
+                                <th style="padding: 16px;">Nombre</th>
+                                <th style="padding: 16px;">Email</th>
+                                <th style="padding: 16px;">ID Restaurante</th>
+                                <th style="padding: 16px;">Fecha de Registro</th>
+                            </tr>
+                        </thead>
+                        <tbody id="global-db-body">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- MERCHANTS CONTROL -->
+            <section id="tab-merchants-control" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">ADMINISTRACIÓN CENTRAL</span>
+                        <h1>Control de Negocios</h1>
+                        <p>Listado de restaurantes afiliados y estatus de sus suscripciones.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadMerchantsControl()"><i class="fa-solid fa-rotate-right"></i> Actualizar Estatus</button>
+                </div>
+                
+                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
+                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
+                                <th style="padding: 16px;">Negocio</th>
+                                <th style="padding: 16px;">Plan Actual</th>
+                                <th style="padding: 16px;">Días Restantes</th>
+                                <th style="padding: 16px;">Estado Pago</th>
+                                <th style="padding: 16px; text-align: right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="merchants-control-body">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- FINANZAS Y PROMOS -->
+            <section id="tab-master-admin" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">ADMINISTRACIÓN CENTRAL</span>
+                        <h1>Finanzas y Códigos Promo</h1>
+                        <p>Generación de promociones y administración financiera de las cuentas.</p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Generador de Códigos Promo -->
+                    <div style="background: var(--surface); padding: 32px; border-radius: 20px; box-shadow: var(--shadow-sm);">
+                        <h3 style="font-size: 1.4rem; margin-bottom: 16px; font-weight: 800;"><i class="fa-solid fa-ticket"></i> Generar Código Promocional</h3>
+                        <div class="input-group" style="margin-bottom: 16px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Código (Ej. GRATIS2026)</label>
+                            <input type="text" id="promo-code-input" class="fidelio-input" placeholder="Escribe el código">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 16px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Tipo de Recompensa</label>
+                            <select id="promo-type-select" class="fidelio-input">
+                                <option value="1_month_free">1 Mes Gratis</option>
+                                <option value="lifetime_free">Gratis de por vida</option>
+                                <option value="discount">Descuento (%)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; justify-content:center;" onclick="generatePromoCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> Crear Código</button>
+                    </div>
+
+                    <!-- Morosos y Alertas -->
+                    <div style="background: var(--surface); padding: 32px; border-radius: 20px; box-shadow: var(--shadow-sm);">
+                        <h3 style="font-size: 1.4rem; margin-bottom: 16px; font-weight: 800; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Cuentas Vencidas</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 16px;">Restaurantes cuyos pagos han fallado o su periodo de prueba ha expirado.</p>
+                        <div id="morosos-list" style="max-height: 250px; overflow-y: auto; padding-right: 10px;">
+                            <!-- Dynamic Content -->
+                            <div style="text-align: center; color: var(--text-muted); padding: 20px;">Cargando estado financiero...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INBOX SOPORTE -->
+            <section id="tab-inbox" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">ADMINISTRACIÓN CENTRAL</span>
+                        <h1>Inbox de Soporte</h1>
+                        <p>Gestión de tickets, errores y atención a restaurantes.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadInbox()"><i class="fa-solid fa-rotate-right"></i> Cargar Tickets</button>
+                </div>
+                
+                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
+                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
+                                <th style="padding: 16px;">ID Ticket</th>
+                                <th style="padding: 16px;">Restaurante / Remitente</th>
+                                <th style="padding: 16px;">Asunto</th>
+                                <th style="padding: 16px;">Estado</th>
+                                <th style="padding: 16px; text-align: right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inbox-table-body">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
 
             <!-- NEW TABS PLACEHOLDERS -->
             <section id="tab-metrics" class="tab-content">
