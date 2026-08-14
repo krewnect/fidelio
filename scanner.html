@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Terminal Fidelio V2</title>
+    <title>Terminal Fidelio V2 - Pro</title>
     
     <!-- PWA / Native App tags -->
     <link rel="manifest" href="/manifest.json">
@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="./fidelio_logo_purple.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scanner V2">
+    <meta name="apple-mobile-web-app-title" content="Terminal POS">
     
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,17 +22,17 @@
     
     <style>
         /* ==========================================
-           1. CORE DESIGN TOKENS (Premium Light Theme)
+           1. CORE DESIGN TOKENS (Premium Light POS)
            ========================================== */
         :root {
-            --bg-main: #f9fafb; /* Light background */
-            --bg-card: #ffffff; /* White cards */
-            --border-soft: rgba(0,0,0,0.06); /* Soft borders */
-            --accent-violet: #8B5CF6; /* Vibrant violet */
+            --bg-main: #f3f4f6; /* Very soft gray */
+            --bg-card: #ffffff; /* White panels */
+            --border-soft: rgba(0,0,0,0.06);
+            --accent-violet: #8B5CF6;
             --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
             
-            --text-main: #111827; /* Dark text */
-            --text-muted: #6b7280; /* Gray text */
+            --text-main: #111827;
+            --text-muted: #6b7280;
             
             --success: #10B981;
             --success-bg: rgba(16, 185, 129, 0.1);
@@ -41,8 +41,8 @@
             --danger: #EF4444;
             --danger-bg: rgba(239, 68, 68, 0.1);
             
-            --shadow-sm: 0 2px 10px rgba(0,0,0,0.02);
-            --shadow-md: 0 10px 30px rgba(0,0,0,0.05);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -59,163 +59,197 @@
 
         /* Header */
         header {
-            padding: 16px 20px;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-soft);
             z-index: 10;
         }
         .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
         
-        /* Main Container */
-        .container {
+        /* Main Grid (POS Split View) */
+        .pos-layout {
             flex: 1;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+            padding: 20px;
+            overflow: hidden;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Mobile adaptation */
+        @media (max-width: 900px) {
+            .pos-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                overflow-y: auto;
+            }
+        }
+
+        /* Lado Izquierdo: Herramienta Escáner */
+        .scanner-panel {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-md);
             display: flex;
             flex-direction: column;
             padding: 20px;
-            overflow-y: auto;
         }
 
-        /* Buttons */
-        .btn {
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            border: none;
-            width: 100%;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-        }
-        .btn-secondary {
-            background: var(--bg-main);
-            color: var(--text-main);
-            border: 1px solid var(--border-soft);
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-soft);
-            color: var(--text-muted);
-        }
-
-        /* Scanner Area */
-        #reader-container {
-            width: 100%;
-            background: #ffffff;
+        /* Lado Derecho: Action Panel (Siempre Visible) */
+        .action-panel {
+            background: var(--bg-card);
             border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 20px;
             border: 1px solid var(--border-soft);
             box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            overflow-y: auto;
             position: relative;
         }
-        #reader { width: 100%; min-height: 300px; }
         
-        /* Action Panel (Client Profile) */
-        #action-panel {
-            display: none;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .client-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-soft);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 20px;
-        }
-        
-        .client-header { text-align: center; margin-bottom: 24px; }
-        .client-name { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-        .client-tier { font-size: 0.8rem; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; background: rgba(139,92,246,0.1); padding: 4px 12px; border-radius: 20px; display: inline-block;}
-
-        /* The 3 Balance Modules */
-        .balances-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .balance-module {
-            background: var(--bg-main);
-            border: 1px solid var(--border-soft);
-            border-radius: 16px;
-            padding: 16px;
+        /* Overlay de estado vacío */
+        .empty-state-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            padding: 40px;
+            transition: opacity 0.3s;
         }
-        .balance-module.full-width { grid-column: span 2; }
-        
-        .b-title { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;}
-        .b-amount { font-size: 1.75rem; font-weight: 800; color: var(--text-main); display:flex; align-items:center; justify-content:center; gap:4px; }
-        .b-amount span { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
-        
-        .b-icon-monedero { color: var(--success); }
-        .b-icon-cashback { color: var(--accent-violet); }
-        .b-icon-stamps { color: var(--warning); }
+        .empty-state-overlay i { font-size: 4rem; color: var(--text-muted); opacity: 0.3; margin-bottom: 16px; }
+        .empty-state-overlay h3 { color: var(--text-muted); font-size: 1.5rem; }
 
-        /* Form Inputs */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;}
-        .amount-wrapper { position: relative; display: flex; align-items: center; }
-        .amount-wrapper i { position: absolute; left: 16px; font-size: 1.2rem; color: var(--text-muted); }
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
+        /* Scanner Area & Animation */
+        #reader-container {
             width: 100%;
-            background: var(--bg-main);
-            border: 1px solid var(--border-soft);
-            color: var(--text-main);
-            padding: 16px 16px 16px 40px;
-            font-size: 1.2rem;
-            border-radius: 12px;
-            transition: all 0.2s;
-            font-weight: 600;
+            aspect-ratio: 1 / 1;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
-        input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+        #reader { width: 100%; height: 100%; }
+
+        /* Efecto Súper Herramienta Láser */
+        .cyber-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+        /* Retícula */
+        .cyber-overlay::before {
+            content: ''; position: absolute; inset: 20px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+        }
+        /* Esquinas iluminadas */
+        .cyber-bracket {
+            position: absolute;
+            width: 30px; height: 30px;
+            border-color: var(--accent-violet);
+            border-style: solid;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+        .tl { top: 20px; left: 20px; border-width: 4px 0 0 4px; border-top-left-radius: 12px; }
+        .tr { top: 20px; right: 20px; border-width: 4px 4px 0 0; border-top-right-radius: 12px; }
+        .bl { bottom: 20px; left: 20px; border-width: 0 0 4px 4px; border-bottom-left-radius: 12px; }
+        .br { bottom: 20px; right: 20px; border-width: 0 4px 4px 0; border-bottom-right-radius: 12px; }
+
+        /* Láser Animado */
+        .laser {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--accent-violet);
+            box-shadow: 0 0 20px 5px rgba(139, 92, 246, 0.6);
+            animation: scanLaser 3s infinite linear;
+        }
+        @keyframes scanLaser {
+            0% { top: 20px; opacity: 0; }
+            10% { opacity: 1; }
+            90% { top: calc(100% - 20px); opacity: 1; }
+            100% { top: calc(100% - 20px); opacity: 0; }
+        }
+
+        /* Buttons & Inputs */
+        .btn {
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            transition: all 0.2s ease; border: none; width: 100%;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--accent-gradient); color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+        .btn-primary:disabled { background: var(--text-muted); opacity: 0.5; box-shadow: none; cursor: not-allowed; }
+        
+        .btn-secondary { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-soft); }
+        
+        .input-group { margin-bottom: 24px; }
+        .input-group label { display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; font-weight: 700;}
+        .amount-wrapper { position: relative; display: flex; align-items: center; }
+        .amount-wrapper i { position: absolute; left: 20px; font-size: 1.4rem; color: var(--text-muted); }
+        
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%; background: var(--bg-main); border: 2px solid var(--border-soft);
+            color: var(--text-main); padding: 18px 18px 18px 50px; font-size: 1.4rem;
+            border-radius: 14px; transition: all 0.2s; font-weight: 700;
+        }
+        input[type="number"]:focus, input[type="text"]:focus {
             outline: none; border-color: var(--accent-violet); background: #ffffff; box-shadow: 0 0 0 4px rgba(139,92,246,0.1);
         }
-        
-        /* Action Buttons Grid */
-        .actions-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
 
-        /* Status overlay / Toasts */
+        /* Right Panel Inner Layout */
+        .client-header { text-align: center; margin-bottom: 30px; }
+        .client-name { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        .client-tier { font-size: 0.9rem; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; background: rgba(139,92,246,0.1); padding: 6px 16px; border-radius: 20px; display: inline-block;}
+
+        .balances-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; }
+        .balance-module { background: var(--bg-main); border: 1px solid var(--border-soft); border-radius: 16px; padding: 20px; text-align: center; }
+        .balance-module.full-width { grid-column: span 2; }
+        
+        .b-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;}
+        .b-amount { font-size: 2.2rem; font-weight: 800; color: var(--text-main); display:flex; align-items:center; justify-content:center; gap:6px; }
+        .b-amount span { font-size: 1rem; color: var(--text-muted); font-weight: 600; }
+        
+        .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+        /* Login & Toasts (Standard) */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; }
-        .toast { background: #ffffff; color: var(--text-main); padding: 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: slideDown 0.3s ease; border-left: 4px solid var(--accent-violet); border-top: 1px solid var(--border-soft); border-right: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); font-weight: 600;}
+        .toast { background: #ffffff; color: var(--text-main); padding: 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: slideDown 0.3s ease; border-left: 4px solid var(--accent-violet); font-weight: 600;}
         .toast.success { border-left-color: var(--success); }
         .toast.error { border-left-color: var(--danger); }
         @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* Status Modal */
-        #status-overlay {
-            position: fixed; inset: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 500;
-            text-align: center;
-            padding: 20px;
+        #login-screen {
+            position:fixed; inset:0; background:var(--bg-card); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center;
         }
-        .status-icon { font-size: 5rem; margin-bottom: 24px; }
-        .status-success { color: var(--success); text-shadow: 0 10px 30px rgba(16, 185, 129, 0.2); }
+
+        #status-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 500; text-align: center; padding: 20px;
+        }
+        .status-icon { font-size: 5rem; margin-bottom: 24px; color: var(--success); }
         
     </style>
 </head>
@@ -223,137 +257,153 @@
 
     <header>
         <div class="logo">
-            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 28px; width: auto;" />
-            <span style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-left:4px;">Terminal</span>
+            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 32px; width: auto;" />
+            <span style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-left:8px;">Terminal POS</span>
         </div>
-        <div id="merchant-name" style="font-size: 0.8rem; color: var(--accent-violet); font-weight: 700; background: rgba(139,92,246,0.1); padding: 6px 12px; border-radius: 20px;">Cargando...</div>
+        <div id="merchant-name" style="font-size: 0.9rem; color: var(--accent-violet); font-weight: 800; background: rgba(139,92,246,0.1); padding: 8px 16px; border-radius: 20px;">Cargando...</div>
     </header>
 
     <div id="toast-container"></div>
 
-    <div class="container" id="main-container" style="display:none;">
+    <div class="pos-layout" id="main-container" style="display:none;">
         
-        <!-- Mode Switcher -->
-        <div style="display: flex; gap: 10px; margin-bottom: 24px; background: var(--bg-card); padding: 6px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm);">
-            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Escáner QR</button>
-            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Buscar Manual</button>
-        </div>
-
-        <!-- Scanner Section -->
-        <div id="scanner-section">
-            <div id="reader-container">
-                <div id="reader"></div>
+        <!-- Panel Izquierdo: Herramientas de Búsqueda -->
+        <div class="scanner-panel">
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 24px; background: var(--bg-main); padding: 8px; border-radius: 16px; border: 1px solid var(--border-soft);">
+                <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:12px; padding:12px; font-size:1rem;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Cámara QR</button>
+                <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:12px; padding:12px; font-size:1rem; box-shadow:none;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Buscar</button>
             </div>
-            <p style="text-align:center; color:var(--text-muted); font-size:0.95rem; font-weight:500; margin-bottom: 20px;" id="scan-hint">
-                <i class="fa-solid fa-camera" style="margin-right: 6px;"></i> Apunta la cámara al pase de Wallet del cliente.
-            </p>
-        </div>
 
-        <!-- Manual Search Section -->
-        <div id="manual-section" style="display:none; background:var(--bg-card); padding:24px; border-radius:20px; border:1px solid var(--border-soft); margin-bottom:20px; box-shadow: var(--shadow-md);">
-            <h3 style="margin-bottom:20px; text-align:center; font-size: 1.2rem; color:var(--text-main); font-weight:800;">Búsqueda de Cliente</h3>
-            <div class="input-group">
-                <label>Teléfono o Correo</label>
-                <div class="amount-wrapper" style="margin-bottom: 16px;">
-                    <i class="fa-solid fa-user"></i>
-                    <input type="text" id="manual-search-input" placeholder="ej. correo@mail.com">
+            <!-- Scanner Section -->
+            <div id="scanner-section">
+                <div id="reader-container">
+                    <div id="reader"></div>
+                    <!-- EFECTO SUPER HERRAMIENTA CIBERNÉTICA -->
+                    <div class="cyber-overlay" id="cyber-effect">
+                        <div class="cyber-bracket tl"></div>
+                        <div class="cyber-bracket tr"></div>
+                        <div class="cyber-bracket bl"></div>
+                        <div class="cyber-bracket br"></div>
+                        <div class="laser"></div>
+                    </div>
                 </div>
-                <button class="btn btn-primary" onclick="searchCustomerManual()" id="btn-manual-search">
-                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
-                </button>
+                <p style="text-align:center; color:var(--text-muted); font-size:1rem; font-weight:600; margin-bottom: 20px;" id="scan-hint">
+                    <i class="fa-solid fa-camera-viewfinder" style="margin-right: 8px; color:var(--accent-violet);"></i> Apunta al pase del cliente.
+                </p>
             </div>
-        </div>
 
-        <!-- Action Panel (Client Profile) -->
-        <div id="action-panel">
-            <div class="client-card">
-                <div class="client-header">
-                    <div class="client-name" id="c-name">Cargando...</div>
-                    <div class="client-tier" id="c-tier"><i class="fa-solid fa-crown"></i> Cliente VIP</div>
-                </div>
-
-                <!-- 3 Modules: Monedero, Cashback, Sellos -->
-                <div class="balances-grid">
-                    <!-- Monedero (Prepaid) -->
-                    <div class="balance-module" style="background:var(--success-bg); border-color:rgba(16, 185, 129, 0.2);">
-                        <div class="b-title" style="color:var(--success);"><i class="fa-solid fa-wallet b-icon-monedero"></i> Monedero</div>
-                        <div class="b-amount" style="color:var(--success);" id="c-monedero">$0.00</div>
-                    </div>
-                    <!-- Cashback -->
-                    <div class="balance-module" style="background:rgba(139,92,246,0.05); border-color:rgba(139,92,246,0.15);">
-                        <div class="b-title" style="color:var(--accent-violet);"><i class="fa-solid fa-coins b-icon-cashback"></i> Cashback</div>
-                        <div class="b-amount" style="color:var(--accent-violet);" id="c-cashback">$0.00</div>
-                    </div>
-                    <!-- Sellos -->
-                    <div class="balance-module full-width" style="background:var(--warning-bg); border-color:rgba(245, 158, 11, 0.2);">
-                        <div class="b-title" style="color:var(--warning);"><i class="fa-solid fa-star b-icon-stamps"></i> Sellos Acumulados</div>
-                        <div class="b-amount" style="font-size: 1.5rem; color:var(--warning);" id="c-stamps">
-                            <!-- Injected via JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input Ticket/Abono -->
+            <!-- Manual Search Section -->
+            <div id="manual-section" style="display:none; flex:1; display:flex; flex-direction:column; justify-content:center;">
+                <h3 style="margin-bottom:24px; text-align:center; font-size: 1.4rem; color:var(--text-main); font-weight:800;">Ingreso Manual</h3>
                 <div class="input-group">
-                    <label>Monto de la Operación (Ticket o Abono)</label>
-                    <div class="amount-wrapper">
-                        <i class="fa-solid fa-dollar-sign"></i>
-                        <input type="number" id="op-amount" placeholder="0.00" step="0.01">
+                    <label>Teléfono o Correo</label>
+                    <div class="amount-wrapper" style="margin-bottom: 20px;">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="manual-search-input" placeholder="ej. correo@mail.com">
+                    </div>
+                    <button class="btn btn-primary" onclick="searchCustomerManual()" id="btn-manual-search" style="padding:20px; font-size:1.2rem;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Derecho: Action Panel -->
+        <div class="action-panel" id="action-panel">
+            
+            <!-- OVERLAY DE ESTADO VACÍO -->
+            <div class="empty-state-overlay" id="empty-state">
+                <i class="fa-solid fa-id-card"></i>
+                <h3>Esperando Cliente...</h3>
+                <p style="color:var(--text-muted); margin-top:12px; font-weight:500;">Escanea un código QR o realiza una búsqueda manual para habilitar los cobros.</p>
+            </div>
+
+            <div class="client-header">
+                <div class="client-name" id="c-name">Desconocido</div>
+                <div class="client-tier" id="c-tier"><i class="fa-solid fa-circle-user"></i> Sin Nivel</div>
+            </div>
+
+            <div class="balances-grid">
+                <!-- Monedero -->
+                <div class="balance-module" style="background:var(--success-bg); border-color:rgba(16, 185, 129, 0.2);">
+                    <div class="b-title" style="color:var(--success);"><i class="fa-solid fa-wallet"></i> Monedero</div>
+                    <div class="b-amount" style="color:var(--success);" id="c-monedero">$0.00</div>
+                </div>
+                <!-- Cashback -->
+                <div class="balance-module" style="background:rgba(139,92,246,0.05); border-color:rgba(139,92,246,0.15);">
+                    <div class="b-title" style="color:var(--accent-violet);"><i class="fa-solid fa-coins"></i> Cashback</div>
+                    <div class="b-amount" style="color:var(--accent-violet);" id="c-cashback">$0.00</div>
+                </div>
+                <!-- Sellos -->
+                <div class="balance-module full-width" style="background:var(--warning-bg); border-color:rgba(245, 158, 11, 0.2);">
+                    <div class="b-title" style="color:var(--warning);"><i class="fa-solid fa-star"></i> Visitas Acumuladas</div>
+                    <div class="b-amount" style="font-size: 1.8rem; color:var(--warning);" id="c-stamps">
+                        <i class="fa-regular fa-star" style="opacity:0.3;"></i>
+                        <i class="fa-regular fa-star" style="opacity:0.3;"></i>
+                        <i class="fa-regular fa-star" style="opacity:0.3;"></i>
                     </div>
                 </div>
+            </div>
 
-                <!-- Actions -->
-                <div class="actions-grid">
-                    <button class="btn btn-primary" onclick="processAction('charge_ticket')">
-                        <i class="fa-solid fa-receipt"></i> Cobrar Ticket
-                    </button>
-                    <button class="btn btn-secondary" style="background:var(--success-bg); border: 1px solid rgba(16,185,129,0.3); color: var(--success);" onclick="processAction('add_funds')">
-                        <i class="fa-solid fa-arrow-up-from-bracket"></i> Cargar Saldo
-                    </button>
+            <div class="input-group">
+                <label>Monto a Pagar o Abonar</label>
+                <div class="amount-wrapper">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <input type="number" id="op-amount" placeholder="0.00" step="0.01" disabled>
                 </div>
-                
-                <button class="btn btn-outline" style="margin-top: 12px; background:var(--bg-main);" onclick="resetScanner()">
-                    <i class="fa-solid fa-xmark"></i> Cancelar / Volver
+            </div>
+
+            <div class="actions-grid">
+                <button class="btn btn-primary" id="btn-charge" onclick="processAction('charge_ticket')" disabled>
+                    <i class="fa-solid fa-receipt"></i> Cobrar Ticket
+                </button>
+                <button class="btn btn-secondary" id="btn-add" style="border: 2px solid rgba(16,185,129,0.3); color: var(--success);" onclick="processAction('add_funds')" disabled>
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i> Cargar Saldo
                 </button>
             </div>
+            
+            <button class="btn btn-outline" style="margin-top: auto; padding:18px;" onclick="resetScanner()">
+                <i class="fa-solid fa-rotate-left"></i> Limpiar Terminal
+            </button>
         </div>
 
     </div>
 
     <!-- Login Screen -->
-    <div id="login-screen" style="position:fixed; inset:0; background:var(--bg-card); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div id="login-screen">
         <div style="text-align:center; margin-bottom:40px;">
-            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 50px; margin-bottom: 24px;" />
-            <h2 style="font-weight: 800; font-size: 1.8rem; color:var(--text-main);">Terminal V2</h2>
-            <p style="color:var(--text-muted); margin-top:8px; font-weight:500;">Ingreso exclusivo para Staff</p>
+            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 60px; margin-bottom: 24px;" />
+            <h2 style="font-weight: 800; font-size: 2rem; color:var(--text-main);">Terminal POS</h2>
+            <p style="color:var(--text-muted); margin-top:8px; font-weight:600;">Ingreso para Staff Autorizado</p>
         </div>
-        <div style="width:100%; max-width:350px;">
+        <div style="width:100%; max-width:400px;">
             <div class="input-group">
                 <label>Correo Electrónico</label>
                 <div class="amount-wrapper">
                     <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="login-email" placeholder="hola@fideliorewards.com">
+                    <input type="email" id="login-email" placeholder="cajero@restaurante.com">
                 </div>
             </div>
-            <div class="input-group" style="margin-bottom: 32px;">
+            <div class="input-group" style="margin-bottom: 40px;">
                 <label>Contraseña</label>
                 <div class="amount-wrapper">
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="login-password" placeholder="******">
                 </div>
             </div>
-            <button id="btn-login" class="btn btn-primary" onclick="handleLogin()">
-                Ingresar al Escáner
+            <button id="btn-login" class="btn btn-primary" onclick="handleLogin()" style="padding:18px; font-size:1.2rem;">
+                Ingresar al Sistema
             </button>
         </div>
     </div>
 
     <!-- Success Overlay -->
     <div id="status-overlay">
-        <i class="fa-solid fa-circle-check status-icon status-success"></i>
-        <h2 style="font-size: 2.5rem; margin-bottom: 12px; font-weight: 800; color:var(--text-main);">¡Éxito!</h2>
-        <p id="status-msg" style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; font-weight:500;">Operación registrada correctamente.</p>
-        <button class="btn btn-primary" style="width: 100%; max-width: 300px;" onclick="resetScanner()">Escanear Siguiente</button>
+        <i class="fa-solid fa-circle-check status-icon"></i>
+        <h2 style="font-size: 3rem; margin-bottom: 12px; font-weight: 800; color:var(--text-main);">¡Transacción Exitosa!</h2>
+        <p id="status-msg" style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 40px; font-weight:500;">Operación registrada en la nube.</p>
+        <button class="btn btn-primary" style="width: 100%; max-width: 400px; padding:20px; font-size:1.4rem;" onclick="resetScanner()">Siguiente Cliente</button>
     </div>
 
     <script>
@@ -362,7 +412,6 @@
         let currentCustomerId = null;
         let merchantSession = null;
         
-        // Simulación temporal de la Base de Datos para bypass y demos
         let mockCustomerData = {
             name: "Roberto Ordoñez",
             tier: "VIP",
@@ -412,20 +461,14 @@
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('btn-login');
             
-            if(!email || !password) {
-                showToast('Ingresa correo y contraseña', 'error');
-                return;
-            }
+            if(!email || !password) { showToast('Ingresa correo y contraseña', 'error'); return; }
             
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
 
-            // ==========================================
-            // AUTENTICACIÓN UNIVERSAL BYPASS
-            // ==========================================
             if (email === 'hola@fideliorewards.com') {
                 setTimeout(() => {
                     document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('main-container').style.display = 'flex';
+                    document.getElementById('main-container').style.display = 'grid'; // Grid View
                     merchantSession = { bypass: true, email: email, access_token: 'dummy' };
                     document.getElementById('merchant-name').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin Master';
                     showToast('Acceso Universal Concedido', 'success');
@@ -434,18 +477,13 @@
                 return;
             }
             
-            // ==========================================
-            // AUTENTICACIÓN REAL (Supabase)
-            // ==========================================
             const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
             
             if (error) {
                 showToast('Usuario o contraseña incorrectos', 'error');
-                btn.innerHTML = 'Ingresar al Escáner';
+                btn.innerHTML = 'Ingresar al Sistema';
                 return;
             }
-
-            // Inicio exitoso
             await setupScannerSession(data.session);
         }
 
@@ -454,7 +492,6 @@
             const role = session.user.user_metadata?.role;
             const targetMerchantId = role === 'staff' ? session.user.user_metadata.merchant_id : session.user.id;
             
-            // Cargar nombre del negocio
             const { data: merchant } = await supabaseClient
                 .from('merchants')
                 .select('business_name')
@@ -467,67 +504,67 @@
             }
 
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-container').style.display = 'flex';
-            showToast('Sesión Iniciada Exitosamente', 'success');
+            document.getElementById('main-container').style.display = 'grid'; // Grid View
+            showToast('Sesión Iniciada', 'success');
             startScanner();
         }
 
         function setMode(mode) {
-            document.getElementById('action-panel').style.display = 'none';
-            document.getElementById('op-amount').value = '';
-
             const btnScan = document.getElementById('btn-mode-scan');
             const btnManual = document.getElementById('btn-mode-manual');
 
             if (mode === 'scan') {
                 document.getElementById('manual-section').style.display = 'none';
+                document.getElementById('scanner-section').style.display = 'block';
                 
                 btnManual.style.background = 'transparent';
                 btnManual.style.color = 'var(--text-muted)';
+                btnManual.style.boxShadow = 'none';
+                
                 btnScan.style.background = 'var(--accent-gradient)';
                 btnScan.style.color = 'white';
+                btnScan.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
                 
-                document.getElementById('scanner-section').style.display = 'block';
-                if (!html5QrcodeScanner) {
-                    startScanner();
-                } else {
-                    try { html5QrcodeScanner.clear(); } catch(e){}
-                    startScanner();
-                }
+                if (!html5QrcodeScanner) { startScanner(); } 
+                else { try { html5QrcodeScanner.clear(); } catch(e){} startScanner(); }
             } else {
                 document.getElementById('scanner-section').style.display = 'none';
+                document.getElementById('manual-section').style.display = 'flex';
                 
                 btnScan.style.background = 'transparent';
                 btnScan.style.color = 'var(--text-muted)';
+                btnScan.style.boxShadow = 'none';
+                
                 btnManual.style.background = 'var(--accent-gradient)';
                 btnManual.style.color = 'white';
+                btnManual.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
                 
-                document.getElementById('manual-section').style.display = 'block';
-                if (html5QrcodeScanner) {
-                    try { html5QrcodeScanner.stop(); } catch(e){}
-                }
+                if (html5QrcodeScanner) { try { html5QrcodeScanner.stop(); } catch(e){} }
             }
         }
 
         function startScanner() {
-            document.getElementById('action-panel').style.display = 'none';
-            document.getElementById('reader-container').style.display = 'block';
-            document.getElementById('scan-hint').style.display = 'block';
+            document.getElementById('cyber-effect').style.display = 'block';
             
             html5QrcodeScanner = new Html5Qrcode("reader");
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };
             
             html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, (err) => {})
             .catch(err => {
-                document.getElementById('reader').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted);"><i class="fa-solid fa-video-slash" style="font-size:2rem; margin-bottom:12px; color:var(--danger);"></i><br>Cámara no disponible en modo computadora. Usa la búsqueda Manual.</div>';
+                document.getElementById('cyber-effect').style.display = 'none';
+                document.getElementById('reader').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted); display:flex; flex-direction:column; justify-content:center; height:100%;"><i class="fa-solid fa-video-slash" style="font-size:3rem; margin-bottom:16px; color:var(--danger);"></i><span>Cámara bloqueada.<br>Usa Búsqueda Manual.</span></div>';
             });
         }
 
         function renderClientProfile(data) {
-            document.getElementById('reader-container').style.display = 'none';
-            document.getElementById('scan-hint').style.display = 'none';
-            document.getElementById('manual-section').style.display = 'none';
-            document.getElementById('action-panel').style.display = 'block';
+            // Quitar el overlay de estado vacío
+            document.getElementById('empty-state').style.opacity = '0';
+            setTimeout(() => { document.getElementById('empty-state').style.display = 'none'; }, 300);
+            
+            // Habilitar inputs
+            document.getElementById('op-amount').disabled = false;
+            document.getElementById('btn-charge').disabled = false;
+            document.getElementById('btn-add').disabled = false;
             
             document.getElementById('c-name').textContent = data.name;
             document.getElementById('c-tier').innerHTML = `<i class="fa-solid fa-crown"></i> Cliente ${data.tier}`;
@@ -535,20 +572,17 @@
             document.getElementById('c-monedero').innerHTML = `$${data.balance_prepaid.toFixed(2)}`;
             document.getElementById('c-cashback').innerHTML = `$${data.balance_cashback.toFixed(2)}`;
             
-            // Render Stamps
             let stampsHtml = '';
             for(let i=0; i < data.stamps_total; i++) {
-                if(i < data.stamps_count) {
-                    stampsHtml += '<i class="fa-solid fa-star"></i> ';
-                } else {
-                    stampsHtml += '<i class="fa-regular fa-star" style="color:var(--text-muted); opacity:0.3;"></i> ';
-                }
+                if(i < data.stamps_count) stampsHtml += '<i class="fa-solid fa-star"></i> ';
+                else stampsHtml += '<i class="fa-regular fa-star" style="opacity:0.4;"></i> ';
             }
             document.getElementById('c-stamps').innerHTML = stampsHtml;
         }
 
         function onScanSuccess(decodedText, decodedResult) {
             try{ html5QrcodeScanner.stop(); }catch(e){}
+            document.getElementById('cyber-effect').style.display = 'none';
             currentCustomerId = decodedText;
             showToast('Pase escaneado correctamente', 'success');
             renderClientProfile(mockCustomerData);
@@ -564,7 +598,7 @@
             btn.disabled = true;
 
             setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Buscar';
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente';
                 btn.disabled = false;
                 showToast('Cliente localizado', 'success');
                 renderClientProfile(mockCustomerData);
@@ -572,10 +606,18 @@
         }
 
         function resetScanner() {
-            document.getElementById('status-overlay').style.display = 'none';
+            // Restore Empty State
+            document.getElementById('empty-state').style.display = 'flex';
+            setTimeout(() => { document.getElementById('empty-state').style.opacity = '1'; }, 10);
+            
+            // Disable Inputs
             document.getElementById('op-amount').value = '';
+            document.getElementById('op-amount').disabled = true;
+            document.getElementById('btn-charge').disabled = true;
+            document.getElementById('btn-add').disabled = true;
+            
+            document.getElementById('status-overlay').style.display = 'none';
             currentCustomerId = null;
-            document.getElementById('action-panel').style.display = 'none';
             
             if (document.getElementById('btn-mode-manual').style.color === 'white') {
                 setMode('manual');
@@ -585,7 +627,7 @@
         }
 
         // ==========================================
-        // LÓGICA DE TRANSACCIONES (Monedero vs Cashback)
+        // LÓGICA DE TRANSACCIONES
         // ==========================================
         async function processAction(actionType) {
             const amountStr = document.getElementById('op-amount').value;
@@ -603,12 +645,10 @@
                 let statusMsg = "";
                 
                 if (actionType === 'add_funds') {
-                    // Cargar dinero al Monedero Prepago
                     mockCustomerData.balance_prepaid += amount;
-                    statusMsg = `<strong style="color:var(--text-main);">Operación Exitosa</strong><br><br>Se han abonado <span style="color:var(--success); font-weight:800;">$${amount.toFixed(2)} MXN</span><br>al Monedero del cliente.`;
+                    statusMsg = `<strong style="color:var(--text-main);">Depósito Completado</strong><br><br>Se abonaron <span style="color:var(--success); font-weight:800;">$${amount.toFixed(2)} MXN</span><br>al Monedero del cliente.`;
                 } 
                 else if (actionType === 'charge_ticket') {
-                    // Cobrar ticket: Se descuenta primero de Monedero, si falta, de Cashback, y genera puntos.
                     let amountToPay = amount;
                     let msgParts = [];
                     
@@ -636,20 +676,18 @@
                         }
                     }
                     
-                    // Si el cliente pagó parte en efectivo/tarjeta
                     let generatedCashback = 0;
                     if (amountToPay > 0) {
-                        generatedCashback = amountToPay * 0.10; // 10% cashback (ejemplo estático)
+                        generatedCashback = amountToPay * 0.10; // 10%
                         mockCustomerData.balance_cashback += generatedCashback;
                         msgParts.push(`<span style="color:var(--text-main); font-weight:600;">Restante pagado en caja: $${amountToPay.toFixed(2)}</span>`);
                         msgParts.push(`<span style="color:var(--accent-violet); font-weight:700;">+ $${generatedCashback.toFixed(2)} Cashback Regalado</span>`);
                     }
                     
-                    // Genera Sello Automático
                     mockCustomerData.stamps_count = (mockCustomerData.stamps_count + 1) % mockCustomerData.stamps_total;
                     msgParts.push(`<span style="color:var(--warning); font-weight:700;">+ 1 Sello Registrado</span>`);
 
-                    statusMsg = `<strong style="color:var(--text-main); font-size:1.2rem;">Ticket procesado: $${amount.toFixed(2)}</strong><br><br><div style="text-align:left; font-size:1rem; line-height:1.6; background:var(--bg-main); padding:16px; border-radius:12px; border:1px solid var(--border-soft); margin-top:12px;">${msgParts.join('<br>')}</div>`;
+                    statusMsg = `<strong style="color:var(--text-main); font-size:1.4rem;">Ticket total: $${amount.toFixed(2)}</strong><br><br><div style="text-align:left; font-size:1.1rem; line-height:1.8; background:var(--bg-main); padding:20px; border-radius:16px; border:1px solid var(--border-soft); margin-top:12px;">${msgParts.join('<br>')}</div>`;
                 }
 
                 document.getElementById('status-overlay').style.display = 'flex';
