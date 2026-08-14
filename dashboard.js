@@ -45,7 +45,8 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
 
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
 
-let state = {
+let document.getElementById('sub-status-text').innerHTML = merchantData.plan_status === 'active' ? '<i class="fa-solid fa-check-circle"></i> Activo' : '<i class="fa-solid fa-clock"></i> Pruebas / Inactivo';
+        state = {
     team: [
         { id: 'usr-001', name: 'Master Admin', email: 'hola@fideliorewards.com', role: 'system', status: 'activo' },
         { id: 'usr-002', name: 'Caja Sucursal 1', email: 'caja1@fidelio.com', role: 'scanner', status: 'activo' }
@@ -215,7 +216,97 @@ let saveTimeout = null;
         }
     };
 
+    
+    // --- PRICING & FOUNDER LOGIC ---
+    let isFounder = false;
+    let isAnnual = false;
+    let totalFoundersUsed = 0;
+
+    async function checkPricingStatus() {
+        if (!window.supabaseClient || !window.merchantSession) return;
+        const merchantId = window.merchantSession.user.id;
+        
+        // 1. Get total merchants to determine founder meter
+        const { count, error } = await window.supabaseClient
+            .from('merchants')
+            .select('*', { count: 'exact', head: true });
+        
+        totalFoundersUsed = count || 0;
+        
+        // 2. Check if current merchant is a founder. 
+        // For simplicity: if they registered when there were <= 50 merchants, they are a founder.
+        // We can approximate by checking their position.
+        const { data: myRankData } = await window.supabaseClient
+            .from('merchants')
+            .select('created_at')
+            .eq('id', merchantId)
+            .single();
+            
+        if (myRankData) {
+            const { count: myRank } = await window.supabaseClient
+                .from('merchants')
+                .select('*', { count: 'exact', head: true })
+                .lte('created_at', myRankData.created_at);
+            
+            isFounder = (myRank <= 50);
+        }
+
+        updatePricingUI();
+    }
+
+    function updatePricingUI() {
+        const toggle = document.getElementById('billing-cycle-toggle');
+        if (toggle) isAnnual = toggle.checked;
+
+        // Meter UI
+        const meter = document.getElementById('founder-meter-text');
+        if (meter) {
+            const left = Math.max(0, 50 - totalFoundersUsed);
+            meter.innerHTML = `<i class="fa-solid fa-fire"></i> ${left} / 50 Disponibles`;
+            if (left === 0) meter.style.color = 'var(--text-muted)';
+        }
+
+        const badge = document.getElementById('pricing-tier-badge');
+        const amt = document.getElementById('pricing-amount');
+        const period = document.getElementById('pricing-period');
+        const desc = document.getElementById('pricing-description');
+
+        if (isFounder) {
+            if (badge) {
+                badge.style.background = 'linear-gradient(135deg, #FFD700 0%, #FDB931 100%)';
+                badge.innerHTML = 'LICENCIA FOUNDER (DE POR VIDA)';
+            }
+            if (amt) amt.textContent = isAnnual ? '9,999' : '999';
+            if (desc) desc.textContent = 'Sucursales ilimitadas. Soporte VIP.';
+        } else {
+            if (badge) {
+                badge.style.background = 'linear-gradient(135deg, #a855f7 0%, #6366f1 100%)';
+                badge.style.color = 'white';
+                badge.innerHTML = 'LICENCIA ESTÁNDAR';
+            }
+            if (amt) amt.textContent = isAnnual ? '19,999' : '1,999';
+            if (desc) desc.textContent = 'Hasta 20 sucursales. $99 MXN por extra.';
+        }
+
+        if (period) period.textContent = isAnnual ? 'año' : 'mes';
+    }
+
+    // Bind toggle
+    const toggleCycle = document.getElementById('billing-cycle-toggle');
+    const labelMo = document.getElementById('label-monthly');
+    const labelYr = document.getElementById('label-annual');
+    if (toggleCycle) {
+        toggleCycle.addEventListener('change', () => {
+            if (labelMo) labelMo.style.color = toggleCycle.checked ? 'var(--text-muted)' : 'white';
+            if (labelYr) labelYr.style.color = toggleCycle.checked ? 'white' : 'var(--text-muted)';
+            updatePricingUI();
+        });
+        if (labelMo) labelMo.addEventListener('click', () => { toggleCycle.checked = false; toggleCycle.dispatchEvent(new Event('change')); });
+        if (labelYr) labelYr.addEventListener('click', () => { toggleCycle.checked = true; toggleCycle.dispatchEvent(new Event('change')); });
+    }
+
     // --- DATABASE SYNC ---
+
 
     async function loadDataFromSupabase() {
         if (!window.supabaseClient || !window.merchantSession) return false;
@@ -265,6 +356,7 @@ let saveTimeout = null;
             .select('*')
             .eq('merchant_id', merchantId);
 
+        document.getElementById('sub-status-text').innerHTML = merchantData.plan_status === 'active' ? '<i class="fa-solid fa-check-circle"></i> Activo' : '<i class="fa-solid fa-clock"></i> Pruebas / Inactivo';
         state = {
             tenantId: merchantData.id,
             restaurantName: merchantData.business_name || "Mi Negocio",
@@ -406,8 +498,12 @@ let saveTimeout = null;
 
         document.getElementById('header-restaurant-name').textContent = preset.name;
         document.getElementById('header-business-category').textContent = preset.label;
+        if(document.getElementById('metrics-cards-issued')) document.getElementById('metrics-cards-issued').textContent = custData.length;
 
         updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         showToast(`Plantilla cargada en Fidelio: ${preset.name} (${preset.label}).`, "success");
     };
 
@@ -426,6 +522,9 @@ let saveTimeout = null;
             const tierConfig = state.vipTiers[tier];
             sampleClient.tier = tierConfig ? tierConfig.name : (tier === 'oro' ? 'Oro VIP' : tier === 'plata' ? 'Plata VIP' : 'Bronce');
             updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast(`Vista previa del pase actualizada a: ${sampleClient.tier}`, "info");
         }
     };
@@ -434,21 +533,39 @@ let saveTimeout = null;
     const bindVipTierInputs = () => {
         safeAdd('tier-bronce-name', 'input', (e) => {
             state.vipTiers.bronce.name = e.target.value; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-bronce-cb', 'input', (e) => {
             state.vipTiers.bronce.cashbackPercent = parseFloat(e.target.value) || 5; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-plata-name', 'input', (e) => {
             state.vipTiers.plata.name = e.target.value; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-plata-cb', 'input', (e) => {
             state.vipTiers.plata.cashbackPercent = parseFloat(e.target.value) || 10; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-oro-name', 'input', (e) => {
             state.vipTiers.oro.name = e.target.value; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-oro-cb', 'input', (e) => {
             state.vipTiers.oro.cashbackPercent = parseFloat(e.target.value) || 15; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
     };
 
@@ -527,6 +644,9 @@ let saveTimeout = null;
 
             applyModeToParams(mode);
             updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast(`Formato de Lealtad actualizado: ${tile.querySelector('strong').textContent}`, "info");
         });
     });
@@ -693,7 +813,7 @@ let saveTimeout = null;
             
             // Update Add Button UI based on limit
             if (dynBtnAddBranchModal) {
-                if (state.branches.length >= 20) {
+                if (!window.isFounder && state.branches.length >= 20) {
                     dynBtnAddBranchModal.innerHTML = '<i class="fa-solid fa-crown"></i> Desbloquear Más Sucursales';
                     dynBtnAddBranchModal.style.background = 'linear-gradient(135deg, #1e1b4b 0%, #8b5cf6 100%)';
                     dynBtnAddBranchModal.style.border = 'none';
@@ -718,7 +838,7 @@ let saveTimeout = null;
             console.log("Btn add branch clicked!");
             if (!state.branches) state.branches = [];
             
-            if (state.branches.length >= 20) {
+            if (!window.isFounder && state.branches.length >= 20) {
                 const upsell = document.getElementById('modal-upsell-branches');
                 if (upsell) upsell.style.display = 'flex';
             } else {
@@ -1466,6 +1586,9 @@ function updatePassRender() {
                     
                     btnRemoveLogo.style.display = 'inline-block';
                     updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
                     showToast("Logo cargado con éxito en la tarjeta digital.", "success");
                 };
                 reader.readAsDataURL(file);
@@ -1480,6 +1603,9 @@ function updatePassRender() {
             logoFileInput.value = '';
             btnRemoveLogo.style.display = 'none';
             updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast("Logo removido.", "info");
         });
     }
@@ -1494,6 +1620,9 @@ function updatePassRender() {
                     
                     btnRemoveBanner.style.display = 'inline-block';
                     updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
                     showToast("Imagen de portada de tarjeta aplicada.", "success");
                 };
                 reader.readAsDataURL(file);
@@ -1508,6 +1637,9 @@ function updatePassRender() {
             bannerFileInput.value = '';
             btnRemoveBanner.style.display = 'none';
             updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast("Imagen de portada removida.", "info");
         });
     }
@@ -1588,6 +1720,9 @@ function updatePassRender() {
             state.activeWallet = 'apple';
             passRender.style.borderRadius = '20px';
             updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
     }
 
@@ -1598,45 +1733,84 @@ function updatePassRender() {
             state.activeWallet = 'google';
             passRender.style.borderRadius = '16px';
             updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
     }
 
     // --- INPUT BINDINGS ---
     safeAdd('rest-name', 'input', (e) => {
         state.restaurantName = e.target.value || "Comercio"; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('color-primary', 'input', (e) => {
         state.colorPrimary = e.target.value; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('color-accent', 'input', (e) => {
         state.colorAccent = e.target.value; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('rest-icon', 'change', (e) => {
         state.iconClass = e.target.value; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-cashback-check', 'change', (e) => {
         state.cashbackActive = e.target.checked; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('cashback-percent', 'input', (e) => {
         state.cashbackPercent = parseFloat(e.target.value) || 0; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-stamps-check', 'change', (e) => {
         state.stampsActive = e.target.checked; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('stamps-total', 'input', (e) => {
         state.stampsTotal = parseInt(e.target.value) || 5; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('stamps-reward', 'input', (e) => {
         state.stampsReward = e.target.value || "Premio"; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-dynamic-check', 'change', (e) => {
         state.dynamicActive = e.target.checked; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('dynamic-desc', 'input', (e) => {
         state.dynamicDesc = e.target.value; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-vip-check', 'change', (e) => {
         state.vipActive = e.target.checked; updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
 
     if (crmSearchInput) {
@@ -2179,6 +2353,9 @@ function updatePassRender() {
     renderBranches();
     renderCRMTable();
     updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
 
     // --- ACCOUNT SETTINGS LOGIC ---
     const accEmail = document.getElementById('acc-email');
@@ -2331,6 +2508,9 @@ function updatePassRender() {
 
         // Inicializar UI
         updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         renderBranches();
         renderCRMTable();
     } catch (err) {
@@ -2541,6 +2721,9 @@ function updatePassRender() {
                 if(cashbackDisplay) cashbackDisplay.textContent = e.target.value + '%';
                 if(cashbackExample) cashbackExample.textContent = e.target.value;
                 if (window.updatePassRender) window.updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             });
         }
         
@@ -2554,6 +2737,9 @@ function updatePassRender() {
             togglePrepaid.addEventListener('change', (e) => {
                 panelPrepaidConfig.style.display = e.target.checked ? 'block' : 'none';
                 if (window.updatePassRender) window.updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             });
         }
         
@@ -2565,6 +2751,9 @@ function updatePassRender() {
                 if(prePay) prePay.textContent = amount;
                 preTotal.textContent = '$' + total;
                 if (window.updatePassRender) window.updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             };
             preAmount.addEventListener('input', updatePrepaidTotal);
             preBonus.addEventListener('input', updatePrepaidTotal);
@@ -2642,6 +2831,9 @@ function updatePassRender() {
                     
                     // Re-render card preview if mode changed
                     updatePassRender();
+        await checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
                     
                     showToast('Reglas de Fidelización guardadas exitosamente.', 'success');
                 } catch (err) {
@@ -3159,6 +3351,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 let promoCode = document.getElementById('merchant-promo-code')?.value.trim().toUpperCase() || '';
                 const upsellPromo = document.getElementById('upsell-promo-code')?.value.trim().toUpperCase() || '';
                 if(upsellPromo) promoCode = upsellPromo;
+const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 'annual' : 'monthly';
+                const tier = window.isFounder ? 'founder' : 'standard';
 
                 const response = await fetch('/api/stripe/checkout', {
                     method: 'POST',
@@ -3166,9 +3360,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Authorization': `Bearer ${window.merchantSession?.access_token || ''}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ promoCode })
-                });
-                const data = await response.json();
+                    body: JSON.stringify({ promoCode, billing_cycle: billingCycle, tier: tier })
+                });                const data = await response.json();
                 
                 if (data.success && data.url) {
                     window.location.href = data.url;

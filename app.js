@@ -618,10 +618,17 @@ app.post('/api/stripe/checkout', apiLimiter, requireMerchantAuth, async (req, re
         
         const { data: merchant } = await supabase.from('merchants').select('stripe_customer_id, business_name').eq('id', req.merchantId).single();
         
-        // El Price ID debe venir del .env
-        const priceId = process.env.STRIPE_PRICE_ID; 
+const { billing_cycle, tier } = req.body;
+        
+        let priceId = null;
+        if (tier === 'founder') {
+            priceId = billing_cycle === 'annual' ? process.env.STRIPE_PRICE_FOUNDER_YR : process.env.STRIPE_PRICE_FOUNDER_MO;
+        } else {
+            priceId = billing_cycle === 'annual' ? process.env.STRIPE_PRICE_STANDARD_YR : process.env.STRIPE_PRICE_STANDARD_MO;
+        }
+
         if (!priceId) {
-            return res.status(500).json({ success: false, error: 'Falta STRIPE_PRICE_ID en .env' });
+            return res.status(500).json({ success: false, error: 'Falta configurar los STRIPE_PRICE_ en el archivo .env' });
         }
 
         const session = await stripe.checkout.sessions.create({
