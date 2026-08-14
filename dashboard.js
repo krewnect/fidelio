@@ -2176,7 +2176,11 @@ window.toggleChannel = function(checkbox) {
 };
 
 window.updateTriggerUI = function() {
-    // En el futuro, aquí se puede mostrar UI adicional de scheduling
+    const isAutomated = document.querySelector('input[name="camp_trigger"][value="automated"]').checked;
+    const paramsDiv = document.getElementById('active-rule-params');
+    if(paramsDiv) {
+        paramsDiv.style.display = isAutomated ? 'block' : 'none';
+    }
 };
 
 window.generateAIPush = function() {

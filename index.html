@@ -964,6 +964,40 @@
                                 <small>Enviar ahora a la base actual</small>
                             </label>
                         </div>
+                        
+                        <!-- ACTIVE RULE PARAMS (VISIBLE ONLY WHEN REGLA ACTIVA IS SELECTED) -->
+                        <div id="active-rule-params" style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; padding:16px; margin-bottom:24px;">
+                            <h4 style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent-violet);"></i> Configuración de la Automatización
+                            </h4>
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <div style="display:flex; gap:12px;">
+                                    <div style="flex:1;">
+                                        <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Frecuencia de Evaluación</label>
+                                        <select class="fidelio-input" style="padding:8px; font-size:13px;">
+                                            <option value="daily">Diariamente (Se evalúa cada día)</option>
+                                            <option value="weekly">Semanalmente (Se evalúa cada lunes)</option>
+                                            <option value="realtime">Tiempo Real (Al registrar visita/pago)</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex:1;">
+                                        <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Hora de Envío</label>
+                                        <input type="time" class="fidelio-input" style="padding:8px; font-size:13px;" value="10:00" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Límite de Envío por Cliente</label>
+                                    <select class="fidelio-input" style="padding:8px; font-size:13px;">
+                                        <option value="once">Solo 1 vez en la vida del cliente</option>
+                                        <option value="once_month">Máximo 1 vez por mes</option>
+                                        <option value="once_year">Máximo 1 vez al año</option>
+                                    </select>
+                                </div>
+                                <div style="font-size:11px; color:var(--text-muted); background:rgba(139,92,246,0.05); padding:8px; border-radius:6px; margin-top:4px;">
+                                    <strong>Nota:</strong> Esta regla se disparará automáticamente a todos los clientes que cumplan con el Filtro de Audiencia configurado abajo, respetando la frecuencia indicada.
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- SEGMENT FOR MANUAL (HIDDEN BY DEFAULT) -->
                         <div id="manual-segment-selector" style="display:none; margin-bottom:24px;">
