@@ -2839,6 +2839,87 @@ window.sendSupportGeminiMessage = async function() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 };
 
+// --- TUTORIAL MODAL LOGIC ---
+let currentTutSlide = 0;
+const totalTutSlides = 5;
+
+window.openTutorialModal = function() {
+    const modal = document.getElementById('modal-tutorial');
+    const content = document.getElementById('tutorial-modal-content');
+    modal.style.display = 'flex';
+    // Trigger reflow
+    void modal.offsetWidth;
+    modal.style.opacity = '1';
+    content.style.transform = 'scale(1)';
+    currentTutSlide = 0;
+    updateTutorialView();
+};
+
+window.closeTutorialModal = function() {
+    const modal = document.getElementById('modal-tutorial');
+    const content = document.getElementById('tutorial-modal-content');
+    modal.style.opacity = '0';
+    content.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 400);
+};
+
+window.nextTutorialSlide = function() {
+    if (currentTutSlide < totalTutSlides - 1) {
+        currentTutSlide++;
+        updateTutorialView();
+    } else {
+        closeTutorialModal(); // Close on last step
+    }
+};
+
+window.prevTutorialSlide = function() {
+    if (currentTutSlide > 0) {
+        currentTutSlide--;
+        updateTutorialView();
+    }
+};
+
+function updateTutorialView() {
+    const slides = document.querySelectorAll('.tut-slide');
+    const dots = document.querySelectorAll('.tut-dot');
+    const btnPrev = document.getElementById('tut-btn-prev');
+    const btnNext = document.getElementById('tut-btn-next');
+
+    slides.forEach((slide, index) => {
+        if (index === currentTutSlide) {
+            slide.style.opacity = '1';
+            slide.style.transform = 'translateX(0)';
+            slide.style.pointerEvents = 'auto';
+            slide.classList.add('active');
+        } else if (index < currentTutSlide) {
+            slide.style.opacity = '0';
+            slide.style.transform = 'translateX(-100%)';
+            slide.style.pointerEvents = 'none';
+            slide.classList.remove('active');
+        } else {
+            slide.style.opacity = '0';
+            slide.style.transform = 'translateX(100%)';
+            slide.style.pointerEvents = 'none';
+            slide.classList.remove('active');
+        }
+    });
+
+    dots.forEach((dot, index) => {
+        if (index === currentTutSlide) {
+            dot.style.background = 'var(--accent-violet)';
+            dot.style.transform = 'scale(1.2)';
+        } else {
+            dot.style.background = 'rgba(255,255,255,0.2)';
+            dot.style.transform = 'scale(1)';
+        }
+    });
+
+    btnPrev.style.display = currentTutSlide === 0 ? 'none' : 'block';
+    btnNext.textContent = currentTutSlide === totalTutSlides - 1 ? 'Terminar Tutorial' : 'Siguiente';
+}
+
 window.submitSupportTicket = async function(type) {
     if (!window.merchantSession) return showToast('Por favor inicia sesión', 'error');
 
