@@ -81,6 +81,7 @@
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
+            height: calc(100vh - 70px); /* Restar el alto aproximado del header */
         }
 
         /* Mobile adaptation */
@@ -114,6 +115,8 @@
             padding: 24px;
             overflow-y: auto;
             position: relative;
+            min-height: 0; /* Crucial para que el scroll funcione dentro del grid */
+            height: 100%;
         }
         
         /* Overlay de estado vacío */
