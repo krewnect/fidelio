@@ -2010,7 +2010,6 @@ function updatePassRender() {
                 window.location.href = '/';
             }
         }, 30000); // Revisar cada 30 segundos
-    }
 
     if (btnSaveAccount) {
         btnSaveAccount.addEventListener('click', async () => {
