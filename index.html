@@ -993,9 +993,21 @@
                         <div id="manual-segment-selector" style="display:none; margin-bottom:24px;">
                             <h4 style="font-size:14px; margin-bottom:12px; color:var(--text-main);">Filtro de Audiencia</h4>
                             <select class="fidelio-input" id="camp-segment-select">
-                                <option value="all">Todos los Clientes</option>
-                                <option value="active">Frecuentes (Visitaron < 30 días)</option>
-                                <option value="risk">En Riesgo (Sin visitas > 30 días)</option>
+                                <optgroup label="Actividad">
+                                    <option value="all">Todos los Clientes</option>
+                                    <option value="active">Frecuentes (Visitaron < 30 días)</option>
+                                    <option value="risk">En Riesgo (Sin visitas > 30 días)</option>
+                                    <option value="inactive">Inactivos (Sin visitas > 90 días)</option>
+                                </optgroup>
+                                <optgroup label="Niveles VIP">
+                                    <option value="vip_oro">Solo Nivel Oro</option>
+                                    <option value="vip_plata">Solo Nivel Plata</option>
+                                    <option value="vip_bronce">Solo Nivel Bronce</option>
+                                </optgroup>
+                                <optgroup label="Alto Valor">
+                                    <option value="top_10">Top 10 Mejores Clientes (Mes)</option>
+                                    <option value="high_ticket">Clientes High Ticket (Ticket Promedio Alto)</option>
+                                </optgroup>
                             </select>
                         </div>
                         
