@@ -1080,12 +1080,18 @@ function renderCRMTable() {
                 </td>
                 <td><span class="badge-status ${comp.statusClass}">${comp.statusText}</span></td>
                 <td>
-                    <div style="display:flex; gap: 4px;">
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px;" title="Ver QR de Cliente" onclick="window.showCustomerQR('${c.id}', '${c.name.replace(/'/g, "\'")}')">
-                            <i class="fa-solid fa-qrcode"></i>
+                    <div style="display:flex; gap: 4px; justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#25D366; border-color:rgba(37, 211, 102, 0.2);" title="Enviar WhatsApp" onclick="alert('Abriendo WhatsApp Web para ${c.phone || 'cliente'}')">
+                            <i class="fa-brands fa-whatsapp"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px;" title="Enviar Promo" onclick="alert('Iniciando envío de promo directo a ${c.email || c.phone}')">
-                            <i class="fa-solid fa-bullhorn"></i>
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px;" title="Enviar Correo Electrónico" onclick="alert('Abriendo editor de correo para ${c.email || 'cliente'}')">
+                            <i class="fa-regular fa-envelope"></i>
+                        </button>
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Push a Apple/Google Wallet" onclick="alert('Redactando Notificación Push para ${c.name}')">
+                            <i class="fa-regular fa-bell"></i>
+                        </button>
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Escanear QR" onclick="window.showCustomerQR('${c.id}', '${c.name.replace(/'/g, "\\'")}')">
+                            <i class="fa-solid fa-qrcode"></i>
                         </button>
                     </div>
                 </td>
