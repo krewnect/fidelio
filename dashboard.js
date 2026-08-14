@@ -3112,7 +3112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('fidelio_token') || 'dummy'}`
+                        'Authorization': `Bearer ${window.merchantSession?.access_token || ''}`
                     },
                     body: JSON.stringify({
                         rfc: rfc,
@@ -3163,7 +3163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch('/api/stripe/checkout', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('fidelio_token') || 'dummy'}`,
+                        'Authorization': `Bearer ${window.merchantSession?.access_token || ''}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ promoCode })
@@ -3239,7 +3239,15 @@ document.addEventListener('DOMContentLoaded', () => {
             btnUpsell.onclick = async () => {
                 // Sumamos el uso y redirigimos a la liga de Stripe que configuró el Admin
                 await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
-                window.location.href = data.stripe_payment_link;
+                
+                let finalLink = data.stripe_payment_link;
+                if(finalLink.includes('?')) {
+                    finalLink += '&client_reference_id=' + window.merchantSession.user.id;
+                } else {
+                    finalLink += '?client_reference_id=' + window.merchantSession.user.id;
+                }
+                window.location.href = finalLink;
+
             };
         }
     };
@@ -3261,7 +3269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('fidelio_token') || 'dummy'}`
+                        'Authorization': `Bearer ${window.merchantSession?.access_token || ''}`
                     },
                     body: JSON.stringify({ rfc })
                 });
