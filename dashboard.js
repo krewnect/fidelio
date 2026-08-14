@@ -2226,11 +2226,14 @@ function updatePassRender() {
                 
                 // Override UI for Admin
                 const adminName = document.getElementById('header-restaurant-name');
-                if (adminName) adminName.textContent = isSuperAdmin ? "Fidelio Owner" : "Fidelio Staff";
+                if (adminName) adminName.textContent = isSuperAdmin ? "Fidelio Super Admin" : "Fidelio Staff";
                 const adminCategory = document.getElementById('header-business-category');
                 if (adminCategory) adminCategory.textContent = "Backoffice Central";
                 const adminIcon = document.getElementById('header-business-icon');
-                if (adminIcon) adminIcon.innerHTML = '<img src="fidelio_logo.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+                if (adminIcon) {
+                    adminIcon.innerHTML = '<i class="fa-solid fa-crown"></i>';
+                    adminIcon.style.background = 'linear-gradient(135deg, #F59E0B 0%, #B45309 100%)';
+                }
             }
         };
         initializeAdminUI();
