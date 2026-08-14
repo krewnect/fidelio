@@ -704,7 +704,7 @@ let saveTimeout = null;
             if (!state.branches) state.branches = [];
             state.branches.push(newBranch);
             try {
-                if (window.supabaseClient && state.tenantId) {
+                if (!state.tenantId) { alert('¡LA VARIABLE TENANT ID ESTÁ NULA AL HACER CLIC!'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
@@ -731,7 +731,7 @@ let saveTimeout = null;
             
             renderBranches();
             try {
-                if (window.supabaseClient && state.tenantId) {
+                if (!state.tenantId) { alert('¡LA VARIABLE TENANT ID ESTÁ NULA AL HACER CLIC!'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
@@ -1154,7 +1154,7 @@ let saveTimeout = null;
         
         btnConfirmPush.addEventListener('click', async () => {
             try {
-                if (window.supabaseClient && state.tenantId) {
+                if (!state.tenantId) { alert('¡LA VARIABLE TENANT ID ESTÁ NULA AL HACER CLIC!'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
