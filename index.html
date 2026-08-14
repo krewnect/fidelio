@@ -1838,49 +1838,88 @@
 
                     <!-- Contenedor de Slides -->
                     <div id="tutorial-slides-container" style="flex: 1; position: relative; width: 100%; height: 100%;">
-                        <!-- Slide 1 -->
-                        <div class="tut-slide active" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 1; transition: all 0.5s ease; transform: translateX(0);">
-                            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, var(--accent-violet), #4c1d95); border-radius: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);">
-                                <i class="fa-solid fa-gift"></i>
+                        <!-- Módulo 1 -->
+                        <div class="tut-slide active" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; opacity: 1; transition: all 0.5s ease; transform: translateX(0); overflow-y: auto;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-violet), #4c1d95); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);">
+                                    <i class="fa-solid fa-store"></i>
+                                </div>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0;">1. Mi Negocio y Apple Wallet</h2>
                             </div>
-                            <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 12px;">1. Elige tus Recompensas</h2>
-                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 80%;">Desde la pestaña "Fidelización", configura si prefieres dar un porcentaje en dinero (Cashback) o si prefieres que junten visitas (Sellos) para desbloquear un premio gratis.</p>
+                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 16px;"><strong>El corazón de tu marca.</strong> Aquí subes tu logo, defines el color principal de tu negocio e insertas las coordenadas GPS exactas de tus sucursales.</p>
+                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; padding-left: 16px; border-left: 4px solid var(--accent-violet);"><strong>💡 El Secreto Fidelio:</strong> Al guardar estos datos, el sistema genera de forma automática el diseño de tu tarjeta digital. Cuando un cliente guarde esa tarjeta en su Apple Wallet o Google Wallet y pase a 100 metros de tus coordenadas, su teléfono le enviará una notificación flotante (Push) invitándolo a entrar.</p>
                         </div>
                         
-                        <!-- Slide 2 -->
-                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none;">
-                            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #10b981, #047857); border-radius: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">
-                                <i class="fa-solid fa-users"></i>
+                        <!-- Módulo 2 -->
+                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none; overflow-y: auto;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #047857); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);">
+                                    <i class="fa-solid fa-gift"></i>
+                                </div>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0;">2. Motor de Fidelización</h2>
                             </div>
-                            <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 12px;">2. Tu Base de Clientes (CRM)</h2>
-                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 80%;">Cada persona que se registre aparecerá automáticamente en tu CRM. Tendrás acceso a su correo electrónico, fecha de cumpleaños, su nivel VIP y su frecuencia real de visita.</p>
+                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 16px;"><strong>Tú decides cómo recompensar.</strong> Tienes dos motores disponibles en la pestaña "Fidelización".<br><br>• <strong>Cashback:</strong> Le regresa al cliente un % de su compra en dinero virtual (Ej. 10%).<br>• <strong>Sellos (Stamps):</strong> Cada visita es 1 sello; al juntar N sellos, le regalas el premio que tú escribas.</p>
+                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; padding-left: 16px; border-left: 4px solid #10b981;"><strong>💡 El Secreto Fidelio:</strong> Nunca uses ambos motores al mismo tiempo. Activa uno y configúralo. Todo ocurre en tiempo real: si cambias el texto de tu premio hoy (ej. de 'Café Gratis' a 'Dona Gratis'), todos tus clientes verán el cambio reflejado en sus Wallets al instante, sin que hagan nada.</p>
                         </div>
 
-                        <!-- Slide 3 -->
-                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none;">
-                            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #eab308, #a16207); border-radius: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(234, 179, 8, 0.3);">
-                                <i class="fa-brands fa-apple"></i>
+                        <!-- Módulo 3 -->
+                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none; overflow-y: auto;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #eab308, #a16207); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(234, 179, 8, 0.3);">
+                                    <i class="fa-solid fa-vault"></i>
+                                </div>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0;">3. Monedero "The Bank"</h2>
                             </div>
-                            <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 12px;">3. Apple Wallet Automático</h2>
-                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 80%;">Tus clientes guardarán tu tarjeta en Apple Wallet o Google Wallet. Configura tus sucursales y la tarjeta les enviará notificaciones Push automáticas cuando pasen cerca de tu local por GPS.</p>
+                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 16px;"><strong>Tu bóveda de control financiero.</strong> Si le permites a tus clientes recargar saldo por adelantado (ej. pagan $500 para usar durante el mes), esta sección es vital. Aquí ves exactamente cuánto dinero han prepagado a tu restaurante y cuánto de ese dinero sigue sin gastarse.</p>
+                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; padding-left: 16px; border-left: 4px solid #eab308;"><strong>💡 El Secreto Fidelio:</strong> No necesitas esta computadora de administrador para el día a día. Simplemente ve a "Mi Equipo", crea un usuario para tu Cajero y comparte el "Enlace del Escáner". Ellos lo abrirán en su celular, escanearán el QR del cliente y podrán cobrarle de su saldo o darle puntos en 2 simples clics.</p>
                         </div>
 
-                        <!-- Slide 4 -->
-                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none;">
-                            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);">
-                                <i class="fa-solid fa-qrcode"></i>
+                        <!-- Módulo 4 -->
+                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none; overflow-y: auto;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);">
+                                    <i class="fa-solid fa-users-viewfinder"></i>
+                                </div>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0;">4. Clientes CRM</h2>
                             </div>
-                            <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 12px;">4. La App del Escáner</h2>
-                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 80%;">Tus cajeros no necesitan entrar al panel principal. Simplemente abren el enlace del Escáner en sus celulares o tablets, escanean el QR del cliente, y le otorgan sus puntos al instante.</p>
+                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 16px;"><strong>La mina de oro de tu negocio.</strong> Cada persona que escanee tu código QR por primera vez se registrará aquí para siempre.</p>
+                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; padding-left: 16px; border-left: 4px solid #3b82f6;"><strong>💡 El Secreto Fidelio:</strong> El CRM trabaja solo. Clasifica a tus clientes automáticamente indicando cuándo fue su última visita, cuánto dinero han gastado en toda su historia contigo ("Lifetime Value") y su nivel VIP. Es la herramienta definitiva para saber exactamente quiénes son los verdaderos fans de tu restaurante.</p>
                         </div>
 
-                        <!-- Slide 5 -->
-                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none;">
-                            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ec4899, #be185d); border-radius: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);">
-                                <i class="fa-solid fa-bullhorn"></i>
+                        <!-- Módulo 5 -->
+                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none; overflow-y: auto;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ec4899, #be185d); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);">
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                </div>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0;">5. Marketing IA</h2>
                             </div>
-                            <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 12px;">5. Marketing IA</h2>
-                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 80%;">Deja que nuestra IA haga el trabajo pesado. Analiza qué clientes están "en riesgo" de no volver, redacta una campaña atractiva y lanza Push Notifications masivas con un solo clic.</p>
+                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 16px;"><strong>Olvídate de pagar agencias.</strong> Esta pestaña conecta toda la información de tu CRM con Inteligencia Artificial Avanzada.</p>
+                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; padding-left: 16px; border-left: 4px solid #ec4899;"><strong>💡 El Secreto Fidelio:</strong> Solo tienes que decirle a la IA: "Crea una campaña para clientes que no han venido en 30 días ofreciéndoles un 2x1". La IA buscará específicamente a esos clientes, redactará un texto ultra-persuasivo y, con tu autorización, enviará una notificación masiva que vibrará en sus bolsillos.</p>
+                        </div>
+
+                        <!-- Módulo 6 -->
+                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none; overflow-y: auto;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #8b5cf6, #5b21b6); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);">
+                                    <i class="fa-solid fa-id-badge"></i>
+                                </div>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0;">6. Finanzas y Mi Equipo</h2>
+                            </div>
+                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 16px;"><strong>Control total sobre tu dinero y empleados.</strong> En Finanzas administras tu suscripción mensual a Fidelio (agregar tarjetas o cupones), y en Mi Equipo invitas a tu personal.</p>
+                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; padding-left: 16px; border-left: 4px solid #8b5cf6;"><strong>💡 El Secreto Fidelio:</strong> Asigna roles de forma estricta. Si invitas a un empleado como "Scanner Only", jamás verá este panel de administrador; solo verá el escaner para dar puntos. Protegemos la información financiera y la base de datos de tu negocio.</p>
+                        </div>
+
+                        <!-- Módulo 7 -->
+                        <div class="tut-slide" style="position: absolute; top:0; left:0; width:100%; height:100%; padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; opacity: 0; transition: all 0.5s ease; transform: translateX(100%); pointer-events: none; overflow-y: auto;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #14b8a6, #0f766e); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0;">7. Asistente Gemini AI</h2>
+                            </div>
+                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 16px;"><strong>Tu gurú personal 24/7.</strong> En esta misma pestaña de Soporte tienes un Chatbot Inteligente desarrollado por Google e inyectado con el manual completo de Fidelio Rewards.</p>
+                            <p style="font-size: 15px; color: var(--text-muted); line-height: 1.6; padding-left: 16px; border-left: 4px solid #14b8a6;"><strong>💡 El Secreto Fidelio:</strong> Si se te olvida cómo usar cualquier función explicada en este tutorial, escríbele al asistente y te guiará. Si detectas un error grave del sistema, usa el botón de "Levantar Ticket" de la derecha para escalar el problema inmediatamente a nuestros programadores reales.</p>
                         </div>
                     </div>
 
@@ -1889,6 +1928,8 @@
                         <!-- Dots -->
                         <div id="tut-dots" style="display: flex; gap: 8px;">
                             <div class="tut-dot active" style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-violet); transition: all 0.3s;"></div>
+                            <div class="tut-dot" style="width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s;"></div>
+                            <div class="tut-dot" style="width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s;"></div>
                             <div class="tut-dot" style="width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s;"></div>
                             <div class="tut-dot" style="width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s;"></div>
                             <div class="tut-dot" style="width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s;"></div>

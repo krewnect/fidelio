@@ -2841,7 +2841,7 @@ window.sendSupportGeminiMessage = async function() {
 
 // --- TUTORIAL MODAL LOGIC ---
 let currentTutSlide = 0;
-const totalTutSlides = 5;
+const totalTutSlides = 7;
 
 window.openTutorialModal = function() {
     const modal = document.getElementById('modal-tutorial');
