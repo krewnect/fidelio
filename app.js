@@ -713,6 +713,69 @@ app.get('/panel', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// --- AI (GEMINI) ENDPOINT ---
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+
+app.post('/api/ai/support', apiLimiter, requireMerchantAuth, async (req, res) => {
+    if (!genAI) {
+        return res.status(503).json({ error: 'La IA no está configurada actualmente (GEMINI_API_KEY).' });
+    }
+
+    try {
+        const { message, merchantContext } = req.body;
+        
+        if (!message) {
+            return res.status(400).json({ error: 'Mensaje requerido.' });
+        }
+
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        
+        const systemPrompt = `
+Eres Fidelio AI, el asistente inteligente oficial de soporte técnico para restaurantes que usan la plataforma Fidelio Rewards.
+Debes responder de manera profesional, amable y concisa. Estás hablando con un administrador de un restaurante (comerciante).
+Conoces todo sobre el sistema de Fidelio:
+- Monedero (The Bank): Pueden ver el saldo prepagado de sus clientes, el total no gastado y desgloses.
+- Fidelización (Cashback/Stamps): Pueden dar % de Cashback o sellos (visitas). Pueden configurar dinámicamente cuántos sellos se necesitan para un premio.
+- CRM: Tienen control total sobre la base de datos de sus clientes.
+- Sucursales GPS: Pueden añadir ubicaciones para que Apple Wallet notifique a los clientes cuando pasen cerca. Tienen importación masiva vía CSV.
+- Apple Wallet y Google Wallet se gestionan automáticamente al activar clientes en el CRM.
+- Marketing IA: Pueden generar campañas y Push Notifications automáticamente con IA.
+- Equipo: Pueden dar accesos limitados (Solo Escáner) o Sistema Completo a sus cajeros o administradores.
+- Si el usuario reporta un error técnico, bug, cobro doble, o algo que requiera humanos, dile explícitamente: "Por favor, usa el formulario de la derecha (o el botón 'Levantar Ticket') para escalar este problema a nuestros ingenieros."
+- Eres experto en resolver dudas operativas sobre cómo usar estas secciones.
+- Trata de no hacer listas largas. Sé directo.
+
+Contexto del Negocio actual: ${JSON.stringify(merchantContext || {})}
+`;
+
+        const chat = model.startChat({
+            history: [
+                {
+                    role: "user",
+                    parts: [{ text: systemPrompt }],
+                },
+                {
+                    role: "model",
+                    parts: [{ text: "Entendido. Actuaré como el asistente Fidelio AI y usaré este contexto para ayudar al restaurante." }],
+                }
+            ],
+            generationConfig: {
+                maxOutputTokens: 250,
+            },
+        });
+
+        const result = await chat.sendMessage(message);
+        const response = await result.response;
+        const text = response.text();
+
+        res.json({ reply: text });
+    } catch (error) {
+        console.error('Error en Gemini AI:', error);
+        res.status(500).json({ error: 'Error procesando tu solicitud con Inteligencia Artificial.' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Fidelio Backend Server active on http://localhost:${PORT}`);
 });

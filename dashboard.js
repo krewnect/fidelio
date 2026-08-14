@@ -2762,7 +2762,7 @@ window.updateTriggerUI = function() {
 };
 
 // --- SUPPORT MODULE LOGIC ---
-window.sendSupportGeminiMessage = function() {
+window.sendSupportGeminiMessage = async function() {
     const input = document.getElementById('support-gemini-input');
     const chatWindow = document.getElementById('support-gemini-chat');
     const msg = input.value.trim();
@@ -2786,29 +2786,54 @@ window.sendSupportGeminiMessage = function() {
     `;
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    setTimeout(() => {
+    try {
+        const token = window.merchantSession ? window.merchantSession.access_token : '';
+        const context = window.merchantSession ? window.merchantSession.user : {};
+
+        const res = await fetch('/api/ai/support', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': \`Bearer \${token}\`
+            },
+            body: JSON.stringify({ message: msg, merchantContext: context })
+        });
+
         document.getElementById(typingId)?.remove();
-        
-        const lowerMsg = msg.toLowerCase();
-        let response = 'Entiendo. ¿Podrías darme más detalles sobre lo que intentas hacer? Estoy aquí para ayudarte con la configuración de Fidelio.';
-        
-        if (lowerMsg.includes('error') || lowerMsg.includes('no funciona') || lowerMsg.includes('falla') || lowerMsg.includes('bug')) {
-            response = 'Parece que estás experimentando un problema técnico. Para que nuestro equipo de ingeniería pueda investigarlo y darle seguimiento, te recomiendo levantar un ticket detallado en el formulario de la derecha, o dando clic en el botón de abajo. <br><br><button class="btn btn-outline" style="margin-top: 10px; width: 100%; justify-content:center; border-color: var(--accent-violet); color: var(--accent-violet);" onclick="document.getElementById(\'ticket-subject\').focus()">Escalar a un Humano</button>';
-        } else if (lowerMsg.includes('factura') || lowerMsg.includes('pago') || lowerMsg.includes('tarjeta') || lowerMsg.includes('cobro')) {
-            response = 'Para temas relacionados con pagos, facturación o suscripciones, nuestro equipo de finanzas es el indicado. Puedes enviarles un correo directo a <strong>hola@fideliorewards.com</strong> y ellos te ayudarán lo antes posible.';
-        } else if (lowerMsg.includes('wallet') || lowerMsg.includes('apple') || lowerMsg.includes('google')) {
-            response = 'Las tarjetas para Apple Wallet y Google Wallet se gestionan automáticamente en la pestaña "Mi Negocio". Si tus clientes tienen problemas para instalarlas, verifica que tu enlace de suscripción esté activo en la sección de CRM.';
-        } else if (lowerMsg.includes('hola') || lowerMsg.includes('buenos dias') || lowerMsg.includes('buenas tardes')) {
-            response = '¡Hola! Qué gusto saludarte. ¿En qué te puedo ayudar hoy con tu programa de recompensas?';
+
+        if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error || 'Error del servidor');
         }
+
+        const data = await res.json();
+        let response = data.reply;
+        
+        // Parse markdown links or basic formatting if needed
+        response = response.replace(/\n/g, '<br>');
 
         chatWindow.innerHTML += `
             <div style="background: var(--bg-hover); color: var(--text-main); padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start;">
                 ${response}
             </div>
         `;
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }, 1500);
+    } catch (error) {
+        document.getElementById(typingId)?.remove();
+        console.error('Gemini Error:', error);
+        
+        // Fallback for API key not configured or other errors
+        let fallbackMsg = 'Hubo un error de conexión con la IA. Si el problema persiste, levanta un ticket.';
+        if (error.message.includes('GEMINI_API_KEY')) {
+             fallbackMsg = 'El modo simulado de IA ha sido desactivado. Por favor, configura tu GEMINI_API_KEY en el servidor para hablar con el asistente real.';
+        }
+        
+        chatWindow.innerHTML += `
+            <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start;">
+                ${fallbackMsg}
+            </div>
+        `;
+    }
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 };
 
 window.submitSupportTicket = async function(type) {
