@@ -1451,6 +1451,146 @@
                 </div>
             </section>
 
+            <!-- TAB MY BUSINESS (GOOGLE MAPS) -->
+            <section id="tab-mybusiness" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">PRESENCIA DIGITAL</span>
+                        <h1>Google My Business</h1>
+                        <p>Gestiona tu reputación en Maps, responde reseñas con IA y publica ofertas directamente.</p>
+                    </div>
+                    <button class="btn btn-primary" style="background: linear-gradient(135deg, #4285F4 0%, #34A853 100%); border:none;"><i class="fa-brands fa-google"></i> Cuenta Sincronizada</button>
+                </div>
+
+                <!-- TOP STATS ROW -->
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom: 24px;">
+                    <div style="background:var(--bg-card); border-radius:12px; border:1px solid var(--border-glass); padding:20px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                        <div style="font-size:32px; font-weight:800; color:white; margin-bottom:4px;">4.8</div>
+                        <div style="color:#FBBF24; font-size:16px; margin-bottom:8px;">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+                        <span style="font-size:12px; color:var(--text-muted);">Calificación Promedio</span>
+                    </div>
+                    
+                    <div style="background:var(--bg-card); border-radius:12px; border:1px solid var(--border-glass); padding:20px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                        <div style="font-size:32px; font-weight:800; color:white; margin-bottom:4px;">+24</div>
+                        <div style="color:#10B981; font-size:14px; margin-bottom:8px; font-weight:700;">
+                            <i class="fa-solid fa-arrow-trend-up"></i> 12% vs mes pasado
+                        </div>
+                        <span style="font-size:12px; color:var(--text-muted);">Reseñas Nuevas (30d)</span>
+                    </div>
+                    
+                    <div style="background:var(--bg-card); border-radius:12px; border:1px solid var(--border-glass); padding:20px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                        <div style="font-size:32px; font-weight:800; color:white; margin-bottom:4px;">18.5k</div>
+                        <div style="color:var(--accent-violet); font-size:14px; margin-bottom:8px; font-weight:700;">
+                            <i class="fa-solid fa-eye"></i> Impresiones
+                        </div>
+                        <span style="font-size:12px; color:var(--text-muted);">Vistas en Google Maps</span>
+                    </div>
+                </div>
+
+                <!-- MAIN COLUMNS -->
+                <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:24px;">
+                    
+                    <!-- LEFT COLUMN: REVIEWS -->
+                    <div style="display:flex; flex-direction:column; gap:16px;">
+                        <h3 style="font-size:16px; margin:0 0 8px 0; display:flex; justify-content:space-between; align-items:center;">
+                            Últimas Reseñas
+                            <span style="font-size:12px; font-weight:normal; color:var(--text-muted); cursor:pointer;"><i class="fa-solid fa-filter"></i> Filtrar</span>
+                        </h3>
+                        
+                        <!-- Review 1 -->
+                        <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-glass); border-radius:12px; padding:20px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="width:40px; height:40px; border-radius:50%; background:#1A1A2E; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent-violet);">M</div>
+                                    <div>
+                                        <div style="font-weight:700; font-size:14px;">María Fernanda R.</div>
+                                        <div style="font-size:11px; color:var(--text-muted);">Hace 2 horas</div>
+                                    </div>
+                                </div>
+                                <div style="color:#FBBF24; font-size:12px;">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                </div>
+                            </div>
+                            <p style="font-size:13px; color:#e2e8f0; line-height:1.5; margin:0 0 16px 0;">¡Excelente servicio! La comida estaba deliciosa y me encantó que pude descargar mi tarjeta en Apple Wallet. El mesero fue súper amable.</p>
+                            
+                            <!-- Reply Box -->
+                            <div style="background:var(--bg-input); border-radius:8px; padding:12px; border:1px solid rgba(139,92,246,0.2);">
+                                <div style="display:flex; gap:8px;">
+                                    <textarea class="fidelio-input" style="flex:1; height:40px; min-height:40px; padding:8px 12px; font-size:12px; background:transparent; border:none; resize:none;" placeholder="Escribe una respuesta..."></textarea>
+                                    <button class="btn" style="background:rgba(139,92,246,0.1); color:var(--accent-violet); padding:8px 12px; font-size:12px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Respuesta IA</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review 2 -->
+                        <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-glass); border-radius:12px; padding:20px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="width:40px; height:40px; border-radius:50%; background:#1A1A2E; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent-violet);">C</div>
+                                    <div>
+                                        <div style="font-weight:700; font-size:14px;">Carlos Jiménez</div>
+                                        <div style="font-size:11px; color:var(--text-muted);">Ayer</div>
+                                    </div>
+                                </div>
+                                <div style="color:#FBBF24; font-size:12px;">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+                                </div>
+                            </div>
+                            <p style="font-size:13px; color:#e2e8f0; line-height:1.5; margin:0 0 16px 0;">El ambiente es bueno pero tardaron mucho en traerme la cuenta. Fuera de eso la pizza estaba muy rica.</p>
+                            
+                            <!-- Reply Box -->
+                            <div style="background:var(--bg-input); border-radius:8px; padding:12px; border:1px solid rgba(139,92,246,0.2);">
+                                <div style="display:flex; gap:8px;">
+                                    <textarea class="fidelio-input" style="flex:1; height:40px; min-height:40px; padding:8px 12px; font-size:12px; background:transparent; border:none; resize:none;" placeholder="Escribe una respuesta..."></textarea>
+                                    <button class="btn" style="background:rgba(139,92,246,0.1); color:var(--accent-violet); padding:8px 12px; font-size:12px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Respuesta IA</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: POST UPDATES -->
+                    <div>
+                        <div class="content-panel" style="position:sticky; top:0;">
+                            <h3 style="font-size:16px; margin:0 0 16px 0;"><i class="fa-solid fa-bullhorn" style="color:var(--accent-violet); margin-right:8px;"></i> Publicar Novedad en Maps</h3>
+                            
+                            <div class="form-group">
+                                <label>Tipo de Publicación</label>
+                                <select class="fidelio-input" style="color:white; width:100%;">
+                                    <option>Oferta Especial</option>
+                                    <option>Novedad / Anuncio</option>
+                                    <option>Evento</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-top:16px;">
+                                <label style="display:flex; justify-content:space-between;">
+                                    Contenido
+                                    <span style="color:var(--accent-violet); cursor:pointer; font-weight:700;"><i class="fa-solid fa-wand-magic-sparkles"></i> Redactar con IA</span>
+                                </label>
+                                <textarea class="fidelio-input" rows="4" placeholder="Ej. ¡Este fin de semana tenemos 2x1 en margaritas mostrando tu Apple Wallet!"></textarea>
+                            </div>
+
+                            <div class="form-group" style="margin-top:16px;">
+                                <label>Añadir Foto</label>
+                                <div style="border:1px dashed var(--border-glass); border-radius:12px; height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-muted); cursor:pointer; background:var(--bg-input);">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:24px; margin-bottom:8px;"></i>
+                                    <span style="font-size:12px;">Clic para subir imagen</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:24px; display:flex; gap:12px;">
+                                <button class="btn" style="flex:1; background:transparent; border:1px solid var(--border-glass); color:white;">Guardar Borrador</button>
+                                <button class="btn btn-primary" style="flex:1.5; background: linear-gradient(135deg, #4285F4 0%, #34A853 100%); border:none;"><i class="fa-brands fa-google"></i> Publicar Ahora</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
             <!-- ACCOUNT SETTINGS TAB -->
             <section id="tab-account" class="tab-content">
                 <div class="workspace-header">
