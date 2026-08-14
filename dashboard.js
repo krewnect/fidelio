@@ -33,11 +33,9 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
             
         if (!error) {
             console.log("Guardado automático exitoso");
-            alert("¡ÉXITO! Supabase confirmó que la sucursal se guardó en la nube.");
             if (typeof showToast === 'function') showToast("Guardado automático en la nube ☁️", "success");
         } else {
             console.error("Supabase Save Error:", error);
-            alert("SUPABASE DENEGADO: " + error.message);
             if (typeof showToast === 'function') showToast("Error BD: " + error.message, "error");
         }
     } catch (ex) {
@@ -2106,14 +2104,11 @@ window.selectAICampaign = function(type, element) {
     const manualSelector = document.getElementById('manual-segment-selector');
     const select = document.getElementById('camp-segment-select');
     
-    if(type === 'manual') {
-        manualSelector.style.display = 'block';
-    } else {
-        manualSelector.style.display = 'none';
-        if(type === 'recuperacion' || type === 'winback') select.value = 'risk';
-        if(type === 'dias_lentos' || type === 'vip_exclusivo') select.value = 'active';
-        if(type === 'cumpleanos' || type === 'geofencing' || type === 'clima') select.value = 'all';
-    }
+    // El selector de segmento siempre es visible para las campañas AI
+    manualSelector.style.display = 'block';
+    if(type === 'recuperacion' || type === 'winback') select.value = 'risk';
+    if(type === 'dias_lentos' || type === 'vip_exclusivo') select.value = 'active';
+    if(type === 'cumpleanos' || type === 'geofencing' || type === 'clima') select.value = 'all';
     
     document.getElementById('camp-push-message').value = defaultTexts[type] || '';
 };
