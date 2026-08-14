@@ -1846,6 +1846,16 @@ function updatePassRender() {
                     card.querySelector('input').checked = true;
                     
                     const mode = card.querySelector('input').value;
+                    const customPanel = document.getElementById('panel-loyalty-custom');
+                    const setMem = document.getElementById('settings-membership');
+                    const setPre = document.getElementById('settings-prepaid');
+                    const setCus = document.getElementById('settings-custom-prog');
+                    
+                    if(customPanel) customPanel.style.display = 'none';
+                    if(setMem) setMem.style.display = 'none';
+                    if(setPre) setPre.style.display = 'none';
+                    if(setCus) setCus.style.display = 'none';
+
                     if(mode === 'cashback') {
                         toggleCashback.checked = true;
                         toggleStamps.checked = false;
@@ -1858,6 +1868,19 @@ function updatePassRender() {
                         toggleCashback.checked = true;
                         toggleStamps.checked = true;
                         toggleVip.checked = true;
+                    } else if (mode === 'membership' || mode === 'prepaid' || mode === 'custom') {
+                        toggleCashback.checked = false;
+                        toggleStamps.checked = false;
+                        toggleVip.checked = false;
+                        
+                        if(customPanel) {
+                            customPanel.style.display = 'block';
+                            if(mode === 'membership') setMem.style.display = 'block';
+                            if(mode === 'prepaid') setPre.style.display = 'block';
+                            if(mode === 'custom') setCus.style.display = 'block';
+                            
+                            document.getElementById('custom-panel-title').innerHTML = `<i class="fa-solid fa-sliders" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración: ${card.querySelector('h4').textContent}`;
+                        }
                     }
                 });
             }
@@ -1870,7 +1893,21 @@ function updatePassRender() {
             });
         }
         
+
+        const preAmount = document.getElementById('pre-amount');
+        const preBonus = document.getElementById('pre-bonus');
+        const preTotal = document.getElementById('pre-total-display');
+        if (preAmount && preBonus && preTotal) {
+            const updatePrepaidTotal = () => {
+                const total = (parseFloat(preAmount.value) || 0) + (parseFloat(preBonus.value) || 0);
+                preTotal.textContent = '$' + total;
+            };
+            preAmount.addEventListener('input', updatePrepaidTotal);
+            preBonus.addEventListener('input', updatePrepaidTotal);
+        }
+        
         // Save Button Logic
+
         const btnSaveLoyalty = document.getElementById('btn-save-loyalty');
         if (btnSaveLoyalty) {
             btnSaveLoyalty.addEventListener('click', async () => {
@@ -1913,7 +1950,12 @@ function updatePassRender() {
                         stampsTotal: totalStamps,
                         stampsReward: reward,
                         vipActive: vipActive,
-                        vipTiers: vipTiers
+                        vipTiers: vipTiers,
+                        customRules: {
+                            membership: { price: document.getElementById('mem-price')?.value, perk: document.getElementById('mem-perk')?.value },
+                            prepaid: { amount: document.getElementById('pre-amount')?.value, bonus: document.getElementById('pre-bonus')?.value },
+                            custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value }
+                        }
                     }).eq('id', state.tenantId);
                     
                     if (error) throw error;
