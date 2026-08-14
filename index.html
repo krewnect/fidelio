@@ -1501,7 +1501,7 @@
                                 <label>RFC (Opcional - Para Facturación)</label>
                                 <input type="text" class="fidelio-input" placeholder="ABCD123456789">
                             </div>
-                            <button class="btn btn-primary" style="width:100%; margin-top:16px;">Guardar Cambios</button>
+                            <button class="btn btn-primary" style="width:100%; margin-top:16px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%); border:none; color:white;">Guardar Cambios</button>
                         </div>
 
                         <!-- Social Automation Card -->
@@ -1581,12 +1581,11 @@
                             <div style="padding:20px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                                     <h4 style="font-size:13px; margin:0; color:var(--text-muted);">Últimas Reseñas</h4>
-                                    <select class="fidelio-input" style="padding:4px 8px; font-size:11px; height:auto; width:auto; background:rgba(255,255,255,0.05); border:1px solid var(--border-glass);">
-                                        <option>Todas las sucursales</option>
-                                        <option>Sucursal Roma Norte</option>
-                                        <option>Sucursal Condesa</option>
-                                        <option>Sucursal Polanco</option>
-                                    </select>
+                                    <div style="display:flex; gap:6px; overflow-x:auto;">
+                                        <button class="btn" style="background:var(--accent-violet); color:white; border:none; padding:4px 12px; font-size:11px; border-radius:16px;">Todas</button>
+                                        <button class="btn" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border-glass); padding:4px 12px; font-size:11px; border-radius:16px;">Roma Norte</button>
+                                        <button class="btn" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border-glass); padding:4px 12px; font-size:11px; border-radius:16px;">Condesa</button>
+                                    </div>
                                 </div>
                                 
                                 <!-- Review 1 -->
@@ -1620,7 +1619,7 @@
                                     <textarea class="fidelio-input" rows="3" placeholder="Ej. ¡Este fin de semana tenemos 2x1 en margaritas mostrando tu Apple Wallet!"></textarea>
                                 </div>
                                 <div style="margin-top:16px; display:flex; gap:12px;">
-                                    <button class="btn btn-primary" style="flex:1; background: linear-gradient(135deg, #4285F4 0%, #34A853 100%); border:none;"><i class="fa-brands fa-google"></i> Publicar Ahora</button>
+                                    <button class="btn btn-primary" style="flex:1; background: linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%); border:none; color:white;"><i class="fa-brands fa-google"></i> Publicar Ahora</button>
                                 </div>
                             </div>
                         </div>
