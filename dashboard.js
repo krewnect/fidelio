@@ -1435,7 +1435,12 @@ function updatePassRender() {
             tab.classList.add('active');
             const targetTab = tab.getAttribute('data-tab');
             if (targetTab) {
-                document.getElementById(targetTab).classList.add('active');
+                const targetElement = document.getElementById(targetTab);
+                if (targetElement) {
+                    targetElement.classList.add('active');
+                } else {
+                    console.warn(`Pestaña en construcción o no encontrada: ${targetTab}`);
+                }
                 localStorage.setItem('activeFidelioTab', targetTab);
             }
         });
