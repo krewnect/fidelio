@@ -328,7 +328,7 @@
             <style>@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }</style>
 
             <!-- Manual Search Section -->
-            <div id="manual-section" style="display:none; flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <div id="manual-section" style="display:none; flex:1; flex-direction:column; justify-content:center;">
                 <h3 style="margin-bottom:24px; text-align:center; font-size: 1.4rem; color:var(--text-main); font-weight:800;">Ingreso Manual</h3>
                 <div class="input-group">
                     <label>Teléfono o Correo</label>
@@ -506,7 +506,7 @@
                     merchantSession = { bypass: true, email: email, access_token: 'dummy' };
                     document.getElementById('merchant-name').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin Master';
                     showToast('Acceso Universal Concedido', 'success');
-                    startScanner();
+                    setMode('scan');
                 }, 800);
                 return;
             }
@@ -540,7 +540,7 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-container').style.display = 'grid'; // Grid View
             showToast('Sesión Iniciada', 'success');
-            startScanner();
+            setMode('scan'); // Ahora usamos setMode para asegurar que las otras secciones se oculten correctamente
         }
 
         function setMode(mode) {
