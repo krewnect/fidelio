@@ -276,11 +276,36 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Registro de Negocios
 app.post('/api/auth/register', async (req, res) => {
-    const { businessName, email, password, phone } = req.body;
+    const { businessName, email, password, phone, promoCode } = req.body;
     
     if (!supabase) return res.status(500).json({ error: 'Supabase no configurado' });
 
     try {
+        let planStatus = 'trial';
+        let skipStripe = false;
+        
+        // 0. Validar Promo Code
+        if (promoCode) {
+            const { data: promo, error: promoError } = await supabase
+                .from('promo_codes')
+                .select('*')
+                .eq('code', promoCode)
+                .eq('is_active', true)
+                .single();
+                
+            if (promo && !promoError) {
+                if (promo.used_count < promo.max_uses) {
+                    // Marcar uso
+                    await supabase.from('promo_codes').update({ used_count: promo.used_count + 1 }).eq('code', promoCode);
+                    
+                    if (promo.reward_type === 'lifetime_free' || (promo.reward_type === 'discount' && promo.discount_pct >= 100)) {
+                        planStatus = 'active_lifetime';
+                        skipStripe = true; // El cliente ya no necesita pagar
+                    }
+                }
+            }
+        }
+
         // 1. Crear usuario en Auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
@@ -294,13 +319,13 @@ app.post('/api/auth/register', async (req, res) => {
             const { error: dbError } = await supabase
                 .from('merchants')
                 .insert([
-                    { id: authData.user.id, business_name: businessName }
+                    { id: authData.user.id, business_name: businessName, plan_status: planStatus }
                 ]);
             
             if (dbError) console.error("Error al crear merchant:", dbError);
         }
 
-        res.json({ success: true, user: authData.user });
+        res.json({ success: true, user: authData.user, skipStripe });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

@@ -1478,7 +1478,8 @@
                             <div style="font-size:18px; font-weight:800; color:white;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet);"></i> 1,245 <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">emitidas</span></div>
                         </div>
                     </div>
-                    <div style="display:flex; gap:12px;">
+                    <div style="display:flex; gap:12px; align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="merchant-promo-code" class="fidelio-input" placeholder="Código Promo" style="max-width: 150px;">
                         <button id="btn-request-invoice" class="btn" style="background:rgba(139,92,246,0.1); border:1px solid var(--accent-violet); color:var(--accent-violet);"><i class="fa-solid fa-file-invoice"></i> Solicitar Factura</button>
                         <button id="btn-bank-transfer" class="btn" style="background:rgba(139,92,246,0.1); border:1px solid var(--accent-violet); color:var(--accent-violet);"><i class="fa-solid fa-building-columns"></i> Transferencia</button>
                         <button id="btn-pay-stripe" class="btn btn-primary" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border:none;"><i class="fa-brands fa-stripe"></i> Pagar con Stripe</button>
@@ -1799,14 +1800,41 @@
                         </div>
                         <div class="input-group" style="margin-bottom: 16px;">
                             <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Tipo de Recompensa</label>
-                            <select id="promo-type-select" class="fidelio-input">
+                            <select id="promo-type-select" class="fidelio-input" onchange="togglePromoInputs()">
                                 <option value="1_month_free">1 Mes Gratis</option>
                                 <option value="lifetime_free">Gratis de por vida</option>
                                 <option value="discount">Descuento (%)</option>
+                                <option value="free_branches">Sucursales Extra Gratis</option>
+                                <option value="custom_branch_price">Precio de Sucursal Preferencial</option>
                             </select>
                         </div>
-                        <button class="btn btn-primary" style="width: 100%; justify-content:center;" onclick="generatePromoCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> Crear Código</button>
+                        
+                        <div id="promo-discount-group" class="input-group" style="margin-bottom: 16px; display: none;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Porcentaje de Descuento (%)</label>
+                            <input type="number" id="promo-discount-input" class="fidelio-input" placeholder="Ej. 50">
+                        </div>
+                        
+                        <div id="promo-free-branches-group" class="input-group" style="margin-bottom: 16px; display: none;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Cant. de Sucursales Gratis</label>
+                            <input type="number" id="promo-free-branches-input" class="fidelio-input" placeholder="Ej. 5">
+                        </div>
+
+                        <div id="promo-custom-price-group" class="input-group" style="margin-bottom: 16px; display: none;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Nuevo Precio Mensual por Sucursal (USD)</label>
+                            <input type="number" id="promo-custom-price-input" class="fidelio-input" placeholder="Ej. 49">
+                        </div>
+
+                        <button class="btn btn-primary" style="width: 100%; justify-content:center; background: var(--accent-violet); border: none;" onclick="generatePromoCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> Crear Código</button>
                     </div>
+
+                    <script>
+                        function togglePromoInputs() {
+                            const type = document.getElementById('promo-type-select').value;
+                            document.getElementById('promo-discount-group').style.display = type === 'discount' ? 'block' : 'none';
+                            document.getElementById('promo-free-branches-group').style.display = type === 'free_branches' ? 'block' : 'none';
+                            document.getElementById('promo-custom-price-group').style.display = type === 'custom_branch_price' ? 'block' : 'none';
+                        }
+                    </script>
 
                     <!-- Morosos y Alertas -->
                     <div style="background: var(--surface); padding: 32px; border-radius: 20px; box-shadow: var(--shadow-sm);">
@@ -2460,7 +2488,15 @@
                 </div>
             </div>
             
-            <button class="btn btn-primary" style="width:100%; justify-content:center; padding:16px; font-size:16px; background:#635BFF; border:none; margin-bottom:12px;"><i class="fa-brands fa-stripe"></i> Pagar $99 USD / mes</button>
+            <div style="margin-bottom: 24px; text-align: left;">
+                <label style="font-size: 14px; font-weight: 600; color: #111827; display: block; margin-bottom: 8px;">¿Tienes un código de franquicia corporativa?</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="upsell-promo-code" class="fidelio-input" placeholder="Ingresa tu código" style="flex: 1;">
+                    <button class="btn btn-outline" onclick="applyUpsellPromo()"><i class="fa-solid fa-check"></i> Aplicar</button>
+                </div>
+            </div>
+
+            <button id="btn-upsell-stripe" class="btn btn-primary" style="width:100%; justify-content:center; padding:16px; font-size:16px; background:#635BFF; border:none; margin-bottom:12px;" onclick="document.getElementById('btn-pay-stripe').click()"><i class="fa-brands fa-stripe"></i> Pagar $99 USD / mes</button>
             <a href="mailto:hola@fidelio.com" class="btn btn-secondary" style="width:100%; justify-content:center; text-decoration:none;"><i class="fa-regular fa-envelope"></i> Contactar a Ventas</a>
         </div>
     </div>
