@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Terminal Fidelio V2 - Pro</title>
+    <title>Escáner Fidelio</title>
     
     <!-- PWA / Native App tags -->
     <link rel="manifest" href="/manifest.json">
@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="./fidelio_logo_purple.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Terminal POS">
+    <meta name="apple-mobile-web-app-title" content="Escáner">
     
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -140,15 +140,16 @@
         /* Scanner Area & Animation */
         #reader-container {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            /* Removed aspect-ratio to let it grow if a start button is injected */
+            min-height: 300px;
             background: #000;
             border-radius: 16px;
-            overflow: hidden;
+            /* Removed overflow: hidden so buttons don't get cut off at the bottom */
             margin-bottom: 20px;
             position: relative;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
-        #reader { width: 100%; height: 100%; }
+        #reader { width: 100%; height: 100%; min-height: 300px; }
 
         /* Efecto Súper Herramienta Láser */
         .cyber-overlay {
@@ -261,7 +262,7 @@
     <header>
         <div class="logo">
             <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 32px; width: auto;" />
-            <span style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-left:8px;">Terminal POS</span>
+            <span style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-left:8px;">Escáner</span>
         </div>
         <div id="merchant-name" style="font-size: 0.9rem; color: var(--accent-violet); font-weight: 800; background: rgba(139,92,246,0.1); padding: 8px 16px; border-radius: 20px;">Cargando...</div>
     </header>
@@ -393,7 +394,7 @@
     <div id="login-screen">
         <div style="text-align:center; margin-bottom:40px;">
             <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 60px; margin-bottom: 24px;" />
-            <h2 style="font-weight: 800; font-size: 2rem; color:var(--text-main);">Terminal POS</h2>
+            <h2 style="font-weight: 800; font-size: 2rem; color:var(--text-main);">Escáner Fidelio</h2>
             <p style="color:var(--text-muted); margin-top:8px; font-weight:600;">Ingreso para Staff Autorizado</p>
         </div>
         <div style="width:100%; max-width:400px;">
@@ -630,7 +631,7 @@
             html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, (err) => {})
             .catch(err => {
                 document.getElementById('cyber-effect').style.display = 'none';
-                document.getElementById('reader').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted); display:flex; flex-direction:column; justify-content:center; height:100%;"><i class="fa-solid fa-video-slash" style="font-size:3rem; margin-bottom:16px; color:var(--danger);"></i><span>Cámara bloqueada.<br>Usa Búsqueda Manual.</span></div>';
+                document.getElementById('reader').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted); display:flex; flex-direction:column; justify-content:center; height:100%;"><i class="fa-solid fa-video-slash" style="font-size:3rem; margin-bottom:16px; color:var(--danger);"></i><span>Cámara bloqueada o no detectada.</span></div>';
             });
         }
 
