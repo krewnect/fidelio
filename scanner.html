@@ -384,8 +384,19 @@
 
         async function init() {
             try {
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('main-container').style.display = 'none';
+                // 1. Obtener Configuración de Supabase
+                const res = await fetch('/api/config');
+                const config = await res.json();
+                supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+                // 2. Revisar si ya hay una sesión activa
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    await setupScannerSession(session);
+                } else {
+                    document.getElementById('login-screen').style.display = 'flex';
+                    document.getElementById('main-container').style.display = 'none';
+                }
             } catch (err) {
                 console.error("Error iniciando:", err);
             }
@@ -396,18 +407,21 @@
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('btn-login');
             
-            if(!email) return;
+            if(!email || !password) {
+                showToast('Ingresa correo y contraseña', 'error');
+                return;
+            }
             
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
 
             // ==========================================
-            // AUTENTICACIÓN UNIVERSAL BYPASS (Requisito)
+            // AUTENTICACIÓN UNIVERSAL BYPASS
             // ==========================================
             if (email === 'hola@fideliorewards.com') {
                 setTimeout(() => {
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('main-container').style.display = 'flex';
-                    merchantSession = { bypass: true, email: email };
+                    merchantSession = { bypass: true, email: email, access_token: 'dummy' };
                     document.getElementById('merchant-name').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin Master';
                     showToast('Acceso Universal Concedido', 'success');
                     startScanner();
@@ -415,11 +429,42 @@
                 return;
             }
             
-            // Lógica normal (Mock para frontend UI check)
-            setTimeout(() => {
-                showToast('Usuario no autorizado para Terminal.', 'error');
+            // ==========================================
+            // AUTENTICACIÓN REAL (Supabase)
+            // ==========================================
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                showToast('Usuario o contraseña incorrectos', 'error');
                 btn.innerHTML = 'Ingresar al Escáner';
-            }, 1000);
+                return;
+            }
+
+            // Inicio exitoso
+            await setupScannerSession(data.session);
+        }
+
+        async function setupScannerSession(session) {
+            merchantSession = session;
+            const role = session.user.user_metadata?.role;
+            const targetMerchantId = role === 'staff' ? session.user.user_metadata.merchant_id : session.user.id;
+            
+            // Cargar nombre del negocio
+            const { data: merchant } = await supabaseClient
+                .from('merchants')
+                .select('business_name')
+                .eq('id', targetMerchantId)
+                .single();
+                
+            if (merchant) {
+                let badge = role === 'staff' ? ' <i class="fa-solid fa-user-tag"></i> Cajero' : ' <i class="fa-solid fa-crown"></i> Admin';
+                document.getElementById('merchant-name').innerHTML = merchant.business_name + badge;
+            }
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-container').style.display = 'flex';
+            showToast('Sesión Iniciada Exitosamente', 'success');
+            startScanner();
         }
 
         function setMode(mode) {
