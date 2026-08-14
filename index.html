@@ -1462,8 +1462,8 @@
                 </div>
 
                 <!-- TOP BAR (Billing & Sub) -->
-                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:20px; margin-bottom: 24px;">
-                    <div style="display:flex; gap:32px;">
+                <div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:20px; margin-bottom: 24px;">
+                    <div style="display:flex; flex-wrap:wrap; gap:32px;">
                         <div>
                             <span style="font-size:12px; color:var(--text-muted);">Suscripción Activa</span>
                             <div style="font-size:18px; font-weight:800; color:#10B981;"><i class="fa-solid fa-clock"></i> 28 días restantes</div>
@@ -1474,7 +1474,6 @@
                         </div>
                     </div>
                     <div style="display:flex; gap:12px;">
-                        <button class="btn" style="background:transparent; border:1px solid var(--border-glass); color:white;"><i class="fa-solid fa-file-invoice"></i> Solicitar Factura</button>
                         <button class="btn" style="background:transparent; border:1px solid var(--border-glass); color:white;"><i class="fa-solid fa-building-columns"></i> Transferencia</button>
                         <button class="btn btn-primary" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border:none;"><i class="fa-brands fa-stripe"></i> Pagar con Stripe</button>
                     </div>
@@ -1501,7 +1500,10 @@
                                 <label>RFC (Opcional - Para Facturación)</label>
                                 <input type="text" class="fidelio-input" placeholder="ABCD123456789">
                             </div>
-                            <button class="btn btn-primary" style="width:100%; margin-top:16px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%); border:none; color:white;">Guardar Cambios</button>
+                            <div style="margin-top:16px; display:flex; gap:12px;">
+                                <button class="btn" style="flex:1; background:transparent; border:1px solid var(--border-glass); color:white;"><i class="fa-solid fa-file-invoice"></i> Solicitar Factura</button>
+                                <button class="btn btn-primary" style="flex:1; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%); border:none; color:white;">Guardar Cambios</button>
+                            </div>
                         </div>
 
                         <!-- Social Automation Card -->
@@ -1585,10 +1587,10 @@
                             <div style="padding:20px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                                     <h4 style="font-size:13px; margin:0; color:var(--text-muted);">Últimas Reseñas</h4>
-                                    <div style="display:flex; gap:6px; overflow-x:auto;">
-                                        <button class="btn" style="background:var(--accent-violet); color:white; border:none; padding:4px 12px; font-size:11px; border-radius:16px;">Todas</button>
-                                        <button class="btn" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border-glass); padding:4px 12px; font-size:11px; border-radius:16px;">Roma Norte</button>
-                                        <button class="btn" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border-glass); padding:4px 12px; font-size:11px; border-radius:16px;">Condesa</button>
+                                    <div style="position:relative; display:inline-block;">
+                                        <button class="btn" style="background:var(--bg-input); color:white; border:1px solid rgba(139,92,246,0.3); padding:6px 12px; font-size:11px; border-radius:8px; display:flex; align-items:center; gap:8px;">
+                                            <i class="fa-solid fa-store" style="color:var(--accent-violet);"></i> Todas las sucursales <i class="fa-solid fa-chevron-down" style="font-size:9px; margin-left:4px; color:var(--text-muted);"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 
