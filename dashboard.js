@@ -1854,16 +1854,19 @@ function updatePassRender() {
                     toggleCashback.checked = true;
                     toggleStamps.checked = true;
                     toggleVip.checked = true;
-                } else if (mode === 'membership' || mode === 'prepaid' || mode === 'custom') {
+                } else if (mode === 'prepaid' || mode === 'custom') {
                     toggleCashback.checked = false;
                     toggleStamps.checked = false;
                     toggleVip.checked = false;
                     
                     if(customPanel) {
                         customPanel.style.display = 'block';
-                        if(mode === 'membership') setMem.style.display = 'block';
-                        if(mode === 'prepaid') setPre.style.display = 'block';
-                        if(mode === 'custom') setCus.style.display = 'block';
+                        if(mode === 'prepaid') {
+                            if(setPre) setPre.style.display = 'block';
+                        }
+                        if(mode === 'custom') {
+                            if(setCus) setCus.style.display = 'block';
+                        }
                         
                         if(cardTitle) {
                             document.getElementById('custom-panel-title').innerHTML = `<i class="fa-solid fa-sliders" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración: ${cardTitle}`;
