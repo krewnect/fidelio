@@ -429,6 +429,33 @@
             <button id="btn-login" class="btn btn-primary" onclick="handleLogin()" style="padding:18px; font-size:1.2rem;">
                 Ingresar al Sistema
             </button>
+            <div style="text-align:center; margin-top:20px;">
+                <a href="#" style="color:var(--accent-violet); font-size:1rem; text-decoration:none; font-weight:600;" onclick="showRecoveryScreen(); return false;">¿Olvidaste tu contraseña?</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recovery Screen -->
+    <div id="recovery-screen" style="display:none; position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+        <div style="text-align:center; margin-bottom:40px;">
+            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 60px; margin-bottom: 24px;" />
+            <h2 style="font-weight: 800; font-size: 2rem; color:var(--text-main);">Recuperar Acceso</h2>
+            <p style="color:var(--text-muted); margin-top:8px; font-weight:600;">Enviaremos un enlace a tu correo</p>
+        </div>
+        <div style="width:100%; max-width:400px;">
+            <div class="input-group" style="margin-bottom: 20px;">
+                <label>Correo Electrónico</label>
+                <div class="amount-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="recovery-email" placeholder="cajero@restaurante.com">
+                </div>
+            </div>
+            <button id="btn-recovery" class="btn btn-primary" onclick="handleRecovery()" style="padding:18px; font-size:1.2rem; margin-bottom:20px;">
+                Enviar enlace
+            </button>
+            <div style="text-align:center;">
+                <a href="#" style="color:var(--text-muted); font-size:1rem; text-decoration:none; font-weight:500;" onclick="showLoginScreen(); return false;">Volver a iniciar sesión</a>
+            </div>
         </div>
     </div>
 
@@ -464,6 +491,45 @@
             } catch (e) {
                 showToast('Error conectando con el servidor', 'error');
                 document.getElementById('login-screen').style.display = 'flex';
+            }
+        }
+
+        function showRecoveryScreen() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('recovery-screen').style.display = 'flex';
+        }
+
+        function showLoginScreen() {
+            document.getElementById('recovery-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        async function handleRecovery() {
+            const email = document.getElementById('recovery-email').value.trim();
+            const btn = document.getElementById('btn-recovery');
+            
+            if (!email) {
+                alert('Por favor ingresa un correo.');
+                return;
+            }
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            btn.disabled = true;
+            
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: 'https://fidelio-41j9.onrender.com/update-password.html',
+                });
+                
+                if (error) throw error;
+                
+                alert('¡Listo! Revisa tu correo electrónico para crear tu nueva contraseña.');
+                showLoginScreen();
+            } catch (error) {
+                alert('Error al recuperar: ' + error.message);
+            } finally {
+                btn.innerHTML = 'Enviar enlace';
+                btn.disabled = false;
             }
         }
 
