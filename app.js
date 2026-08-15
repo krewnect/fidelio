@@ -616,7 +616,7 @@ app.post('/api/stripe/checkout', apiLimiter, requireMerchantAuth, async (req, re
             return res.status(500).json({ success: false, error: 'Stripe no está configurado en el servidor.' });
         }
         
-        const { data: merchant } = await supabase.from('merchants').select('stripe_customer_id, business_name').eq('id', req.merchantId).single();
+        const { data: merchant } = await supabase.from('merchants').select('stripe_customer_id, business_name, custom_price').eq('id', req.merchantId).single();
         
 const { billing_cycle, tier } = req.body;
         
@@ -627,19 +627,35 @@ const { billing_cycle, tier } = req.body;
             priceId = billing_cycle === 'annual' ? process.env.STRIPE_PRICE_STANDARD_YR : process.env.STRIPE_PRICE_STANDARD_MO;
         }
 
-        if (!priceId) {
-            return res.status(500).json({ success: false, error: 'Falta configurar los STRIPE_PRICE_ en el archivo .env' });
-        }
-
-        const session = await stripe.checkout.sessions.create({
+        let sessionParams = {
             mode: 'subscription',
             payment_method_types: ['card'],
             customer: merchant.stripe_customer_id || undefined,
-            line_items: [{ price: priceId, quantity: 1 }],
             success_url: `${req.headers.origin}/panel?payment=success`,
             cancel_url: `${req.headers.origin}/panel?payment=cancelled`,
             metadata: { merchant_id: req.merchantId }
-        });
+        };
+
+        if (merchant.custom_price) {
+            // Dynamic custom pricing
+            sessionParams.line_items = [{
+                price_data: {
+                    currency: 'mxn',
+                    product_data: { name: 'Licencia Especial Fidelio' },
+                    unit_amount: merchant.custom_price * 100,
+                    recurring: { interval: 'month' }
+                },
+                quantity: 1
+            }];
+        } else {
+            // Standard static pricing
+            if (!priceId) {
+                return res.status(500).json({ success: false, error: 'Falta configurar los STRIPE_PRICE_ en el archivo .env' });
+            }
+            sessionParams.line_items = [{ price: priceId, quantity: 1 }];
+        }
+
+        const session = await stripe.checkout.sessions.create(sessionParams);
 
         res.json({ success: true, url: session.url });
     } catch (err) {

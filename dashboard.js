@@ -270,8 +270,26 @@ let saveTimeout = null;
         const amt = document.getElementById('pricing-amount');
         const period = document.getElementById('pricing-period');
         const desc = document.getElementById('pricing-description');
+        
+        const hasCustomPrice = window.merchantData && window.merchantData.custom_price !== null && window.merchantData.custom_price !== undefined;
 
-        if (isFounder) {
+        if (hasCustomPrice) {
+            if (badge) {
+                badge.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+                badge.style.color = 'white';
+                badge.innerHTML = 'TARIFA PREFERENCIAL';
+            }
+            if (amt) amt.textContent = window.merchantData.custom_price.toLocaleString();
+            if (desc) desc.textContent = 'Precio especial asignado. Sucursales ilimitadas.';
+            if (period) period.textContent = 'mes';
+            
+            const toggleCycle = document.getElementById('billing-cycle-toggle');
+            if (toggleCycle) {
+                toggleCycle.disabled = true;
+                toggleCycle.parentElement.style.opacity = '0.5';
+            }
+        }
+        else if (isFounder) {
             if (badge) {
                 badge.style.background = 'linear-gradient(135deg, #FFD700 0%, #FDB931 100%)';
                 badge.innerHTML = 'LICENCIA FOUNDER (DE POR VIDA)';
@@ -344,8 +362,10 @@ let saveTimeout = null;
                 return false;
             }
             merchantData = newMerchant;
+        window.
         }
 
+        window.merchantData = merchantData;
         const { data: custData } = await window.supabaseClient
             .from('customers')
             .select('*')

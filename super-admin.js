@@ -122,11 +122,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td><strong class="text-emerald">Activo</strong></td>
                 <td>${date}</td>
                 <td>
+                    <button class="btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-color:var(--border-glass);" onclick="setCustomPrice('${m.id}', ${m.custom_price || null})">
+                        ${m.custom_price ? '$' + m.custom_price : 'Fijar'}
+                    </button>
+                </td>
+                <td>
                     <button class="btn-primary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="downloadQR('${qrUrl}', '${m.business_name || 'comercio'}')">
                         <i class="fa-solid fa-qrcode"></i> Descargar QR
                     </button>
                 </td>
-                <td colspan="3"></td>
+                <td colspan="2"></td>
             `;
             tbody.appendChild(tr);
         });
@@ -140,6 +145,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    };
+
+    window.setCustomPrice = async function(merchantId, currentPrice) {
+        const newPrice = prompt(`Fijar Precio Especial (MXN) mensual.\n(Deja en blanco para borrar el precio especial):`, currentPrice || '');
+        if (newPrice === null) return;
+        
+        const priceVal = newPrice.trim() === '' ? null : parseInt(newPrice.trim(), 10);
+        if (newPrice.trim() !== '' && isNaN(priceVal)) return alert("Precio inválido");
+
+        const { error } = await window.supabaseClient
+            .from('merchants')
+            .update({ custom_price: priceVal })
+            .eq('id', merchantId);
+
+        if (error) {
+            console.error(error);
+            alert("Error actualizando precio");
+        } else {
+            // refresh data locally
+            const m = merchants.find(x => x.id === merchantId);
+            if(m) m.custom_price = priceVal;
+            renderMasterTable();
+        }
     };
 
     if (searchInput) {
