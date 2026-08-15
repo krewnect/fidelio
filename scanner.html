@@ -478,7 +478,8 @@
 
         async function init() {
             try {
-                const res = await fetch('/api/config');
+                // Usar ruta absoluta para que funcione tanto en web como en App nativa (iOS/Android)
+                const res = await fetch('https://fidelio-41j9.onrender.com/api/config');
                 const config = await res.json();
                 supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
                 
@@ -540,6 +541,11 @@
 
             if (!email || !password) {
                 showToast('Llena todos los campos', 'error');
+                return;
+            }
+
+            if (!supabaseClient) {
+                showToast('Error de conexión con el servidor. Reinicia la app.', 'error');
                 return;
             }
 
