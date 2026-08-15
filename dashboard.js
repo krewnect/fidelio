@@ -234,7 +234,7 @@ let saveTimeout = null;
         totalFoundersUsed = count || 0;
         
         // 2. Check if current merchant is a founder. 
-        // For simplicity: if they registered when there were <= 100 merchants, they are a founder.
+        // For simplicity: if they registered when there were <= 25 merchants, they are a founder.
         // We can approximate by checking their position.
         const { data: myRankData } = await window.supabaseClient
             .from('merchants')
@@ -248,7 +248,7 @@ let saveTimeout = null;
                 .select('*', { count: 'exact', head: true })
                 .lte('created_at', myRankData.created_at);
             
-            isFounder = (myRank <= 100);
+            isFounder = (myRank <= 25);
         }
 
         updatePricingUI();
@@ -261,8 +261,8 @@ let saveTimeout = null;
         // Meter UI
         const meter = document.getElementById('founder-meter-text');
         if (meter) {
-            const left = Math.max(0, 100 - totalFoundersUsed);
-            meter.innerHTML = `<i class="fa-solid fa-fire"></i> ${left} / 100 Disponibles`;
+            const left = Math.max(0, 25 - totalFoundersUsed);
+            meter.innerHTML = `<i class="fa-solid fa-fire"></i> ${left} / 25 Disponibles`;
             if (left === 0) meter.style.color = 'var(--text-muted)';
         }
 
