@@ -1658,7 +1658,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" style="width:100%; margin-top:16px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%);"><i class="fa-solid fa-play"></i> Activar Campañas Auto-Push</button>
+                            <button id="btn-open-marketing-push" class="btn btn-primary" style="width:100%; margin-top:16px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%);"><i class="fa-solid fa-play"></i> Activar Campañas Auto-Push</button>
                         </div>
 
                     </div>
@@ -2315,14 +2315,14 @@
                                 <i class="fa-solid fa-chart-line"></i> Retorno de Inversión Estimado
                             </span>
                             <h2 style="font-size: 64px; margin: 8px 0 0 0; color: white; font-weight: 900; letter-spacing:-1px;">
-                                <span style="animation: numberCounter 1s ease-out forwards;">+342%</span>
+                                <span id="metric-roi" style="animation: numberCounter 1s ease-out forwards;">0%</span>
                             </h2>
                             <p style="opacity: 0.9; margin-top: 8px; max-width: 450px; font-size: 15px; line-height: 1.6;">Por cada $1 invertido en Fidelio, tus clientes han generado $3.42 en ventas adicionales y retención comprobada.</p>
                         </div>
                         <div style="position: relative; z-index: 2; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 0 20px rgba(255,255,255,0.05);">
                             <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-bottom: 8px;">Ingreso Atribuido a Lealtad</div>
-                            <div style="font-size: 38px; font-weight: 800; color: #34d399; display:flex; align-items:baseline; gap:4px;">
-                                +$124k <span style="font-size:16px; font-weight:600; opacity:0.8; color:white;">MXN</span>
+                            <div id="metric-loyalty-revenue" style="font-size: 38px; font-weight: 800; color: #34d399; display:flex; align-items:baseline; gap:4px;">
+                                +$0 <span style="font-size:16px; font-weight:600; opacity:0.8; color:white;">MXN</span>
                             </div>
                             <div style="margin-top: 12px; display:flex; align-items:center; gap:8px; font-size: 12px; color: #34d399; background:rgba(52, 211, 153, 0.1); padding:4px 10px; border-radius:12px; width:fit-content;">
                                 <i class="fa-solid fa-arrow-trend-up"></i> +18% vs mes pasado
@@ -2601,7 +2601,7 @@
                                 <span><i class="fa-solid fa-circle" style="color:var(--bg-input); font-size:8px; margin-right:4px;"></i> Nuevas (1era vez)</span>
                             </div>
                         </div>
-                        <div style="height: 250px; background: repeating-linear-gradient(0deg, transparent, transparent 49px, var(--border-glass) 49px, var(--border-glass) 50px); display:flex; align-items:flex-end; gap:24px; padding-top:20px; padding-bottom:0; overflow:hidden;">
+                        <div id="acquisition-chart-container" style="height: 250px; background: repeating-linear-gradient(0deg, transparent, transparent 49px, var(--border-glass) 49px, var(--border-glass) 50px); display:flex; align-items:flex-end; gap:24px; padding-top:20px; padding-bottom:0; overflow:hidden;">
                             <!-- Animated Chart Bars -->
                             <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
                                 <div class="bento-chart-bar" style="width:40%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: 30%;"></div>
@@ -3084,6 +3084,132 @@
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 .hover-border-violet:hover { border-color:var(--accent-violet) !important; background:rgba(139, 92, 246, 0.02); }
             </style>
+        </div>
+    </div>
+    <!-- MARKETING AUTO-PUSH MODAL -->
+    <div id="marketing-push-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); z-index:9999; align-items:center; justify-content:center; font-family:var(--font-main);">
+        <div style="background:white; width:480px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
+            
+            <div id="mkt-push-step-1">
+                <div style="width:50px; height:50px; border-radius:50%; background:rgba(139, 92, 246, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+                <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Campaña Promocional Push</h2>
+                <p style="font-size:14px; color:#6b7280; margin-bottom:24px; line-height:1.5;">Envía una notificación push masiva a todos tus clientes que tienen tu tarjeta en su Apple Wallet o Google Wallet.</p>
+                
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Título de la Notificación</label>
+                    <input type="text" id="mkt-push-title" class="fidelio-input" placeholder="Ej. ¡2x1 Exclusivo Hoy!">
+                </div>
+                <div class="form-group" style="margin-bottom:24px;">
+                    <label>Mensaje Corto</label>
+                    <textarea id="mkt-push-body" class="fidelio-input" rows="2" placeholder="Presenta tu Apple Wallet y recibe un 2x1 en toda la carta."></textarea>
+                </div>
+                
+                <div style="display:flex; gap:12px; justify-content:flex-end;">
+                    <button id="btn-cancel-mkt-push" class="btn btn-secondary" style="padding:10px 20px;">Cancelar</button>
+                    <button id="btn-send-mkt-push" class="btn btn-primary" style="background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%); padding:10px 20px;"><i class="fa-solid fa-paper-plane"></i> Enviar a Todos</button>
+                </div>
+            </div>
+            
+            <div id="mkt-push-step-2" style="display:none; text-align:center; padding:20px 0;">
+                <div style="width:64px; height:64px; margin:0 auto 20px auto; position:relative;">
+                    <div style="position:absolute; width:100%; height:100%; border:4px solid #f3f4f6; border-radius:50%;"></div>
+                    <div style="position:absolute; width:100%; height:100%; border:4px solid var(--accent-violet); border-radius:50%; border-top-color:transparent; animation:spin 1s linear infinite;"></div>
+                </div>
+                <h2 style="font-size:20px; font-weight:700; color:#111827; margin-bottom:8px;">Contactando a APNs...</h2>
+                <p style="font-size:13px; color:#6b7280; margin-bottom:16px;">Transmitiendo campaña masiva a los teléfonos.</p>
+                <div style="width:100%; height:6px; background:#f3f4f6; border-radius:3px; overflow:hidden;">
+                    <div id="mkt-progress-bar" style="width:0%; height:100%; background:var(--accent-violet); transition:width 0.2s;"></div>
+                </div>
+            </div>
+            
+            <div id="mkt-push-step-3" style="display:none; text-align:center; padding:20px 0;">
+                <div style="width:64px; height:64px; border-radius:50%; background:var(--accent-violet); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">¡Campaña Enviada!</h2>
+                <p style="font-size:14px; color:#6b7280; margin-bottom:24px;">La base de datos ha registrado la campaña exitosamente. La entrega puede tomar unos minutos dependiendo de APNs.</p>
+                <button id="btn-close-mkt-push" class="btn btn-primary" style="width:100%; justify-content:center; background:#111827;">Entendido</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- MODAL DE FACTURACIÓN -->
+    <div id="modal-factura" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); z-index:9999; align-items:center; justify-content:center; font-family:var(--font-main);">
+        <div style="background:white; width:500px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
+            <div style="width:50px; height:50px; border-radius:50%; background:rgba(52, 211, 153, 0.1); display:flex; align-items:center; justify-content:center; color:#10b981; font-size:20px; margin-bottom:20px;">
+                <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Solicitar Factura</h2>
+            <p style="font-size:14px; color:#6b7280; margin-bottom:24px; line-height:1.5;">Completa tus datos fiscales y sube tu comprobante de pago.</p>
+            
+            <form id="form-factura" onsubmit="return false;">
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>RFC</label>
+                    <input type="text" id="fac-rfc" class="fidelio-input" required>
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Razón Social</label>
+                    <input type="text" id="fac-razon" class="fidelio-input" required>
+                </div>
+                <div style="display:flex; gap:16px; margin-bottom:16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Código Postal</label>
+                        <input type="text" id="fac-cp" class="fidelio-input" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Régimen Fiscal</label>
+                        <input type="text" id="fac-regimen" class="fidelio-input" placeholder="Ej. 601" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Uso de CFDI</label>
+                    <select id="fac-uso" class="fidelio-input">
+                        <option value="G03">G03 Gastos en general</option>
+                        <option value="I08">I08 Equipo de computo y accesorios</option>
+                        <option value="S01">S01 Sin efectos fiscales</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:24px;">
+                    <label>Comprobante de Pago (JPG/PDF)</label>
+                    <input type="file" id="fac-file" class="fidelio-input" accept=".jpg,.jpeg,.png,.pdf" required>
+                </div>
+                
+                <div style="display:flex; gap:12px; justify-content:flex-end;">
+                    <button type="button" onclick="document.getElementById('modal-factura').style.display='none'" class="btn btn-secondary" style="padding:10px 20px;">Cancelar</button>
+                    <button type="submit" id="btn-submit-factura" class="btn btn-primary" style="background:#10b981; padding:10px 20px;">Enviar Solicitud</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE TRANSFERENCIA -->
+    <div id="modal-transferencia" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); z-index:9999; align-items:center; justify-content:center; font-family:var(--font-main);">
+        <div style="background:white; width:500px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
+            <div style="width:50px; height:50px; border-radius:50%; background:rgba(59, 130, 246, 0.1); display:flex; align-items:center; justify-content:center; color:#3b82f6; font-size:20px; margin-bottom:20px;">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+            </div>
+            <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Pago por Transferencia</h2>
+            <p style="font-size:14px; color:#6b7280; margin-bottom:24px; line-height:1.5;">Realiza tu pago mensual a la siguiente cuenta y sube tu comprobante para liberar tu suscripción.</p>
+            
+            <div style="background:#f3f4f6; padding:16px; border-radius:12px; margin-bottom:24px; text-align:center;">
+                <div style="font-size:12px; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Cuenta CLABE (STP)</div>
+                <div style="font-size:24px; font-weight:800; color:#111827; letter-spacing:2px; font-family:monospace;">012 345 6789 0123 4567</div>
+            </div>
+            
+            <form id="form-transferencia" onsubmit="return false;">
+                <div class="form-group" style="margin-bottom:24px;">
+                    <label>Subir Comprobante de Transferencia (JPG/PDF)</label>
+                    <input type="file" id="trans-file" class="fidelio-input" accept=".jpg,.jpeg,.png,.pdf" required>
+                </div>
+                
+                <div style="display:flex; gap:12px; justify-content:flex-end;">
+                    <button type="button" onclick="document.getElementById('modal-transferencia').style.display='none'" class="btn btn-secondary" style="padding:10px 20px;">Cancelar</button>
+                    <button type="submit" id="btn-submit-transferencia" class="btn btn-primary" style="background:#3b82f6; padding:10px 20px;">Reportar Pago</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

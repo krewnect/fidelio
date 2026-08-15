@@ -38,6 +38,9 @@
                 <button class="nav-tab" data-tab="tab-subscriptions">
                     <i class="fa-solid fa-credit-card"></i> <span>Suscripciones ($999)</span>
                 </button>
+                <button class="nav-tab" data-tab="tab-inbox">
+                    <i class="fa-solid fa-inbox"></i> <span>Bandeja (Facturas y Pagos)</span>
+                </button>
             </nav>
 
             <div class="sidebar-footer">
@@ -244,6 +247,39 @@
                 </div>
             </section>
 
+            <!-- TAB 5: INBOX FACTURAS Y TRANSFERENCIAS -->
+            <section id="tab-inbox" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">BUZÓN DE RECEPCIÓN</span>
+                        <h1>Bandeja de Entrada</h1>
+                        <p>Solicitudes de facturación y reportes de pago por transferencia bancaria de los negocios.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-card">
+                    <div class="table-wrapper">
+                        <table class="crm-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Comercio</th>
+                                    <th>Tipo de Solicitud</th>
+                                    <th>Estado</th>
+                                    <th>Archivo (PDF/JPG)</th>
+                                    <th>Datos (RFC, CLABE, etc)</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inbox-table-body">
+                                <tr>
+                                    <td colspan="7" style="text-align:center; padding:20px;">Cargando solicitudes...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 

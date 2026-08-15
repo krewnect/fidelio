@@ -558,27 +558,111 @@
             <h2 style="font-size: 42px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px;">Simple y Transparente</h2>
             <p style="font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">Todo el poder de la plataforma, sin comisiones ocultas.</p>
             
-            <div class="pricing-card">
-                <div style="font-size: 14px; font-weight: 700; color: var(--fidelio-violet); letter-spacing: 1px; text-transform: uppercase;">Fidelio Pro</div>
+            <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin: 40px 0 20px;">
+                <span id="label-monthly" style="font-weight:700; color:var(--text-main);">Mensual</span>
+                <label style="position:relative; display:inline-block; width:60px; height:34px;">
+                    <input type="checkbox" id="pricing-toggle" style="opacity:0; width:0; height:0;" onchange="togglePricing()">
+                    <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#e5e7eb; transition:.4s; border-radius:34px;" id="toggle-slider"></span>
+                    <span style="position:absolute; content:''; height:26px; width:26px; left:4px; bottom:4px; background-color:white; transition:.4s; border-radius:50%; box-shadow:0 2px 4px rgba(0,0,0,0.2);" id="toggle-circle"></span>
+                </label>
+                <span id="label-yearly" style="font-weight:600; color:var(--text-muted); display:flex; align-items:center; gap:8px;">Anual <span style="background:rgba(52, 211, 153, 0.1); color:#10b981; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:800;">Ahorra 20%</span></span>
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:24px; justify-content:center; margin-top:20px;">
                 
-                <div class="price-tag">
-                    <span class="price-currency">$</span>
-                    <span class="price-amount">999</span>
-                    <span class="price-period">MXN / mes + IVA (16%)</span>
+                <!-- FOUNDER CARD -->
+                <div class="pricing-card" style="margin:0; position:relative; overflow:hidden; border: 2px solid var(--accent-violet);">
+                    <div style="position:absolute; top:20px; right:-30px; background:var(--accent-violet); color:white; font-size:11px; font-weight:800; padding:6px 30px; transform:rotate(45deg); letter-spacing:1px;">LIMITADO</div>
+                    
+                    <div style="font-size: 14px; font-weight: 800; color: var(--fidelio-violet); letter-spacing: 1px; text-transform: uppercase;">Licencia Founder</div>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Exclusiva para los primeros 25 negocios.</p>
+                    
+                    <div class="price-tag">
+                        <span class="price-currency">$</span>
+                        <span class="price-amount" id="price-founder">999</span>
+                        <span class="price-period" id="period-founder">MXN / mes + IVA (16%)</span>
+                    </div>
+
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> Pases Ilimitados Wallet</li>
+                        <li><i class="fa-solid fa-check"></i> Hasta 20 Sucursales GPS</li>
+                        <li><i class="fa-solid fa-check"></i> Campañas Auto-Push (APNs)</li>
+                        <li><i class="fa-solid fa-check"></i> Soporte Prioritario 24/7</li>
+                        <li><i class="fa-solid fa-star" style="color:var(--accent-amber);"></i> Tarifas congeladas de por vida</li>
+                    </ul>
+
+                    <button class="btn-primary" style="width: 100%; justify-content: center; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%);" data-modal-open="registerModal">
+                        Quiero ser Founder &nbsp;&rarr;
+                    </button>
+                    <div style="text-align:center; margin-top:12px; font-size:12px; color:var(--text-muted);">Quedan <strong style="color:var(--text-main);">7</strong> lugares disponibles</div>
                 </div>
 
-                <ul class="pricing-features">
-                    <li><i class="fa-solid fa-check"></i> Pases ilimitados en Apple & Google Wallet</li>
-                    <li><i class="fa-solid fa-check"></i> Hasta 20 Sucursales (Geofencing GPS)</li>
-                    <li><i class="fa-solid fa-check"></i> Campañas automatizadas por Inteligencia Artificial</li>
-                    <li><i class="fa-solid fa-check"></i> Panel de control y Métricas en tiempo real</li>
-                    <li><i class="fa-solid fa-check"></i> Soporte personalizado vía correo electrónico</li>
-                </ul>
+                <!-- STANDARD CARD -->
+                <div class="pricing-card" style="margin:0; opacity: 0.95;">
+                    <div style="font-size: 14px; font-weight: 700; color: #6b7280; letter-spacing: 1px; text-transform: uppercase;">Licencia Estándar</div>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Ideal para restaurantes y negocios en crecimiento.</p>
+                    
+                    <div class="price-tag">
+                        <span class="price-currency">$</span>
+                        <span class="price-amount" id="price-standard">1,999</span>
+                        <span class="price-period" id="period-standard">MXN / mes + IVA (16%)</span>
+                    </div>
 
-                <button class="btn-primary" style="width: 100%; justify-content: center;" data-modal-open="registerModal">
-                    Comenzar Ahora &nbsp;&rarr;
-                </button>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> Pases Ilimitados Wallet</li>
+                        <li><i class="fa-solid fa-check"></i> Hasta 20 Sucursales GPS</li>
+                        <li><i class="fa-solid fa-check"></i> Campañas Auto-Push (Limitadas)</li>
+                        <li><i class="fa-solid fa-check"></i> Soporte en horario laboral</li>
+                    </ul>
+
+                    <button class="btn-outline" style="width: 100%; justify-content: center; margin-top:38px;" data-modal-open="registerModal">
+                        Comenzar Ahora &nbsp;&rarr;
+                    </button>
+                </div>
             </div>
+
+            <script>
+                function togglePricing() {
+                    const toggle = document.getElementById('pricing-toggle');
+                    const slider = document.getElementById('toggle-slider');
+                    const circle = document.getElementById('toggle-circle');
+                    const labelMonthly = document.getElementById('label-monthly');
+                    const labelYearly = document.getElementById('label-yearly');
+                    
+                    const priceFounder = document.getElementById('price-founder');
+                    const periodFounder = document.getElementById('period-founder');
+                    const priceStandard = document.getElementById('price-standard');
+                    const periodStandard = document.getElementById('period-standard');
+                    
+                    if (toggle.checked) {
+                        // Yearly
+                        slider.style.backgroundColor = 'var(--accent-violet)';
+                        circle.style.transform = 'translateX(26px)';
+                        labelYearly.style.fontWeight = '700';
+                        labelYearly.style.color = 'var(--text-main)';
+                        labelMonthly.style.fontWeight = '600';
+                        labelMonthly.style.color = 'var(--text-muted)';
+                        
+                        priceFounder.textContent = '9,999';
+                        periodFounder.textContent = 'MXN / año + IVA (16%)';
+                        priceStandard.textContent = '19,999';
+                        periodStandard.textContent = 'MXN / año + IVA (16%)';
+                    } else {
+                        // Monthly
+                        slider.style.backgroundColor = '#e5e7eb';
+                        circle.style.transform = 'translateX(0)';
+                        labelMonthly.style.fontWeight = '700';
+                        labelMonthly.style.color = 'var(--text-main)';
+                        labelYearly.style.fontWeight = '600';
+                        labelYearly.style.color = 'var(--text-muted)';
+                        
+                        priceFounder.textContent = '999';
+                        periodFounder.textContent = 'MXN / mes + IVA (16%)';
+                        priceStandard.textContent = '1,999';
+                        periodStandard.textContent = 'MXN / mes + IVA (16%)';
+                    }
+                }
+            </script>
         </div>
     </div>
 

@@ -197,3 +197,108 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     fetchMerchants();
 });
+
+
+// --- INBOX (FACTURAS Y TRANSFERENCIAS) SUPER ADMIN LOGIC ---
+async function fetchAdminInbox() {
+    if (!window.supabaseClient) return;
+    const tbody = document.getElementById('inbox-table-body');
+    if(!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Cargando solicitudes...</td></tr>';
+    
+    // Fetch Requests with Merchant info
+    const { data: inboxData, error } = await window.supabaseClient
+        .from('admin_inbox')
+        .select(`*, merchants(business_name, email)`)
+        .order('created_at', { ascending: false });
+        
+    if (error) {
+        console.error("Error fetching inbox:", error);
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Error cargando buzón.</td></tr>';
+        return;
+    }
+    
+    if (!inboxData || inboxData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#6b7280;">No hay solicitudes pendientes.</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    inboxData.forEach(item => {
+        const date = new Date(item.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const merchantName = item.merchants ? item.merchants.business_name : 'Desconocido';
+        const merchantEmail = item.merchants ? item.merchants.email : '';
+        
+        let statusBadge = '';
+        if (item.status === 'pending') statusBadge = '<span class="badge-status inactivo">Pendiente</span>';
+        else if (item.status === 'processed') statusBadge = '<span class="badge-status activo">Procesado</span>';
+        else statusBadge = `<span class="badge-status inactivo">${item.status}</span>`;
+        
+        let fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="btn btn-outline" style="padding:4px 8px; font-size:11px;"><i class="fa-solid fa-file-arrow-down"></i> Ver Comprobante</a>` : 'Sin archivo';
+        
+        let detailsHtml = '';
+        if (item.type === 'factura' && item.details) {
+            detailsHtml = `
+                <div style="font-size:11px; color:#4b5563;">
+                    <strong>RFC:</strong> ${item.details.rfc || 'N/A'}<br>
+                    <strong>Razón:</strong> ${item.details.razon || 'N/A'}<br>
+                    <strong>CP/Rég/Uso:</strong> ${item.details.cp} | ${item.details.regimen} | ${item.details.uso_cfdi}
+                </div>
+            `;
+        } else {
+            detailsHtml = `<div style="font-size:11px; color:#4b5563;">Comprobante de Pago Mensual</div>`;
+        }
+        
+        let actionHtml = `<button onclick="markAsProcessed('${item.id}')" class="btn btn-primary" style="padding:4px 8px; font-size:11px; background:#10b981;"><i class="fa-solid fa-check"></i> Marcar Listo</button>`;
+        if(item.status === 'processed') {
+            actionHtml = `<span style="font-size:11px; color:#10b981;"><i class="fa-solid fa-check-double"></i> Listo</span>`;
+        }
+        
+        html += `
+            <tr>
+                <td style="font-size:12px;">${date}</td>
+                <td>
+                    <strong>${merchantName}</strong>
+                    <div style="font-size:11px; color:#6b7280;">${merchantEmail}</div>
+                </td>
+                <td style="text-transform:capitalize; font-weight:bold; color: ${item.type === 'factura' ? '#8b5cf6' : '#3b82f6'};">
+                    ${item.type}
+                </td>
+                <td>${statusBadge}</td>
+                <td>${fileLink}</td>
+                <td>${detailsHtml}</td>
+                <td>${actionHtml}</td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+}
+
+window.markAsProcessed = async function(id) {
+    if (!window.supabaseClient) return;
+    const { error } = await window.supabaseClient
+        .from('admin_inbox')
+        .update({ status: 'processed' })
+        .eq('id', id);
+        
+    if (error) {
+        alert("Error: " + error.message);
+        return;
+    }
+    fetchAdminInbox();
+};
+
+// Hook into tab switching to refresh inbox when tab is clicked
+const inboxTabBtn = document.querySelector('[data-tab="tab-inbox"]');
+if (inboxTabBtn) {
+    inboxTabBtn.addEventListener('click', () => {
+        fetchAdminInbox();
+    });
+}
+
+// Fetch on load just in case it's the active tab (usually isn't on load)
+setTimeout(fetchAdminInbox, 1500);
+
+
