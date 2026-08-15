@@ -741,6 +741,10 @@ app.get('/panel', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+app.get('/privacidad.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'privacidad.html'));
+});
+
 // Ruta Dinámica (Catch-all) para páginas de restaurantes (ej. fideliorewards.com/starbucks)
 app.get('/:slug', (req, res) => {
     const slug = req.params.slug;
