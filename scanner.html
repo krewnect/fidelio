@@ -503,10 +503,10 @@
 
         async function init() {
             try {
-                // Usar ruta absoluta para que funcione tanto en web como en App nativa (iOS/Android)
-                const res = await fetch('https://fidelio-41j9.onrender.com/api/config');
-                const config = await res.json();
-                supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+                // Inyectar llaves directamente para máxima velocidad y evitar errores de red al inicio
+                const supabaseUrl = 'https://sjkgpyalbqqsfndekgtb.supabase.co';
+                const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqa2dweWFsYnFxc2ZuZGVrZ3RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwMzQzMjMsImV4cCI6MjEwMTYxMDMyM30.VX0NAjL7Hwm_PIk0gERLV2DdkQsErWF_HWI1w-rdp64';
+                supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
                 
                 const { data, error } = await supabaseClient.auth.getSession();
                 if (!error && data && data.session) {
