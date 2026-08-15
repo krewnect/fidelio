@@ -433,6 +433,10 @@
             .feature-card:last-child { border-bottom: none !important; }
             .hero-content h1 { font-size: 48px; }
             header { flex-direction: column; gap: 20px; }
+            .header-nav-container { flex-direction: column; gap: 16px !important; margin-left: 0 !important; width: 100%; align-items: center; }
+            .header-nav { flex-wrap: wrap; justify-content: center; gap: 16px !important; }
+            .header-buttons { flex-direction: column; width: 100%; gap: 12px !important; }
+            .header-buttons button { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -445,14 +449,14 @@
                 <img src="./fidelio_logo_purple.png?v=4" alt="Fidelio Logo" style="height: 44px; width: auto;" />
             </a>
             
-            <div style="display:flex; align-items:center; gap:32px; margin-left: auto;">
-                <nav style="display:flex; align-items:center; gap:24px; font-weight:500; font-size: 14px;">
+            <div class="header-nav-container" style="display:flex; align-items:center; gap:32px; margin-left: auto;">
+                <nav class="header-nav" style="display:flex; align-items:center; gap:24px; font-weight:500; font-size: 14px;">
                     <a href="#features" style="color:var(--text-main); text-decoration:none;">Características</a>
                     <a href="#pricing" style="color:var(--text-main); text-decoration:none;">Precios</a>
                     <a href="mailto:hola@fideliorewards.com" style="color:var(--text-main); text-decoration:none;">Contacto</a>
                 </nav>
 
-                <div style="display:flex; gap:16px;">
+                <div class="header-buttons" style="display:flex; gap:16px;">
                     <button class="btn-secondary" style="font-size:14px; padding:10px 20px;" data-modal-open="registerModal">Únete a Fidelio</button>
                     <button class="btn-primary" style="font-size:14px; padding:10px 20px;" data-modal-open="loginModal">Iniciar Sesión</button>
                 </div>
