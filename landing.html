@@ -868,6 +868,9 @@
                     <input type="password" id="login-password" required placeholder="Tu contraseña">
                 </div>
                 <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:16px;">Entrar a mi panel</button>
+                <div style="text-align:center; margin-top:16px;">
+                    <a href="#" style="color:var(--fidelio-violet); font-size:13px; text-decoration:none; font-weight:600;" onclick="document.getElementById('loginModal').classList.remove('active'); document.getElementById('recoveryModal').classList.add('active'); return false;">¿Olvidaste tu contraseña?</a>
+                </div>
             </form>
             <script>
                 document.getElementById('loginForm').addEventListener('submit', async (e) => {
