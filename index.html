@@ -1568,24 +1568,18 @@
                         </div>
 
                         <!-- Checkout Action -->
-                        <div style="display:flex; gap:12px; width:100%; max-width:400px;">
+                        <div style="display:flex; gap:12px; width:100%; max-width:400px; margin-bottom:16px;">
                             <input type="text" id="merchant-promo-code" class="fidelio-input" placeholder="Código Promo" style="flex:1;">
                             <button id="btn-pay-stripe" class="btn btn-primary" style="flex:2; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border:none; justify-content:center;">
                                 <i class="fa-brands fa-stripe"></i> Procesar Pago
                             </button>
                         </div>
-                    </div>
-                </div>
-                        <div>
-                            <span style="font-size:12px; color:var(--text-muted);">Tarjetas de Cliente</span>
-                            <div style="font-size:18px; font-weight:800; color:white;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet);"></i> 1,245 <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">emitidas</span></div>
+                        
+                        <div style="font-size: 11px; text-align:center;">
+                            Al procesar el pago o utilizar Fidelio, aceptas nuestro 
+                            <a href="/privacy.html" target="_blank" style="color:var(--fidelio-violet); text-decoration:none;">Aviso de Privacidad</a> y los 
+                            <a href="/terms.html" target="_blank" style="color:var(--fidelio-violet); text-decoration:none;">Términos y Condiciones</a>.
                         </div>
-                    </div>
-                    <div style="display:flex; gap:12px; align-items: center; flex-wrap: wrap;">
-                        <input type="text" id="merchant-promo-code" class="fidelio-input" placeholder="Código Promo" style="max-width: 150px;">
-                        <button id="btn-request-invoice" class="btn" style="background:rgba(139,92,246,0.1); border:1px solid var(--accent-violet); color:var(--accent-violet);"><i class="fa-solid fa-file-invoice"></i> Solicitar Factura</button>
-                        <button id="btn-bank-transfer" class="btn" style="background:rgba(139,92,246,0.1); border:1px solid var(--accent-violet); color:var(--accent-violet);"><i class="fa-solid fa-building-columns"></i> Transferencia</button>
-                        <button id="btn-pay-stripe" class="btn btn-primary" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border:none;"><i class="fa-brands fa-stripe"></i> Pagar con Stripe</button>
                     </div>
                 </div>
 
