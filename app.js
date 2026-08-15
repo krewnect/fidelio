@@ -444,10 +444,15 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
         const { data: branches } = await supabase.from('branches').select('lat, lng, name').eq('merchant_id', req.merchantId);
 
         // Crear la estructura de la tarjeta
+        // Crear la estructura de la tarjeta
         const pass = new PKPass({
             "pass.json": {
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
+                serialNumber: customerId,
+                teamIdentifier: teamIdentifier,
+                webServiceURL: "https://fidelio-41j9.onrender.com/api/wallet",
+                authenticationToken: customerId.replace(/-/g, '').substring(0, 16), // A token must be at least 16 chars
                 serialNumber: customer.id,
                 teamIdentifier: teamIdentifier,
                 organizationName: merchant.business_name || "Mi Negocio",
@@ -812,3 +817,242 @@ Contexto del Negocio actual: ${JSON.stringify(merchantContext || {})}
 app.listen(PORT, () => {
     console.log(`🚀 Fidelio Backend Server active on http://localhost:${PORT}`);
 });
+
+
+// ============================================================================
+// APPLE WALLET WEB SERVICE PROTOCOL & APNs
+// ============================================================================
+
+const apn = require('@parse/node-apn');
+
+let apnProvider = null;
+if (process.env.APPLE_SIGNER_CERT && process.env.APPLE_SIGNER_KEY) {
+    try {
+        apnProvider = new apn.Provider({
+            cert: Buffer.from(process.env.APPLE_SIGNER_CERT, 'base64'),
+            key: Buffer.from(process.env.APPLE_SIGNER_KEY, 'base64'),
+            passphrase: process.env.APPLE_SIGNER_KEY_PASSPHRASE || '',
+            production: true // Change to false if using development sandbox
+        });
+        console.log("🍏 APNs Provider Inicializado.");
+    } catch(e) {
+        console.error("Error inicializando APNs:", e);
+    }
+}
+
+// Middleware to check Apple Auth Token
+const checkAppleAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('ApplePass ')) {
+        return res.status(401).send();
+    }
+    req.appleAuthToken = authHeader.replace('ApplePass ', '');
+    next();
+};
+
+// 1. Register a Device
+app.post('/api/wallet/v1/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber', checkAppleAuth, async (req, res) => {
+    const { deviceLibraryIdentifier, passTypeIdentifier, serialNumber } = req.params;
+    const { pushToken } = req.body;
+    
+    if (!pushToken) return res.status(400).send();
+    
+    try {
+        // Find merchant from customer
+        const { data: customer } = await supabase.from('customers').select('merchant_id').eq('id', serialNumber).single();
+        if(!customer) return res.status(404).send();
+        
+        const { error } = await supabase.from('pass_registrations').upsert({
+            device_library_identifier: deviceLibraryIdentifier,
+            push_token: pushToken,
+            serial_number: serialNumber,
+            pass_type_identifier: passTypeIdentifier,
+            merchant_id: customer.merchant_id,
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'device_library_identifier, serial_number' });
+        
+        if (error) throw error;
+        
+        res.status(201).send(); // Or 200 if already exists
+    } catch (err) {
+        console.error("Error in Apple Wallet Registration:", err);
+        res.status(500).send();
+    }
+});
+
+// 2. Unregister a Device
+app.delete('/api/wallet/v1/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier/:serialNumber', checkAppleAuth, async (req, res) => {
+    const { deviceLibraryIdentifier, passTypeIdentifier, serialNumber } = req.params;
+    try {
+        await supabase.from('pass_registrations').delete()
+            .match({ device_library_identifier: deviceLibraryIdentifier, serial_number: serialNumber });
+        res.status(200).send();
+    } catch (err) {
+        res.status(500).send();
+    }
+});
+
+// 3. Get Serial Numbers for Updated Passes
+// This gets hit when the device receives an empty APNs push
+app.get('/api/wallet/v1/devices/:deviceLibraryIdentifier/registrations/:passTypeIdentifier', async (req, res) => {
+    const { deviceLibraryIdentifier, passTypeIdentifier } = req.params;
+    const passesUpdatedSince = req.query.passesUpdatedSince;
+    
+    try {
+        // En una implementación real, compararíamos `passesUpdatedSince` con la fecha de la última actualización de la tarjeta (ej. un sello nuevo o campaña push).
+        // Por simplicidad, devolveremos todos los pases que tenga el dispositivo y dejamos que Apple decida actualizarlos.
+        const { data, error } = await supabase.from('pass_registrations')
+            .select('serial_number, updated_at')
+            .eq('device_library_identifier', deviceLibraryIdentifier)
+            .eq('pass_type_identifier', passTypeIdentifier);
+            
+        if (error || !data || data.length === 0) return res.status(204).send(); // 204 No Content
+        
+        let serialNumbers = data.map(d => d.serial_number);
+        // We can just return the latest updated_at as the new tag
+        let lastUpdated = data[0].updated_at;
+        
+        res.json({
+            serialNumbers: serialNumbers,
+            lastUpdated: new Date().getTime().toString()
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+});
+
+// 4. Download Updated Pass
+app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAuth, async (req, res) => {
+    const { passTypeIdentifier, serialNumber } = req.params;
+    
+    try {
+        const { PKPass } = require('passkit-generator');
+        
+        const wwdr = process.env.APPLE_WWDR_CERT;
+        const signerCert = process.env.APPLE_SIGNER_CERT;
+        const signerKey = process.env.APPLE_SIGNER_KEY;
+        const signerKeyPassphrase = process.env.APPLE_SIGNER_KEY_PASSPHRASE;
+        const teamIdentifier = process.env.APPLE_TEAM_ID;
+        
+        const { data: customer } = await supabase.from('customers').select('*').eq('id', serialNumber).single();
+        if (!customer) return res.status(404).send();
+        
+        const { data: merchant } = await supabase.from('merchants').select('*').eq('id', customer.merchant_id).single();
+        if (!merchant) return res.status(404).send();
+        
+        // Find latest active push campaign for this merchant to inject into pass
+        const { data: latestPush } = await supabase.from('push_campaigns')
+            .select('*').eq('merchant_id', merchant.id).order('created_at', { ascending: false }).limit(1);
+
+        let pushTitle = '';
+        let pushBody = '';
+        if (latestPush && latestPush.length > 0) {
+            pushTitle = latestPush[0].title;
+            pushBody = latestPush[0].body;
+        }
+
+        const pass = new PKPass({
+            "pass.json": {
+                formatVersion: 1,
+                passTypeIdentifier: passTypeIdentifier,
+                serialNumber: serialNumber,
+                teamIdentifier: teamIdentifier,
+                webServiceURL: "https://fidelio-41j9.onrender.com/api/wallet",
+                authenticationToken: serialNumber.replace(/-/g, '').substring(0, 16),
+                organizationName: merchant.business_name || "Mi Negocio",
+                description: `Pase de Lealtad de ${merchant.business_name}`,
+                logoText: merchant.business_name,
+                foregroundColor: "rgb(255, 255, 255)",
+                backgroundColor: "rgb(17, 24, 39)",
+                labelColor: "rgb(139, 92, 246)",
+                storeCard: {
+                    primaryFields: [
+                        { key: "stamps", label: "SELLOS", value: `${customer.stamps_count} / ${merchant.stamps_required}` }
+                    ],
+                    secondaryFields: [
+                        { key: "name", label: "CLIENTE", value: customer.name || 'Invitado' }
+                    ],
+                    backFields: [
+                        { key: "promo", label: pushTitle || "Promociones", value: pushBody || "¡Visítanos pronto y acumula más sellos!", changeMessage: "%@" }
+                    ]
+                }
+            }
+        });
+        
+        pass.setCertificates({
+            wwdr: Buffer.from(wwdr, 'base64'),
+            signerCert: Buffer.from(signerCert, 'base64'),
+            signerKey: Buffer.from(signerKey, 'base64'),
+            signerKeyPassphrase: signerKeyPassphrase
+        });
+
+        // Try to fetch custom logo if any, otherwise use default
+        try {
+            const fs = require('fs');
+            const logoPath = require('path').join(__dirname, 'fidelio_logo_white.png');
+            if(fs.existsSync(logoPath)) pass.addBuffer('logo.png', fs.readFileSync(logoPath));
+        } catch(e) {}
+        
+        const passBuffer = await pass.getAsBuffer();
+        res.setHeader('Content-Type', 'application/vnd.apple.pkpass');
+        res.setHeader('Content-Disposition', `attachment; filename=${merchant.business_name.replace(/\s+/g, '_')}.pkpass`);
+        res.send(passBuffer);
+        
+    } catch (err) {
+        console.error("Error generating updated pass:", err);
+        res.status(500).send();
+    }
+});
+
+// 5. Log Errors from Apple
+app.post('/api/wallet/v1/log', (req, res) => {
+    console.error("Apple Wallet Error Logs:", req.body.logs);
+    res.status(200).send();
+});
+
+// ============================================================================
+// TRIGGER MARKETING PUSH API
+// ============================================================================
+app.post('/api/push/send', apiLimiter, requireMerchantAuth, async (req, res) => {
+    const { title, body } = req.body;
+    if (!title || !body) return res.status(400).json({ error: 'Faltan título o cuerpo de la campaña' });
+    
+    try {
+        // 1. Guardar campaña en DB
+        const { error: insertErr } = await supabase.from('push_campaigns').insert([{
+            merchant_id: req.merchantId,
+            title,
+            body,
+            status: 'sent'
+        }]);
+        if (insertErr) throw insertErr;
+        
+        // 2. Traer tokens de APNs de los clientes de este comercio
+        const { data: registrations } = await supabase.from('pass_registrations').select('push_token').eq('merchant_id', req.merchantId);
+        
+        if (!registrations || registrations.length === 0) {
+            return res.json({ success: true, message: "Campaña guardada, pero no hay iPhones registrados para Push." });
+        }
+        
+        const tokens = registrations.map(r => r.push_token);
+        
+        // 3. Mandar APNs ping (Notificación vacía que activa el Pass Web Service)
+        if (apnProvider) {
+            let note = new apn.Notification();
+            // Para tarjetas Wallet, no enviamos mensaje, enviamos un payload vacío y un apns-push-type "background" o omitido.
+            // Para actualizar el pass, enviamos el payload vacío (según docs de Apple).
+            let result = await apnProvider.send(note, tokens);
+            console.log(`[APNs] Push Enviado. Exitosos: ${result.sent.length}, Fallidos: ${result.failed.length}`);
+        } else {
+            console.warn("APNs provider no está configurado. La campaña se guardó pero no se mandó ping a Apple.");
+        }
+        
+        res.json({ success: true, message: `Campaña enviada a ${tokens.length} dispositivos.` });
+    } catch (err) {
+        console.error("Error enviando push:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+

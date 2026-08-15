@@ -3617,18 +3617,26 @@ if (btnSendMktPush) {
         setTimeout(() => mktProgressBar.style.width = '30%', 500);
         setTimeout(() => mktProgressBar.style.width = '80%', 1500);
         
-        if (window.supabaseClient && state.tenantId) {
-            const { error } = await window.supabaseClient
-                .from('push_campaigns')
-                .insert([{
-                    merchant_id: state.tenantId,
+        // Hit the actual Node.js endpoint to trigger APNs
+        try {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            const res = await fetch('/api/push/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
                     title: mktTitle.value,
-                    body: mktBody.value,
-                    segment: 'todos',
-                    status: 'sent'
-                }]);
-                
-            if (error) console.error("Error saving campaign", error);
+                    body: mktBody.value
+                })
+            });
+            const json = await res.json();
+            if(!res.ok) throw new Error(json.error || "Error enviando push");
+            console.log("Push trigger response:", json);
+        } catch(err) {
+            console.error("Error trigger push:", err);
+            // We won't block the UI to ensure the animation finishes smoothly
         }
         
         setTimeout(() => {
