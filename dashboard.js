@@ -510,8 +510,8 @@ let saveTimeout = null;
     const labelYr = document.getElementById('label-annual');
     if (toggleCycle) {
         toggleCycle.addEventListener('change', () => {
-            if (labelMo) labelMo.style.color = toggleCycle.checked ? 'var(--text-muted)' : 'white';
-            if (labelYr) labelYr.style.color = toggleCycle.checked ? 'white' : 'var(--text-muted)';
+            if (labelMo) labelMo.style.color = toggleCycle.checked ? 'var(--text-muted)' : 'var(--text-main)';
+            if (labelYr) labelYr.style.color = toggleCycle.checked ? 'var(--text-main)' : 'var(--text-muted)';
             updatePricingUI();
         });
         if (labelMo) labelMo.addEventListener('click', () => { toggleCycle.checked = false; toggleCycle.dispatchEvent(new Event('change')); });
