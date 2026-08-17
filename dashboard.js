@@ -4878,23 +4878,51 @@ window.executeCopilotIdea = function(opp) {
     tabContents.forEach(c => c.classList.remove('active'));
 
     if (opp.format === 'card') {
-        // 1. Cambiar a la pestaña de Builder
-        const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
-        const builderTabContent = document.getElementById('tab-builder');
-        
-        if(builderTabBtn) builderTabBtn.classList.add('active');
-        if(builderTabContent) builderTabContent.classList.add('active');
+        // 1. Inicializar como Tarjeta Especial
+        if(window.createNewSpecialCard) window.createNewSpecialCard();
 
-        // 2. Rellenar campos de la tarjeta
+        // 2. Determinar el modo (Membresía, Multipass, etc.)
+        let mode = 'membership';
+        if (opp.type === 'dias_lentos') mode = 'multipass';
+        if (opp.type === 'recuperacion' || opp.type === 'cumpleanos') mode = 'certificates';
+        
+        // Seleccionar el radio button correspondiente
+        const modeRadio = document.querySelector(`input[name="loyalty_mode"][value="${mode}"]`);
+        if (modeRadio) {
+            modeRadio.checked = true;
+            modeRadio.dispatchEvent(new Event('change'));
+        }
+
+        // 3. Rellenar campos del Builder y del estado
         const titleInput = document.getElementById('rest-name');
         const descInput = document.getElementById('rest-desc');
         
-        if(titleInput) titleInput.value = opp.title;
-        if(descInput) descInput.value = opp.pushMessage.substring(0, 40); // max 40 chars
+        if(titleInput) {
+            titleInput.value = opp.title;
+            if(window.state) window.state.restaurantName = opp.title;
+        }
+        if(descInput) descInput.value = opp.pushMessage.substring(0, 40);
+
+        // 4. Rellenar campos específicos de Tarjetas Especiales
+        if (mode === 'membership') {
+            const benefitInput = document.getElementById('mem-benefit');
+            if (benefitInput) benefitInput.value = opp.pushMessage;
+        } else if (mode === 'multipass') {
+            const serviceInput = document.getElementById('mp-service');
+            if (serviceInput) serviceInput.value = opp.title;
+        } else if (mode === 'certificates') {
+            // Se queda con el monto por defecto
+        }
+
+        // 5. Cambiar a la pestaña de Tarjetas Especiales (ya lo hace createNewSpecialCard, pero por si acaso aseguramos)
+        const specialTabBtn = document.querySelector('.nav-tab[data-tab="tab-special-cards"]');
+        const specialTabContent = document.getElementById('tab-special-cards');
+        if(specialTabBtn) specialTabBtn.classList.add('active');
+        if(specialTabContent) specialTabContent.classList.add('active');
 
         // Disparar render
         if(window.updatePassRender) window.updatePassRender();
-        showToast("Tarjeta Especial configurada por IA. Revisa el diseño.", "success");
+        if (typeof window.showToast === 'function') window.showToast("Tarjeta Especial preconfigurada. Ajusta los detalles.", "success");
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } else {
