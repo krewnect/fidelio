@@ -82,6 +82,9 @@ CREATE TABLE public.promo_codes (
     max_uses INTEGER DEFAULT 1,
     used_count INTEGER DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
+    stripe_payment_link TEXT,
+    free_branches_count INTEGER DEFAULT 0,
+    custom_branch_price NUMERIC,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
