@@ -4144,23 +4144,25 @@ window.startDesignerFlow = function(programType) {
 }
 
 // --- MULTI-CARD BUILDER LOGIC ---
+function getBuilderCampaigns() {
+    let camps = state.campaigns || [];
+    if (camps.length === 0) {
+        camps = [
+            { id: 'camp_1', name: 'Monedero Digital General', config: { type: 'cashback', colorPrimary: '#1e1b4b', colorAccent: '#8b5cf6', iconClass: 'fa-wallet' } },
+            { id: 'camp_2', name: 'Tarjeta de Sellos', config: { type: 'stamps', colorPrimary: '#0f172a', colorAccent: '#f59e0b', iconClass: 'fa-star', stampsTotal: 10 } },
+            { id: 'camp_3', name: 'Membresía VIP', config: { type: 'hybrid', colorPrimary: '#3f3f46', colorAccent: '#eab308', iconClass: 'fa-crown' } }
+        ];
+    }
+    return camps;
+}
+
 window.populateBuilderCampaignSelect = function() {
     const sel = document.getElementById('builder-campaign-select');
     if (!sel) return;
     
-    // Clear
     sel.innerHTML = '<option value="">-- Selecciona una campaña --</option>';
     
-    // Mock campaigns if state.campaigns is empty
-    let camps = state.campaigns || [];
-    if (camps.length === 0) {
-        camps = [
-            { id: 'camp_1', name: 'Monedero Digital General' },
-            { id: 'camp_2', name: 'Tarjeta de Sellos' },
-            { id: 'camp_3', name: 'Membresía VIP' }
-        ];
-    }
-    
+    const camps = getBuilderCampaigns();
     camps.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
@@ -4181,7 +4183,9 @@ window.loadCampaignToBuilder = function(campaignId) {
     }
     state.currentCampaignId = campaignId;
     
-    let camp = state.campaigns ? state.campaigns.find(c => c.id === campaignId) : null;
+    const camps = getBuilderCampaigns();
+    let camp = camps.find(c => c.id === campaignId);
+    
     if (camp && camp.config) {
         const c = camp.config;
         
@@ -4200,7 +4204,7 @@ window.loadCampaignToBuilder = function(campaignId) {
         const st = document.getElementById('stamps-total');
         if(st && c.stampsTotal) st.value = c.stampsTotal;
         
-        if (typeof showToast === 'function') showToast("Diseño cargado desde la campaña: " + (camp.name || camp.tipo), "success");
+        if (typeof showToast === 'function') showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
     } else {
         if (typeof showToast === 'function') showToast("Campaña nueva. Configura el diseño.", "info");
     }
