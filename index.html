@@ -3211,9 +3211,9 @@
     
     <!-- COMPLEX SCHEDULE CONFIG MODAL -->
     <div class="modal-overlay" id="schedule-config-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
-        <div class="modal-content" style="background:var(--surface); width:95%; max-width:600px; max-height:85vh; border-radius:20px; padding:0; position:relative; box-shadow:0 25px 50px rgba(0,0,0,0.3); display:flex; flex-direction:column; overflow:hidden;">
+        <div class="modal-content" style="background:#111827; width:95%; max-width:600px; max-height:85vh; border-radius:20px; border:1px solid rgba(255,255,255,0.1); padding:0; position:relative; box-shadow:0 25px 50px rgba(0,0,0,0.5); display:flex; flex-direction:column; overflow:hidden;">
             
-            <div style="padding:24px 32px; border-bottom:1px solid var(--border-soft); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
+            <div style="padding:24px 32px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03);">
                 <div>
                     <h2 style="font-size:20px; margin-bottom:4px; color:var(--text-main);"><i class="fa-solid fa-clock" style="color:var(--accent-violet); margin-right:8px;"></i> Horarios Múltiples</h2>
                     <p style="color:var(--text-muted); font-size:13px; margin:0;">Define múltiples franjas horarias (turnos) para cada día.</p>
@@ -3225,7 +3225,7 @@
                 <!-- JS will populate this with days -->
             </div>
             
-            <div style="padding:24px 32px; border-top:1px solid var(--border-soft); background:var(--bg-color);">
+            <div style="padding:24px 32px; border-top:1px solid rgba(255,255,255,0.05); background:#111827;">
                 <button class="btn btn-primary" onclick="saveComplexSchedule()" style="width:100%; justify-content:center; background:linear-gradient(135deg, #8b5cf6, #6366f1) !important; color:#fff; border:none; padding:16px; font-size:16px; font-weight:700; border-radius:12px; box-shadow:0 4px 14px rgba(139,92,246,0.4);"><i class="fa-solid fa-floppy-disk"></i> Guardar Franjas Horarias</button>
             </div>
         </div>
