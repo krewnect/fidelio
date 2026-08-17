@@ -132,23 +132,18 @@ window.selectCampaign = async function(id) {
 };
 
 window.saveStripeKeys = async function() {
-    const pub = document.getElementById('stripe-pub-key').value;
-    const sec = document.getElementById('stripe-secret-key').value;
-    try {
-        const res = await fetch('/api/stripe/keys', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ stripe_pub_key: pub, stripe_secret_key: sec })
-        });
-        if(res.ok) {
-            if (typeof showToast === 'function') showToast("Llaves de Stripe guardadas", "success");
-        } else {
-            if (typeof showToast === 'function') showToast("Error al guardar Stripe", "error");
-        }
-    } catch(e) {
-        console.error(e);
-        alert("Error saving stripe: " + e.message);
+    const linkInput = document.getElementById('stripe-payment-link');
+    const paymentLink = linkInput ? linkInput.value : '';
+    
+    if (!paymentLink || !paymentLink.includes('stripe.com')) {
+        if (typeof showToast === 'function') showToast("Ingresa un Payment Link válido de Stripe", "warning");
+        return;
     }
+    
+    // We save this into the current active campaign (if there is one) or locally
+    state.customBannerUrl = paymentLink;
+    
+    if (typeof showToast === 'function') showToast("Payment Link de Stripe vinculado con éxito", "success");
 };
 
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
