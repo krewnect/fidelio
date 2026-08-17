@@ -4993,3 +4993,175 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==========================================
+// CAJA (POS) LOGIC
+// ==========================================
+
+window.openCajaModal = function() {
+    const modal = document.getElementById('modal-caja-transaction');
+    if(modal) {
+        modal.style.display = 'flex';
+        // Reset fields
+        document.getElementById('caja-concept').value = '';
+        document.getElementById('caja-amount').value = '';
+        document.getElementById('caja-method').value = 'Efectivo';
+        
+        // Anim In
+        setTimeout(() => {
+            modal.style.opacity = '1';
+            const content = document.getElementById('caja-modal-content');
+            if(content) content.style.transform = 'translateY(0)';
+        }, 10);
+    }
+};
+
+window.closeCajaModal = function() {
+    const modal = document.getElementById('modal-caja-transaction');
+    if(modal) {
+        modal.style.opacity = '0';
+        const content = document.getElementById('caja-modal-content');
+        if(content) content.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+};
+
+window.loadCajaTransactions = async function() {
+    if(!window.merchantId) return;
+    
+    try {
+        const { data, error } = await _supabase
+            .from('merchant_transactions')
+            .select('*')
+            .eq('merchant_id', window.merchantId)
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.warn("La tabla merchant_transactions no existe o hay un error. Por favor crea la tabla primero.");
+            return;
+        }
+        
+        // Render Table
+        const tbody = document.getElementById('caja-transactions-tbody');
+        if(!tbody) return;
+        
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-muted);">No hay movimientos registrados.</td></tr>`;
+        } else {
+            let html = '';
+            data.forEach(txn => {
+                const date = new Date(txn.created_at).toLocaleString('es-MX', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute:'2-digit'
+                });
+                
+                let iconMethod = '💵';
+                if(txn.payment_method === 'Tarjeta') iconMethod = '💳';
+                if(txn.payment_method === 'Transferencia') iconMethod = '🏦';
+                if(txn.payment_method === 'Stripe') iconMethod = '📱';
+                
+                html += `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 16px 24px; color: var(--text-muted); font-size: 13px;">${date}</td>
+                        <td style="padding: 16px 24px; font-weight: 500;">${txn.concept}</td>
+                        <td style="padding: 16px 24px;">${iconMethod} ${txn.payment_method}</td>
+                        <td style="padding: 16px 24px; text-align: right; font-weight: 700; color: #10b981;">+$${parseFloat(txn.amount).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        // Calculate Metrics
+        let hoy = 0;
+        let semana = 0;
+        let mes = 0;
+        let total = 0;
+        
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startOfWeek = new Date(startOfDay);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        
+        data.forEach(txn => {
+            const amount = parseFloat(txn.amount) || 0;
+            const txnDate = new Date(txn.created_at);
+            
+            total += amount;
+            if(txnDate >= startOfMonth) mes += amount;
+            if(txnDate >= startOfWeek) semana += amount;
+            if(txnDate >= startOfDay) hoy += amount;
+        });
+        
+        document.getElementById('caja-hoy').textContent = `$${hoy.toFixed(2)}`;
+        document.getElementById('caja-semana').textContent = `$${semana.toFixed(2)}`;
+        document.getElementById('caja-mes').textContent = `$${mes.toFixed(2)}`;
+        document.getElementById('caja-total').textContent = `$${total.toFixed(2)}`;
+        
+    } catch (err) {
+        console.error("Error cargando transacciones de caja:", err);
+    }
+};
+
+window.saveCajaTransaction = async function() {
+    if(!window.merchantId) return;
+    
+    const concept = document.getElementById('caja-concept').value.trim();
+    const amount = parseFloat(document.getElementById('caja-amount').value);
+    const method = document.getElementById('caja-method').value;
+    
+    if(!concept || isNaN(amount) || amount <= 0) {
+        if(typeof showToast === 'function') showToast("Por favor ingresa un concepto y monto válido.", "error");
+        else alert("Por favor ingresa un concepto y monto válido.");
+        return;
+    }
+    
+    const btn = document.querySelector('#modal-caja-transaction .btn-primary');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+    btn.disabled = true;
+    
+    try {
+        const { error } = await _supabase
+            .from('merchant_transactions')
+            .insert([{
+                merchant_id: window.merchantId,
+                concept: concept,
+                amount: amount,
+                payment_method: method
+            }]);
+            
+        if (error) {
+            throw error;
+        }
+        
+        if(typeof showToast === 'function') showToast("Pago registrado correctamente.", "success");
+        window.closeCajaModal();
+        window.loadCajaTransactions(); // Reload list
+        
+    } catch (err) {
+        console.error("Error saving transaction:", err);
+        if(typeof showToast === 'function') showToast("Error al guardar. Asegúrate de haber creado la tabla en Supabase.", "error");
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+};
+
+// Add tab listener hook
+document.addEventListener('DOMContentLoaded', () => {
+    // When clicking tabs, if it's Caja, load data
+    const navTabs = document.querySelectorAll('.nav-tab');
+    navTabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            if(tabId === 'tab-caja') {
+                window.loadCajaTransactions();
+            }
+        });
+    });
+});
+
