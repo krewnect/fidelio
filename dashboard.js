@@ -4174,43 +4174,155 @@ window.populateBuilderCampaignSelect = function() {
 };
 
 window.loadCampaignToBuilder = function(campaignId) {
-    if (!campaignId) return;
+    if (!campaignId) {
+        state.currentCampaignId = null;
+        if(window.checkRedundancy) window.checkRedundancy();
+        return;
+    }
     state.currentCampaignId = campaignId;
     
-    // Generate a fresh mock config based on the ID to simulate loading distinct designs
-    if (campaignId === 'camp_2') {
-        document.getElementById('program-type-select').value = 'stamps';
-        document.getElementById('color-primary').value = '#1e1b4b';
-        document.getElementById('color-accent').value = '#4ade80';
-    } else if (campaignId === 'camp_3') {
-        document.getElementById('program-type-select').value = 'cashback';
-        document.getElementById('color-primary').value = '#000000';
-        document.getElementById('color-accent').value = '#fbbf24';
-        document.getElementById('rest-name').value = 'Membresía VIP';
+    let camp = state.campaigns ? state.campaigns.find(c => c.id === campaignId) : null;
+    if (camp && camp.config) {
+        const c = camp.config;
+        
+        const pt = document.getElementById('program-type-select');
+        if(pt && c.type) pt.value = c.type;
+        
+        const cPri = document.getElementById('color-primary');
+        if(cPri && c.colorPrimary) cPri.value = c.colorPrimary;
+        
+        const cAcc = document.getElementById('color-accent');
+        if(cAcc && c.colorAccent) cAcc.value = c.colorAccent;
+        
+        const rIcon = document.getElementById('rest-icon');
+        if(rIcon && c.iconClass) rIcon.value = c.iconClass;
+        
+        const st = document.getElementById('stamps-total');
+        if(st && c.stampsTotal) st.value = c.stampsTotal;
+        
+        if (typeof showToast === 'function') showToast("Diseño cargado desde la campaña: " + (camp.name || camp.tipo), "success");
     } else {
-        document.getElementById('program-type-select').value = 'cashback';
-        document.getElementById('color-primary').value = '#1e1b4b';
-        document.getElementById('color-accent').value = '#8b5cf6';
+        if (typeof showToast === 'function') showToast("Campaña nueva. Configura el diseño.", "info");
     }
     
-    if (window.updatePassRender) window.updatePassRender();
-    if (typeof showToast === 'function') showToast("Diseño cargado para la campaña seleccionada.", "success");
+    if(window.checkRedundancy) window.checkRedundancy();
+    if(window.updatePassRender) window.updatePassRender();
 };
 
 
 
-// Listener para ocultar redundancias si se selecciona una campaña
+window.checkRedundancy = function() {
+    const campSel = document.getElementById('builder-campaign-select');
+    const isCamp = campSel ? !!campSel.value : !!state.currentCampaignId;
+    
+    const msgInput = document.getElementById('rest-desc');
+    const rewardInput = document.getElementById('stamps-reward');
+    
+    if(msgInput && msgInput.parentElement) msgInput.parentElement.style.display = isCamp ? 'none' : 'block';
+    if(rewardInput && rewardInput.parentElement) rewardInput.parentElement.style.display = isCamp ? 'none' : 'block';
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const campSel = document.getElementById('builder-campaign-select');
     if(campSel) {
-        campSel.addEventListener('change', (e) => {
-            const isCamp = !!e.target.value;
-            // Campos redundantes: Mensaje Corto (Promo) y Premio a Desbloquear
-            const msgInput = document.getElementById('rest-desc');
-            const rewardInput = document.getElementById('stamps-reward');
-            
-            if(msgInput && msgInput.parentElement) msgInput.parentElement.style.display = isCamp ? 'none' : 'block';
-            if(rewardInput && rewardInput.parentElement) rewardInput.parentElement.style.display = isCamp ? 'none' : 'block';
-        });
+        campSel.addEventListener('change', window.checkRedundancy);
     }
+    setTimeout(window.checkRedundancy, 100);
+});
+
+// --- COMPLEX SCHEDULE LOGIC ---
+window.scheduleData = {
+    'Lunes': [{start: '09:00', end: '18:00'}],
+    'Martes': [{start: '09:00', end: '18:00'}],
+    'Miércoles': [{start: '09:00', end: '18:00'}],
+    'Jueves': [{start: '09:00', end: '18:00'}],
+    'Viernes': [{start: '09:00', end: '18:00'}],
+    'Sábado': [{start: '10:00', end: '14:00'}],
+    'Domingo': []
+};
+
+window.renderScheduleDays = function() {
+    const container = document.getElementById('schedule-days-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    
+    days.forEach(day => {
+        const shifts = window.scheduleData[day] || [];
+        
+        let shiftsHtml = '';
+        if (shifts.length === 0) {
+            shiftsHtml = `<div style="font-size:13px; color:var(--accent-amber); padding:8px 0;"><i class="fa-solid fa-moon"></i> Cerrado</div>`;
+        } else {
+            shifts.forEach((shift, index) => {
+                shiftsHtml += `
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <input type="time" class="premium-input schedule-time-input" data-day="${day}" data-index="${index}" data-type="start" value="${shift.start}" style="padding:8px; font-size:13px; width:110px;">
+                        <span style="color:var(--text-muted); font-size:12px;">a</span>
+                        <input type="time" class="premium-input schedule-time-input" data-day="${day}" data-index="${index}" data-type="end" value="${shift.end}" style="padding:8px; font-size:13px; width:110px;">
+                        <button onclick="removeShift('${day}', ${index})" style="background:rgba(239,68,68,0.1); border:none; color:#ef4444; width:32px; height:32px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+            });
+        }
+        
+        const dayHtml = `
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-soft); border-radius:12px; padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="margin:0; font-size:15px; font-weight:700;">${day}</h3>
+                    <button onclick="addShift('${day}')" style="background:none; border:none; color:var(--accent-violet); font-size:13px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-plus"></i> Añadir Turno</button>
+                </div>
+                <div>${shiftsHtml}</div>
+            </div>
+        `;
+        container.innerHTML += dayHtml;
+    });
+};
+
+window.addShift = function(day) {
+    if(!window.scheduleData[day]) window.scheduleData[day] = [];
+    window.scheduleData[day].push({start: '10:00', end: '14:00'});
+    window.renderScheduleDays();
+};
+
+window.removeShift = function(day, index) {
+    if(window.scheduleData[day]) {
+        window.scheduleData[day].splice(index, 1);
+        window.renderScheduleDays();
+    }
+};
+
+window.saveComplexSchedule = function() {
+    // Collect data from DOM to memory just before saving
+    const inputs = document.querySelectorAll('.schedule-time-input');
+    inputs.forEach(input => {
+        const d = input.getAttribute('data-day');
+        const idx = parseInt(input.getAttribute('data-index'));
+        const t = input.getAttribute('data-type');
+        if(window.scheduleData[d] && window.scheduleData[d][idx]) {
+            window.scheduleData[d][idx][t] = input.value;
+        }
+    });
+    
+    // Save to state
+    state.schedules = window.scheduleData;
+    console.log("Horarios guardados en estado:", state.schedules);
+    
+    document.getElementById('schedule-config-modal').style.display='none';
+    if(typeof showToast === 'function') showToast("Franjas horarias configuradas y guardadas exitosamente", "success");
+};
+
+// Hook rendering into modal open
+document.addEventListener('DOMContentLoaded', () => {
+    // Intercept clicks on any element that opens schedule modal
+    document.body.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (btn && btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('schedule-config-modal')) {
+            if (btn.getAttribute('onclick').includes('flex') || btn.getAttribute('onclick').includes('block')) {
+                // If it's opening the modal
+                setTimeout(window.renderScheduleDays, 50);
+            }
+        }
+    });
 });
