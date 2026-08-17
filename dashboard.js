@@ -90,9 +90,20 @@ window.selectCampaign = async function(id) {
         state.colorAccent = camp.color_accent || "#8b5cf6";
         state.customLogoUrl = camp.logo_url || null;
         state.customBannerUrl = camp.banner_url || null;
+        if(state.customBannerUrl && state.customBannerUrl.includes('stripe.com')) {
+            const linkInput = document.getElementById('stripe-payment-link');
+            if(linkInput) linkInput.value = state.customBannerUrl;
+        }
         state.iconClass = camp.stamp_icon_url || "fa-burger";
         state.stampsReward = camp.custom_cta_label || "Premio";
         state.activeMode = camp.type || "hybrid";
+        const btnRemoveStamp = document.getElementById('btn-remove-stamp');
+        if (state.iconClass && state.iconClass.startsWith('data:image')) {
+            if (btnRemoveStamp) btnRemoveStamp.style.display = 'inline-block';
+        } else {
+            if (btnRemoveStamp) btnRemoveStamp.style.display = 'none';
+        }
+
         
         if (camp.rules_config) {
             state.cashbackPercent = camp.rules_config.cashback_percent || 10;
@@ -1662,12 +1673,22 @@ function updatePassRender() {
             if (stampsGrid) {
                 stampsGrid.innerHTML = '';
                 const userStamps = sampleClient.stamps || 3; // Demo default
+                // Use custom icon/image for stamps
+                const iconSrc = state.iconClass || 'fa-star';
+                const isImage = iconSrc.startsWith('data:image') || iconSrc.startsWith('http');
+
                 for (let i = 1; i <= sTotal; i++) {
                     const node = document.createElement('div');
                     if (i <= userStamps) {
                         node.className = 'stamp-coin filled';
                         node.style.backgroundColor = cAcc;
-                        node.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        if (isImage) {
+                            node.innerHTML = `<img src="${iconSrc}" style="width:70%; height:70%; object-fit:contain; border-radius:50%;">`;
+                            node.style.backgroundColor = 'rgba(255,255,255,0.9)';
+                            node.style.border = `2px solid ${cAcc}`;
+                        } else {
+                            node.innerHTML = `<i class="fa-solid ${iconSrc}"></i>`;
+                        }
                     } else {
                         node.className = 'stamp-coin empty';
                         node.textContent = i;
@@ -1768,6 +1789,36 @@ function updatePassRender() {
     }
     
     // --- UPLOAD HANDLERS ---
+    const stampFileInput = document.getElementById('stamp-file-input');
+    const btnRemoveStamp = document.getElementById('btn-remove-stamp');
+    
+    if (stampFileInput) {
+        stampFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    state.iconClass = evt.target.result;
+                    if(btnRemoveStamp) btnRemoveStamp.style.display = 'inline-block';
+                    updatePassRender();
+                    showToast("Sello personalizado cargado", "success");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    if (btnRemoveStamp) {
+        btnRemoveStamp.addEventListener('click', () => {
+            const sel = document.getElementById('rest-icon');
+            state.iconClass = sel ? sel.value : 'fa-star';
+            if(stampFileInput) stampFileInput.value = '';
+            btnRemoveStamp.style.display = 'none';
+            updatePassRender();
+            showToast("Imagen del sello removida", "info");
+        });
+    }
+
     const logoFileInput = document.getElementById('logo-file-input');
     const bannerFileInput = document.getElementById('banner-file-input');
     const btnRemoveLogo = document.getElementById('btn-remove-logo');
@@ -3939,3 +3990,14 @@ if(formTrans) {
     });
 }
 
+
+window.updateStripeLink = function(val) {
+    if (val && val.includes('stripe')) {
+        state.customBannerUrl = val;
+        showToast("Enlace de Stripe configurado como acción principal de la tarjeta.", "success");
+    }
+};
+
+// Auto-fill the input if it has a stripe link
+const oldSelectCamp = "        state.customBannerUrl = camp.banner_url || null;";
+const newSelectCamp = "        state.customBannerUrl = camp.banner_url || null;\n        if(state.customBannerUrl && state.customBannerUrl.includes('stripe.com')) {\n            const linkInput = document.getElementById('stripe-payment-link');\n            if(linkInput) linkInput.value = state.customBannerUrl;\n        }";

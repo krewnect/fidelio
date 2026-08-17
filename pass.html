@@ -274,6 +274,49 @@
             cursor: pointer;
         }
 
+    
+        .stamps-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            justify-items: center;
+        }
+        .stamp-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .stamp-circle.earned {
+            border: 2px solid var(--primary);
+            background-color: rgba(255,255,255,0.9);
+            box-shadow: 0 0 10px var(--primary);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .stamp-image {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+        .stamp-icon {
+            font-size: 20px;
+            color: var(--primary);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
     </style>
 </head>
 <body>
@@ -298,7 +341,7 @@
             
             <div class="stamps-section" id="ui-stamps-section" style="display:none;">
                 <div class="stamps-label">Sellos Acumulados</div>
-                <div class="stamps-amount" id="ui-stamps-main">0</div>
+                <div class="stamps-grid" id="ui-stamps-grid"></div>
             </div>
 
             <div class="qr-container" id="qrcode"></div>
@@ -322,7 +365,7 @@
         </p>
 
         <button class="btn-wallet" id="btn-schedule-appointment" style="display:none; background: var(--primary); margin-bottom: 12px; color: white;" onclick="openAppointmentModal()">
-            <i class="fa-solid fa-calendar-check"></i> Agendar Cita o Servicio
+            <i class="fa-solid fa-calendar-check"></i> <span id="ui-cta-text">Agendar Cita o Servicio</span>
         </button>
 
         <button class="btn-wallet" onclick="alert('Esta función se habilitará próximamente tras la certificación de Apple Developer.')">
@@ -401,7 +444,37 @@
 
                 // Stats mapping
                 document.getElementById('ui-balance').textContent = \`$\${parseFloat(customer.balance_cashback || 0).toFixed(2)}\`;
-                document.getElementById('ui-stamps-main').textContent = customer.stamps_count || 0;
+                
+                // Generar Cuadrícula de Sellos Visual
+                const gridContainer = document.getElementById('ui-stamps-grid');
+                if (gridContainer) {
+                    const totalStampsReq = (campaign.rules_config && campaign.rules_config.stamps_total) ? campaign.rules_config.stamps_total : 10;
+                    const earnedStamps = customer.stamps_count || 0;
+                    gridContainer.innerHTML = '';
+                    
+                    // Ajustar columnas dinámicamente si hay muchos sellos
+                    if (totalStampsReq > 10) gridContainer.style.gridTemplateColumns = 'repeat(6, 1fr)';
+                    if (totalStampsReq <= 5) gridContainer.style.gridTemplateColumns = `repeat(${totalStampsReq}, 1fr)`;
+
+                    const iconSrc = campaign.stamp_icon_url || 'fa-star';
+                    const isImage = iconSrc.startsWith('data:image') || iconSrc.startsWith('http');
+                    
+                    for (let i = 0; i < totalStampsReq; i++) {
+                        const circle = document.createElement('div');
+                        circle.className = 'stamp-circle' + (i < earnedStamps ? ' earned' : '');
+                        
+                        if (i < earnedStamps) {
+                            if (isImage) {
+                                circle.innerHTML = `<img src="${iconSrc}" class="stamp-image">`;
+                            } else {
+                                circle.innerHTML = `<i class="fa-solid ${iconSrc} stamp-icon"></i>`;
+                            }
+                        }
+                        
+                        gridContainer.appendChild(circle);
+                    }
+                }
+
                 
                 document.getElementById('ui-stamps-stat').textContent = customer.stamps_count || 0;
                 document.getElementById('ui-visits').textContent = customer.visits || 0;
@@ -424,10 +497,31 @@
                     document.getElementById('ui-card-banner').style.backgroundImage = \`url('\${campaign.banner_url}')\`;
                 }
 
+                
                 if (merchant && merchant.business_type === 'professional') {
                     document.getElementById('ui-vip').style.display = 'none';
-                    document.getElementById('btn-schedule-appointment').style.display = 'block';
+                    const btnAppt = document.getElementById('btn-schedule-appointment');
+                    btnAppt.style.display = 'block';
+                    
+                    // Update label if custom
+                    if (campaign.custom_cta_label) {
+                        document.getElementById('ui-cta-text').textContent = campaign.custom_cta_label;
+                    }
+                    
+                    // Check if Stripe is configured
+                    if (merchant.stripe_keys && merchant.stripe_keys.stripe_pub_key) {
+                        // Change action to Stripe if they provided a payment link in custom_cta_url or default
+                        btnAppt.onclick = () => {
+                            if (campaign.banner_url && campaign.banner_url.includes('stripe.com')) {
+                                window.location.href = campaign.banner_url; // We'll hijack banner_url for stripe link as hack for now
+                            } else {
+                                alert('El profesional tiene Stripe activo pero no configuró su Payment Link.');
+                            }
+                        };
+                        document.getElementById('ui-cta-text').innerHTML += " (Pagar vía Stripe)";
+                    }
                 }
+
 
                 // 7. Generate QR Code (CUSTOMER_ID|CAMPAIGN_ID)
                 const qrContent = \`\${customer.id}|\${campaign.id}\`;

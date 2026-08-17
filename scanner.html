@@ -360,12 +360,12 @@
 
             <div class="balances-grid">
                 <!-- Monedero -->
-                <div class="balance-module" style="background:var(--success-bg); border-color:rgba(16, 185, 129, 0.2);">
+                <div class="balance-card" id="card-monedero" style="display:none;">
                     <div class="b-title" style="color:var(--success);"><i class="fa-solid fa-wallet"></i> Monedero</div>
                     <div class="b-amount" style="color:var(--success);" id="c-monedero">$0.00</div>
                 </div>
                 <!-- Cashback -->
-                <div class="balance-module" style="background:rgba(139,92,246,0.05); border-color:rgba(139,92,246,0.15);">
+                <div class="balance-card" id="card-cashback" style="display:none;">
                     <div class="b-title" style="color:var(--accent-violet);"><i class="fa-solid fa-coins"></i> Cashback</div>
                     <div class="b-amount" style="color:var(--accent-violet);" id="c-cashback">$0.00</div>
                 </div>
@@ -380,7 +380,7 @@
                 </div>
             </div>
 
-            <div class="input-group">
+            <div id="payment-input-group" class="input-group">
                 <label>Monto a Pagar o Abonar</label>
                 <div class="amount-wrapper">
                     <i class="fa-solid fa-dollar-sign"></i>
@@ -388,12 +388,21 @@
                 </div>
             </div>
 
-            <div class="actions-grid">
+            <div id="payment-actions-grid" class="actions-grid">
                 <button class="btn btn-primary" id="btn-charge" onclick="processAction('charge_ticket')" disabled>
                     <i class="fa-solid fa-receipt"></i> Cobrar Ticket
                 </button>
                 <button class="btn btn-secondary" id="btn-add" style="border: 2px solid rgba(16,185,129,0.3); color: var(--success);" onclick="processAction('add_funds')" disabled>
                     <i class="fa-solid fa-arrow-up-from-bracket"></i> Cargar Saldo
+                </button>
+            </div>
+            
+            <div id="professional-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
+                <button class="btn btn-primary" id="btn-stamp-only" onclick="processAction('add_stamp_only')" disabled style="padding:24px; font-size:1.3rem;">
+                    <i class="fa-solid fa-stamp"></i> Añadir Sello
+                </button>
+                <button class="btn btn-secondary" id="btn-redeem-reward" onclick="processAction('redeem_reward')" disabled style="padding:24px; font-size:1.3rem; border: 2px solid var(--accent-violet); color: var(--accent-violet);">
+                    <i class="fa-solid fa-gift"></i> Cobrar Recompensa
                 </button>
             </div>
             
@@ -714,9 +723,26 @@
             document.getElementById('empty-state').style.opacity = '0';
             setTimeout(() => { document.getElementById('empty-state').style.display = 'none'; }, 300);
             
-            document.getElementById('op-amount').disabled = false;
-            document.getElementById('btn-charge').disabled = false;
-            document.getElementById('btn-add').disabled = false;
+            if (currentMerchantData && currentMerchantData.business_type === 'professional') {
+                document.getElementById('card-monedero').style.display = 'none';
+                document.getElementById('card-cashback').style.display = 'none';
+                document.getElementById('payment-input-group').style.display = 'none';
+                document.getElementById('payment-actions-grid').style.display = 'none';
+                document.getElementById('professional-actions-grid').style.display = 'grid';
+                
+                document.getElementById('btn-stamp-only').disabled = false;
+                document.getElementById('btn-redeem-reward').disabled = false;
+            } else {
+                document.getElementById('card-monedero').style.display = 'flex';
+                document.getElementById('card-cashback').style.display = 'flex';
+                document.getElementById('payment-input-group').style.display = 'block';
+                document.getElementById('payment-actions-grid').style.display = 'grid';
+                document.getElementById('professional-actions-grid').style.display = 'none';
+                
+                document.getElementById('op-amount').disabled = false;
+                document.getElementById('btn-charge').disabled = false;
+                document.getElementById('btn-add').disabled = false;
+            }
             
             document.getElementById('c-name').textContent = data.full_name || data.name || 'Cliente';
             document.getElementById('c-tier').innerHTML = `<i class="fa-solid fa-crown"></i> Cliente ${data.vip_tier || 'Bronce'}`;
@@ -725,7 +751,7 @@
             document.getElementById('c-cashback').innerHTML = `$${parseFloat(data.balance_cashback || 0).toFixed(2)}`;
             
             let stampsHtml = '';
-            const totalStampsReq = currentMerchantData?.stamps_total || 10;
+            const totalStampsReq = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stamps_total) ? window.currentCampaignData.rules_config.stamps_total : (currentMerchantData?.stamps_total || 10);
             const currentStamps = data.stamps_count || 0;
             
             for(let i=0; i < totalStampsReq; i++) {
@@ -738,42 +764,75 @@
             window.currentCustomerData = data;
         }
 
-        async function fetchCustomer(identifier) {
+        
+        async function fetchCustomer(customerId) {
             try {
                 let query = supabaseClient.from('customers').select('*').eq('merchant_id', currentMerchantData.id);
-                
-                // Si parece UUID, buscar por ID
-                if (identifier.length === 36 && identifier.includes('-')) {
-                    query = query.eq('id', identifier);
-                } else if (identifier.includes('@')) {
-                    query = query.eq('email', identifier.toLowerCase());
+                if (customerId.length === 36 && customerId.includes('-')) {
+                    query = query.eq('id', customerId);
+                } else if (customerId.includes('@')) {
+                    query = query.eq('email', customerId.toLowerCase());
                 } else {
-                    query = query.eq('phone', identifier);
+                    query = query.eq('phone', customerId);
                 }
-                
                 const { data, error } = await query.single();
-                
-                if (error || !data) {
-                    showToast('Cliente no encontrado en este restaurante', 'error');
-                    return null;
-                }
-                
+                if (error || !data) return null;
                 return data;
             } catch (err) {
                 console.error(err);
                 return null;
             }
         }
+        
+        async function fetchCustomerCampaign(customerId, campaignId) {
+            try {
+                const { data, error } = await supabaseClient.from('customer_campaigns')
+                    .select('*')
+                    .eq('customer_id', customerId)
+                    .eq('campaign_id', campaignId)
+                    .single();
+                if (error) {
+                    // Try to insert it if it doesn't exist
+                    const { data: newLink, error: insErr } = await supabaseClient.from('customer_campaigns')
+                        .insert([{ customer_id: customerId, campaign_id: campaignId }])
+                        .select('*').single();
+                    if (!insErr) return newLink;
+                    return null;
+                }
+                return data;
+            } catch(e) {
+                console.error(e);
+                return null;
+            }
+        }
 
+
+        
         async function onScanSuccess(decodedText) {
             try{ html5QrcodeScanner.stop(); }catch(e){}
             document.getElementById('cyber-effect').style.display = 'none';
-            currentCustomerId = decodedText;
+            
+            const parts = decodedText.split('|');
+            const cId = parts[0];
+            const campId = parts.length > 1 ? parts[1] : null;
+            
+            currentCustomerId = cId;
+            window.currentCampaignId = campId;
             
             showToast('Pase escaneado. Buscando...', 'info');
-            const data = await fetchCustomer(decodedText);
+            const data = await fetchCustomer(cId);
             
             if (data) {
+                if (campId) {
+                    const link = await fetchCustomerCampaign(cId, campId);
+                    if (link) {
+                        data.stamps_count = link.stamps_count;
+                        data.balance_cashback = link.cashback_balance;
+                    }
+                    const { data: camp } = await supabaseClient.from('campaigns').select('*').eq('id', campId).single();
+                    if (camp) window.currentCampaignData = camp;
+                }
+                
                 showToast('Cliente localizado', 'success');
                 renderClientProfile(data);
             } else {
@@ -781,26 +840,27 @@
             }
         }
 
+
+        
         async function searchCustomerManual() {
             const query = document.getElementById('manual-search-input').value.trim();
             const btn = document.getElementById('btn-manual-search');
-            
             if (!query) { showToast('Ingresa un teléfono o correo', 'error'); return; }
-            
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando...';
             btn.disabled = true;
 
             const data = await fetchCustomer(query);
-            
             btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente';
             btn.disabled = false;
             
             if (data) {
-                showToast('Cliente localizado', 'success');
+                window.currentCampaignId = null;
+                showToast('Cliente localizado (Búsqueda manual - Modo Global)', 'warning');
                 currentCustomerId = data.id;
                 renderClientProfile(data);
             }
         }
+
 
         function resetScanner() {
             document.getElementById('empty-state').style.display = 'flex';
@@ -825,16 +885,19 @@
         // ==========================================
         // LÓGICA DE TRANSACCIONES (Supabase Live)
         // ==========================================
+        
         async function processAction(actionType) {
             if (!window.currentCustomerData) return;
-            
             const amountStr = document.getElementById('op-amount').value;
-            const amount = parseFloat(amountStr);
-            
-            if (isNaN(amount) || amount <= 0) {
-                showToast('Ingresa el monto de la operación primero.', 'error');
-                document.getElementById('op-amount').focus();
-                return;
+            let amount = parseFloat(amountStr);
+            if (actionType === 'add_stamp_only' || actionType === 'redeem_reward') {
+                amount = 0; 
+            } else {
+                if (isNaN(amount) || amount <= 0) {
+                    showToast('Ingresa el monto de la operación primero.', 'error');
+                    document.getElementById('op-amount').focus();
+                    return;
+                }
             }
 
             showToast('Procesando transacción en vivo...', 'info');
@@ -848,7 +911,6 @@
             let totalSpent = parseFloat(window.currentCustomerData.total_spent || 0);
             
             let txType = '';
-            let msgParts = [];
             let cashbackEarned = 0;
             let cashbackRedeemed = 0;
             let walletAmount = 0;
@@ -861,100 +923,88 @@
                 statusMsg = `<strong style="color:var(--text-main);">Depósito Completado</strong><br><br>Se abonaron <span style="color:var(--success); font-weight:800;">$${amount.toFixed(2)} USD</span><br>al Monedero del cliente.`;
             } 
             else if (actionType === 'charge_ticket') {
-                txType = 'redeem'; // Although it's a purchase, it can consume cashback
+                txType = 'redeem';
                 let amountToPay = amount;
-                
-                // Consumir Monedero primero
                 if (newWallet > 0) {
-                    if (newWallet >= amountToPay) {
-                        newWallet -= amountToPay;
-                        msgParts.push(`<span style="color:var(--success); font-weight:700;">-$${amountToPay.toFixed(2)} pagados con Monedero pre-pagado</span>`);
-                        amountToPay = 0;
-                    } else {
-                        msgParts.push(`<span style="color:var(--success); font-weight:700;">-$${newWallet.toFixed(2)} agotados del Monedero pre-pagado</span>`);
-                        amountToPay -= newWallet;
-                        newWallet = 0;
-                    }
+                    if (newWallet >= amountToPay) { newWallet -= amountToPay; amountToPay = 0; }
+                    else { amountToPay -= newWallet; newWallet = 0; }
                 }
-                
-                // Consumir Cashback si aún hay que pagar
                 if (amountToPay > 0 && newCashback > 0) {
-                    if (newCashback >= amountToPay) {
-                        cashbackRedeemed = amountToPay;
-                        newCashback -= amountToPay;
-                        msgParts.push(`<span style="color:var(--accent-violet); font-weight:700;">-$${amountToPay.toFixed(2)} cobrados del Cashback</span>`);
-                        amountToPay = 0;
-                    } else {
-                        cashbackRedeemed = newCashback;
-                        msgParts.push(`<span style="color:var(--accent-violet); font-weight:700;">-$${newCashback.toFixed(2)} agotados del Cashback</span>`);
-                        amountToPay -= newCashback;
-                        newCashback = 0;
-                    }
+                    if (newCashback >= amountToPay) { newCashback -= amountToPay; amountToPay = 0; }
+                    else { amountToPay -= newCashback; newCashback = 0; }
                 }
-                
-                // Lo que sobra genera cashback nuevo
-                if (amountToPay > 0) {
-                    const cashbackRate = parseFloat(currentMerchantData?.cashback_percent || 10) / 100;
-                    cashbackEarned = amountToPay * cashbackRate;
-                    newCashback += cashbackEarned;
-                    msgParts.push(`<span style="color:var(--text-main); font-weight:600;">Restante pagado en caja: $${amountToPay.toFixed(2)}</span>`);
-                    if (cashbackEarned > 0) {
-                        msgParts.push(`<span style="color:var(--accent-violet); font-weight:700;">+ $${cashbackEarned.toFixed(2)} Cashback Ganado</span>`);
-                    }
-                }
-                
-                // Sello
-                const stampsReq = currentMerchantData?.stamps_total || 10;
-                newStamps += 1;
-                let stampMsg = `<span style="color:var(--warning); font-weight:700;">+ 1 Sello Registrado</span>`;
-                if (newStamps >= stampsReq) {
-                    stampMsg += `<br><strong style="color:var(--success); font-size:1.1rem;">¡CLIENTE GANÓ RECOMPENSA!</strong>`;
-                    newStamps = 0; // Reset
-                }
-                msgParts.push(stampMsg);
-
+                const cashbackRate = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.cashback_percent) ? window.currentCampaignData.rules_config.cashback_percent : (currentMerchantData?.cashback_percent || 0);
+                cashbackEarned = amount * (cashbackRate / 100);
+                newCashback += cashbackEarned;
                 totalSpent += amount;
-                
-                statusMsg = `<strong style="color:var(--text-main); font-size:1.4rem;">Ticket total: $${amount.toFixed(2)}</strong><br><br><div style="text-align:left; font-size:1.1rem; line-height:1.8; background:var(--bg-main); padding:20px; border-radius:16px; border:1px solid var(--border-soft); margin-top:12px;">${msgParts.join('<br>')}</div>`;
+                statusMsg = `<strong style="color:var(--text-main);">Venta Cobrada</strong><br><br>El cliente ganó <span style="color:var(--accent-violet); font-weight:800;">$${cashbackEarned.toFixed(2)}</span> de Cashback por esta compra.`;
+            }
+            else if (actionType === 'add_stamp_only') {
+                txType = 'earn';
+                newStamps += 1;
+                statusMsg = `<strong style="color:var(--text-main);">Sello Otorgado</strong><br><br>El cliente ahora tiene <span style="color:var(--warning); font-weight:800;">${newStamps} sellos</span>.`;
+            }
+            else if (actionType === 'redeem_reward') {
+                txType = 'redeem';
+                const required = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stamps_total) ? window.currentCampaignData.rules_config.stamps_total : (currentMerchantData?.stamps_total || 10);
+                if (newStamps >= required) {
+                    newStamps -= required;
+                    statusMsg = `<strong style="color:var(--success);">¡Recompensa Canjeada!</strong><br><br>Se restaron ${required} sellos.`;
+                } else {
+                    showToast(`No tiene suficientes sellos (Requiere ${required})`, 'error');
+                    return;
+                }
             }
 
             try {
-                // Update Customer
-                const { error: updErr } = await supabaseClient
-                    .from('customers')
-                    .update({
-                        wallet_balance: newWallet,
-                        balance_cashback: newCashback,
-                        stamps_count: newStamps,
-                        visits: newVisits,
-                        lifetime_value: newLifetime,
-                        total_spent: totalSpent,
-                        last_visit: new Date().toISOString()
-                    })
-                    .eq('id', window.currentCustomerData.id);
+                const { error: updErr } = await supabaseClient.from('customers').update({
+                    balance_cashback: newCashback,
+                    wallet_balance: newWallet,
+                    stamps_count: newStamps,
+                    visits: newVisits,
+                    lifetime_value: newLifetime,
+                    total_spent: totalSpent,
+                    last_visit: new Date().toISOString()
+                }).eq('id', window.currentCustomerData.id);
 
                 if (updErr) throw updErr;
 
-                // Insert Transaction
-                await supabaseClient.from('transactions').insert([{
+                if (window.currentCampaignId) {
+                    const { error: campUpdErr } = await supabaseClient.from('customer_campaigns').update({
+                        stamps_count: newStamps,
+                        cashback_balance: newCashback,
+                        updated_at: new Date().toISOString()
+                    }).eq('customer_id', window.currentCustomerData.id).eq('campaign_id', window.currentCampaignId);
+                    if (campUpdErr) console.error("Warning: could not update customer_campaigns", campUpdErr);
+                }
+
+                const { error: txErr } = await supabaseClient.from('transactions').insert([{
                     merchant_id: currentMerchantData.id,
                     customer_id: window.currentCustomerData.id,
-                    transaction_type: txType,
-                    amount_spent: amount,
+                    campaign_id: window.currentCampaignId || null,
+                    type: txType,
+                    amount: amount,
                     cashback_earned: cashbackEarned,
                     cashback_redeemed: cashbackRedeemed,
-                    stamps_earned: 1,
-                    wallet_amount: walletAmount
+                    wallet_amount: walletAmount,
+                    stamps_awarded: (actionType==='add_stamp_only')?1:0,
+                    status: 'completed',
+                    metadata: { source: 'scanner', action: actionType }
                 }]);
 
-                document.getElementById('status-overlay').style.display = 'flex';
+                if (txErr) throw txErr;
+
                 document.getElementById('status-msg').innerHTML = statusMsg;
+                document.getElementById('status-overlay').style.display = 'flex';
                 
-            } catch (err) {
-                console.error(err);
-                showToast('Error de conexión. Intenta de nuevo.', 'error');
+                try { fetch(`/api/pass/${window.currentCustomerData.id}/webhook`, { method: 'POST' }); } catch(e){}
+
+            } catch (e) {
+                console.error(e);
+                showToast('Error en transacción: ' + e.message, 'error');
             }
         }
+
 
         document.addEventListener('DOMContentLoaded', init);
 </script>
