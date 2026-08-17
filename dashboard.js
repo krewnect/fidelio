@@ -4775,3 +4775,173 @@ window.addVipBenefit = function(tier, type = 'cashback', value = '') {
 
     container.appendChild(row);
 };
+
+// ==========================================
+// AI COPILOT LOGIC
+// ==========================================
+
+window.fetchCopilotIdeas = async function() {
+    const loadingEl = document.getElementById('copilot-loading');
+    const resultsEl = document.getElementById('copilot-results');
+    const containerEl = document.getElementById('copilot-cards-container');
+    
+    if(!loadingEl || !resultsEl || !containerEl) return;
+    
+    loadingEl.style.display = 'flex';
+    resultsEl.style.display = 'none';
+    containerEl.innerHTML = '';
+    
+    try {
+        const token = localStorage.getItem('fidelio_jwt');
+        
+        // Mock de contexto del negocio para la demo
+        const mockContext = {
+            totalClientes: 1240,
+            clientesActivos: 450,
+            clientesRiesgo: 310,
+            clientesCumpleaneros: 12,
+            clientesInactivos: 480,
+            visitasSemana: 125
+        };
+
+        const response = await fetch('/api/ai/copilot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ merchantContext: mockContext })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al contactar con la IA');
+        }
+        
+        const data = await response.json();
+        const opportunities = data.opportunities || [];
+        
+        opportunities.forEach((opp, index) => {
+            const card = document.createElement('div');
+            card.style.cssText = 'background: rgba(17,24,39,0.5); border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; position: relative; overflow: hidden; transition: all 0.3s ease; animation: fadeInUp 0.5s ease forwards; opacity: 0;';
+            card.style.animationDelay = (index * 0.15) + 's';
+            
+            // Efecto Hover 
+            card.onmouseenter = () => { card.style.borderColor = 'rgba(139, 92, 246, 0.5)'; card.style.transform = 'translateY(-5px)'; card.style.boxShadow = '0 10px 25px rgba(139,92,246,0.15)'; };
+            card.onmouseleave = () => { card.style.borderColor = 'var(--border-glass)'; card.style.transform = 'translateY(0)'; card.style.boxShadow = 'none'; };
+
+            // Ícono dependiendo del tipo
+            let iconHtml = '<i class="fa-solid fa-bullseye" style="color: #60a5fa;"></i>';
+            if(opp.type === 'recuperacion') iconHtml = '<i class="fa-solid fa-heart-crack" style="color: #f43f5e;"></i>';
+            if(opp.type === 'dias_lentos') iconHtml = '<i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>';
+            if(opp.type === 'cumpleanos') iconHtml = '<i class="fa-solid fa-cake-candles" style="color: #a855f7;"></i>';
+            if(opp.type === 'vip_exclusivo') iconHtml = '<i class="fa-solid fa-crown" style="color: #fbbf24;"></i>';
+
+            card.innerHTML = `
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size: 18px;">
+                        ${iconHtml}
+                    </div>
+                    <h4 style="margin:0; font-size: 16px; color: white;">${opp.title}</h4>
+                </div>
+                <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">${opp.description}</p>
+                
+                <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                    <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;"><i class="fa-brands fa-apple"></i> Push Sugerido</div>
+                    <div style="color: white; font-size: 13px; font-style: italic;">"${opp.pushMessage}"</div>
+                </div>
+
+                <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 20px; font-size: 12px;">
+                    <div><span style="color: var(--text-muted);">Audiencia:</span> <span style="color: #34d399; font-weight: 600;">${opp.estimatedReach}</span></div>
+                </div>
+
+                <button class="btn btn-primary" onclick='window.executeCopilotIdea(${JSON.stringify(opp).replace(/'/g, "&apos;")})' style="width: 100%; background: linear-gradient(135deg, rgba(139,92,246,0.8) 0%, rgba(59,130,246,0.8) 100%);">
+                    Ejecutar con 1 Clic <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            `;
+            containerEl.appendChild(card);
+        });
+        
+    } catch (e) {
+        console.error(e);
+        showToast("Error al generar ideas con Copiloto AI", "error");
+    } finally {
+        loadingEl.style.display = 'none';
+        resultsEl.style.display = 'block';
+    }
+};
+
+window.executeCopilotIdea = function(opp) {
+    // 1. Cambiar a la pestaña de Campañas Push
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    navTabs.forEach(t => t.classList.remove('active'));
+    tabContents.forEach(c => c.classList.remove('active'));
+    
+    const marketingTabBtn = document.querySelector('.nav-tab[data-tab="tab-marketing"]');
+    const marketingTabContent = document.getElementById('tab-marketing');
+    
+    if(marketingTabBtn) marketingTabBtn.classList.add('active');
+    if(marketingTabContent) marketingTabContent.classList.add('active');
+    
+    // 2. Rellenar los campos
+    const messageInput = document.getElementById('camp-push-message');
+    const segmentSelect = document.getElementById('camp-segment-select');
+    
+    if(messageInput) {
+        messageInput.value = opp.pushMessage;
+    }
+    if(segmentSelect) {
+        // Encontrar si la opción existe, si no, dejar "all"
+        let optionExists = false;
+        for (let i = 0; i < segmentSelect.options.length; i++) {
+            if (segmentSelect.options[i].value === opp.segment) {
+                optionExists = true;
+                break;
+            }
+        }
+        if(optionExists) {
+            segmentSelect.value = opp.segment;
+        } else {
+            segmentSelect.value = 'all';
+        }
+    }
+    
+    // 3. Seleccionar visualmente el cuadro de tipo (libre)
+    document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('camp-card-libre')?.classList.add('active');
+    
+    // 4. Disparar actualizaciones visuales
+    if(window.updatePushPreview) window.updatePushPreview();
+    if(window.updateAudienceEstimate) window.updateAudienceEstimate();
+    
+    showToast("Campaña pre-configurada por la IA. Revisa y envía.", "success");
+    
+    // Scrollear hacia arriba
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// Add CSS keyframe for fadeInUp if not exists
+if(!document.getElementById('copilot-styles')) {
+    const style = document.createElement('style');
+    style.id = 'copilot-styles';
+    style.innerHTML = `
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Hook en el click del tab para disparar la carga 1 sola vez
+document.addEventListener('DOMContentLoaded', () => {
+    const copilotTabBtn = document.querySelector('.nav-tab[data-tab="tab-copilot"]');
+    if(copilotTabBtn) {
+        copilotTabBtn.addEventListener('click', () => {
+            const container = document.getElementById('copilot-cards-container');
+            if(container && container.innerHTML.trim() === '') {
+                window.fetchCopilotIdeas();
+            }
+        });
+    }
+});

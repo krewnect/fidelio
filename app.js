@@ -1004,6 +1004,79 @@ Contexto del Negocio actual: ${JSON.stringify(merchantContext || {})}
     }
 });
 
+app.post('/api/ai/copilot', apiLimiter, requireMerchantAuth, async (req, res) => {
+    if (!genAI) {
+        return res.status(503).json({ error: 'La IA no está configurada actualmente (GEMINI_API_KEY).' });
+    }
+
+    try {
+        const { merchantContext } = req.body;
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        
+        const systemPrompt = `
+Eres el Copiloto de Marketing AI de Fidelio. Tu objetivo es analizar la situación actual del restaurante y proponer exactamente 3 campañas de marketing altamente efectivas (Notificaciones Push).
+Debes devolver ÚNICAMENTE un arreglo JSON válido (sin markdown, sin bloques de código, sin texto antes ni después) con exactamente 3 objetos. 
+Cada objeto debe tener esta estructura exacta:
+{
+  "title": "Título llamativo para la tarjeta",
+  "description": "Explicación de por qué esta campaña es buena idea",
+  "pushMessage": "El texto persuasivo de la Notificación Push (max 120 caracteres)",
+  "segment": "uno de estos: [all, active, risk, inactive, vip_oro, vip_plata, cumpleaneros, aniversario]",
+  "estimatedReach": "Ej. ~150 Clientes",
+  "type": "uno de estos: [recuperacion, cumpleanos, dias_lentos, vip_exclusivo, winback]"
+}
+
+Contexto actual del negocio:
+${JSON.stringify(merchantContext || {})}
+`;
+
+        const result = await model.generateContent(systemPrompt);
+        let text = await result.response.text();
+        
+        // Limpiar el texto de Gemini si responde con ```json
+        text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        
+        let opportunities = [];
+        try {
+            opportunities = JSON.parse(text);
+        } catch (e) {
+            console.error("Fallo al parsear JSON de Gemini:", text);
+            // Fallback en caso de que Gemini no devuelva JSON válido
+            opportunities = [
+                {
+                    title: "Recuperar Clientes en Riesgo",
+                    description: "Tienes varios clientes que no te visitan desde hace más de 30 días. Envíales un incentivo ahora.",
+                    pushMessage: "¡Te extrañamos! Vuelve esta semana y te regalamos el postre en tu consumo.",
+                    segment: "risk",
+                    estimatedReach: "~45 Clientes",
+                    type: "recuperacion"
+                },
+                {
+                    title: "Inyectar Ventas Hoy",
+                    description: "Parece un día lento. Lanza un 2x1 en bebidas solo por las próximas 3 horas.",
+                    pushMessage: "¡Hora Feliz sorpresa! 2x1 en toda la coctelería si muestras este mensaje antes de las 6 PM.",
+                    segment: "active",
+                    estimatedReach: "~120 Clientes",
+                    type: "dias_lentos"
+                },
+                {
+                    title: "Premiar a los Cumpleañeros",
+                    description: "Fideliza a los que cumplen años este mes con un pequeño detalle.",
+                    pushMessage: "¡Feliz mes de cumpleaños! Ven a celebrar y nosotros invitamos la ronda de shots.",
+                    segment: "cumpleaneros",
+                    estimatedReach: "~12 Clientes",
+                    type: "cumpleanos"
+                }
+            ];
+        }
+
+        res.json({ opportunities });
+    } catch (error) {
+        console.error('Error en Copiloto AI:', error);
+        res.status(500).json({ error: 'Error analizando datos con Inteligencia Artificial.' });
+    }
+});
+
 
 // --- MULTI-CARD (CAMPAIGNS) API ---
 app.get('/api/campaigns', async (req, res) => {
