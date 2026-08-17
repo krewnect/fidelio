@@ -560,6 +560,49 @@
             window.location.href = url;
         }
 
+        
+        async function submitAppointmentRequest() {
+            const date = document.getElementById('appointment-date').value;
+            const time = document.getElementById('appointment-time').value;
+            const notes = document.getElementById('appointment-notes').value;
+            
+            if (!date || !time) {
+                alert("Por favor selecciona fecha y hora.");
+                return;
+            }
+            if (!customerId || !campaignId) {
+                alert("No se pudo identificar al cliente.");
+                return;
+            }
+            
+            const btn = document.getElementById('btn-submit-appointment');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/appointments/request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ customer_id: customerId, campaign_id: campaignId, date, time, notes })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('¡Solicitud enviada con éxito! El profesional se pondrá en contacto pronto.');
+                    closeAppointmentModal();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Error de red. Intenta de nuevo.');
+                console.error(err);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
         function openAppointmentModal() {
             document.getElementById('appointment-modal').style.display = 'flex';
         }
