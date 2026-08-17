@@ -89,6 +89,60 @@
             text-align: center;
             margin-bottom: 30px;
         }
+        
+        /* Campaigns Grid */
+        .campaign-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .campaign-card {
+            background-color: var(--surface-color);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .campaign-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .campaign-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background-color: var(--card-primary, var(--primary));
+        }
+        
+        .campaign-type-badge {
+            align-self: flex-start;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .campaign-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
 
         /* Formulario */
         form {
@@ -156,6 +210,26 @@
             cursor: not-allowed;
             transform: none;
         }
+        
+        .btn-secondary {
+            width: 100%;
+            padding: 16px;
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+        }
 
         /* Footer */
         .footer {
@@ -199,12 +273,24 @@
     </div>
 
     <div class="content-wrapper">
-        <div id="registration-form-container" style="width: 100%;">
-            <h1 class="merchant-name" id="merchant-name">Cargando...</h1>
-            <p class="merchant-subtitle" id="merchant-subtitle">Únete a nuestro programa de lealtad y empieza a ganar recompensas exclusivas.</p>
+        <h1 class="merchant-name" id="merchant-name">Cargando...</h1>
+        <p class="merchant-subtitle" id="merchant-subtitle">Únete a nuestro programa de lealtad y empieza a ganar recompensas exclusivas.</p>
 
+        <!-- Campaigns Selection -->
+        <div id="campaigns-container" style="width: 100%; display: none;">
+            <div class="campaign-grid" id="campaign-grid">
+                <!-- Campaigns will be injected here -->
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div id="registration-form-container" style="width: 100%; display: none;">
             <form id="public-register-form">
                 <input type="hidden" id="merchant_id" name="merchant_id">
+                
+                <div style="margin-bottom: 20px; text-align: center;">
+                    <span id="selected-campaign-badge" class="campaign-type-badge" style="background: var(--primary); color: white;"></span>
+                </div>
                 
                 <div class="form-group">
                     <label>Tu Nombre Completo</label>
@@ -222,6 +308,7 @@
                 </div>
 
                 <button type="submit" class="btn-primary" id="btn-submit">Generar Mi Tarjeta Digital</button>
+                <button type="button" class="btn-secondary" id="btn-back">Volver a Campañas</button>
             </form>
         </div>
     </div>
@@ -234,6 +321,7 @@
     <script>
         let supabase;
         let merchantData;
+        let selectedCampaignId = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             try {
@@ -283,6 +371,56 @@
                     logoEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(merchantData.business_name)}&background=${(merchantData.color_primary||'8b5cf6').replace('#','')}&color=fff&size=128`;
                 }
 
+                // 5. Fetch Campaigns
+                const { data: campaigns, error: campError } = await supabase
+                    .from('campaigns')
+                    .select('*')
+                    .eq('merchant_id', merchantData.id)
+                    .eq('is_active', true);
+                    
+                if (campError) throw campError;
+                
+                let visibleCampaigns = campaigns || [];
+                if (merchantData.business_type === 'professional') {
+                    visibleCampaigns = visibleCampaigns.filter(c => c.type === 'stamps');
+                    document.getElementById('merchant-subtitle').textContent = "Selecciona tu programa y regístrate para obtener tu tarjeta.";
+                }
+
+                const grid = document.getElementById('campaign-grid');
+                if (visibleCampaigns.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center; color:var(--text-muted);">No hay campañas activas en este momento.</p>';
+                } else {
+                    visibleCampaigns.forEach(camp => {
+                        const card = document.createElement('div');
+                        card.className = 'campaign-card';
+                        if (camp.color_primary) {
+                            card.style.setProperty('--card-primary', camp.color_primary);
+                        }
+                        
+                        const typeLabel = camp.type === 'stamps' ? 'Sellos' : 'Cashback';
+                        
+                        card.innerHTML = `
+                            <div class="campaign-type-badge">${typeLabel}</div>
+                            <h3 class="campaign-name">${camp.name}</h3>
+                        `;
+                        
+                        card.addEventListener('click', () => {
+                            selectedCampaignId = camp.id;
+                            document.getElementById('selected-campaign-badge').textContent = `Campaña: ${camp.name}`;
+                            if (camp.color_primary) {
+                                document.getElementById('selected-campaign-badge').style.backgroundColor = camp.color_primary;
+                                document.documentElement.style.setProperty('--primary', camp.color_primary);
+                            }
+                            
+                            document.getElementById('campaigns-container').style.display = 'none';
+                            document.getElementById('registration-form-container').style.display = 'block';
+                        });
+                        
+                        grid.appendChild(card);
+                    });
+                }
+                
+                document.getElementById('campaigns-container').style.display = 'block';
                 document.getElementById('loading-screen').style.display = 'none';
 
             } catch (err) {
@@ -291,16 +429,32 @@
                 document.getElementById('registration-form-container').innerHTML = `
                     <div style="text-align:center; padding: 40px 0;">
                         <i class="fa-solid fa-store-slash" style="font-size:48px; color:var(--text-muted); margin-bottom:16px;"></i>
-                        <h2>Restaurante no encontrado</h2>
+                        <h2>Restaurante/Negocio no encontrado</h2>
                         <p style="color:var(--text-muted); margin-top:8px;">Verifica que la dirección web sea correcta.</p>
                     </div>
                 `;
+                document.getElementById('registration-form-container').style.display = 'block';
+            }
+        });
+        
+        document.getElementById('btn-back').addEventListener('click', () => {
+            document.getElementById('registration-form-container').style.display = 'none';
+            document.getElementById('campaigns-container').style.display = 'block';
+            // Reset primary color to merchant default
+            if (merchantData && merchantData.color_primary) {
+                document.documentElement.style.setProperty('--primary', merchantData.color_primary);
             }
         });
 
-        // 5. Handle Registration
+        // 6. Handle Registration
         document.getElementById('public-register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (!selectedCampaignId) {
+                Swal.fire('Error', 'Por favor selecciona una campaña primero.', 'warning');
+                return;
+            }
+            
             const btn = document.getElementById('btn-submit');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creando Tarjeta...';
             btn.disabled = true;
@@ -319,30 +473,47 @@
                     .eq('email', email)
                     .single();
 
+                let customerId;
+                
                 if (existing) {
-                    window.location.href = `/pass.html?id=${existing.id}`;
-                    return;
+                    customerId = existing.id;
+                } else {
+                    // Insert new customer
+                    const { data: newCustomer, error } = await supabase
+                        .from('customers')
+                        .insert([{
+                            merchant_id: merchantId,
+                            full_name: fullName,
+                            email: email,
+                            phone: phone || null,
+                            balance_cashback: 0,
+                            stamps_count: 0,
+                            vip_tier: 'Bronce'
+                        }])
+                        .select()
+                        .single();
+
+                    if (error) throw error;
+                    customerId = newCustomer.id;
+                }
+                
+                // Link customer to campaign
+                const { data: existingLink } = await supabase
+                    .from('customer_campaigns')
+                    .select('id')
+                    .eq('customer_id', customerId)
+                    .eq('campaign_id', selectedCampaignId)
+                    .single();
+                    
+                if (!existingLink) {
+                    await supabase.from('customer_campaigns').insert([{
+                        customer_id: customerId,
+                        campaign_id: selectedCampaignId
+                    }]);
                 }
 
-                // Insert new customer
-                const { data: newCustomer, error } = await supabase
-                    .from('customers')
-                    .insert([{
-                        merchant_id: merchantId,
-                        full_name: fullName,
-                        email: email,
-                        phone: phone || null,
-                        balance_cashback: 0,
-                        stamps_count: 0,
-                        vip_tier: 'Bronce'
-                    }])
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
                 // Success! Redirect to digital pass
-                window.location.href = `/pass.html?id=${newCustomer.id}`;
+                window.location.href = `/pass.html?id=${customerId}&campaign=${selectedCampaignId}`;
 
             } catch (err) {
                 Swal.fire('Error', 'Hubo un problema al crear tu tarjeta. Intenta de nuevo.', 'error');

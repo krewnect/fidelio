@@ -56,6 +56,16 @@
             box-sizing: border-box;
             border: 1px solid rgba(255,255,255,0.1);
         }
+        
+        .digital-card-banner {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
 
         .digital-card::after {
             content: '';
@@ -91,15 +101,24 @@
             color: white;
             backdrop-filter: blur(4px);
         }
+        
+        .campaign-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
 
-        .balance-section {
+        .balance-section, .stamps-section {
             text-align: center;
             margin-bottom: 30px;
             position: relative;
             z-index: 2;
         }
 
-        .balance-label {
+        .balance-label, .stamps-label {
             font-size: 11px;
             color: rgba(255,255,255,0.7);
             text-transform: uppercase;
@@ -107,7 +126,7 @@
             margin-bottom: 4px;
         }
 
-        .balance-amount {
+        .balance-amount, .stamps-amount {
             font-family: 'Space Grotesk', monospace;
             font-size: 42px;
             font-weight: 700;
@@ -201,6 +220,60 @@
             text-decoration: none;
         }
 
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .btn-schedule {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -209,14 +282,23 @@
 
     <div class="pass-container" id="pass-container" style="display:none;">
         <div class="digital-card" id="digital-card">
+            <div class="digital-card-banner" id="ui-card-banner"></div>
+            
             <div class="card-header">
                 <img src="" id="ui-merchant-logo" class="merchant-logo" alt="Logo">
                 <div class="vip-badge" id="ui-vip">BRONCE</div>
             </div>
+            
+            <div class="campaign-title" id="ui-campaign-title"></div>
 
-            <div class="balance-section">
+            <div class="balance-section" id="ui-balance-section" style="display:none;">
                 <div class="balance-label">Cashback Disponible</div>
                 <div class="balance-amount" id="ui-balance">$0.00</div>
+            </div>
+            
+            <div class="stamps-section" id="ui-stamps-section" style="display:none;">
+                <div class="stamps-label">Sellos Acumulados</div>
+                <div class="stamps-amount" id="ui-stamps-main">0</div>
             </div>
 
             <div class="qr-container" id="qrcode"></div>
@@ -226,7 +308,7 @@
 
         <div class="stats-grid">
             <div class="stat-box">
-                <div class="stat-value" id="ui-stamps">0</div>
+                <div class="stat-value" id="ui-stamps-stat">0</div>
                 <div class="stat-label">Sellos Ganados</div>
             </div>
             <div class="stat-box">
@@ -239,9 +321,33 @@
             Presenta este código QR al cajero al momento de pagar para acumular o canjear tus recompensas.
         </p>
 
+        <button class="btn-wallet" id="btn-schedule-appointment" style="display:none; background: var(--primary); margin-bottom: 12px; color: white;" onclick="openAppointmentModal()">
+            <i class="fa-solid fa-calendar-check"></i> Agendar Cita o Servicio
+        </button>
+
         <button class="btn-wallet" onclick="alert('Esta función se habilitará próximamente tras la certificación de Apple Developer.')">
             <i class="fa-brands fa-apple"></i> Añadir a Apple Wallet
         </button>
+    </div>
+
+    <div class="modal-overlay" id="appointment-modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0; font-size:18px;">Agendar Cita o Servicio</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:var(--text-muted);" onclick="closeAppointmentModal()"></i>
+            </div>
+            
+            <div class="form-group">
+                <label>Día de la cita</label>
+                <input type="date" class="form-input" id="modal-date">
+            </div>
+            <div class="form-group">
+                <label>Hora deseada</label>
+                <input type="time" class="form-input" id="modal-time">
+            </div>
+            
+            <button class="btn-schedule" id="btn-confirm-appointment" onclick="confirmAppointment()">Confirmar Solicitud</button>
+        </div>
     </div>
 
     <script>
@@ -252,12 +358,13 @@
                 const config = await configRes.json();
                 const supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
                 
-                // 2. Get ID
+                // 2. Get IDs
                 const urlParams = new URLSearchParams(window.location.search);
                 const customerId = urlParams.get('id') || urlParams.get('c');
+                const campaignId = urlParams.get('campaign');
                 
-                if (!customerId) {
-                    throw new Error("Pase no encontrado");
+                if (!customerId || !campaignId) {
+                    throw new Error("Pase o campaña no encontrados");
                 }
 
                 // 3. Fetch Customer
@@ -269,32 +376,63 @@
 
                 if (cErr || !customer) throw new Error("Cliente no encontrado");
 
-                // 4. Fetch Merchant
+                // 4. Fetch Campaign
+                const { data: campaign, error: campErr } = await supabase
+                    .from('campaigns')
+                    .select('*')
+                    .eq('id', campaignId)
+                    .single();
+                    
+                if (campErr || !campaign) throw new Error("Campaña no encontrada");
+
+                // 5. Fetch Merchant for fallback/business_type
                 const { data: merchant, error: mErr } = await supabase
                     .from('merchants')
-                    .select('business_name, logo_url, color_primary')
+                    .select('business_name, business_type')
                     .eq('id', customer.merchant_id)
                     .single();
 
-                // 5. Populate UI
-                document.title = `Tarjeta Digital - ${merchant ? merchant.business_name : 'Fidelio'}`;
+                // 6. Populate UI based on Campaign
+                document.title = \`Tarjeta Digital - \${campaign.name || 'Campaña'}\`;
                 
                 document.getElementById('ui-customer-name').textContent = customer.full_name || customer.name;
-                document.getElementById('ui-balance').textContent = `$${parseFloat(customer.balance_cashback || 0).toFixed(2)}`;
-                document.getElementById('ui-stamps').textContent = customer.stamps_count || 0;
-                document.getElementById('ui-visits').textContent = customer.visits || 0;
+                document.getElementById('ui-campaign-title').textContent = campaign.name;
                 document.getElementById('ui-vip').textContent = customer.vip_tier || 'BRONCE';
 
-                if (merchant) {
-                    document.getElementById('ui-merchant-logo').src = merchant.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.business_name)}&background=000&color=fff`;
-                    if (merchant.color_primary) {
-                        document.documentElement.style.setProperty('--primary', merchant.color_primary);
-                    }
+                // Stats mapping
+                document.getElementById('ui-balance').textContent = \`$\${parseFloat(customer.balance_cashback || 0).toFixed(2)}\`;
+                document.getElementById('ui-stamps-main').textContent = customer.stamps_count || 0;
+                
+                document.getElementById('ui-stamps-stat').textContent = customer.stamps_count || 0;
+                document.getElementById('ui-visits').textContent = customer.visits || 0;
+                
+                // Show relevant section based on campaign type
+                if (campaign.type === 'stamps') {
+                    document.getElementById('ui-stamps-section').style.display = 'block';
+                } else {
+                    document.getElementById('ui-balance-section').style.display = 'block';
                 }
 
-                // 6. Generate QR Code
+                // Branding
+                document.getElementById('ui-merchant-logo').src = campaign.logo_url || (merchant ? \`https://ui-avatars.com/api/?name=\${encodeURIComponent(merchant.business_name)}&background=000&color=fff\` : \`https://ui-avatars.com/api/?name=F&background=000&color=fff\`);
+                
+                if (campaign.color_primary) {
+                    document.documentElement.style.setProperty('--primary', campaign.color_primary);
+                }
+                
+                if (campaign.banner_url) {
+                    document.getElementById('ui-card-banner').style.backgroundImage = \`url('\${campaign.banner_url}')\`;
+                }
+
+                if (merchant && merchant.business_type === 'professional') {
+                    document.getElementById('ui-vip').style.display = 'none';
+                    document.getElementById('btn-schedule-appointment').style.display = 'block';
+                }
+
+                // 7. Generate QR Code (CUSTOMER_ID|CAMPAIGN_ID)
+                const qrContent = \`\${customer.id}|\${campaign.id}\`;
                 new QRCode(document.getElementById("qrcode"), {
-                    text: customer.id, // This is what the Scanner will read!
+                    text: qrContent,
                     width: 150,
                     height: 150,
                     colorDark : "#000000",
@@ -307,15 +445,72 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('loading-screen').innerHTML = `
+                document.getElementById('loading-screen').innerHTML = \`
                     <div style="text-align:center;">
                         <i class="fa-solid fa-triangle-exclamation" style="font-size:48px; color:var(--text-muted); margin-bottom:16px;"></i>
                         <h2 style="margin-bottom:8px;">Pase Inválido</h2>
-                        <p style="color:var(--text-muted); font-size:14px;">El enlace no es válido o ha expirado.</p>
+                        <p style="color:var(--text-muted); font-size:14px;">El enlace no es válido o la campaña ha expirado.</p>
                     </div>
-                `;
+                \`;
             }
         });
+
+        function openAppointmentModal() {
+            document.getElementById('appointment-modal').style.display = 'flex';
+        }
+
+        function closeAppointmentModal() {
+            document.getElementById('appointment-modal').style.display = 'none';
+        }
+
+        async function confirmAppointment() {
+            const dateStr = document.getElementById('modal-date').value;
+            const timeStr = document.getElementById('modal-time').value;
+            
+            if(!dateStr || !timeStr) {
+                Swal.fire('Error', 'Selecciona el día y la hora', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-confirm-appointment');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Agendando...';
+            btn.disabled = true;
+
+            try {
+                // Get customer data globally saved during init
+                const urlParams = new URLSearchParams(window.location.search);
+                const customerId = urlParams.get('id') || urlParams.get('c');
+                
+                const configRes = await fetch('/api/config');
+                const config = await configRes.json();
+                const supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+                const { data: customer } = await supabase.from('customers').select('*').eq('id', customerId).single();
+                
+                if(customer) {
+                    const appointmentDate = new Date(\`\${dateStr}T\${timeStr}\`);
+                    const { error } = await supabase.from('appointments').insert([{
+                        merchant_id: customer.merchant_id,
+                        customer_id: customer.id,
+                        customer_name: customer.full_name || customer.name,
+                        customer_phone: customer.phone || null,
+                        customer_email: customer.email,
+                        appointment_date: appointmentDate.toISOString()
+                    }]);
+                    
+                    if (error) throw error;
+                    
+                    Swal.fire('¡Solicitud Enviada!', 'El profesional ha recibido tu solicitud.', 'success');
+                    closeAppointmentModal();
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'Hubo un problema. Intenta de nuevo.', 'error');
+            }
+            
+            btn.innerHTML = 'Confirmar Solicitud';
+            btn.disabled = false;
+        }
     </script>
 </body>
 </html>
