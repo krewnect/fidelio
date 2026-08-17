@@ -3441,6 +3441,55 @@ window.selectAICampaign = function(type, element) {
     if(type === 'manual') select.value = 'all';
     
     document.getElementById('camp-push-message').value = defaultTexts[type] || '';
+    
+    // Disparar las funciones dinámicas
+    if(window.updatePushPreview) window.updatePushPreview();
+    if(window.updateAudienceEstimate) window.updateAudienceEstimate();
+};
+
+window.updatePushPreview = function() {
+    const text = document.getElementById('camp-push-message')?.value || '';
+    const bodyEl = document.getElementById('preview-push-body');
+    const countEl = document.getElementById('push-char-count');
+    
+    if (bodyEl) {
+        bodyEl.textContent = text || 'Escribe un mensaje para ver cómo aparecerá en las pantallas de tus clientes.';
+    }
+    if (countEl) {
+        countEl.textContent = text.length;
+        if (text.length > 120) {
+            countEl.style.color = '#ef4444';
+        } else {
+            countEl.style.color = 'var(--text-muted)';
+        }
+    }
+};
+
+window.updateAudienceEstimate = function() {
+    const select = document.getElementById('camp-segment-select');
+    const estimateEl = document.getElementById('audience-estimate-count');
+    if (!select || !estimateEl) return;
+    
+    const segment = select.value;
+    let estimate = '~0 Clientes';
+    
+    switch(segment) {
+        case 'all': estimate = '~1,240 Clientes'; break;
+        case 'active': estimate = '~450 Clientes'; break;
+        case 'risk': estimate = '~310 Clientes'; break;
+        case 'inactive': estimate = '~480 Clientes'; break;
+        case 'vip_oro': estimate = '~25 Clientes'; break;
+        case 'vip_plata': estimate = '~80 Clientes'; break;
+        case 'vip_bronce': estimate = '~150 Clientes'; break;
+        case 'top_10': estimate = '~10 Clientes'; break;
+        case 'high_ticket': estimate = '~65 Clientes'; break;
+        case 'cumpleaneros': estimate = '~32 Clientes'; break;
+        case 'aniversario': estimate = '~18 Clientes'; break;
+        case 'geofencing': estimate = 'Dinámico (Al cruzar zona)'; break;
+        default: estimate = '~100 Clientes'; break; // Filtros personalizados
+    }
+    
+    estimateEl.textContent = estimate;
 };
 
 // CUSTOM FILTER LOGIC
