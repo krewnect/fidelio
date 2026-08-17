@@ -1624,6 +1624,102 @@
                             <textarea id="cus-rules" class="fidelio-input" rows="3" placeholder="Ej. Compra 3 libros y llévate un marcapáginas gratis."></textarea>
                         </div>
                     </div>
+
+                    <!-- Panel Puntos -->
+                    <div id="settings-points-prog" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Tasa de Acumulación</label>
+                            <input type="text" id="pts-rate" class="fidelio-input" placeholder="Ej. $10 = 1 Punto" value="$10 = 1 Punto">
+                        </div>
+                        <div class="form-group">
+                            <label>Meta de Canje</label>
+                            <input type="text" id="pts-reward" class="fidelio-input" placeholder="Ej. 100 Puntos = Bebida Gratis" value="100 Puntos = Premio Especial">
+                        </div>
+                    </div>
+
+                    <!-- Panel Membresías -->
+                    <div id="settings-membership-prog" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Ciclo de Validez</label>
+                            <select id="mem-cycle" class="fidelio-input">
+                                <option value="monthly">Mensual</option>
+                                <option value="yearly">Anual</option>
+                                <option value="infinite">Indefinido / Permanente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Beneficio Principal</label>
+                            <textarea id="mem-benefit" class="fidelio-input" rows="3" placeholder="Ej. Acceso ilimitado al gimnasio en horario matutino."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Panel Descuentos -->
+                    <div id="settings-discount-prog" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Porcentaje de Descuento Fijo (%)</label>
+                            <input type="number" id="dsc-percent" class="fidelio-input" placeholder="Ej. 15" value="10" min="1" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Condiciones / Excepciones</label>
+                            <textarea id="dsc-conditions" class="fidelio-input" rows="3" placeholder="Ej. No aplica en bebidas alcohólicas ni promociones."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Panel Cupones -->
+                    <div id="settings-coupons-prog" style="display:none;">
+                        <div style="display:flex; gap: 16px; margin-bottom: 16px; flex-wrap:wrap;">
+                            <div class="form-group" style="flex:1;">
+                                <label>Tipo de Promoción</label>
+                                <select id="cpn-type" class="fidelio-input">
+                                    <option value="percentage">Descuento (%)</option>
+                                    <option value="amount">Descuento ($)</option>
+                                    <option value="bogo">2x1</option>
+                                    <option value="freebie">Producto Gratis</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label>Límite de Redenciones por Usuario</label>
+                                <input type="number" id="cpn-limit" class="fidelio-input" value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Caducidad (Opcional)</label>
+                            <input type="date" id="cpn-expiry" class="fidelio-input">
+                        </div>
+                    </div>
+
+                    <!-- Panel Multipass -->
+                    <div id="settings-multipass-prog" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Cantidad de Pases Incluidos</label>
+                            <input type="number" id="mp-count" class="fidelio-input" placeholder="Ej. 10" value="10" min="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Servicio / Producto Asociado</label>
+                            <input type="text" id="mp-service" class="fidelio-input" placeholder="Ej. Clases de Yoga" value="Clases de Yoga">
+                        </div>
+                    </div>
+
+                    <!-- Panel Certificates -->
+                    <div id="settings-certificates-prog" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Configuración de Montos Predeterminados (MXN)</label>
+                            <input type="text" id="cert-amounts" class="fidelio-input" placeholder="Ej. 500, 1000, 2000" value="500, 1000, 2000">
+                        </div>
+                        
+                        <div style="background: rgba(139, 92, 246, 0.05); border: 1px dashed var(--accent-violet); padding: 16px; border-radius: 12px; margin-top: 16px;">
+                            <h4 style="margin-top:0; font-size:14px; color:var(--text-main); margin-bottom:12px;"><i class="fa-solid fa-paper-plane" style="color:var(--accent-violet);"></i> Emisión Manual Directa</h4>
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label style="font-size:12px;">Email del Destinatario (Para regalo)</label>
+                                <input type="email" id="cert-email" class="fidelio-input" placeholder="ejemplo@correo.com">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label style="font-size:12px;">Mensaje personalizado (Opcional)</label>
+                                <textarea id="cert-message" class="fidelio-input" rows="2" placeholder="¡Feliz cumpleaños!"></textarea>
+                            </div>
+                            <button id="btn-emit-cert" class="btn btn-primary" style="width:100%; font-size:12px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%);"><i class="fa-solid fa-gift"></i> Emitir y Enviar Certificado</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 

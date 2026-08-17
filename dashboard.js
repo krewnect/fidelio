@@ -2865,14 +2865,26 @@ function updatePassRender() {
             const updateLoyaltyUI = (mode, cardTitle) => {
                 const customPanel = document.getElementById('panel-loyalty-custom');
                 const standardPanel = document.getElementById('panel-loyalty-standard');
-                const setMem = document.getElementById('settings-membership');
-                const setPre = document.getElementById('settings-prepaid');
+                
+                const setMem = document.getElementById('settings-membership-prog');
+                const setPre = document.getElementById('panel-prepaid-config');
                 const setCus = document.getElementById('settings-custom-prog');
+                const setPts = document.getElementById('settings-points-prog');
+                const setDsc = document.getElementById('settings-discount-prog');
+                const setCpn = document.getElementById('settings-coupons-prog');
+                const setMp = document.getElementById('settings-multipass-prog');
+                const setCert = document.getElementById('settings-certificates-prog');
                 
                 if(customPanel) customPanel.style.display = 'none';
                 if(setMem) setMem.style.display = 'none';
                 if(setPre) setPre.style.display = 'none';
                 if(setCus) setCus.style.display = 'none';
+                if(setPts) setPts.style.display = 'none';
+                if(setDsc) setDsc.style.display = 'none';
+                if(setCpn) setCpn.style.display = 'none';
+                if(setMp) setMp.style.display = 'none';
+                if(setCert) setCert.style.display = 'none';
+                
                 if(standardPanel) standardPanel.style.display = 'none';
 
                 if(mode === 'cashback') {
@@ -2897,12 +2909,14 @@ function updatePassRender() {
                     
                     if(customPanel) {
                         customPanel.style.display = 'block';
-                        if(mode === 'prepaid') {
-                            if(setPre) setPre.style.display = 'block';
-                        }
-                        if(mode === 'custom') {
-                            if(setCus) setCus.style.display = 'block';
-                        }
+                        if(mode === 'prepaid' && setPre) setPre.style.display = 'block';
+                        if(mode === 'custom' && setCus) setCus.style.display = 'block';
+                        if(mode === 'points' && setPts) setPts.style.display = 'block';
+                        if(mode === 'membership' && setMem) setMem.style.display = 'block';
+                        if(mode === 'discount' && setDsc) setDsc.style.display = 'block';
+                        if(mode === 'coupons' && setCpn) setCpn.style.display = 'block';
+                        if(mode === 'multipass' && setMp) setMp.style.display = 'block';
+                        if(mode === 'certificates' && setCert) setCert.style.display = 'block';
                         
                         if(cardTitle) {
                             document.getElementById('custom-panel-title').innerHTML = `<i class="fa-solid fa-sliders" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración: ${cardTitle}`;
@@ -2956,13 +2970,38 @@ function updatePassRender() {
             }
             if (state.customRules) {
                 if(state.customRules.membership) {
-                    if(document.getElementById('mem-price')) document.getElementById('mem-price').value = state.customRules.membership.price || 199;
-                    if(document.getElementById('mem-perk')) document.getElementById('mem-perk').value = state.customRules.membership.perk || '20% OFF en Tienda';
+                    if(document.getElementById('mem-cycle')) document.getElementById('mem-cycle').value = state.customRules.membership.cycle || 'monthly';
+                    if(document.getElementById('mem-benefit')) document.getElementById('mem-benefit').value = state.customRules.membership.benefit || '';
                 }
 
                 if(state.customRules.custom) {
                     if(document.getElementById('cus-name')) document.getElementById('cus-name').value = state.customRules.custom.name || 'Mi Programa VIP';
                     if(document.getElementById('cus-rules')) document.getElementById('cus-rules').value = state.customRules.custom.rules || '';
+                }
+
+                if(state.customRules.points) {
+                    if(document.getElementById('pts-rate')) document.getElementById('pts-rate').value = state.customRules.points.rate || '';
+                    if(document.getElementById('pts-reward')) document.getElementById('pts-reward').value = state.customRules.points.reward || '';
+                }
+
+                if(state.customRules.discount) {
+                    if(document.getElementById('dsc-percent')) document.getElementById('dsc-percent').value = state.customRules.discount.percent || '10';
+                    if(document.getElementById('dsc-conditions')) document.getElementById('dsc-conditions').value = state.customRules.discount.conditions || '';
+                }
+
+                if(state.customRules.coupons) {
+                    if(document.getElementById('cpn-type')) document.getElementById('cpn-type').value = state.customRules.coupons.type || 'percentage';
+                    if(document.getElementById('cpn-limit')) document.getElementById('cpn-limit').value = state.customRules.coupons.limit || '1';
+                    if(document.getElementById('cpn-expiry')) document.getElementById('cpn-expiry').value = state.customRules.coupons.expiry || '';
+                }
+
+                if(state.customRules.multipass) {
+                    if(document.getElementById('mp-count')) document.getElementById('mp-count').value = state.customRules.multipass.count || '10';
+                    if(document.getElementById('mp-service')) document.getElementById('mp-service').value = state.customRules.multipass.service || '';
+                }
+
+                if(state.customRules.certificates) {
+                    if(document.getElementById('cert-amounts')) document.getElementById('cert-amounts').value = state.customRules.certificates.amounts || '500, 1000, 2000';
                 }
             }
             if(togglePrepaid) {
@@ -3076,8 +3115,13 @@ function updatePassRender() {
                         prepaidAmount: document.getElementById('pre-amount') ? parseFloat(document.getElementById('pre-amount').value) : 500,
                         prepaidBonus: document.getElementById('pre-bonus') ? parseFloat(document.getElementById('pre-bonus').value) : 100,
                         customRules: {
-                            membership: { price: document.getElementById('mem-price')?.value, perk: document.getElementById('mem-perk')?.value },
-                            custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value }
+                            membership: { cycle: document.getElementById('mem-cycle')?.value, benefit: document.getElementById('mem-benefit')?.value },
+                            custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value },
+                            points: { rate: document.getElementById('pts-rate')?.value, reward: document.getElementById('pts-reward')?.value },
+                            discount: { percent: document.getElementById('dsc-percent')?.value, conditions: document.getElementById('dsc-conditions')?.value },
+                            coupons: { type: document.getElementById('cpn-type')?.value, limit: document.getElementById('cpn-limit')?.value, expiry: document.getElementById('cpn-expiry')?.value },
+                            multipass: { count: document.getElementById('mp-count')?.value, service: document.getElementById('mp-service')?.value },
+                            certificates: { amounts: document.getElementById('cert-amounts')?.value }
                         }
                     }).eq('id', state.tenantId);
                     
@@ -3110,6 +3154,35 @@ function updatePassRender() {
                 }
             });
         }
+    }
+    
+    // Certificate Email Emission Logic
+    const btnEmitCert = document.getElementById('btn-emit-cert');
+    if (btnEmitCert) {
+        btnEmitCert.addEventListener('click', async () => {
+            const email = document.getElementById('cert-email').value;
+            const message = document.getElementById('cert-message').value;
+            if (!email) {
+                showToast('Por favor, ingresa un correo electrónico válido.', 'warning');
+                return;
+            }
+            
+            btnEmitCert.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            btnEmitCert.disabled = true;
+            
+            try {
+                // Simulate API call to send email with certificate
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                showToast(`¡Certificado enviado exitosamente a ${email}!`, 'success');
+                document.getElementById('cert-email').value = '';
+                document.getElementById('cert-message').value = '';
+            } catch (err) {
+                showToast('Error al enviar el certificado.', 'warning');
+            } finally {
+                btnEmitCert.innerHTML = '<i class="fa-solid fa-gift"></i> Emitir y Enviar Certificado';
+                btnEmitCert.disabled = false;
+            }
+        });
     }
 })();
 
