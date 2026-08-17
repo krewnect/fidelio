@@ -2665,7 +2665,6 @@ function updatePassRender() {
                 </tr>
             `;
         });
-        });
     };
 
     window.viewTicketDetail = function(index) {
