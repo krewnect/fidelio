@@ -304,7 +304,7 @@
                 <button class="nav-tab" data-tab="tab-loyalty"><i class="fa-solid fa-gift"></i> Fidelización</button>
                 <button class="nav-tab" data-tab="tab-special-cards" id="nav-special-cards"><i class="fa-solid fa-address-card"></i> Tarjetas Especiales</button>
                 <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas Push</button>
-                <button class="nav-tab" data-tab="tab-copilot" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%); border: 1px solid rgba(139, 92, 246, 0.3);"><i class="fa-solid fa-sparkles" style="color: #a78bfa;"></i> Copiloto AI <span style="background: linear-gradient(135deg, #8b5cf6, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 10px; margin-left: auto; text-transform: uppercase;">Nuevo</span></button>
+                <button class="nav-tab" data-tab="tab-copilot"><i class="fa-solid fa-sparkles"></i> Copiloto AI</button>
                 <button class="nav-tab" data-tab="tab-api"><i class="fa-solid fa-code"></i> API</button>
                 <button class="nav-tab" data-tab="tab-mybusiness"><i class="fa-solid fa-bullhorn"></i> My Business</button>
 
@@ -1258,9 +1258,9 @@
             <!-- AI COPILOT TAB                             -->
             <!-- ========================================== -->
             <section id="tab-copilot" class="tab-content">
-                <div class="workspace-header" style="background: linear-gradient(135deg, rgba(17,24,39,0.9) 0%, rgba(31,41,55,0.9) 100%); border-bottom: 1px solid rgba(139,92,246,0.2);">
+                <div class="workspace-header">
                     <div>
-                        <span class="workspace-eyebrow" style="color: #a78bfa;"><i class="fa-solid fa-sparkles"></i> ASISTENTE INTELIGENTE</span>
+                        <span class="workspace-eyebrow" style="color: var(--accent-violet);"><i class="fa-solid fa-sparkles"></i> ASISTENTE INTELIGENTE</span>
                         <h1>Copiloto de Marketing AI</h1>
                         <p>Gemini analiza tu negocio en tiempo real y te sugiere las campañas más efectivas para subir tus ventas.</p>
                     </div>
@@ -1272,14 +1272,14 @@
                 <div class="workspace-content">
                     <div id="copilot-loading" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
                         <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(139,92,246,0.1); display:flex; align-items:center; justify-content:center; margin-bottom: 20px;">
-                            <i class="fa-solid fa-brain fa-fade" style="font-size: 40px; color: #8b5cf6;"></i>
+                            <i class="fa-solid fa-brain fa-fade" style="font-size: 40px; color: var(--accent-violet);"></i>
                         </div>
-                        <h3 style="font-size: 18px; color: white; margin-bottom: 8px;">Analizando tu base de clientes...</h3>
+                        <h3 style="font-size: 18px; color: var(--text-main); margin-bottom: 8px;">Analizando tu base de clientes...</h3>
                         <p style="color: var(--text-muted); font-size: 14px; max-width: 400px;">Gemini está cruzando datos de visitas, compras y niveles VIP para encontrar oportunidades ocultas de venta.</p>
                     </div>
 
                     <div id="copilot-results" style="display:none; padding-bottom:40px;">
-                        <h3 style="margin-bottom:20px; color:white;"><i class="fa-solid fa-lightbulb" style="color:#f59e0b;"></i> Oportunidades Detectadas</h3>
+                        <h3 style="margin-bottom:20px; color: var(--text-main);"><i class="fa-solid fa-lightbulb" style="color:#f59e0b;"></i> Oportunidades Detectadas</h3>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;" id="copilot-cards-container">
                             <!-- Cards injectadas via JS -->
                         </div>

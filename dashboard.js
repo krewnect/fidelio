@@ -4822,12 +4822,12 @@ window.fetchCopilotIdeas = async function() {
         
         opportunities.forEach((opp, index) => {
             const card = document.createElement('div');
-            card.style.cssText = 'background: rgba(17,24,39,0.5); border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; position: relative; overflow: hidden; transition: all 0.3s ease; animation: fadeInUp 0.5s ease forwards; opacity: 0;';
+            card.style.cssText = 'background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; position: relative; overflow: hidden; transition: all 0.3s ease; animation: fadeInUp 0.5s ease forwards; opacity: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);';
             card.style.animationDelay = (index * 0.15) + 's';
             
             // Efecto Hover 
             card.onmouseenter = () => { card.style.borderColor = 'rgba(139, 92, 246, 0.5)'; card.style.transform = 'translateY(-5px)'; card.style.boxShadow = '0 10px 25px rgba(139,92,246,0.15)'; };
-            card.onmouseleave = () => { card.style.borderColor = 'var(--border-glass)'; card.style.transform = 'translateY(0)'; card.style.boxShadow = 'none'; };
+            card.onmouseleave = () => { card.style.borderColor = 'var(--border-glass)'; card.style.transform = 'translateY(0)'; card.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)'; };
 
             // Ícono dependiendo del tipo
             let iconHtml = '<i class="fa-solid fa-bullseye" style="color: #60a5fa;"></i>';
@@ -4838,16 +4838,16 @@ window.fetchCopilotIdeas = async function() {
 
             card.innerHTML = `
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom: 12px;">
-                    <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size: 18px;">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(139, 92, 246, 0.1); display:flex; align-items:center; justify-content:center; font-size: 18px;">
                         ${iconHtml}
                     </div>
-                    <h4 style="margin:0; font-size: 16px; color: white;">${opp.title}</h4>
+                    <h4 style="margin:0; font-size: 16px; color: var(--text-main);">${opp.title}</h4>
                 </div>
                 <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">${opp.description}</p>
                 
-                <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
-                    <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;"><i class="fa-brands fa-apple"></i> Push Sugerido</div>
-                    <div style="color: white; font-size: 13px; font-style: italic;">"${opp.pushMessage}"</div>
+                <div style="background: rgba(139,92,246,0.05); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                    <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;"><i class="fa-brands fa-apple"></i> Sugerencia</div>
+                    <div style="color: var(--text-main); font-size: 13px; font-style: italic;">"${opp.pushMessage}"</div>
                 </div>
 
                 <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 20px; font-size: 12px;">
