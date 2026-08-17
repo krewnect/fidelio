@@ -58,6 +58,31 @@ const requireMerchantAuth = async (req, res, next) => {
     next();
 };
 
+
+const requireBusinessPlan = async (req, res, next) => {
+    try {
+        const { data: merchant, error } = await supabase
+            .from('merchants')
+            .select('business_type')
+            .eq('id', req.merchantId)
+            .single();
+            
+        if (error || !merchant) return res.status(404).json({ success: false, error: 'Merchant not found' });
+        
+        // Admin overrides
+        if (req.userRole === 'admin' && req.merchantId === 'hola@fideliorewards.com') return next(); 
+        
+        const plan = merchant.business_type || 'starter';
+        if (plan === 'business' || plan === 'enterprise') {
+            next();
+        } else {
+            return res.status(403).json({ success: false, error: 'Upgrade to Business to access this feature.' });
+        }
+    } catch (e) {
+        return res.status(500).json({ success: false, error: 'Internal validation error' });
+    }
+};
+
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
     max: 100,
@@ -107,9 +132,12 @@ app.post('/api/scanner/transaction', apiLimiter, requireMerchantAuth, async (req
     const { customerId, amount, type } = req.body;
     // type: 'earn' (Dar puntos) o 'redeem' (Cobrar)
     
-    if (!customerId || !amount || amount <= 0 || !['earn', 'redeem'].includes(type)) {
+
+    amount = parseFloat(amount);
+    if (!customerId || isNaN(amount) || amount <= 0 || !['earn', 'redeem'].includes(type)) {
         return res.status(400).json({ success: false, error: 'Datos inválidos' });
     }
+
     
     try {
         // Verificar que el cliente es de este comercio
@@ -278,7 +306,7 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Registro de Negocios
 app.post('/api/auth/register', async (req, res) => {
-    const { businessType, businessName, email, password, phone, promoCode } = req.body;
+    let { businessType, businessName, email, password, phone, promoCode } = req.body;
     
     if (!supabase) return res.status(500).json({ error: 'Supabase no configurado' });
 
@@ -300,6 +328,10 @@ app.post('/api/auth/register', async (req, res) => {
                     // Marcar uso
                     await supabase.from('promo_codes').update({ used_count: promo.used_count + 1 }).eq('code', promoCode);
                     
+                    
+                    if (promo.target_plan) {
+                        businessType = promo.target_plan;
+                    }
                     if (promo.reward_type === 'lifetime_free' || (promo.reward_type === 'discount' && promo.discount_pct >= 100)) {
                         planStatus = 'active_lifetime';
                         skipStripe = true; // El cliente ya no necesita pagar

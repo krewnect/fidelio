@@ -291,22 +291,22 @@
                 <button class="nav-tab" data-tab="tab-metrics"><i class="fa-solid fa-chart-pie"></i> Métricas</button>
 
                 <div class="menu-label mt-20">Operación del Negocio</div>
-                <button class="nav-tab" data-tab="tab-campaigns" id="nav-campaigns"><i class="fa-solid fa-list"></i> Mis Campañas</button>
+                <button class="nav-tab plan-business-only" data-tab="tab-campaigns" id="nav-campaigns" style="display:none;"><i class="fa-solid fa-list"></i> Mis Campañas</button>
                 <button class="nav-tab" data-tab="tab-builder" id="nav-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Card</button>
-                <button class="nav-tab" data-tab="tab-stripe" id="nav-stripe"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</button>
-                <button class="nav-tab" data-tab="tab-branches" id="nav-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
-                <button class="nav-tab" data-tab="tab-appointments" id="nav-appointments"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios</button>
+                <button class="nav-tab plan-business-only" data-tab="tab-stripe" id="nav-stripe" style="display:none;"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</button>
+                <button class="nav-tab plan-pro-only" data-tab="tab-branches" id="nav-branches" style="display:none;"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
+                <button class="nav-tab plan-pro-only" data-tab="tab-appointments" id="nav-appointments" style="display:none;"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios</button>
                 <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></button>
                 <button class="nav-tab" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
                 <button class="nav-tab" data-tab="tab-bank"><i class="fa-solid fa-piggy-bank"></i> The Bank</button>
 
                 <div class="menu-label mt-20">Estrategia y Crecimiento</div>
                 <button class="nav-tab" data-tab="tab-loyalty"><i class="fa-solid fa-gift"></i> Fidelización</button>
-                <button class="nav-tab" data-tab="tab-special-cards" id="nav-special-cards"><i class="fa-solid fa-address-card"></i> Tarjetas Especiales</button>
-                <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas Push</button>
-                <button class="nav-tab" data-tab="tab-copilot"><i class="fa-solid fa-brain"></i> Copiloto AI</button>
-                <button class="nav-tab" data-tab="tab-api"><i class="fa-solid fa-code"></i> API</button>
-                <button class="nav-tab" data-tab="tab-mybusiness"><i class="fa-solid fa-bullhorn"></i> My Business</button>
+                <button class="nav-tab plan-pro-only" data-tab="tab-special-cards" id="nav-special-cards" style="display:none;"><i class="fa-solid fa-address-card"></i> Tarjetas Especiales</button>
+                <button class="nav-tab plan-business-only" data-tab="tab-marketing" style="display:none;"><i class="fa-solid fa-bolt"></i> Campañas Push</button>
+                <button class="nav-tab plan-pro-only" data-tab="tab-copilot" style="display:none;"><i class="fa-solid fa-brain"></i> Copiloto AI</button>
+                <button class="nav-tab plan-pro-only" data-tab="tab-api" style="display:none;"><i class="fa-solid fa-code"></i> API</button>
+                <button class="nav-tab plan-business-only" data-tab="tab-mybusiness" style="display:none;"><i class="fa-solid fa-bullhorn"></i> My Business</button>
 
                 <div class="menu-label mt-20">Herramientas</div>
                 <button class="nav-tab" data-tab="tab-caja"><i class="fa-solid fa-cash-register"></i> Caja (PoS)</button>
@@ -376,7 +376,7 @@
                     <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; line-height:1.5;">
                         La monetización nativa y la venta directa de beneficios desde Apple Wallet requieren una cuenta de nivel Profesional. Sube de nivel para desbloquear los enlaces de pago de Stripe.
                     </p>
-                    <button class="btn btn-primary" onclick="window.location.href='professionals.html'" style="background: var(--accent-amber) !important; color: #000 !important; font-weight: 800; border: none;"><i class="fa-solid fa-arrow-up-right-dots"></i> Hacer Upgrade a Pro</button>
+                    <button class="btn btn-primary" onclick="window.location.href='professionals.html'" style="background: var(--accent-amber) !important; color: #000 !important; font-weight: 800; border: none;"><i class="fa-solid fa-arrow-up-right-dots"></i> Hacer Upgrade a Business</button>
                 </div>
 
                 <div id="stripe-active-ui" class="settings-card" style="background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid var(--surface-light); text-align: center; position:relative;">
@@ -2765,6 +2765,14 @@
                                 <option value="discount">Descuento (%)</option>
                                 <option value="free_branches">Sucursales Extra Gratis</option>
                                 <option value="custom_branch_price">Precio de Sucursal Preferencial</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group" style="margin-bottom: 16px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Plan Destino</label>
+                            <select id="promo-target-plan" class="fidelio-input">
+                                <option value="business">Plan Business (Restaurantes)</option>
+                                <option value="professional">Plan Professional (Belleza/Salud)</option>
                             </select>
                         </div>
                         

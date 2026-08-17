@@ -52,28 +52,13 @@ window.loadCampaigns = async function() {
         const list = document.getElementById('campaigns-list');
         if (!list) return;
         
-        list.innerHTML = data.campaigns
-            .filter(c => !['membership', 'multipass', 'certificates'].includes(c.type))
-            .map(c => `
+        list.innerHTML = data.campaigns.map(c => `
             <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="selectCampaign('${c.id}')">
                 <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
                 <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
                 <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
             </div>
         `).join('');
-        
-        const specialList = document.getElementById('special-cards-list');
-        if (specialList) {
-            specialList.innerHTML = data.campaigns
-                .filter(c => ['membership', 'multipass', 'certificates'].includes(c.type))
-                .map(c => `
-                <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="selectCampaign('${c.id}')">
-                    <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
-                    <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
-                    <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
-                </div>
-            `).join('');
-        }
     } catch(e) {
         console.error("Error loading campaigns", e);
     }
@@ -86,25 +71,8 @@ window.createNewCampaign = function() {
     state.colorAccent = "#8b5cf6";
     if (typeof showToast === 'function') showToast("Nueva campaña creada, edita y guarda.", "info");
     
-    // Redirect to Loyalty Setup first
-    const loyaltyTabBtn = document.querySelector('.nav-tab[data-tab="tab-loyalty"]');
-    if(loyaltyTabBtn) {
-        loyaltyTabBtn.click();
-    }
-    updatePassRender();
-};
-
-window.createNewSpecialCard = function() {
-    state.currentCampaignId = 'camp_sp_' + Date.now();
-    state.restaurantName = "Nueva Tarjeta Especial";
-    state.colorPrimary = "#10b981";
-    state.colorAccent = "#8b5cf6";
-    state.activeMode = "membership"; // default
-    if (typeof showToast === 'function') showToast("Nueva tarjeta creada, edita y guarda.", "info");
-    
-    const specialTabBtn = document.querySelector('.nav-tab[data-tab="tab-special-cards"]');
-    if(specialTabBtn) specialTabBtn.click();
-    
+    document.getElementById('nav-builder').style.display = 'inline-block';
+    document.getElementById('nav-builder').click();
     updatePassRender();
 };
 
@@ -192,10 +160,8 @@ window.initStripeUI = function() {
     const lock = document.getElementById('stripe-pro-lock');
     const activeUI = document.getElementById('stripe-active-ui');
     
-    let isPro = false;
-    if (window.merchantData && (window.merchantData.business_type === 'professional' || window.merchantData.business_type === 'business' || window.merchantData.business_type === 'enterprise')) {
-        isPro = true;
-    }
+    // Mock user tier
+    const isPro = true; // Set to true so they can see the UI, or false to test the lock
     
     if (!isPro) {
         if(lock) lock.style.display = 'block';
@@ -512,8 +478,8 @@ let saveTimeout = null;
     const labelYr = document.getElementById('label-annual');
     if (toggleCycle) {
         toggleCycle.addEventListener('change', () => {
-            if (labelMo) labelMo.style.color = toggleCycle.checked ? 'var(--text-muted)' : 'var(--text-main)';
-            if (labelYr) labelYr.style.color = toggleCycle.checked ? 'var(--text-main)' : 'var(--text-muted)';
+            if (labelMo) labelMo.style.color = toggleCycle.checked ? 'var(--text-muted)' : 'white';
+            if (labelYr) labelYr.style.color = toggleCycle.checked ? 'white' : 'var(--text-muted)';
             updatePricingUI();
         });
         if (labelMo) labelMo.addEventListener('click', () => { toggleCycle.checked = false; toggleCycle.dispatchEvent(new Event('change')); });
@@ -579,34 +545,19 @@ let saveTimeout = null;
         }
         const { data: appointmentsData } = await appQuery;
         
-        window.checkPlanPermissions = function() {
-            if (!window.merchantData) return;
-            const plan = window.merchantData.business_type || 'starter';
-            const isAdmin = window.merchantSession && window.merchantSession.user.email === 'hola@fideliorewards.com';
-            
-            const isBusiness = plan === 'business' || plan === 'professional' || plan === 'enterprise' || isAdmin;
-            const isPro = plan === 'professional' || plan === 'enterprise' || isAdmin;
-            
-            // Toggle Business-only tabs
-            document.querySelectorAll('.plan-business-only').forEach(el => {
-                if(isBusiness) {
-                    el.style.display = 'flex';
-                } else {
-                    el.style.display = 'none';
-                }
-            });
-            
-            // Toggle Pro-only tabs
-            document.querySelectorAll('.plan-pro-only').forEach(el => {
-                if(isPro) {
-                    el.style.display = 'flex';
-                } else {
-                    el.style.display = 'none';
-                }
-            });
-        };
+        const navBranches = document.getElementById('nav-branches');
+        const navAppointments = document.getElementById('nav-appointments');
         
-        window.checkPlanPermissions();
+        if (window.merchantSession.user.email === 'hola@fideliorewards.com') {
+            if (navBranches) navBranches.style.display = 'block';
+            if (navAppointments) navAppointments.style.display = 'block';
+        } else if (merchantData.business_type === 'professional') {
+            if (navBranches) navBranches.style.display = 'none';
+            if (navAppointments) navAppointments.style.display = 'block';
+        } else {
+            if (navBranches) navBranches.style.display = 'block';
+            if (navAppointments) navAppointments.style.display = 'none';
+        }
 
         document.getElementById('sub-status-text').innerHTML = merchantData.plan_status === 'active' ? '<i class="fa-solid fa-check-circle"></i> Activo' : '<i class="fa-solid fa-clock"></i> Pruebas / Inactivo';
         state = {
@@ -741,7 +692,6 @@ let saveTimeout = null;
             setTimeout(() => toast.remove(), 300);
         }, 4000);
     }
-    window.showToast = showToast;
 
     // --- 1-CLICK INTUITIVE PRESET LOAD FUNCTION ---
     window.loadDemoPreset = async function(presetKey) {
@@ -774,7 +724,9 @@ let saveTimeout = null;
         if(document.getElementById('metrics-cards-issued')) document.getElementById('metrics-cards-issued').textContent = custData.length;
 
         updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         showToast(`Plantilla cargada en Fidelio: ${preset.name} (${preset.label}).`, "success");
     };
 
@@ -793,7 +745,9 @@ let saveTimeout = null;
             const tierConfig = state.vipTiers[tier];
             sampleClient.tier = tierConfig ? tierConfig.name : (tier === 'oro' ? 'Oro VIP' : tier === 'plata' ? 'Plata VIP' : 'Bronce');
             updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast(`Vista previa del pase actualizada a: ${sampleClient.tier}`, "info");
         }
     };
@@ -802,27 +756,39 @@ let saveTimeout = null;
     const bindVipTierInputs = () => {
         safeAdd('tier-bronce-name', 'input', (e) => {
             state.vipTiers.bronce.name = e.target.value; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-bronce-cb', 'input', (e) => {
             state.vipTiers.bronce.cashbackPercent = parseFloat(e.target.value) || 5; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-plata-name', 'input', (e) => {
             state.vipTiers.plata.name = e.target.value; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-plata-cb', 'input', (e) => {
             state.vipTiers.plata.cashbackPercent = parseFloat(e.target.value) || 10; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-oro-name', 'input', (e) => {
             state.vipTiers.oro.name = e.target.value; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
         safeAdd('tier-oro-cb', 'input', (e) => {
             state.vipTiers.oro.cashbackPercent = parseFloat(e.target.value) || 15; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
     };
 
@@ -901,7 +867,9 @@ let saveTimeout = null;
 
             applyModeToParams(mode);
             updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast(`Formato de Lealtad actualizado: ${tile.querySelector('strong').textContent}`, "info");
         });
     });
@@ -1714,28 +1682,6 @@ function updatePassRender() {
             vipCaption.textContent = currentTierConfig.name.toUpperCase();
         }
 
-        // Render back of card benefits dynamically
-        const renderVipBack = document.getElementById('render-vip-benefits-back');
-        const renderVipList = document.getElementById('render-vip-benefits-list');
-        if (renderVipBack && renderVipList) {
-            if (currentTierConfig.benefits && currentTierConfig.benefits.length > 0) {
-                renderVipBack.style.display = 'block';
-                renderVipList.innerHTML = currentTierConfig.benefits.map(b => {
-                    let typeLabel = b.type;
-                    if(b.type === 'cashback') typeLabel = 'Cashback';
-                    else if(b.type === 'puntos') typeLabel = 'Multiplicador Puntos';
-                    else if(b.type === 'descuento') typeLabel = 'Descuento';
-                    else if(b.type === 'producto') typeLabel = 'Producto Gratis';
-                    else if(b.type === 'upgrade') typeLabel = 'Upgrade';
-                    else if(b.type === 'otro') typeLabel = 'Beneficio';
-                    return `<li style="margin-bottom:4px;"><strong>${typeLabel}:</strong> ${b.value}</li>`;
-                }).join('');
-            } else {
-                renderVipBack.style.display = 'none';
-                renderVipList.innerHTML = '';
-            }
-        }
-
         const rBal = document.getElementById('render-balance');
         if (rBal) {
             const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
@@ -1964,7 +1910,9 @@ function updatePassRender() {
                     
                     btnRemoveLogo.style.display = 'inline-block';
                     updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
                     showToast("Logo cargado con éxito en la tarjeta digital.", "success");
                 };
                 reader.readAsDataURL(file);
@@ -1979,7 +1927,9 @@ function updatePassRender() {
             logoFileInput.value = '';
             btnRemoveLogo.style.display = 'none';
             updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast("Logo removido.", "info");
         });
     }
@@ -1994,7 +1944,9 @@ function updatePassRender() {
                     
                     btnRemoveBanner.style.display = 'inline-block';
                     updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
                     showToast("Imagen de portada de tarjeta aplicada.", "success");
                 };
                 reader.readAsDataURL(file);
@@ -2009,7 +1961,9 @@ function updatePassRender() {
             bannerFileInput.value = '';
             btnRemoveBanner.style.display = 'none';
             updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             showToast("Imagen de portada removida.", "info");
         });
     }
@@ -2040,7 +1994,6 @@ function updatePassRender() {
                 if(targetTab === 'tab-leads' && typeof window.loadLeads === 'function') window.loadLeads();
                 else if(targetTab === 'tab-global-db' && typeof window.loadGlobalDatabase === 'function') window.loadGlobalDatabase();
                 else if(targetTab === 'tab-merchants-control' && typeof window.loadMerchantsControl === 'function') window.loadMerchantsControl();
-                else if(targetTab === 'tab-loyalty' && typeof window.initLoyaltyTab === 'function') window.initLoyaltyTab();
                 else if(targetTab === 'tab-inbox' && typeof window.loadInbox === 'function') window.loadInbox();
                 else if(targetTab === 'tab-fidelio-team' && typeof window.loadFidelioTeam === 'function') window.loadFidelioTeam();
                 else if(targetTab === 'tab-appointments' && typeof window.loadAppointments === 'function') window.loadAppointments();
@@ -2093,7 +2046,9 @@ function updatePassRender() {
             state.activeWallet = 'apple';
             passRender.style.borderRadius = '20px';
             updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
     }
 
@@ -2104,58 +2059,84 @@ function updatePassRender() {
             state.activeWallet = 'google';
             passRender.style.borderRadius = '16px';
             updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         });
     }
 
     // --- INPUT BINDINGS ---
     safeAdd('rest-name', 'input', (e) => {
         state.restaurantName = e.target.value || "Comercio"; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('color-primary', 'input', (e) => {
         state.colorPrimary = e.target.value; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('color-accent', 'input', (e) => {
         state.colorAccent = e.target.value; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('rest-icon', 'change', (e) => {
         state.iconClass = e.target.value; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-cashback-check', 'change', (e) => {
         state.cashbackActive = e.target.checked; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('cashback-percent', 'input', (e) => {
         state.cashbackPercent = parseFloat(e.target.value) || 0; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-stamps-check', 'change', (e) => {
         state.stampsActive = e.target.checked; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('stamps-total', 'input', (e) => {
         state.stampsTotal = parseInt(e.target.value) || 5; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('stamps-reward', 'input', (e) => {
         state.stampsReward = e.target.value || "Premio"; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-dynamic-check', 'change', (e) => {
         state.dynamicActive = e.target.checked; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('dynamic-desc', 'input', (e) => {
         state.dynamicDesc = e.target.value; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
     safeAdd('mech-vip-check', 'change', (e) => {
         state.vipActive = e.target.checked; updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
     });
 
     if (crmSearchInput) {
@@ -2570,7 +2551,6 @@ function updatePassRender() {
         if (!checkMasterAdmin()) return;
         const codeInput = document.getElementById('promo-code-input');
         const typeSelect = document.getElementById('promo-type-select');
-        const targetPlanSelect = document.getElementById('promo-target-plan');
         const discountInput = document.getElementById('promo-discount-input');
         const stripeLinkInput = document.getElementById('promo-stripe-link-input');
         const freeBranchesInput = document.getElementById('promo-free-branches-input');
@@ -2600,7 +2580,6 @@ function updatePassRender() {
         const { error } = await window.supabaseClient.from('promo_codes').insert([{
             code: code,
             reward_type: type,
-            target_plan: targetPlanSelect ? targetPlanSelect.value : 'business',
             discount_pct: discount_pct,
             stripe_payment_link: stripe_link,
             free_branches_count: free_branches_count,
@@ -2659,9 +2638,8 @@ function updatePassRender() {
             return;
         }
         
-        window.currentInboxTickets = filteredData;
         tbody.innerHTML = '';
-        filteredData.forEach((t, index) => {
+        filteredData.forEach(t => {
             const date = new Date(t.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour:'2-digit', minute:'2-digit' });
             let statusBadge = t.status === 'abierto' ? '<span class="menu-badge" style="background:#ef4444;color:#fff;font-size:10px;">ABIERTO</span>' : '<span class="menu-badge" style="background:#10b981;color:#fff;font-size:10px;">RESUELTO</span>';
             
@@ -2678,45 +2656,12 @@ function updatePassRender() {
                     </td>
                     <td style="padding: 16px;">${statusBadge}</td>
                     <td style="padding: 16px; text-align: right;">
-                        <button class="btn-preset" onclick="viewTicketDetail(${index})" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
+                        <button class="btn-preset" onclick="alert('Mensaje completo:\n\n' + \`${t.message}\`)" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
                         ${t.status === 'abierto' ? `<button class="btn-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--accent-violet);"></i></button>` : ''}
                     </td>
                 </tr>
             `;
         });
-    };
-
-    window.viewTicketDetail = function(index) {
-        const t = window.currentInboxTickets[index];
-        if(!t) return;
-        
-        document.getElementById('ticket-modal-subject').innerText = t.subject || 'Sin asunto';
-        document.getElementById('ticket-modal-id').innerText = '#' + t.id;
-        document.getElementById('ticket-modal-email').innerText = t.email || 'Desconocido';
-        document.getElementById('ticket-modal-merchant').innerText = t.merchant_id || 'Visitante';
-        
-        const dateStr = new Date(t.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric', hour:'2-digit', minute:'2-digit' });
-        document.getElementById('ticket-modal-date').innerText = dateStr;
-        
-        let statusHtml = t.status === 'abierto' ? '<span style="background:#ef4444;color:#fff;padding:4px 8px;border-radius:12px;font-size:10px;font-weight:bold;">ABIERTO</span>' : '<span style="background:#10b981;color:#fff;padding:4px 8px;border-radius:12px;font-size:10px;font-weight:bold;">RESUELTO</span>';
-        document.getElementById('ticket-modal-status').innerHTML = statusHtml;
-        
-        document.getElementById('ticket-modal-message').innerText = t.message || 'Sin contenido';
-        
-        const actionsDiv = document.getElementById('ticket-modal-actions');
-        actionsDiv.innerHTML = '';
-        
-        // Botón de email
-        if(t.email) {
-            const mailto = `mailto:${t.email}?subject=RE: ${encodeURIComponent(t.subject)}&body=${encodeURIComponent('\n\n--- Tu mensaje original ---\n' + t.message)}`;
-            actionsDiv.innerHTML += `<a href="${mailto}" class="btn btn-secondary" style="padding:10px 16px; text-decoration:none; display:inline-block;"><i class="fa-solid fa-reply"></i> Responder por Correo</a>`;
-        }
-        
-        if(t.status === 'abierto') {
-            actionsDiv.innerHTML += `<button class="btn btn-primary" onclick="resolveTicket('${t.id}'); document.getElementById('modal-ticket-detail').style.display='none';" style="padding:10px 16px; background:var(--success); border:none;"><i class="fa-solid fa-check"></i> Marcar Resuelto</button>`;
-        }
-        
-        document.getElementById('modal-ticket-detail').style.display = 'flex';
     };
 
     window.resolveTicket = async function(id) {
@@ -2735,7 +2680,9 @@ function updatePassRender() {
     renderBranches();
     renderCRMTable();
     updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
 
     // --- ACCOUNT SETTINGS LOGIC ---
     const accEmail = document.getElementById('acc-email');
@@ -2888,7 +2835,9 @@ function updatePassRender() {
 
         // Inicializar UI
         updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
         renderBranches();
         renderCRMTable();
     } catch (err) {
@@ -2970,26 +2919,14 @@ function updatePassRender() {
             const updateLoyaltyUI = (mode, cardTitle) => {
                 const customPanel = document.getElementById('panel-loyalty-custom');
                 const standardPanel = document.getElementById('panel-loyalty-standard');
-                
-                const setMem = document.getElementById('settings-membership-prog');
-                const setPre = document.getElementById('panel-prepaid-config');
+                const setMem = document.getElementById('settings-membership');
+                const setPre = document.getElementById('settings-prepaid');
                 const setCus = document.getElementById('settings-custom-prog');
-                const setPts = document.getElementById('settings-points-prog');
-                const setDsc = document.getElementById('settings-discount-prog');
-                const setCpn = document.getElementById('settings-coupons-prog');
-                const setMp = document.getElementById('settings-multipass-prog');
-                const setCert = document.getElementById('settings-certificates-prog');
                 
                 if(customPanel) customPanel.style.display = 'none';
                 if(setMem) setMem.style.display = 'none';
                 if(setPre) setPre.style.display = 'none';
                 if(setCus) setCus.style.display = 'none';
-                if(setPts) setPts.style.display = 'none';
-                if(setDsc) setDsc.style.display = 'none';
-                if(setCpn) setCpn.style.display = 'none';
-                if(setMp) setMp.style.display = 'none';
-                if(setCert) setCert.style.display = 'none';
-                
                 if(standardPanel) standardPanel.style.display = 'none';
 
                 if(mode === 'cashback') {
@@ -3007,21 +2944,19 @@ function updatePassRender() {
                     toggleCashback.checked = true;
                     toggleStamps.checked = true;
                     toggleVip.checked = true;
-                } else {
+                } else if (mode === 'prepaid' || mode === 'custom') {
                     toggleCashback.checked = false;
                     toggleStamps.checked = false;
                     toggleVip.checked = false;
                     
                     if(customPanel) {
                         customPanel.style.display = 'block';
-                        if(mode === 'prepaid' && setPre) setPre.style.display = 'block';
-                        if(mode === 'custom' && setCus) setCus.style.display = 'block';
-                        if(mode === 'points' && setPts) setPts.style.display = 'block';
-                        if(mode === 'membership' && setMem) setMem.style.display = 'block';
-                        if(mode === 'discount' && setDsc) setDsc.style.display = 'block';
-                        if(mode === 'coupons' && setCpn) setCpn.style.display = 'block';
-                        if(mode === 'multipass' && setMp) setMp.style.display = 'block';
-                        if(mode === 'certificates' && setCert) setCert.style.display = 'block';
+                        if(mode === 'prepaid') {
+                            if(setPre) setPre.style.display = 'block';
+                        }
+                        if(mode === 'custom') {
+                            if(setCus) setCus.style.display = 'block';
+                        }
                         
                         if(cardTitle) {
                             document.getElementById('custom-panel-title').innerHTML = `<i class="fa-solid fa-sliders" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración: ${cardTitle}`;
@@ -3058,63 +2993,30 @@ function updatePassRender() {
             // Set VIP
             toggleVip.checked = state.vipActive !== false;
             if (state.vipTiers) {
-                // Bronce
                 if(state.vipTiers.bronce) {
-                    const bBenefits = state.vipTiers.bronce.benefits || [{ type: 'cashback', value: state.vipTiers.bronce.cashbackPercent || 5 }];
-                    document.getElementById('vip-bronce-benefits').innerHTML = '';
-                    bBenefits.forEach(b => window.addVipBenefit('bronce', b.type, b.value));
+                    document.getElementById('vip-bronce-cb').value = state.vipTiers.bronce.cashbackPercent || 5;
+                    document.getElementById('vip-bronce-perk').value = state.vipTiers.bronce.perk || 'Beneficio Base';
                 }
-                // Plata
                 if(state.vipTiers.plata) {
-                    if(document.getElementById('vip-plata-min')) document.getElementById('vip-plata-min').value = state.vipTiers.plata.minSpent || 1000;
-                    const pBenefits = state.vipTiers.plata.benefits || [{ type: 'cashback', value: state.vipTiers.plata.cashbackPercent || 10 }];
-                    document.getElementById('vip-plata-benefits').innerHTML = '';
-                    pBenefits.forEach(b => window.addVipBenefit('plata', b.type, b.value));
+                    document.getElementById('vip-plata-min').value = state.vipTiers.plata.minSpent || 1000;
+                    document.getElementById('vip-plata-cb').value = state.vipTiers.plata.cashbackPercent || 10;
+                    document.getElementById('vip-plata-perk').value = state.vipTiers.plata.perk || 'Beneficio Plata';
                 }
-                // Oro
                 if(state.vipTiers.oro) {
-                    if(document.getElementById('vip-oro-min')) document.getElementById('vip-oro-min').value = state.vipTiers.oro.minSpent || 3000;
-                    const oBenefits = state.vipTiers.oro.benefits || [{ type: 'cashback', value: state.vipTiers.oro.cashbackPercent || 15 }];
-                    document.getElementById('vip-oro-benefits').innerHTML = '';
-                    oBenefits.forEach(b => window.addVipBenefit('oro', b.type, b.value));
+                    document.getElementById('vip-oro-min').value = state.vipTiers.oro.minSpent || 3000;
+                    document.getElementById('vip-oro-cb').value = state.vipTiers.oro.cashbackPercent || 15;
+                    document.getElementById('vip-oro-perk').value = state.vipTiers.oro.perk || 'Beneficio Oro';
                 }
             }
             if (state.customRules) {
                 if(state.customRules.membership) {
-                    if(document.getElementById('mem-cycle')) document.getElementById('mem-cycle').value = state.customRules.membership.cycle || 'monthly';
-                    if(document.getElementById('mem-benefit')) document.getElementById('mem-benefit').value = state.customRules.membership.benefit || '';
+                    if(document.getElementById('mem-price')) document.getElementById('mem-price').value = state.customRules.membership.price || 199;
+                    if(document.getElementById('mem-perk')) document.getElementById('mem-perk').value = state.customRules.membership.perk || '20% OFF en Tienda';
                 }
 
                 if(state.customRules.custom) {
                     if(document.getElementById('cus-name')) document.getElementById('cus-name').value = state.customRules.custom.name || 'Mi Programa VIP';
                     if(document.getElementById('cus-rules')) document.getElementById('cus-rules').value = state.customRules.custom.rules || '';
-                }
-
-                if(state.customRules.points) {
-                    if(document.getElementById('pts-rate')) document.getElementById('pts-rate').value = state.customRules.points.rate || '';
-                    if(document.getElementById('pts-reward')) document.getElementById('pts-reward').value = state.customRules.points.reward || '';
-                }
-
-                if(state.customRules.discount) {
-                    if(document.getElementById('dsc-percent')) document.getElementById('dsc-percent').value = state.customRules.discount.percent || '10';
-                    if(document.getElementById('dsc-purpose')) document.getElementById('dsc-purpose').value = state.customRules.discount.purpose || '';
-                    if(document.getElementById('dsc-conditions')) document.getElementById('dsc-conditions').value = state.customRules.discount.conditions || '';
-                }
-
-                if(state.customRules.coupons) {
-                    if(document.getElementById('cpn-type')) document.getElementById('cpn-type').value = state.customRules.coupons.type || 'percentage';
-                    if(document.getElementById('cpn-limit')) document.getElementById('cpn-limit').value = state.customRules.coupons.limit || '1';
-                    if(document.getElementById('cpn-expiry')) document.getElementById('cpn-expiry').value = state.customRules.coupons.expiry || '';
-                    if(document.getElementById('cpn-terms')) document.getElementById('cpn-terms').value = state.customRules.coupons.terms || '';
-                }
-
-                if(state.customRules.multipass) {
-                    if(document.getElementById('mp-count')) document.getElementById('mp-count').value = state.customRules.multipass.count || '10';
-                    if(document.getElementById('mp-service')) document.getElementById('mp-service').value = state.customRules.multipass.service || '';
-                }
-
-                if(state.customRules.certificates) {
-                    if(document.getElementById('cert-fixed-amount')) document.getElementById('cert-fixed-amount').value = state.customRules.certificates.fixedAmount || '500';
                 }
             }
             if(togglePrepaid) {
@@ -3146,7 +3048,9 @@ function updatePassRender() {
                 if(cashbackDisplay) cashbackDisplay.textContent = e.target.value + '%';
                 if(cashbackExample) cashbackExample.textContent = e.target.value;
                 if (window.updatePassRender) window.updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             });
         }
         
@@ -3160,7 +3064,9 @@ function updatePassRender() {
             togglePrepaid.addEventListener('change', (e) => {
                 panelPrepaidConfig.style.display = e.target.checked ? 'block' : 'none';
                 if (window.updatePassRender) window.updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             });
         }
         
@@ -3172,7 +3078,9 @@ function updatePassRender() {
                 if(prePay) prePay.textContent = amount;
                 preTotal.textContent = '$' + total;
                 if (window.updatePassRender) window.updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
             };
             preAmount.addEventListener('input', updatePrepaidTotal);
             preBonus.addEventListener('input', updatePrepaidTotal);
@@ -3182,11 +3090,8 @@ function updatePassRender() {
         // Save Button Logic
 
         const btnSaveLoyalty = document.getElementById('btn-save-loyalty');
-        const btnSaveSpecial = document.getElementById('btn-save-special');
-        const saveButtons = [btnSaveLoyalty, btnSaveSpecial].filter(Boolean);
-        
-        saveButtons.forEach(btn => {
-            btn.addEventListener('click', async () => {
+        if (btnSaveLoyalty) {
+            btnSaveLoyalty.addEventListener('click', async () => {
                 const activeMode = document.querySelector('input[name="loyalty_mode"]:checked').value;
                 const cashbackActive = toggleCashback.checked;
                 const cashbackPercent = parseInt(cashbackSlider.value);
@@ -3196,36 +3101,26 @@ function updatePassRender() {
                 const reward = stampsReward.value;
                 
                 const vipActive = toggleVip.checked;
-                
-                const getBenefitsForTier = (tier) => {
-                    const rows = document.querySelectorAll(`#vip-${tier}-benefits .vip-benefit-row`);
-                    const benefits = [];
-                    rows.forEach(r => {
-                        const type = r.querySelector('.benefit-type').value;
-                        const value = r.querySelector('.benefit-value').value;
-                        if(value.trim() !== '') benefits.push({ type, value });
-                    });
-                    return benefits;
-                };
-
                 const vipTiers = {
                     bronce: { 
-                        name: "Bronce VIP", minSpent: parseInt(document.getElementById('vip-bronce-min')?.value || 0), 
-                        benefits: getBenefitsForTier('bronce')
+                        name: "Bronce", minSpent: 0, 
+                        cashbackPercent: parseInt(document.getElementById('vip-bronce-cb').value), 
+                        perk: document.getElementById('vip-bronce-perk').value 
                     },
                     plata: { 
-                        name: "Plata VIP", minSpent: parseInt(document.getElementById('vip-plata-min')?.value || 1000), 
-                        benefits: getBenefitsForTier('plata')
+                        name: "Plata VIP", minSpent: parseInt(document.getElementById('vip-plata-min').value), 
+                        cashbackPercent: parseInt(document.getElementById('vip-plata-cb').value), 
+                        perk: document.getElementById('vip-plata-perk').value 
                     },
                     oro: { 
-                        name: "Oro VIP", minSpent: parseInt(document.getElementById('vip-oro-min')?.value || 3000), 
-                        benefits: getBenefitsForTier('oro')
+                        name: "Oro VIP", minSpent: parseInt(document.getElementById('vip-oro-min').value), 
+                        cashbackPercent: parseInt(document.getElementById('vip-oro-cb').value), 
+                        perk: document.getElementById('vip-oro-perk').value 
                     }
                 };
                 
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
-                btn.disabled = true;
+                btnSaveLoyalty.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+                btnSaveLoyalty.disabled = true;
                 
                 try {
                     const { error } = await window.supabaseClient.from('merchants').update({
@@ -3241,13 +3136,8 @@ function updatePassRender() {
                         prepaidAmount: document.getElementById('pre-amount') ? parseFloat(document.getElementById('pre-amount').value) : 500,
                         prepaidBonus: document.getElementById('pre-bonus') ? parseFloat(document.getElementById('pre-bonus').value) : 100,
                         customRules: {
-                            membership: { cycle: document.getElementById('mem-cycle')?.value, benefit: document.getElementById('mem-benefit')?.value },
-                            custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value },
-                            points: { rate: document.getElementById('pts-rate')?.value, reward: document.getElementById('pts-reward')?.value },
-                            discount: { percent: document.getElementById('dsc-percent')?.value, purpose: document.getElementById('dsc-purpose')?.value, conditions: document.getElementById('dsc-conditions')?.value },
-                            coupons: { type: document.getElementById('cpn-type')?.value, limit: document.getElementById('cpn-limit')?.value, expiry: document.getElementById('cpn-expiry')?.value, terms: document.getElementById('cpn-terms')?.value },
-                            multipass: { count: document.getElementById('mp-count')?.value, service: document.getElementById('mp-service')?.value },
-                            certificates: { fixedAmount: document.getElementById('cert-fixed-amount')?.value }
+                            membership: { price: document.getElementById('mem-price')?.value, perk: document.getElementById('mem-perk')?.value },
+                            custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value }
                         }
                     }).eq('id', state.tenantId);
                     
@@ -3268,185 +3158,21 @@ function updatePassRender() {
                     
                     // Re-render card preview if mode changed
                     updatePassRender();
-
+        checkPricingStatus();
+        // Expose to window for stripe button
+        window.isFounder = isFounder;
                     
-                    showToast('Configuración guardada exitosamente.', 'success');
+                    showToast('Reglas de Fidelización guardadas exitosamente.', 'success');
                 } catch (err) {
-                    console.error("Error saving config:", err);
+                    console.error("Error saving loyalty config:", err);
                     showToast('Error al guardar: ' + err.message, 'warning');
                 } finally {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
+                    btnSaveLoyalty.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Reglas';
+                    btnSaveLoyalty.disabled = false;
                 }
             });
-        });
-    } // Closes if (tabLoyalty)
-
-    // Certificate Email Emission Logic
-    window.emitirEspecial = async function(method) {
-        const name = document.getElementById('emit-special-name').value;
-        const phone = document.getElementById('emit-special-phone').value;
-        const email = document.getElementById('emit-special-email').value;
-        
-        if (!name) {
-            if(typeof showToast === 'function') showToast('Por favor ingresa el nombre del destinatario.', 'warning');
-            return;
         }
-        
-        const cardName = state.restaurantName || "Tarjeta Especial";
-        const link = `https://fideliorewards.com/c/${state.currentCampaignId || 'mock'}-${Date.now().toString().slice(-4)}`;
-        
-        if (method === 'whatsapp') {
-            if (!phone) {
-                if(typeof showToast === 'function') showToast('Ingresa el teléfono para enviar por WhatsApp.', 'warning');
-                return;
-            }
-            const text = `¡Hola ${name}! Aquí tienes tu ${cardName}. Descárgala en el siguiente enlace: ${link}`;
-            window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
-            if(typeof showToast === 'function') showToast('Abriendo WhatsApp Web...', 'info');
-        } else if (method === 'email') {
-            if (!email) {
-                if(typeof showToast === 'function') showToast('Ingresa el correo para enviar por Email.', 'warning');
-                return;
-            }
-            const subject = `Tu ${cardName} está lista`;
-            const body = `Hola ${name},\n\nAquí tienes tu ${cardName}.\n\nPuedes acceder y descargar tu tarjeta desde este enlace:\n${link}\n\n¡Gracias!`;
-            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            if(typeof showToast === 'function') showToast('Abriendo cliente de correo...', 'info');
-        } else if (method === 'link') {
-            try {
-                await navigator.clipboard.writeText(link);
-                if(typeof showToast === 'function') showToast('Enlace copiado al portapapeles', 'success');
-            } catch (err) {
-                if(typeof showToast === 'function') showToast('Error al copiar enlace. Enlace: ' + link, 'warning');
-            }
-        }
-        
-        // Limpiar
-        document.getElementById('emit-special-name').value = '';
-        document.getElementById('emit-special-phone').value = '';
-        document.getElementById('emit-special-email').value = '';
-        
-        // Agregar al historial mediante API real
-        const currentDate = new Date();
-        const expirationDate = new Date();
-        expirationDate.setDate(currentDate.getDate() + 30); // 30 days default expiration
-        
-        try {
-            const token = localStorage.getItem('fidelio_token');
-            const res = await fetch('/api/special-emissions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({
-                    client_name: name,
-                    client_phone: phone,
-                    client_email: email,
-                    card_type: state.activeMode || 'membership',
-                    card_name: cardName,
-                    expiry_date: expirationDate.toISOString().split('T')[0]
-                })
-            });
-            if (!res.ok) throw new Error('Error guardando la emisión en la base de datos');
-            
-            if (window.renderSpecialCardsHistory) {
-                window.renderSpecialCardsHistory();
-            }
-        } catch (err) {
-            console.error("No se pudo guardar la emisión persistente:", err);
-            if(typeof showToast === 'function') showToast('Error de conexión al guardar el historial.', 'warning');
-        }
-    };
-
-    // --- HISTORIAL DE TARJETAS ESPECIALES (Conectado a DB) ---
-    window.renderSpecialCardsHistory = async function() {
-        const tbody = document.getElementById('hist-special-body');
-        if (!tbody) return;
-
-        try {
-            const token = localStorage.getItem('fidelio_token');
-            const res = await fetch('/api/special-emissions', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            
-            if (!res.ok) throw new Error('Error consultando historial');
-            const data = await res.json();
-            
-            const filterType = document.getElementById('hist-filter-type')?.value || 'all';
-            const filterStatus = document.getElementById('hist-filter-status')?.value || 'all';
-            const filterDate = document.getElementById('hist-filter-date')?.value || '';
-
-            let filtered = data.filter(c => {
-                let matchType = filterType === 'all' || c.card_type === filterType;
-                let matchStatus = filterStatus === 'all' || c.status === filterStatus;
-                let matchDate = !filterDate || c.issue_date === filterDate;
-                return matchType && matchStatus && matchDate;
-            });
-
-            tbody.innerHTML = '';
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 16px; text-align: center; color: var(--text-muted);">No hay emisiones que coincidan con los filtros.</td></tr>`;
-                return;
-            }
-
-            const typeLabels = {
-                'membership': '<i class="fa-solid fa-id-card" style="color:var(--accent-violet);"></i> Membresía',
-                'multipass': '<i class="fa-solid fa-layer-group" style="color:var(--accent-violet);"></i> Multipass',
-                'certificates': '<i class="fa-solid fa-gift" style="color:var(--accent-violet);"></i> Certificado'
-            };
-
-            filtered.forEach(c => {
-                const statusBadge = c.status === 'active' 
-                    ? '<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">Activo</span>'
-                    : '<span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">Vencido</span>';
-
-                const tr = document.createElement('tr');
-                tr.style.borderBottom = "1px solid var(--border-glass)";
-                tr.innerHTML = `
-                    <td style="padding: 12px; font-weight: 500;">${c.client_name}</td>
-                    <td style="padding: 12px;">
-                        <div style="font-weight: 600;">${c.card_name}</div>
-                        <div style="font-size: 11px; color: var(--text-muted);">${typeLabels[c.card_type] || c.card_type}</div>
-                    </td>
-                    <td style="padding: 12px; color: var(--text-muted);">${c.issue_date}</td>
-                    <td style="padding: 12px; color: var(--text-muted);">${c.expiry_date}</td>
-                    <td style="padding: 12px;">${statusBadge}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        } catch(err) {
-            console.error("Error renderizando historial:", err);
-            tbody.innerHTML = `<tr><td colspan="5" style="padding: 16px; text-align: center; color: var(--text-muted);">No se pudo cargar el historial.</td></tr>`;
-        }
-    };
-
-    // Attach filter listeners
-    const histFilters = ['hist-filter-type', 'hist-filter-status', 'hist-filter-date'];
-    histFilters.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('change', window.renderSpecialCardsHistory);
-    });
-
-    const btnHistFilter = document.getElementById('hist-btn-filter');
-    if (btnHistFilter) btnHistFilter.addEventListener('click', window.renderSpecialCardsHistory);
-
-    const btnHistClear = document.getElementById('hist-btn-clear');
-    if (btnHistClear) {
-        btnHistClear.addEventListener('click', () => {
-            document.getElementById('hist-filter-type').value = 'all';
-            document.getElementById('hist-filter-status').value = 'all';
-            document.getElementById('hist-filter-date').value = '';
-            window.renderSpecialCardsHistory();
-        });
     }
-
-    // Initial render
-    setTimeout(() => {
-        if (window.renderSpecialCardsHistory) window.renderSpecialCardsHistory();
-    }, 500);
-
 })();
 
 // --- GLOBAL AI CAMPAIGN FUNCTIONS ---
@@ -3471,7 +3197,7 @@ window.selectAICampaign = function(type, element) {
         'cumpleanos': 'Celebra tu cumpleaños con nosotros. Muestra este mensaje para tu postre de cortesía.',
         'dias_lentos': '¡Hora feliz secreta! Solo por hoy de 4 a 6 PM tienes doble puntaje en todo.',
         'vip_exclusivo': 'Como miembro Oro, tienes un beneficio esperando. Actívalo en tu próxima compra.',
-        'geofencing': 'Vimos que andas por aquí Pasa a saludarnos y te invitamos la bebida en la compra de un plato fuerte.',
+        'geofencing': 'Vimos que andas por aquí 👀 Pasa a saludarnos y te invitamos la bebida en la compra de un plato fuerte.',
         'aniversario': '¡Feliz aniversario! Ya cumples 1 año en Fidelio con nosotros. Ven a celebrar con un 20% OFF.',
         'winback': 'Nos has hecho mucha falta. Te depositamos $200 de saldo a tu Monedero de regalo si nos visitas antes de fin de mes.',
         'manual': ''
@@ -3495,55 +3221,6 @@ window.selectAICampaign = function(type, element) {
     if(type === 'manual') select.value = 'all';
     
     document.getElementById('camp-push-message').value = defaultTexts[type] || '';
-    
-    // Disparar las funciones dinámicas
-    if(window.updatePushPreview) window.updatePushPreview();
-    if(window.updateAudienceEstimate) window.updateAudienceEstimate();
-};
-
-window.updatePushPreview = function() {
-    const text = document.getElementById('camp-push-message')?.value || '';
-    const bodyEl = document.getElementById('preview-push-body');
-    const countEl = document.getElementById('push-char-count');
-    
-    if (bodyEl) {
-        bodyEl.textContent = text || 'Escribe un mensaje para ver cómo aparecerá en las pantallas de tus clientes.';
-    }
-    if (countEl) {
-        countEl.textContent = text.length;
-        if (text.length > 120) {
-            countEl.style.color = '#ef4444';
-        } else {
-            countEl.style.color = 'var(--text-muted)';
-        }
-    }
-};
-
-window.updateAudienceEstimate = function() {
-    const select = document.getElementById('camp-segment-select');
-    const estimateEl = document.getElementById('audience-estimate-count');
-    if (!select || !estimateEl) return;
-    
-    const segment = select.value;
-    let estimate = '~0 Clientes';
-    
-    switch(segment) {
-        case 'all': estimate = '~1,240 Clientes'; break;
-        case 'active': estimate = '~450 Clientes'; break;
-        case 'risk': estimate = '~310 Clientes'; break;
-        case 'inactive': estimate = '~480 Clientes'; break;
-        case 'vip_oro': estimate = '~25 Clientes'; break;
-        case 'vip_plata': estimate = '~80 Clientes'; break;
-        case 'vip_bronce': estimate = '~150 Clientes'; break;
-        case 'top_10': estimate = '~10 Clientes'; break;
-        case 'high_ticket': estimate = '~65 Clientes'; break;
-        case 'cumpleaneros': estimate = '~32 Clientes'; break;
-        case 'aniversario': estimate = '~18 Clientes'; break;
-        case 'geofencing': estimate = 'Dinámico (Al cruzar zona)'; break;
-        default: estimate = '~100 Clientes'; break; // Filtros personalizados
-    }
-    
-    estimateEl.textContent = estimate;
 };
 
 // CUSTOM FILTER LOGIC
@@ -3824,7 +3501,7 @@ window.generateAIPush = function() {
         if (txt.value.length < 10) {
             txt.value = `¡No te lo pierdas! ${type} exclusivo para ti. Ven y aprovéchalo hoy mismo.`;
         } else {
-            txt.value = `[Optimizado por IA] ${txt.value} ¡Apresúrate antes de que expire!`;
+            txt.value = `🔥 [Optimizado por IA] ${txt.value} ¡Apresúrate antes de que expire!`;
         }
     }, 1500);
 };
@@ -3898,7 +3575,7 @@ window.sendGeminiMessage = function() {
                     <p style="margin:0 0 8px 0;">¡Excelente idea! Analicé tu base de datos y veo que tienes <strong>145 clientes</strong> que no te visitan los viernes.</p>
                     <p style="margin:0 0 12px 0;">Te sugiero la campaña <strong>"Inyección Días Lentos"</strong> con el siguiente mensaje:</p>
                     <div style="background:#11111A; padding:10px; border-radius:8px; border-left:3px solid #8B5CF6; margin-bottom:12px; font-style:italic; color:#a78bfa;">
-                        "¡Arranca tu fin de semana! Hoy viernes tu ticket tiene 2x1 en cervezas mostrando este mensaje. Válido hasta las 8 PM."
+                        "¡Arranca tu fin de semana! 🍻 Hoy viernes tu ticket tiene 2x1 en cervezas mostrando este mensaje. Válido hasta las 8 PM."
                     </div>
                     <button class="btn btn-primary" onclick="applyGeminiSuggestion()" style="width:100%; padding:8px; font-size:12px; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); border:none; cursor:pointer; color:white; border-radius:8px;"><i class="fa-solid fa-magic"></i> Aplicar esta Sugerencia</button>
                 </div>
@@ -3918,7 +3595,7 @@ window.applyGeminiSuggestion = function() {
     setTimeout(() => {
         const msgBox = document.getElementById('camp-push-message');
         if(msgBox) {
-            msgBox.value = "¡Arranca tu fin de semana! Hoy viernes tu ticket tiene 2x1 en cervezas mostrando este mensaje. Válido hasta las 8 PM.";
+            msgBox.value = "¡Arranca tu fin de semana! 🍻 Hoy viernes tu ticket tiene 2x1 en cervezas mostrando este mensaje. Válido hasta las 8 PM.";
             
             // Highlight effect
             msgBox.style.transition = 'box-shadow 0.5s';
@@ -4467,25 +4144,23 @@ window.startDesignerFlow = function(programType) {
 }
 
 // --- MULTI-CARD BUILDER LOGIC ---
-function getBuilderCampaigns() {
-    let camps = state.campaigns || [];
-    if (camps.length === 0) {
-        camps = [
-            { id: 'camp_1', name: 'Monedero Digital General', config: { type: 'cashback', colorPrimary: '#1e1b4b', colorAccent: '#8b5cf6', iconClass: 'fa-wallet' } },
-            { id: 'camp_2', name: 'Tarjeta de Sellos', config: { type: 'stamps', colorPrimary: '#0f172a', colorAccent: '#f59e0b', iconClass: 'fa-star', stampsTotal: 10 } },
-            { id: 'camp_3', name: 'Membresía VIP', config: { type: 'hybrid', colorPrimary: '#3f3f46', colorAccent: '#eab308', iconClass: 'fa-crown' } }
-        ];
-    }
-    return camps;
-}
-
 window.populateBuilderCampaignSelect = function() {
     const sel = document.getElementById('builder-campaign-select');
     if (!sel) return;
     
+    // Clear
     sel.innerHTML = '<option value="">-- Selecciona una campaña --</option>';
     
-    const camps = getBuilderCampaigns();
+    // Mock campaigns if state.campaigns is empty
+    let camps = state.campaigns || [];
+    if (camps.length === 0) {
+        camps = [
+            { id: 'camp_1', name: 'Monedero Digital General' },
+            { id: 'camp_2', name: 'Tarjeta de Sellos' },
+            { id: 'camp_3', name: 'Membresía VIP' }
+        ];
+    }
+    
     camps.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
@@ -4506,9 +4181,7 @@ window.loadCampaignToBuilder = function(campaignId) {
     }
     state.currentCampaignId = campaignId;
     
-    const camps = getBuilderCampaigns();
-    let camp = camps.find(c => c.id === campaignId);
-    
+    let camp = state.campaigns ? state.campaigns.find(c => c.id === campaignId) : null;
     if (camp && camp.config) {
         const c = camp.config;
         
@@ -4527,7 +4200,7 @@ window.loadCampaignToBuilder = function(campaignId) {
         const st = document.getElementById('stamps-total');
         if(st && c.stampsTotal) st.value = c.stampsTotal;
         
-        if (typeof showToast === 'function') showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
+        if (typeof showToast === 'function') showToast("Diseño cargado desde la campaña: " + (camp.name || camp.tipo), "success");
     } else {
         if (typeof showToast === 'function') showToast("Campaña nueva. Configura el diseño.", "info");
     }
@@ -4722,618 +4395,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(window.renderScheduleDays, 50);
             }
         }
-    });
-});
-
-// --- LOYALTY TAB INIT ---
-window.initLoyaltyTab = function() {
-    // 1. Loyalty Mode (Hybrid, Cashback, Stamps, Custom)
-    const mode = state.activeMode || 'hybrid';
-    const card = document.getElementById(`loyalty-mode-${mode}`);
-    if (card) {
-        document.querySelectorAll('.role-card[id^="loyalty-mode-"]').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        const radio = card.querySelector('input');
-        if(radio) radio.checked = true;
-    }
-
-    // 2. Toggles & Sliders
-    const safeSetChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = !!val; };
-    const safeSetValue = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
-
-    safeSetChecked('toggle-cashback', state.cashbackActive !== false);
-    safeSetValue('cashback-slider', state.cashbackPercent || 10);
-    const cbDisplay = document.getElementById('cashback-percent-display');
-    if(cbDisplay) cbDisplay.textContent = (state.cashbackPercent || 10) + '%';
-    const cbExample = document.getElementById('cashback-example');
-    if(cbExample) cbExample.textContent = state.cashbackPercent || 10;
-
-    safeSetChecked('toggle-stamps', state.stampsActive !== false);
-    safeSetValue('stamps-total', state.stampsTotal || 5);
-    safeSetValue('stamps-reward', state.stampsReward || 'Premio Gratis');
-
-    safeSetChecked('toggle-vip', state.vipActive !== false);
-    
-    // VIP Tiers
-    if (state.vipTiers) {
-        if (state.vipTiers.bronce) {
-            safeSetValue('vip-bronce-cb', state.vipTiers.bronce.cashbackPercent || 5);
-            safeSetValue('vip-bronce-perk', state.vipTiers.bronce.perk || '');
-        }
-        if (state.vipTiers.plata) {
-            safeSetValue('vip-plata-min', state.vipTiers.plata.minSpent || 1000);
-            safeSetValue('vip-plata-cb', state.vipTiers.plata.cashbackPercent || 10);
-            safeSetValue('vip-plata-perk', state.vipTiers.plata.perk || '');
-        }
-        if (state.vipTiers.oro) {
-            safeSetValue('vip-oro-min', state.vipTiers.oro.minSpent || 3000);
-            safeSetValue('vip-oro-cb', state.vipTiers.oro.cashbackPercent || 15);
-            safeSetValue('vip-oro-perk', state.vipTiers.oro.perk || '');
-        }
-    }
-
-    // Prepaid
-    safeSetChecked('toggle-prepaid', state.prepaidActive === true);
-    safeSetValue('pre-amount', state.prepaidAmount || 500);
-    safeSetValue('pre-bonus', state.prepaidBonus || 100);
-    const panelPrepaid = document.getElementById('panel-prepaid-config');
-    if (panelPrepaid) panelPrepaid.style.display = state.prepaidActive ? 'block' : 'none';
-};
-
-// Dynamic VIP Benefits Logic
-window.addVipBenefit = function(tier, type = 'cashback', value = '') {
-    const container = document.getElementById(`vip-${tier}-benefits`);
-    if (!container) return;
-
-    const row = document.createElement('div');
-    row.style.display = 'flex';
-    row.style.gap = '8px';
-    row.style.alignItems = 'center';
-    row.classList.add('vip-benefit-row');
-    
-    // Select Type
-    const select = document.createElement('select');
-    select.classList.add('fidelio-input', 'benefit-type');
-    select.style.flex = '1';
-    select.style.padding = '4px 8px';
-    select.innerHTML = `
-        <option value="cashback" ${type === 'cashback' ? 'selected' : ''}>Cashback (%)</option>
-        <option value="puntos" ${type === 'puntos' ? 'selected' : ''}>Multiplicador Puntos</option>
-        <option value="descuento" ${type === 'descuento' ? 'selected' : ''}>Descuento Fijo (%)</option>
-        <option value="producto" ${type === 'producto' ? 'selected' : ''}>Producto Gratis</option>
-        <option value="upgrade" ${type === 'upgrade' ? 'selected' : ''}>Upgrade</option>
-        <option value="otro" ${type === 'otro' ? 'selected' : ''}>Otro</option>
-    `;
-
-    // Input Value
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.classList.add('fidelio-input', 'benefit-value');
-    input.style.flex = '2';
-    input.placeholder = 'Valor / Descripción';
-    input.value = value;
-
-    // Delete Button
-    const btnDel = document.createElement('button');
-    btnDel.type = 'button';
-    btnDel.innerHTML = '<i class="fa-solid fa-trash"></i>';
-    btnDel.style.background = 'transparent';
-    btnDel.style.color = 'var(--accent-red)';
-    btnDel.style.border = 'none';
-    btnDel.style.cursor = 'pointer';
-    btnDel.onclick = () => row.remove();
-
-    row.appendChild(select);
-    row.appendChild(input);
-    row.appendChild(btnDel);
-
-    container.appendChild(row);
-};
-
-// ==========================================
-// AI COPILOT LOGIC
-// ==========================================
-
-window.fetchCopilotIdeas = async function() {
-    const loadingEl = document.getElementById('copilot-loading');
-    const resultsEl = document.getElementById('copilot-results');
-    const containerEl = document.getElementById('copilot-cards-container');
-    
-    if(!loadingEl || !resultsEl || !containerEl) return;
-    
-    loadingEl.style.display = 'flex';
-    resultsEl.style.display = 'none';
-    containerEl.innerHTML = '';
-    
-    try {
-        const token = localStorage.getItem('fidelio_jwt');
-        
-        // Mock de contexto del negocio para la demo
-        const mockContext = {
-            totalClientes: 1240,
-            clientesActivos: 450,
-            clientesRiesgo: 310,
-            clientesCumpleaneros: 12,
-            clientesInactivos: 480,
-            visitasSemana: 125
-        };
-
-        const response = await fetch('/api/ai/copilot', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({ merchantContext: mockContext })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Error al contactar con la IA');
-        }
-        
-        const data = await response.json();
-        const opportunities = data.opportunities || [];
-        
-        opportunities.forEach((opp, index) => {
-            const card = document.createElement('div');
-            card.style.cssText = 'background: white; border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; position: relative; overflow: hidden; transition: all 0.3s ease; animation: fadeInUp 0.5s ease forwards; opacity: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);';
-            card.style.animationDelay = (index * 0.15) + 's';
-            
-            // Efecto Hover 
-            card.onmouseenter = () => { card.style.borderColor = 'rgba(139, 92, 246, 0.5)'; card.style.transform = 'translateY(-5px)'; card.style.boxShadow = '0 10px 25px rgba(139,92,246,0.15)'; };
-            card.onmouseleave = () => { card.style.borderColor = 'var(--border-glass)'; card.style.transform = 'translateY(0)'; card.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)'; };
-
-            // Ícono dependiendo del tipo
-            let iconHtml = '<i class="fa-solid fa-bullseye" style="color: #60a5fa;"></i>';
-            if(opp.type === 'recuperacion') iconHtml = '<i class="fa-solid fa-heart-crack" style="color: #f43f5e;"></i>';
-            if(opp.type === 'dias_lentos') iconHtml = '<i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>';
-            if(opp.type === 'cumpleanos') iconHtml = '<i class="fa-solid fa-cake-candles" style="color: #a855f7;"></i>';
-            if(opp.type === 'vip_exclusivo') iconHtml = '<i class="fa-solid fa-crown" style="color: #fbbf24;"></i>';
-
-            card.innerHTML = `
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 12px;">
-                    <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(139, 92, 246, 0.1); display:flex; align-items:center; justify-content:center; font-size: 18px;">
-                        ${iconHtml}
-                    </div>
-                    <h4 style="margin:0; font-size: 16px; color: var(--text-main);">${opp.title}</h4>
-                </div>
-                <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">${opp.description}</p>
-                
-                <div style="background: rgba(139,92,246,0.05); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
-                    <div style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;"><i class="fa-brands fa-apple"></i> Sugerencia</div>
-                    <div style="color: var(--text-main); font-size: 13px; font-style: italic;">"${opp.pushMessage}"</div>
-                </div>
-
-                <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 20px; font-size: 12px;">
-                    <div><span style="color: var(--text-muted);">Audiencia:</span> <span style="color: #34d399; font-weight: 600;">${opp.estimatedReach}</span></div>
-                </div>
-
-                <button class="btn btn-primary" onclick='window.executeCopilotIdea(${JSON.stringify(opp).replace(/'/g, "&apos;")})' style="width: 100%; background: linear-gradient(135deg, rgba(139,92,246,0.8) 0%, rgba(59,130,246,0.8) 100%);">
-                    Ejecutar con 1 Clic <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            `;
-            containerEl.appendChild(card);
-        });
-        
-    } catch (e) {
-        console.error(e);
-        if (typeof window.showToast === 'function') window.showToast("Error al generar ideas con Copiloto AI", "error");
-    } finally {
-        loadingEl.style.display = 'none';
-        resultsEl.style.display = 'block';
-    }
-};
-
-window.executeCopilotIdea = function(opp) {
-    const navTabs = document.querySelectorAll('.nav-tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-    navTabs.forEach(t => t.classList.remove('active'));
-    tabContents.forEach(c => c.classList.remove('active'));
-
-    if (opp.format === 'card') {
-        // 1. Inicializar como Tarjeta Especial
-        if(window.createNewSpecialCard) window.createNewSpecialCard();
-
-        // 2. Determinar el modo (Membresía, Multipass, etc.)
-        let mode = 'membership';
-        if (opp.type === 'dias_lentos') mode = 'multipass';
-        if (opp.type === 'recuperacion' || opp.type === 'cumpleanos') mode = 'certificates';
-        
-        // Seleccionar el radio button correspondiente
-        const modeRadio = document.querySelector(`input[name="loyalty_mode"][value="${mode}"]`);
-        if (modeRadio) {
-            modeRadio.checked = true;
-            modeRadio.dispatchEvent(new Event('change'));
-        }
-
-        // 3. Rellenar campos del Builder y del estado
-        const titleInput = document.getElementById('rest-name');
-        const descInput = document.getElementById('rest-desc');
-        
-        if(titleInput) {
-            titleInput.value = opp.title;
-            if(window.state) window.state.restaurantName = opp.title;
-        }
-        if(descInput) descInput.value = opp.pushMessage.substring(0, 40);
-
-        // 4. Rellenar campos específicos de Tarjetas Especiales
-        if (mode === 'membership') {
-            const benefitInput = document.getElementById('mem-benefit');
-            if (benefitInput) benefitInput.value = opp.pushMessage;
-        } else if (mode === 'multipass') {
-            const serviceInput = document.getElementById('mp-service');
-            if (serviceInput) serviceInput.value = opp.title;
-        } else if (mode === 'certificates') {
-            // Se queda con el monto por defecto
-        }
-
-        // 5. Cambiar a la pestaña de Tarjetas Especiales (ya lo hace createNewSpecialCard, pero por si acaso aseguramos)
-        const specialTabBtn = document.querySelector('.nav-tab[data-tab="tab-special-cards"]');
-        const specialTabContent = document.getElementById('tab-special-cards');
-        if(specialTabBtn) specialTabBtn.classList.add('active');
-        if(specialTabContent) specialTabContent.classList.add('active');
-
-        // Disparar render
-        if(window.updatePassRender) window.updatePassRender();
-        if (typeof window.showToast === 'function') window.showToast("Tarjeta Especial preconfigurada. Ajusta los detalles.", "success");
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    } else {
-        // 1. Cambiar a la pestaña de Campañas Push (comportamiento default)
-        const marketingTabBtn = document.querySelector('.nav-tab[data-tab="tab-marketing"]');
-        const marketingTabContent = document.getElementById('tab-marketing');
-        
-        if(marketingTabBtn) marketingTabBtn.classList.add('active');
-        if(marketingTabContent) marketingTabContent.classList.add('active');
-        
-        // 2. Rellenar los campos
-        const messageInput = document.getElementById('camp-push-message');
-        const segmentSelect = document.getElementById('camp-segment-select');
-        
-        if(messageInput) {
-            messageInput.value = opp.pushMessage;
-        }
-        if(segmentSelect) {
-            let optionExists = false;
-            for (let i = 0; i < segmentSelect.options.length; i++) {
-                if (segmentSelect.options[i].value === opp.segment) {
-                    optionExists = true;
-                    break;
-                }
-            }
-            if(optionExists) {
-                segmentSelect.value = opp.segment;
-            } else {
-                segmentSelect.value = 'all';
-            }
-        }
-        
-        // 3. Seleccionar visualmente el cuadro de tipo (libre)
-        document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('active'));
-        document.getElementById('camp-card-libre')?.classList.add('active');
-        
-        // 4. Disparar actualizaciones visuales
-        if(window.updatePushPreview) window.updatePushPreview();
-        if(window.updateAudienceEstimate) window.updateAudienceEstimate();
-        
-        showToast("Campaña Push pre-configurada por la IA. Revisa y envía.", "success");
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-};
-
-// Add CSS keyframe for fadeInUp if not exists
-if(!document.getElementById('copilot-styles')) {
-    const style = document.createElement('style');
-    style.id = 'copilot-styles';
-    style.innerHTML = `
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Hook en el click del tab para disparar la carga 1 sola vez
-document.addEventListener('DOMContentLoaded', () => {
-    const copilotTabBtn = document.querySelector('.nav-tab[data-tab="tab-copilot"]');
-    if(copilotTabBtn) {
-        copilotTabBtn.addEventListener('click', () => {
-            const container = document.getElementById('copilot-cards-container');
-            if(container && container.innerHTML.trim() === '') {
-                window.fetchCopilotIdeas();
-            }
-        });
-    }
-});
-
-// ==========================================
-// CAJA (POS) LOGIC
-// ==========================================
-
-window.openCajaModal = function() {
-    const modal = document.getElementById('modal-caja-transaction');
-    if(modal) {
-        modal.style.display = 'flex';
-        // Reset fields
-        const customerSelect = document.getElementById('caja-customer');
-        if(customerSelect) {
-            customerSelect.innerHTML = '<option value="">-- Cliente General (Venta de mostrador) --</option>';
-            if(window.state && window.state.customers) {
-                window.state.customers.forEach(cust => {
-                    const option = document.createElement('option');
-                    option.value = cust.id;
-                    option.textContent = `${cust.full_name || 'Sin Nombre'} (${cust.email || 'Sin Correo'})`;
-                    customerSelect.appendChild(option);
-                });
-            }
-            customerSelect.value = '';
-        }
-
-        document.getElementById('caja-concept').value = '';
-        document.getElementById('caja-amount').value = '';
-        document.getElementById('caja-method').value = 'Efectivo';
-        
-        // Anim In
-        setTimeout(() => {
-            modal.style.opacity = '1';
-            const content = document.getElementById('caja-modal-content');
-            if(content) content.style.transform = 'translateY(0)';
-        }, 10);
-    }
-};
-
-window.closeCajaModal = function() {
-    const modal = document.getElementById('modal-caja-transaction');
-    if(modal) {
-        modal.style.opacity = '0';
-        const content = document.getElementById('caja-modal-content');
-        if(content) content.style.transform = 'translateY(20px)';
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 300);
-    }
-};
-
-window.loadCajaTransactions = async function() {
-    if(!window.merchantId) return;
-    
-    try {
-        const { data, error } = await _supabase
-            .from('merchant_transactions')
-            .select('*')
-            .eq('merchant_id', window.merchantId)
-            .order('created_at', { ascending: false });
-            
-        if (error) {
-            console.warn("La tabla merchant_transactions no existe o hay un error. Por favor crea la tabla primero.");
-            return;
-        }
-        
-        // Render Table
-        const tbody = document.getElementById('caja-transactions-tbody');
-        if(!tbody) return;
-        
-        if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">No hay movimientos registrados.</td></tr>`;
-        } else {
-            let html = '';
-            data.forEach(txn => {
-                const date = new Date(txn.created_at).toLocaleString('es-MX', {
-                    day: '2-digit', month: 'short', year: 'numeric',
-                    hour: '2-digit', minute:'2-digit'
-                });
-                
-                // Buscar nombre del cliente si existe
-                let customerName = '-';
-                if(txn.customer_id && window.state && window.state.customers) {
-                    const cust = window.state.customers.find(c => c.id === txn.customer_id);
-                    if(cust) {
-                        customerName = `<span style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">${cust.full_name || cust.email}</span>`;
-                    }
-                }
-                
-                html += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 16px 24px; color: var(--text-muted); font-size: 13px;">${date}</td>
-                        <td style="padding: 16px 24px;">${customerName}</td>
-                        <td style="padding: 16px 24px; font-weight: 500;">${txn.concept}</td>
-                        <td style="padding: 16px 24px;">${txn.payment_method}</td>
-                        <td style="padding: 16px 24px; text-align: right; font-weight: 700; color: #10b981;">+$${parseFloat(txn.amount).toFixed(2)}</td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        // Calculate Metrics
-        let hoy = 0;
-        let semana = 0;
-        let mes = 0;
-        let total = 0;
-        
-        const now = new Date();
-        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const startOfWeek = new Date(startOfDay);
-        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        
-        data.forEach(txn => {
-            const amount = parseFloat(txn.amount) || 0;
-            const txnDate = new Date(txn.created_at);
-            
-            total += amount;
-            if(txnDate >= startOfMonth) mes += amount;
-            if(txnDate >= startOfWeek) semana += amount;
-            if(txnDate >= startOfDay) hoy += amount;
-        });
-        
-        document.getElementById('caja-hoy').textContent = `$${hoy.toFixed(2)}`;
-        document.getElementById('caja-semana').textContent = `$${semana.toFixed(2)}`;
-        document.getElementById('caja-mes').textContent = `$${mes.toFixed(2)}`;
-        document.getElementById('caja-total').textContent = `$${total.toFixed(2)}`;
-        
-    } catch (err) {
-        console.error("Error cargando transacciones de caja:", err);
-    }
-};
-
-window.saveCajaTransaction = async function() {
-    if(!window.merchantId) return;
-    
-    const customerId = document.getElementById('caja-customer').value || null;
-    const concept = document.getElementById('caja-concept').value.trim();
-    const amount = parseFloat(document.getElementById('caja-amount').value);
-    const method = document.getElementById('caja-method').value;
-    
-    if(!concept || isNaN(amount) || amount <= 0) {
-        if(typeof showToast === 'function') showToast("Por favor ingresa un concepto y monto válido.", "error");
-        else alert("Por favor ingresa un concepto y monto válido.");
-        return;
-    }
-    
-    const btn = document.querySelector('#modal-caja-transaction .btn-primary');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
-    btn.disabled = true;
-    
-    try {
-        const payload = {
-            merchant_id: window.merchantId,
-            concept: concept,
-            amount: amount,
-            payment_method: method
-        };
-        
-        if (customerId) {
-            payload.customer_id = customerId;
-        }
-
-        const { error } = await _supabase
-            .from('merchant_transactions')
-            .insert([payload]);
-            
-        if (error) {
-            throw error;
-        }
-        
-        if(typeof showToast === 'function') showToast("Pago registrado correctamente.", "success");
-        window.closeCajaModal();
-        window.loadCajaTransactions(); // Reload list
-        
-    } catch (err) {
-        console.error("Error saving transaction:", err);
-        if(typeof showToast === 'function') showToast("Error al guardar. Asegúrate de haber creado la tabla en Supabase.", "error");
-    } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }
-};
-
-// Add tab listener hook
-document.addEventListener('DOMContentLoaded', () => {
-    // When clicking tabs, if it's Caja, load data
-    const navTabs = document.querySelectorAll('.nav-tab');
-    navTabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabId = btn.getAttribute('data-tab');
-            if(tabId === 'tab-caja') {
-                window.loadCajaTransactions();
-            }
-        });
-    });
-});
-
-
-
-// ==========================================
-// MÓDULO: COPILOTO AI (GEMINI)
-// ==========================================
-window.fetchCopilotIdeas = function() {
-    const loading = document.getElementById('copilot-loading');
-    const results = document.getElementById('copilot-results');
-    const container = document.getElementById('copilot-cards-container');
-    
-    if (!loading || !results || !container) return;
-    
-    // Si la función requiere un plan Pro, podemos validarlo. Copilot suena a Pro.
-    const plan = window.merchantData ? (window.merchantData.business_type || 'starter') : 'starter';
-    const isAdmin = window.merchantSession && window.merchantSession.user && window.merchantSession.user.email === 'hola@fideliorewards.com';
-    
-    if (plan !== 'business' && plan !== 'enterprise' && !isAdmin) {
-        if(typeof showToast === 'function') showToast('El Copiloto AI es exclusivo del Plan Business. Mejora tu plan para activarlo.', 'error');
-        loading.style.display = 'none';
-        results.style.display = 'block';
-        container.innerHTML = `
-            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 20px; border-radius: var(--radius-md); text-align: center; color: #ef4444; grid-column: 1 / -1;">
-                <i class="fa-solid fa-lock" style="font-size: 24px; margin-bottom: 10px;"></i>
-                <h4>Función Bloqueada</h4>
-                <p style="font-size: 14px; margin-top: 5px;">Actualiza a Plan Profesional para desbloquear el análisis inteligente de Gemini.</p>
-                <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.switchTab('tab-stripe')">Mejorar Plan</button>
-            </div>
-        `;
-        return;
-    }
-    
-    loading.style.display = 'flex';
-    results.style.display = 'none';
-    
-    setTimeout(() => {
-        loading.style.display = 'none';
-        results.style.display = 'block';
-        
-        container.innerHTML = `
-            <div style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
-                    <div style="background: rgba(139,92,246,0.1); padding: 8px 12px; border-radius: 20px; color: var(--accent-violet); font-size: 12px; font-weight: 600;">
-                        <i class="fa-solid fa-bolt"></i> CAMPAÑA RÁPIDA
-                    </div>
-                    <span style="color:var(--text-muted); font-size:12px;">95% Éxito</span>
-                </div>
-                <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Recuperar Clientes Inactivos</h4>
-                <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tienes 45 clientes que no han vuelto en 30 días. Enviarles un cupón de 10% de Cashback extra tiene alta probabilidad de retorno.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:var(--accent-violet); color:var(--accent-violet);" onclick="if(typeof showToast === 'function') showToast('Campaña generada y lista en Marketing.', 'success')">
-                    Crear Campaña
-                </button>
-            </div>
-            
-            <div style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
-                    <div style="background: rgba(59,130,246,0.1); padding: 8px 12px; border-radius: 20px; color: #3B82F6; font-size: 12px; font-weight: 600;">
-                        <i class="fa-solid fa-arrow-up"></i> UPSELL
-                    </div>
-                    <span style="color:var(--text-muted); font-size:12px;">82% Éxito</span>
-                </div>
-                <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Impulso a VIP Oro</h4>
-                <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Hay 12 clientes a solo 1 visita de subir a Oro. Envíales un SMS automático felicitándolos para asegurar su próxima visita.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#3B82F6; color:#3B82F6;" onclick="if(typeof showToast === 'function') showToast('Campaña de Upsell programada.', 'success')">
-                    Programar SMS
-                </button>
-            </div>
-            
-            <div style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
-                    <div style="background: rgba(16,185,129,0.1); padding: 8px 12px; border-radius: 20px; color: #10B981; font-size: 12px; font-weight: 600;">
-                        <i class="fa-solid fa-calendar-check"></i> HORAS VALLE
-                    </div>
-                    <span style="color:var(--text-muted); font-size:12px;">78% Éxito</span>
-                </div>
-                <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Promoción Martes Lento</h4>
-                <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tus martes por la tarde tienen baja afluencia. Lanza un 2x1 en puntos solo para ese día de la semana.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#10B981; color:#10B981;" onclick="if(typeof showToast === 'function') showToast('Regla de Horas Valle activada.', 'success')">
-                    Activar Regla
-                </button>
-            </div>
-        `;
-    }, 2500); 
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[onclick*="tab-copilot"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if(document.getElementById('copilot-results') && document.getElementById('copilot-results').style.display === 'none') {
-                window.fetchCopilotIdeas();
-            }
-        });
     });
 });

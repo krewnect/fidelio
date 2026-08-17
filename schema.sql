@@ -63,20 +63,21 @@ CREATE TABLE public.transactions (
 ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
 
 -- Políticas de Seguridad (RLS)
-CREATE POLICY "Comercios_Select" ON public.merchants FOR SELECT USING (true);
-CREATE POLICY "Comercios_Update" ON public.merchants FOR UPDATE USING (true);
+CREATE POLICY "Comercios_Select" ON public.merchants FOR SELECT USING (id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Comercios_Update" ON public.merchants FOR UPDATE USING (id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
 
-CREATE POLICY "Clientes_Select" ON public.customers FOR SELECT USING (true);
-CREATE POLICY "Clientes_Insert" ON public.customers FOR INSERT WITH CHECK (true);
-CREATE POLICY "Clientes_Update" ON public.customers FOR UPDATE USING (true);
+CREATE POLICY "Clientes_Select" ON public.customers FOR SELECT USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Clientes_Insert" ON public.customers FOR INSERT WITH CHECK (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Clientes_Update" ON public.customers FOR UPDATE USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
 
-CREATE POLICY "Transacciones_Select" ON public.transactions FOR SELECT USING (true);
-CREATE POLICY "Transacciones_Insert" ON public.transactions FOR INSERT WITH CHECK (true);
+CREATE POLICY "Transacciones_Select" ON public.transactions FOR SELECT USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Transacciones_Insert" ON public.transactions FOR INSERT WITH CHECK (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
 
 -- 4. Tabla de Códigos Promocionales (Suscripciones SaaS)
 CREATE TABLE public.promo_codes (
     code TEXT PRIMARY KEY,
-    reward_type TEXT NOT NULL, -- '1_month_free', 'lifetime_free', 'discount'
+    reward_type TEXT NOT NULL,
+    target_plan TEXT DEFAULT 'business', -- '1_month_free', 'lifetime_free', 'discount'
     discount_pct NUMERIC DEFAULT 0,
     max_uses INTEGER DEFAULT 1,
     used_count INTEGER DEFAULT 0,
@@ -86,8 +87,8 @@ CREATE TABLE public.promo_codes (
 
 ALTER TABLE public.promo_codes ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Promo_Codes_Select" ON public.promo_codes FOR SELECT USING (true);
-CREATE POLICY "Promo_Codes_Update" ON public.promo_codes FOR UPDATE USING (true);
-CREATE POLICY "Promo_Codes_Insert" ON public.promo_codes FOR INSERT WITH CHECK (true);
+CREATE POLICY "Promo_Codes_Update" ON public.promo_codes FOR UPDATE USING (auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Promo_Codes_Insert" ON public.promo_codes FOR INSERT WITH CHECK (auth.jwt()->>'email' = 'hola@fideliorewards.com');
 -- Fase 1: Arquitectura Multi-Tarjeta (Pases)
 
 -- 1. Crear tabla para las diferentes campañas (tarjetas) de cada negocio
@@ -127,10 +128,10 @@ ADD COLUMN IF NOT EXISTS stripe_secret_key text;
 ALTER TABLE public.campaigns ENABLE ROW LEVEL SECURITY;
 
 -- Por simplicidad del MVP (igual que en merchants), permitimos acceso global por ahora
-CREATE POLICY "Campaigns_Select" ON public.campaigns FOR SELECT USING (true);
-CREATE POLICY "Campaigns_Insert" ON public.campaigns FOR INSERT WITH CHECK (true);
-CREATE POLICY "Campaigns_Update" ON public.campaigns FOR UPDATE USING (true);
-CREATE POLICY "Campaigns_Delete" ON public.campaigns FOR DELETE USING (true);
+CREATE POLICY "Campaigns_Select" ON public.campaigns FOR SELECT USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Campaigns_Insert" ON public.campaigns FOR INSERT WITH CHECK (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Campaigns_Update" ON public.campaigns FOR UPDATE USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Campaigns_Delete" ON public.campaigns FOR DELETE USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
 
 -- 3. Crear tabla pivote para los pases guardados por los clientes
 -- (Esto permite que un cliente guarde varias tarjetas del mismo negocio)
@@ -150,10 +151,10 @@ CREATE TABLE public.customer_campaigns (
 
 ALTER TABLE public.customer_campaigns ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Customer_Campaigns_Select" ON public.customer_campaigns FOR SELECT USING (true);
-CREATE POLICY "Customer_Campaigns_Insert" ON public.customer_campaigns FOR INSERT WITH CHECK (true);
-CREATE POLICY "Customer_Campaigns_Update" ON public.customer_campaigns FOR UPDATE USING (true);
-CREATE POLICY "Customer_Campaigns_Delete" ON public.customer_campaigns FOR DELETE USING (true);
+CREATE POLICY "Customer_Campaigns_Select" ON public.customer_campaigns FOR SELECT USING ( EXISTS (SELECT 1 FROM public.campaigns WHERE id = campaign_id AND (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com')) );
+CREATE POLICY "Customer_Campaigns_Insert" ON public.customer_campaigns FOR INSERT WITH CHECK ( EXISTS (SELECT 1 FROM public.campaigns WHERE id = campaign_id AND (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com')) );
+CREATE POLICY "Customer_Campaigns_Update" ON public.customer_campaigns FOR UPDATE USING ( EXISTS (SELECT 1 FROM public.campaigns WHERE id = campaign_id AND (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com')) );
+CREATE POLICY "Customer_Campaigns_Delete" ON public.customer_campaigns FOR DELETE USING ( EXISTS (SELECT 1 FROM public.campaigns WHERE id = campaign_id AND (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com')) );
 
 -- 4. Opcional: Migración de datos
 -- (Mover las configuraciones globales actuales de merchants a una campaña inicial por defecto)
