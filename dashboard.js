@@ -71,8 +71,11 @@ window.createNewCampaign = function() {
     state.colorAccent = "#8b5cf6";
     if (typeof showToast === 'function') showToast("Nueva campaña creada, edita y guarda.", "info");
     
-    document.getElementById('nav-builder').style.display = 'inline-block';
-    document.getElementById('nav-builder').click();
+    // Redirect to Loyalty Setup first
+    const loyaltyTabBtn = document.querySelector('.nav-tab[data-tab="tab-loyalty"]');
+    if(loyaltyTabBtn) {
+        loyaltyTabBtn.click();
+    }
     updatePassRender();
 };
 
@@ -2887,7 +2890,7 @@ function updatePassRender() {
                     toggleCashback.checked = true;
                     toggleStamps.checked = true;
                     toggleVip.checked = true;
-                } else if (mode === 'prepaid' || mode === 'custom') {
+                } else {
                     toggleCashback.checked = false;
                     toggleStamps.checked = false;
                     toggleVip.checked = false;
