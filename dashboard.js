@@ -4231,7 +4231,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- COMPLEX SCHEDULE LOGIC ---
-window.scheduleData = {
+window.scheduleData = window.scheduleData || {
     'Lunes': [{start: '09:00', end: '18:00'}],
     'Martes': [{start: '09:00', end: '18:00'}],
     'Miércoles': [{start: '09:00', end: '18:00'}],
@@ -4242,38 +4242,46 @@ window.scheduleData = {
 };
 
 window.renderScheduleDays = function() {
+    // REFORMATTED CLEAN LAYOUT
     const container = document.getElementById('schedule-days-container');
     if (!container) return;
     
+    // Solo renderizar si el modal está visible para evitar bugs (aunque ya lo llamamos en el onclick del botón)
     container.innerHTML = '';
     const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    
+    // Estilos globales de borde para no duplicar CSS
+    container.style.padding = '0';
+    container.style.gap = '0';
     
     days.forEach(day => {
         const shifts = window.scheduleData[day] || [];
         
         let shiftsHtml = '';
         if (shifts.length === 0) {
-            shiftsHtml = `<div style="font-size:13px; color:var(--accent-amber); padding:8px 0;"><i class="fa-solid fa-moon"></i> Cerrado</div>`;
+            shiftsHtml = `<div style="font-size:14px; color:var(--text-muted); padding:10px 0; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-moon"></i> Cerrado</div>`;
         } else {
             shifts.forEach((shift, index) => {
                 shiftsHtml += `
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                        <input type="time" class="premium-input schedule-time-input" data-day="${day}" data-index="${index}" data-type="start" value="${shift.start}" style="padding:8px; font-size:13px; width:110px;">
-                        <span style="color:var(--text-muted); font-size:12px;">a</span>
-                        <input type="time" class="premium-input schedule-time-input" data-day="${day}" data-index="${index}" data-type="end" value="${shift.end}" style="padding:8px; font-size:13px; width:110px;">
-                        <button onclick="removeShift('${day}', ${index})" style="background:rgba(239,68,68,0.1); border:none; color:#ef4444; width:32px; height:32px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom: ${index === shifts.length - 1 ? '0' : '12px'};">
+                        <input type="time" class="premium-input schedule-time-input" data-day="${day}" data-index="${index}" data-type="start" value="${shift.start}" style="padding:10px 14px; font-size:14px; font-family:inherit; border-radius:10px; background:var(--surface-light); border:1px solid var(--border-soft); width:130px; color:var(--text-main);">
+                        <span style="color:var(--text-muted); font-size:13px; font-weight:600;">a</span>
+                        <input type="time" class="premium-input schedule-time-input" data-day="${day}" data-index="${index}" data-type="end" value="${shift.end}" style="padding:10px 14px; font-size:14px; font-family:inherit; border-radius:10px; background:var(--surface-light); border:1px solid var(--border-soft); width:130px; color:var(--text-main);">
+                        <button onclick="removeShift('${day}', ${index})" style="background:none; border:none; color:#ef4444; width:36px; height:36px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background='none'"><i class="fa-solid fa-xmark" style="font-size:18px;"></i></button>
                     </div>
                 `;
             });
         }
         
         const dayHtml = `
-            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-soft); border-radius:12px; padding:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h3 style="margin:0; font-size:15px; font-weight:700;">${day}</h3>
-                    <button onclick="addShift('${day}')" style="background:none; border:none; color:var(--accent-violet); font-size:13px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-plus"></i> Añadir Turno</button>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:20px 32px; border-bottom:1px solid var(--border-soft); background: ${shifts.length === 0 ? 'rgba(0,0,0,0.02)' : 'transparent'}; transition: background 0.2s ease;">
+                <div style="width:120px; padding-top:10px;">
+                    <h3 style="margin:0 0 6px 0; font-size:15px; font-weight:700; color:var(--text-main);">${day}</h3>
+                    <button onclick="addShift('${day}')" style="background:none; border:none; color:var(--accent-violet); font-size:12px; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;"><i class="fa-solid fa-plus"></i> Añadir Turno</button>
                 </div>
-                <div>${shiftsHtml}</div>
+                <div style="flex:1; display:flex; flex-direction:column; align-items:flex-end;">
+                    ${shiftsHtml}
+                </div>
             </div>
         `;
         container.innerHTML += dayHtml;
