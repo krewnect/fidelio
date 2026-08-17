@@ -368,7 +368,7 @@
             <i class="fa-solid fa-calendar-check"></i> <span id="ui-cta-text">Agendar Cita o Servicio</span>
         </button>
 
-        <button class="btn-wallet" onclick="alert('Esta función se habilitará próximamente tras la certificación de Apple Developer.')">
+        <button class="btn-wallet" id="btn-apple-wallet" onclick="downloadAppleWallet()">
             <i class="fa-brands fa-apple"></i> Añadir a Apple Wallet
         </button>
     </div>
@@ -548,6 +548,17 @@
                 \`;
             }
         });
+
+        
+        function downloadAppleWallet() {
+            if (!customerId || !campaignId) {
+                alert("No se pudo identificar la campaña.");
+                return;
+            }
+            // Redirigir a la URL que genera y descarga el archivo .pkpass
+            const url = `/api/wallet/apple/${customerId}/${campaignId}`;
+            window.location.href = url;
+        }
 
         function openAppointmentModal() {
             document.getElementById('appointment-modal').style.display = 'flex';
