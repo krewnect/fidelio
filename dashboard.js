@@ -181,7 +181,7 @@ window.initStripeUI = function() {
     let camps = state.campaigns || [];
     if (camps.length === 0) {
         camps = [
-            { id: 'camp_1', name: 'Saldo Digital General' },
+            { id: 'camp_1', name: 'Monedero Digital General' },
             { id: 'camp_2', name: 'Tarjeta de Sellos' },
             { id: 'camp_3', name: 'Membresía VIP' }
         ];
@@ -593,17 +593,8 @@ let saveTimeout = null;
             activeWallet: "apple"
         };
 
-        let { data: campaignsData } = await window.supabaseClient
-            .from('campaigns')
-            .select('*')
-            .eq('merchant_id', merchantId);
-            
-        state.campaigns = campaignsData || [];
-        if(window.populateConfigCampaignSelect) window.populateConfigCampaignSelect();
-        if(window.populateBuilderCampaignSelect) window.populateBuilderCampaignSelect();
         // --- INJECT MERCHANT QR ---
-        const merchantSlugOrId = merchantData.slug || merchantId;
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + merchantSlugOrId)}`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/pass.html?m=' + merchantId)}`;
         const qrPreview = document.getElementById('merchant-qr-preview');
         const btnDownloadQr = document.getElementById('btn-download-merchant-qr');
         
@@ -1629,49 +1620,12 @@ function updatePassRender() {
         const rIcon = document.getElementById('render-icon');
         const rReward = document.getElementById('render-reward-text');
         const rPolicies = document.getElementById('render-policies-text');
-        const rRewardLabel = document.getElementById('render-reward-label');
         const rFront = document.getElementById('pass-front-face');
 
         if (rName) rName.textContent = pName;
         if (rCat) rCat.textContent = pCat;
         if (rDesc) rDesc.textContent = pDesc;
-        
-        if (pType === 'membership') {
-            const start = document.getElementById('mem-start-date')?.value || '';
-            const end = document.getElementById('mem-end-date')?.value || '';
-            const benefit = document.getElementById('mem-benefit')?.value || '';
-            const conditions = document.getElementById('mem-conditions')?.value || '';
-            
-            if (rRewardLabel) rRewardLabel.textContent = 'Membresía Válida Hasta';
-            if (rReward) rReward.textContent = end ? new Date(end).toLocaleDateString() : 'Por Definir';
-            if (rPolicies) rPolicies.innerHTML = `<strong>Beneficio:</strong> ${benefit}<br><br><strong>Condiciones:</strong> ${conditions}`;
-        } else if (pType === 'discount') {
-            const discName = document.getElementById('dsc-name')?.value || '';
-            const discPct = document.getElementById('dsc-percent')?.value || '';
-            const conditions = document.getElementById('dsc-conditions')?.value || '';
-            
-            if (rRewardLabel) rRewardLabel.textContent = 'Descuento Fijo';
-            if (rReward) rReward.textContent = `${discPct}% en ${discName}`;
-            if (rPolicies) rPolicies.innerHTML = `<strong>Condiciones:</strong> ${conditions}`;
-        } else if (pType === 'coupons') {
-            const cpnDesc = document.getElementById('cpn-desc')?.value || '';
-            const expiry = document.getElementById('cpn-expiry')?.value || '';
-            
-            if (rRewardLabel) rRewardLabel.textContent = 'Cupón';
-            if (rReward) rReward.textContent = cpnDesc;
-            if (rPolicies) rPolicies.innerHTML = expiry ? `Válido hasta: ${new Date(expiry).toLocaleDateString()}` : `Sin Fecha de Vencimiento`;
-        } else if (pType === 'multipass') {
-            const count = document.getElementById('mp-count')?.value || '';
-            const service = document.getElementById('mp-service')?.value || '';
-            
-            if (rRewardLabel) rRewardLabel.textContent = 'Pases Disponibles';
-            if (rReward) rReward.textContent = `${count}x ${service}`;
-            if (rPolicies) rPolicies.innerHTML = `Muestra este pase para descontar una sesión de tu paquete.`;
-        } else {
-            if (rRewardLabel) rRewardLabel.textContent = 'Próxima Recompensa';
-            if (rReward) rReward.textContent = pReward;
-            if (rPolicies) rPolicies.innerHTML = pPolicies;
-        }
+        if (rReward) rReward.textContent = pReward;
         // Handle Custom Logo vs Icon
         const passLogoCircle = document.querySelector('.pass-logo-circle');
         if (passLogoCircle) {
@@ -1736,18 +1690,9 @@ function updatePassRender() {
         }
 
         const rBal = document.getElementById('render-balance');
-        const rCashbackLabel = document.getElementById('render-cashback-label');
         if (rBal) {
             const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
-            const wCurrency = state.walletCurrency || 'cashback';
-            const wPtsName = state.walletPointsName || 'Puntos';
-            if(wCurrency === 'points') {
-                rBal.textContent = `${bal} ${wPtsName}`;
-                if(rCashbackLabel) rCashbackLabel.textContent = 'Saldo Digital';
-            } else {
-                rBal.textContent = `$${bal.toFixed(2)}`;
-                if(rCashbackLabel) rCashbackLabel.textContent = 'Cashback';
-            }
+            rBal.textContent = `$${bal.toFixed(2)}`;
         }
         
         const rWalletBlock = document.getElementById('render-wallet-block');
@@ -1886,48 +1831,19 @@ function updatePassRender() {
         
         btnConfirmPush.addEventListener('click', async () => {
             try {
-                if (!state.tenantId) {
-                    alert('¡Error: Sesión no válida!');
-                    return;
-                }
-                
-                const cPri = document.getElementById('color-primary')?.value || '#000000';
-                const cAcc = document.getElementById('color-accent')?.value || '#5b0eb8';
-                const pType = document.getElementById('program-type-select')?.value || 'hybrid';
-                const rIcon = document.getElementById('rest-icon')?.value || 'fa-star';
-                
-                if (state.currentCampaignId && window.supabaseClient) {
+                if (!state.tenantId) { alert('¡LA VARIABLE TENANT ID ESTÁ NULA AL HACER CLIC!'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
-                        .from('campaigns')
-                        .update({ 
-                            color_primary: cPri,
-                            color_accent: cAcc,
-                            stamp_icon_url: rIcon,
-                            type: pType
-                        })
-                        .eq('id', state.currentCampaignId);
-                        
+                        .from('merchants')
+                        .update({ branches: state.branches })
+                        .eq('id', state.tenantId);
                     if (!error) {
-                        console.log("Diseño de campaña guardado en la base de datos.");
-                        // Update local state
-                        if(state.campaigns) {
-                            const camp = state.campaigns.find(c => c.id === state.currentCampaignId);
-                            if(camp) {
-                                camp.color_primary = cPri;
-                                camp.color_accent = cAcc;
-                                camp.stamp_icon_url = rIcon;
-                                camp.type = pType;
-                            }
-                        }
+                        console.log("Sucursal guardada en la base de datos."); alert("¡EXITO TOTAL! La base de datos aceptó la sucursal.");
                     } else {
-                        console.error("Error en DB:", error.message);
+                        alert("Error en DB: " + error.message);
                     }
-                } else if (!state.currentCampaignId) {
-                    alert('Por favor selecciona una campaña en la barra lateral primero.');
-                    return;
                 }
             } catch (ex) {
-                console.error("Crash inline DB:", ex.message);
+                alert("Crash inline DB: " + ex.message);
             }
             step1.style.display = 'none';
             step2.style.display = 'block';
@@ -2232,7 +2148,7 @@ function updatePassRender() {
             
         if (error) {
             if (error.code === '42703') {
-                if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#ef4444;">Faltan las columnas del Saldo Digital. Corre el script SQL primero.</td></tr>';
+                if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#ef4444;">Faltan las columnas del Monedero. Corre el script SQL primero.</td></tr>';
             } else {
                 if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
             }
@@ -2975,6 +2891,7 @@ function updatePassRender() {
                 const setMem = document.getElementById('settings-membership-prog');
                 const setPre = document.getElementById('panel-prepaid-config');
                 const setCus = document.getElementById('settings-custom-prog');
+                const setPts = document.getElementById('settings-points-prog');
                 const setDsc = document.getElementById('settings-discount-prog');
                 const setCpn = document.getElementById('settings-coupons-prog');
                 const setMp = document.getElementById('settings-multipass-prog');
@@ -2984,6 +2901,7 @@ function updatePassRender() {
                 if(setMem) setMem.style.display = 'none';
                 if(setPre) setPre.style.display = 'none';
                 if(setCus) setCus.style.display = 'none';
+                if(setPts) setPts.style.display = 'none';
                 if(setDsc) setDsc.style.display = 'none';
                 if(setCpn) setCpn.style.display = 'none';
                 if(setMp) setMp.style.display = 'none';
@@ -3015,6 +2933,7 @@ function updatePassRender() {
                         customPanel.style.display = 'block';
                         if(mode === 'prepaid' && setPre) setPre.style.display = 'block';
                         if(mode === 'custom' && setCus) setCus.style.display = 'block';
+                        if(mode === 'points' && setPts) setPts.style.display = 'block';
                         if(mode === 'membership' && setMem) setMem.style.display = 'block';
                         if(mode === 'discount' && setDsc) setDsc.style.display = 'block';
                         if(mode === 'coupons' && setCpn) setCpn.style.display = 'block';
@@ -3073,42 +2992,33 @@ function updatePassRender() {
                 if(state.vipTiers.oro) {
                     if(document.getElementById('vip-oro-min')) document.getElementById('vip-oro-min').value = state.vipTiers.oro.minSpent || 3000;
                     const oBenefits = state.vipTiers.oro.benefits || [{ type: 'cashback', value: state.vipTiers.oro.cashbackPercent || 15 }];
-                    if (state.walletCurrency) {
-                const wct = document.getElementById('wallet-currency-type');
-                if(wct) {
-                    wct.value = state.walletCurrency;
-                    if(state.walletCurrency === 'points') {
-                        const grp = document.getElementById('wallet-points-name-group');
-                        if(grp) grp.style.display = 'block';
-                    }
+                    document.getElementById('vip-oro-benefits').innerHTML = '';
+                    oBenefits.forEach(b => window.addVipBenefit('oro', b.type, b.value));
                 }
             }
-            if (state.walletPointsName && document.getElementById('wallet-points-name')) {
-                document.getElementById('wallet-points-name').value = state.walletPointsName;
-            }
-
             if (state.customRules) {
                 if(state.customRules.membership) {
-                    if(document.getElementById('mem-start-date')) document.getElementById('mem-start-date').value = state.customRules.membership.startDate || '';
-                    if(document.getElementById('mem-end-date')) document.getElementById('mem-end-date').value = state.customRules.membership.endDate || '';
+                    if(document.getElementById('mem-cycle')) document.getElementById('mem-cycle').value = state.customRules.membership.cycle || 'monthly';
                     if(document.getElementById('mem-benefit')) document.getElementById('mem-benefit').value = state.customRules.membership.benefit || '';
-                    if(document.getElementById('mem-conditions')) document.getElementById('mem-conditions').value = state.customRules.membership.conditions || '';
                 }
-                
+
                 if(state.customRules.custom) {
                     if(document.getElementById('cus-name')) document.getElementById('cus-name').value = state.customRules.custom.name || 'Mi Programa VIP';
                     if(document.getElementById('cus-rules')) document.getElementById('cus-rules').value = state.customRules.custom.rules || '';
                 }
 
+                if(state.customRules.points) {
+                    if(document.getElementById('pts-rate')) document.getElementById('pts-rate').value = state.customRules.points.rate || '';
+                    if(document.getElementById('pts-reward')) document.getElementById('pts-reward').value = state.customRules.points.reward || '';
+                }
+
                 if(state.customRules.discount) {
-                    if(document.getElementById('dsc-name')) document.getElementById('dsc-name').value = state.customRules.discount.name || 'Descuento VIP';
                     if(document.getElementById('dsc-percent')) document.getElementById('dsc-percent').value = state.customRules.discount.percent || '10';
                     if(document.getElementById('dsc-purpose')) document.getElementById('dsc-purpose').value = state.customRules.discount.purpose || '';
                     if(document.getElementById('dsc-conditions')) document.getElementById('dsc-conditions').value = state.customRules.discount.conditions || '';
                 }
 
                 if(state.customRules.coupons) {
-                    if(document.getElementById('cpn-desc')) document.getElementById('cpn-desc').value = state.customRules.coupons.desc || 'Cupón de Regalo';
                     if(document.getElementById('cpn-type')) document.getElementById('cpn-type').value = state.customRules.coupons.type || 'percentage';
                     if(document.getElementById('cpn-limit')) document.getElementById('cpn-limit').value = state.customRules.coupons.limit || '1';
                     if(document.getElementById('cpn-expiry')) document.getElementById('cpn-expiry').value = state.customRules.coupons.expiry || '';
@@ -3119,7 +3029,7 @@ function updatePassRender() {
                     if(document.getElementById('mp-count')) document.getElementById('mp-count').value = state.customRules.multipass.count || '10';
                     if(document.getElementById('mp-service')) document.getElementById('mp-service').value = state.customRules.multipass.service || '';
                 }
-                
+
                 if(state.customRules.certificates) {
                     if(document.getElementById('cert-fixed-amount')) document.getElementById('cert-fixed-amount').value = state.customRules.certificates.fixedAmount || '500';
                 }
@@ -3231,7 +3141,8 @@ function updatePassRender() {
                 btnSaveLoyalty.disabled = true;
                 
                 try {
-                    const rulesConfig = {
+                    const { error } = await window.supabaseClient.from('merchants').update({
+                        activeMode: activeMode,
                         cashbackActive: cashbackActive,
                         cashbackPercent: cashbackPercent,
                         stampsActive: stampsActive,
@@ -3242,83 +3153,47 @@ function updatePassRender() {
                         prepaidActive: togglePrepaid ? togglePrepaid.checked : false,
                         prepaidAmount: document.getElementById('pre-amount') ? parseFloat(document.getElementById('pre-amount').value) : 500,
                         prepaidBonus: document.getElementById('pre-bonus') ? parseFloat(document.getElementById('pre-bonus').value) : 100,
-                        walletCurrency: document.getElementById('wallet-currency-type')?.value || 'cashback',
-                        walletPointsName: document.getElementById('wallet-points-name')?.value || 'Puntos',
                         customRules: {
-                            membership: { 
-                                startDate: document.getElementById('mem-start-date')?.value, 
-                                endDate: document.getElementById('mem-end-date')?.value,
-                                benefit: document.getElementById('mem-benefit')?.value,
-                                conditions: document.getElementById('mem-conditions')?.value
-                            },
+                            membership: { cycle: document.getElementById('mem-cycle')?.value, benefit: document.getElementById('mem-benefit')?.value },
                             custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value },
-                            discount: { 
-                                name: document.getElementById('dsc-name')?.value, 
-                                percent: document.getElementById('dsc-percent')?.value, 
-                                purpose: document.getElementById('dsc-purpose')?.value,
-                                conditions: document.getElementById('dsc-conditions')?.value 
-                            },
-                            coupons: { 
-                                desc: document.getElementById('cpn-desc')?.value, 
-                                type: document.getElementById('cpn-type')?.value, 
-                                limit: document.getElementById('cpn-limit')?.value, 
-                                expiry: document.getElementById('cpn-expiry')?.value,
-                                terms: document.getElementById('cpn-terms')?.value
-                            },
+                            points: { rate: document.getElementById('pts-rate')?.value, reward: document.getElementById('pts-reward')?.value },
+                            discount: { percent: document.getElementById('dsc-percent')?.value, purpose: document.getElementById('dsc-purpose')?.value, conditions: document.getElementById('dsc-conditions')?.value },
+                            coupons: { type: document.getElementById('cpn-type')?.value, limit: document.getElementById('cpn-limit')?.value, expiry: document.getElementById('cpn-expiry')?.value, terms: document.getElementById('cpn-terms')?.value },
                             multipass: { count: document.getElementById('mp-count')?.value, service: document.getElementById('mp-service')?.value },
                             certificates: { fixedAmount: document.getElementById('cert-fixed-amount')?.value }
                         }
-                    };
+                    }).eq('id', state.tenantId);
                     
-                    let campName = document.getElementById('campaign-name') ? document.getElementById('campaign-name').value : 'Nueva Campaña';
-                    if (!campName.trim()) campName = 'Campaña ' + activeMode;
+                    if (error) throw error;
                     
-                    let upsertData = {
-                        merchant_id: state.tenantId,
-                        type: activeMode,
-                        name: campName,
-                        rules_config: rulesConfig
-                    };
+                    // Update local state
+                    state.activeMode = activeMode;
+                    state.cashbackActive = cashbackActive;
+                    state.cashbackPercent = cashbackPercent;
+                    state.stampsActive = stampsActive;
+                    state.stampsTotal = totalStamps;
+                    state.stampsReward = reward;
+                    state.vipActive = vipActive;
+                    state.vipTiers = vipTiers;
+                    state.prepaidActive = togglePrepaid ? togglePrepaid.checked : false;
+                    state.prepaidAmount = document.getElementById('pre-amount') ? parseFloat(document.getElementById('pre-amount').value) : 500;
+                    state.prepaidBonus = document.getElementById('pre-bonus') ? parseFloat(document.getElementById('pre-bonus').value) : 100;
                     
-                    let result;
-                    if (state.configCampaignId && state.configCampaignId !== 'new') {
-                        result = await window.supabaseClient.from('campaigns').update(upsertData).eq('id', state.configCampaignId).select();
-                    } else {
-                        result = await window.supabaseClient.from('campaigns').insert([upsertData]).select();
-                    }
-                    
-                    if (result.error) throw result.error;
-                    
-                    // Update local state campaigns array
-                    const savedCamp = result.data[0];
-                    if (!state.campaigns) state.campaigns = [];
-                    const existingIndex = state.campaigns.findIndex(c => c.id === savedCamp.id);
-                    if (existingIndex > -1) {
-                        state.campaigns[existingIndex] = savedCamp;
-                    } else {
-                        state.campaigns.push(savedCamp);
-                        state.configCampaignId = savedCamp.id;
-                    }
-                    
-                    // Update dropdowns
-                    if(window.populateConfigCampaignSelect) window.populateConfigCampaignSelect();
-                    if(window.populateBuilderCampaignSelect) window.populateBuilderCampaignSelect();
-                    
-                    if(document.getElementById('campaign-select-config')) {
-                        document.getElementById('campaign-select-config').value = savedCamp.id;
-                    }
+                    // Re-render card preview if mode changed
+                    updatePassRender();
 
-                    showToast("Campaña guardada con éxito", "success");
                     
+                    showToast('Reglas de Fidelización guardadas exitosamente.', 'success');
                 } catch (err) {
-                    console.error(err);
-                    showToast("Error al guardar campaña", "error");
+                    console.error("Error saving loyalty config:", err);
+                    showToast('Error al guardar: ' + err.message, 'warning');
                 } finally {
                     btnSaveLoyalty.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Reglas';
                     btnSaveLoyalty.disabled = false;
                 }
             });
         }
+    }
     
     // Certificate Email Emission Logic
     const btnEmitCert = document.getElementById('btn-emit-cert');
@@ -3328,14 +3203,9 @@ function updatePassRender() {
             const senderEmail = document.getElementById('cert-sender-email').value;
             const email = document.getElementById('cert-email').value;
             const message = document.getElementById('cert-message').value;
-            const amount = document.getElementById('cert-exact-amount').value;
             
             if (!email) {
                 showToast('Por favor, ingresa el correo del destinatario.', 'warning');
-                return;
-            }
-            if (!amount || isNaN(amount) || amount <= 0) {
-                showToast('Por favor, ingresa un monto válido a cargar en el certificado.', 'warning');
                 return;
             }
             
@@ -3343,13 +3213,10 @@ function updatePassRender() {
             btnEmitCert.disabled = true;
             
             try {
-                // Here you would register the certificate in the DB as wallet money
-                // e.g., await supabaseClient.from('certificates').insert({ email, amount, ... })
-
                 // Simulate API call to send email with certificate
                 await new Promise(resolve => setTimeout(resolve, 1500));
                 
-                let successMsg = `¡Certificado por $${amount} enviado exitosamente a ${email}!`;
+                let successMsg = `¡Certificado enviado exitosamente a ${email}!`;
                 if(senderEmail) {
                     successMsg += ` Se envió copia de confirmación a ${senderEmail}.`;
                 }
@@ -3360,7 +3227,6 @@ function updatePassRender() {
                 document.getElementById('cert-sender-email').value = '';
                 document.getElementById('cert-email').value = '';
                 document.getElementById('cert-message').value = '';
-                document.getElementById('cert-exact-amount').value = '';
             } catch (err) {
                 showToast('Error al enviar el certificado.', 'warning');
             } finally {
@@ -3395,7 +3261,7 @@ window.selectAICampaign = function(type, element) {
         'vip_exclusivo': 'Como miembro Oro, tienes un beneficio esperando. Actívalo en tu próxima compra.',
         'geofencing': 'Vimos que andas por aquí Pasa a saludarnos y te invitamos la bebida en la compra de un plato fuerte.',
         'aniversario': '¡Feliz aniversario! Ya cumples 1 año en Fidelio con nosotros. Ven a celebrar con un 20% OFF.',
-        'winback': 'Nos has hecho mucha falta. Te depositamos $200 de saldo a tu Saldo Digital de regalo si nos visitas antes de fin de mes.',
+        'winback': 'Nos has hecho mucha falta. Te depositamos $200 de saldo a tu Monedero de regalo si nos visitas antes de fin de mes.',
         'manual': ''
     };
     
@@ -4341,23 +4207,16 @@ window.startDesignerFlow = function(programType) {
 
 // --- MULTI-CARD BUILDER LOGIC ---
 function getBuilderCampaigns() {
-    return state.campaigns || [];
+    let camps = state.campaigns || [];
+    if (camps.length === 0) {
+        camps = [
+            { id: 'camp_1', name: 'Monedero Digital General', config: { type: 'cashback', colorPrimary: '#1e1b4b', colorAccent: '#8b5cf6', iconClass: 'fa-wallet' } },
+            { id: 'camp_2', name: 'Tarjeta de Sellos', config: { type: 'stamps', colorPrimary: '#0f172a', colorAccent: '#f59e0b', iconClass: 'fa-star', stampsTotal: 10 } },
+            { id: 'camp_3', name: 'Membresía VIP', config: { type: 'hybrid', colorPrimary: '#3f3f46', colorAccent: '#eab308', iconClass: 'fa-crown' } }
+        ];
+    }
+    return camps;
 }
-
-window.populateConfigCampaignSelect = function() {
-    const sel = document.getElementById('campaign-select-config');
-    if (!sel) return;
-    
-    sel.innerHTML = '<option value="new">+ Crear Nueva Campaña</option>';
-    
-    const camps = getBuilderCampaigns();
-    camps.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = c.name || 'Campaña sin nombre';
-        sel.appendChild(opt);
-    });
-};
 
 window.populateBuilderCampaignSelect = function() {
     const sel = document.getElementById('builder-campaign-select');
@@ -4369,38 +4228,13 @@ window.populateBuilderCampaignSelect = function() {
     camps.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
-        opt.textContent = c.name || 'Campaña sin nombre';
+        opt.textContent = c.name || c.tipo || 'Programa';
         sel.appendChild(opt);
     });
     
     if (state.currentCampaignId) {
         sel.value = state.currentCampaignId;
     }
-};
-
-window.loadCampaignToConfig = function(campaignId) {
-    if (!campaignId || campaignId === 'new') {
-        state.configCampaignId = null;
-        document.getElementById('campaign-name').value = '';
-        document.getElementById('loyalty-mode-hybrid').click();
-        return;
-    }
-    
-    state.configCampaignId = campaignId;
-    const camp = getBuilderCampaigns().find(c => c.id === campaignId);
-    if (!camp) return;
-    
-    if(document.getElementById('campaign-name')) {
-        document.getElementById('campaign-name').value = camp.name || '';
-    }
-    
-    if (camp.type) {
-        const typeEl = document.getElementById(`loyalty-mode-${camp.type}`);
-        if (typeEl) typeEl.click();
-    }
-    
-    // We would need to load rules_config fields here if needed.
-    // For now, it sets the type and name.
 };
 
 window.loadCampaignToBuilder = function(campaignId) {
@@ -4414,25 +4248,25 @@ window.loadCampaignToBuilder = function(campaignId) {
     const camps = getBuilderCampaigns();
     let camp = camps.find(c => c.id === campaignId);
     
-    if (camp) {
+    if (camp && camp.config) {
+        const c = camp.config;
+        
         const pt = document.getElementById('program-type-select');
-        if(pt && camp.type) pt.value = camp.type;
+        if(pt && c.type) pt.value = c.type;
         
         const cPri = document.getElementById('color-primary');
-        if(cPri && camp.color_primary) cPri.value = camp.color_primary;
+        if(cPri && c.colorPrimary) cPri.value = c.colorPrimary;
         
         const cAcc = document.getElementById('color-accent');
-        if(cAcc && camp.color_accent) cAcc.value = camp.color_accent;
+        if(cAcc && c.colorAccent) cAcc.value = c.colorAccent;
         
         const rIcon = document.getElementById('rest-icon');
-        if(rIcon && camp.stamp_icon_url) rIcon.value = camp.stamp_icon_url;
+        if(rIcon && c.iconClass) rIcon.value = c.iconClass;
         
         const st = document.getElementById('stamps-total');
-        if(st && camp.rules_config && camp.rules_config.stamps_total) {
-            st.value = camp.rules_config.stamps_total;
-        }
+        if(st && c.stampsTotal) st.value = c.stampsTotal;
         
-        if (typeof showToast === 'function') showToast("Cargando diseño de: " + (camp.name || 'Campaña'), "success");
+        if (typeof showToast === 'function') showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
     } else {
         if (typeof showToast === 'function') showToast("Campaña nueva. Configura el diseño.", "info");
     }
@@ -4461,14 +4295,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(campSel) {
         campSel.addEventListener('change', window.checkRedundancy);
     }
-    
-    const configSel = document.getElementById('campaign-select-config');
-    if(configSel) {
-        configSel.addEventListener('change', (e) => {
-            if(window.loadCampaignToConfig) window.loadCampaignToConfig(e.target.value);
-        });
-    }
-    
     setTimeout(window.checkRedundancy, 100);
 });
 
