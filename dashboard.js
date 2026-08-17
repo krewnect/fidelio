@@ -1722,6 +1722,15 @@ function updatePassRender() {
             if (stampsView) stampsView.style.display = 'flex';
             if (configStamps) configStamps.style.display = 'flex';
             
+            // Force redraw of stamps just in case
+            const stampsGrid = document.getElementById('render-stamps-grid');
+            if (stampsGrid && !stampsGrid.innerHTML) {
+                 stampsGrid.innerHTML = '';
+                 for(let i=1; i<=10; i++) {
+                     stampsGrid.innerHTML += `<div class="stamp-coin ${i<=3?'filled':'empty'}" style="background-color:${i<=3?cAcc:''};">${i>3?i:''}</div>`;
+                 }
+            }
+            
             // Generate stamps
             const stampsGrid = document.getElementById('render-stamps-grid');
             if (stampsGrid) {
@@ -4189,3 +4198,19 @@ window.loadCampaignToBuilder = function(campaignId) {
 };
 
 
+
+// Listener para ocultar redundancias si se selecciona una campaña
+document.addEventListener('DOMContentLoaded', () => {
+    const campSel = document.getElementById('builder-campaign-select');
+    if(campSel) {
+        campSel.addEventListener('change', (e) => {
+            const isCamp = !!e.target.value;
+            // Campos redundantes: Mensaje Corto (Promo) y Premio a Desbloquear
+            const msgInput = document.getElementById('rest-desc');
+            const rewardInput = document.getElementById('stamps-reward');
+            
+            if(msgInput && msgInput.parentElement) msgInput.parentElement.style.display = isCamp ? 'none' : 'block';
+            if(rewardInput && rewardInput.parentElement) rewardInput.parentElement.style.display = isCamp ? 'none' : 'block';
+        });
+    }
+});
