@@ -906,6 +906,14 @@
                                     </div>
                                     <button class="btn btn-primary" onclick="document.getElementById('schedule-config-modal').style.display='flex'; if(window.renderScheduleDays) window.renderScheduleDays();" style="background: var(--accent-violet) !important; color: #fff !important; border:none;"><i class="fa-solid fa-clock"></i> Configurar Horarios</button>
                                 </div>
+                                
+                                <div id="schedule-summary-container" style="background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:24px; display:none;">
+                                    <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#000000;"><i class="fa-solid fa-calendar-check" style="color:#10b981; margin-right:8px;"></i> Horario Configurado</h3>
+                                    <div id="schedule-summary-content" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px;">
+                                        <!-- JS will populate -->
+                                    </div>
+                                </div>
+
                                 <div class="glass-card" style="padding: 24px;">
                                     <div id="appointments-list-container" style="display:flex; flex-direction:column; gap:12px;">
                                         <p style="color:var(--text-muted); text-align:center; padding: 20px;"><i class="fa-solid fa-calendar-day"></i> Aún no tienes citas agendadas.</p>

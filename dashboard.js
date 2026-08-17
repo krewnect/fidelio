@@ -4301,6 +4301,39 @@ window.removeShift = function(day, index) {
     }
 };
 
+window.renderScheduleSummary = function() {
+    const container = document.getElementById('schedule-summary-container');
+    const content = document.getElementById('schedule-summary-content');
+    if(!container || !content) return;
+    
+    if(!state.schedules || Object.keys(state.schedules).length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    container.style.display = 'block';
+    content.innerHTML = '';
+    
+    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    let hasAnyShift = false;
+    
+    days.forEach(day => {
+        const shifts = state.schedules[day] || [];
+        if(shifts.length > 0) {
+            hasAnyShift = true;
+            let shiftsText = shifts.map(s => `<div style="background:#f3f4f6; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:600; color:#374151;">${s.start} - ${s.end}</div>`).join('');
+            content.innerHTML += `
+                <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px;">
+                    <div style="font-weight:700; font-size:13px; color:#111827; margin-bottom:8px;">${day}</div>
+                    <div style="display:flex; flex-direction:column; gap:4px;">${shiftsText}</div>
+                </div>
+            `;
+        }
+    });
+    
+    if(!hasAnyShift) container.style.display = 'none';
+};
+
 window.saveComplexSchedule = function() {
     // Collect data from DOM to memory just before saving
     const inputs = document.querySelectorAll('.schedule-time-input');
@@ -4314,8 +4347,11 @@ window.saveComplexSchedule = function() {
     });
     
     // Save to state
-    state.schedules = window.scheduleData;
+    state.schedules = JSON.parse(JSON.stringify(window.scheduleData)); // Deep copy
     console.log("Horarios guardados en estado:", state.schedules);
+    
+    // Update UI Summary
+    window.renderScheduleSummary();
     
     document.getElementById('schedule-config-modal').style.display='none';
     if(typeof showToast === 'function') showToast("Franjas horarias configuradas y guardadas exitosamente", "success");
