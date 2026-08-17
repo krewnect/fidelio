@@ -1701,6 +1701,19 @@ function updatePassRender() {
             if (stampsView) stampsView.style.display = 'none';
             if (configStamps) configStamps.style.display = 'none';
         }
+        
+        // Add "Invitar a un Amigo" link dynamically
+        let referLink = document.getElementById('render-refer-link');
+        if (!referLink) {
+            const qrSection = document.getElementById('render-qr-view');
+            if (qrSection) {
+                referLink = document.createElement('div');
+                referLink.id = 'render-refer-link';
+                referLink.style = 'margin-top:16px; width:100%; text-align:center; padding-top:12px; border-top:1px solid rgba(0,0,0,0.05);';
+                referLink.innerHTML = `<a href="#" style="color:var(--accent-violet); font-size:12px; font-weight:700; text-decoration:none;"><i class="fa-solid fa-user-plus"></i> Invitar a un amigo y ganar recompensas</a>`;
+                qrSection.parentNode.insertBefore(referLink, qrSection.nextSibling);
+            }
+        }
     }
 
     
@@ -4036,8 +4049,13 @@ window.openCampaignModal = function() {
 }
 
 window.startDesignerFlow = function(programType) {
+    // Initialize a completely new design state tied to this specific program!
+    state.currentCampaignId = 'prog_' + Date.now();
+    state.restaurantName = programType;
+    state.dynamicDesc = "Disfruta de este beneficio exclusivo.";
+    
     // They selected a program in tab-loyalty. Move to Step 2.
-    showToast(`Paso 2: Diseñando tarjeta para ${programType}. Personaliza los colores.`, "success");
+    showToast(`Paso 2: Diseñando tarjeta para ${programType}. Se ha creado un diseño independiente.`, "success");
     
     // Switch to designer tab
     const navTabs = document.querySelectorAll('.nav-tab');
@@ -4050,13 +4068,11 @@ window.startDesignerFlow = function(programType) {
     if(bldTab) bldTab.classList.add('active');
     
     // Auto-select the program type in the designer dropdown
-    const typeSelect = document.getElementById('card-pass-type');
+    const typeSelect = document.getElementById('program-type-select');
     if(typeSelect) {
         // Map simplified names to the dropdown values
-        let mappedValue = 'storeCard';
-        if(programType.toLowerCase().includes('sello')) mappedValue = 'stampCard';
-        if(programType.toLowerCase().includes('membresía')) mappedValue = 'membershipCard';
-        if(programType.toLowerCase().includes('cupón')) mappedValue = 'coupon';
+        let mappedValue = 'cashback';
+        if(programType.toLowerCase().includes('sello')) mappedValue = 'stamps';
         
         typeSelect.value = mappedValue;
         // Trigger change to update preview
