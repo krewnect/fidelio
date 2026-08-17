@@ -1,47 +1,144 @@
-
 window.saveDesignToSupabase = async function saveDesignToSupabase() {
     console.log("Global saveDesignToSupabase triggered!");
-    if (!window.supabaseClient) {
-        alert("CRASH: window.supabaseClient es nulo!");
-        console.error("No supabase client!");
-        return;
-    }
-    if (!state.tenantId) {
-        alert("CRASH: state.tenantId es nulo!");
-        console.error("No tenantId in state!");
+    if (!state.currentCampaignId) {
+        console.log("No campaign selected.");
+        if (typeof showToast === 'function') showToast("Selecciona una campaña primero", "warning");
         return;
     }
     
-    const updates = {
-        business_name: state.restaurantName,
-        industry: state.category,
+    const payload = {
+        id: state.currentCampaignId,
+        type: state.activeMode || "hybrid",
+        name: state.restaurantName,
+        description: state.dynamicDesc,
         color_primary: state.colorPrimary,
         color_accent: state.colorAccent,
-        cashback_percent: state.cashbackPercent,
-        stamps_total: state.stampsTotal,
-        stamps_reward_text: state.stampsReward,
         logo_url: state.customLogoUrl,
         banner_url: state.customBannerUrl,
-        branches: state.branches
+        stamp_icon_url: state.iconClass,
+        custom_cta_label: state.stampsReward,
+        rules_config: {
+            cashback_percent: state.cashbackPercent,
+            stamps_total: state.stampsTotal,
+            vip_tiers: state.vipTiers
+        }
     };
 
     try {
-        const { error } = await window.supabaseClient
-            .from('merchants')
-            .update(updates)
-            .eq('id', state.tenantId);
-            
-        if (!error) {
-            console.log("Guardado automático exitoso");
-            if (typeof showToast === 'function') showToast("Guardado automático en la nube ☁️", "success");
+        const res = await fetch('/api/campaigns', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            console.log("Campaña guardada");
+            if (typeof showToast === 'function') showToast("Campaña guardada ☁️", "success");
+            await window.loadCampaigns();
         } else {
-            console.error("Supabase Save Error:", error);
-            if (typeof showToast === 'function') showToast("Error BD: " + error.message, "error");
+            console.error("Save Error:", await res.text());
+            if (typeof showToast === 'function') showToast("Error al guardar campaña", "error");
         }
     } catch (ex) {
-        alert("SUPABASE CRASH: " + ex.message + "\n" + ex.stack);
+        console.error(ex);
+        alert("CRASH: " + ex.message);
     }
 }
+
+window.loadCampaigns = async function() {
+    try {
+        const res = await fetch('/api/campaigns');
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        const list = document.getElementById('campaigns-list');
+        if (!list) return;
+        
+        list.innerHTML = data.campaigns.map(c => `
+            <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="selectCampaign('${c.id}')">
+                <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
+                <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
+            </div>
+        `).join('');
+    } catch(e) {
+        console.error("Error loading campaigns", e);
+    }
+};
+
+window.createNewCampaign = function() {
+    state.currentCampaignId = 'camp_' + Date.now();
+    state.restaurantName = "Nueva Campaña";
+    state.colorPrimary = "#000000";
+    state.colorAccent = "#8b5cf6";
+    if (typeof showToast === 'function') showToast("Nueva campaña creada, edita y guarda.", "info");
+    
+    document.getElementById('nav-builder').style.display = 'inline-block';
+    document.getElementById('nav-builder').click();
+    updatePassRender();
+};
+
+window.selectCampaign = async function(id) {
+    try {
+        const res = await fetch('/api/campaigns');
+        const data = await res.json();
+        const camp = data.campaigns.find(c => c.id === id);
+        if (!camp) return;
+
+        state.currentCampaignId = camp.id;
+        state.restaurantName = camp.name || "Campaña";
+        state.dynamicDesc = camp.description || "";
+        state.colorPrimary = camp.color_primary || "#000";
+        state.colorAccent = camp.color_accent || "#8b5cf6";
+        state.customLogoUrl = camp.logo_url || null;
+        state.customBannerUrl = camp.banner_url || null;
+        state.iconClass = camp.stamp_icon_url || "fa-burger";
+        state.stampsReward = camp.custom_cta_label || "Premio";
+        state.activeMode = camp.type || "hybrid";
+        
+        if (camp.rules_config) {
+            state.cashbackPercent = camp.rules_config.cashback_percent || 10;
+            state.stampsTotal = camp.rules_config.stamps_total || 10;
+            if (camp.rules_config.vip_tiers) state.vipTiers = camp.rules_config.vip_tiers;
+        }
+
+        // Fill inputs
+        const safeVal = (eid, val) => { const e = document.getElementById(eid); if(e) e.value = val; };
+        safeVal('rest-name', state.restaurantName);
+        safeVal('color-primary', state.colorPrimary);
+        safeVal('color-accent', state.colorAccent);
+        safeVal('rest-icon', state.iconClass);
+        safeVal('stamps-reward', state.stampsReward);
+        safeVal('dynamic-desc', state.dynamicDesc);
+
+        // Show builder tab
+        document.getElementById('nav-builder').style.display = 'inline-block';
+        document.getElementById('nav-builder').click();
+        
+        updatePassRender();
+        if (typeof showToast === 'function') showToast("Campaña cargada en el editor", "success");
+    } catch(e) {
+        console.error("Error selecting campaign", e);
+    }
+};
+
+window.saveStripeKeys = async function() {
+    const pub = document.getElementById('stripe-pub-key').value;
+    const sec = document.getElementById('stripe-secret-key').value;
+    try {
+        const res = await fetch('/api/stripe/keys', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ stripe_pub_key: pub, stripe_secret_key: sec })
+        });
+        if(res.ok) {
+            if (typeof showToast === 'function') showToast("Llaves de Stripe guardadas", "success");
+        } else {
+            if (typeof showToast === 'function') showToast("Error al guardar Stripe", "error");
+        }
+    } catch(e) {
+        console.error(e);
+        alert("Error saving stripe: " + e.message);
+    }
+};
 
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
 
@@ -58,6 +155,7 @@ let saveTimeout = null;
     try {
         // Cargar datos reales
         await loadDataFromSupabase();
+        await window.loadCampaigns();
     } catch (err) {
         console.error("Dashboard DB init error:", err);
         alert("CRASH LOG DB (por favor muéstrale esto a tu asistente):\n" + err.stack);

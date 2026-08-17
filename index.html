@@ -291,8 +291,11 @@
                 <button class="nav-tab" data-tab="tab-metrics"><i class="fa-solid fa-chart-pie"></i> Métricas</button>
 
                 <div class="menu-label mt-20">Operación del Negocio</div>
-                <button class="nav-tab" data-tab="tab-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Card</button>
-                <button class="nav-tab" data-tab="tab-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
+                <button class="nav-tab" data-tab="tab-campaigns" id="nav-campaigns"><i class="fa-solid fa-list"></i> Mis Campañas</button>
+                <button class="nav-tab" data-tab="tab-builder" id="nav-builder" style="display:none;"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Card</button>
+                <button class="nav-tab" data-tab="tab-stripe" id="nav-stripe"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</button>
+                <button class="nav-tab" data-tab="tab-branches" id="nav-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
+                <button class="nav-tab" data-tab="tab-appointments" id="nav-appointments" style="display:none;"><i class="fa-solid fa-calendar-check"></i> Citas Médicas/Servicios</button>
                 <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></button>
                 <button class="nav-tab" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
                 <button class="nav-tab" data-tab="tab-bank"><i class="fa-solid fa-piggy-bank"></i> The Bank</button>
@@ -337,6 +340,43 @@
 
         <!-- MAIN WORKSPACE -->
         <main class="app-workspace">
+
+            <!-- CAMPAIGNS TAB -->
+            <section id="tab-campaigns" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">CAMPAÑAS</span>
+                        <h1>Mis Campañas</h1>
+                        <p>Selecciona una campaña para editarla o crea una nueva.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="createNewCampaign()"><i class="fa-solid fa-plus"></i> Nueva Campaña</button>
+                </div>
+                <div id="campaigns-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <!-- Campaigns loaded here -->
+                </div>
+            </section>
+
+            <!-- STRIPE TAB -->
+            <section id="tab-stripe" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">STRIPE</span>
+                        <h1>Monetización</h1>
+                        <p>Configura tus llaves de Stripe para cobrar.</p>
+                    </div>
+                </div>
+                <div class="settings-card" style="background: var(--surface); padding: 24px; border-radius: 16px; border: 1px solid var(--surface-light);">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px;">Public Key (Stripe)</label>
+                        <input type="text" id="stripe-pub-key" class="form-control" placeholder="pk_test_..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--surface-light); background: var(--bg-color); color: var(--text-color);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px;">Secret Key (Stripe)</label>
+                        <input type="password" id="stripe-secret-key" class="form-control" placeholder="sk_test_..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--surface-light); background: var(--bg-color); color: var(--text-color);">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveStripeKeys()" style="background: var(--primary); color: #fff; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-save"></i> Guardar Llaves</button>
+                </div>
+            </section>
 
             <!-- HOME TAB (ANALYTICS) -->
             <section id="tab-home" class="tab-content active">
@@ -819,6 +859,22 @@
             </section>
 
             <!-- BRANCHES TAB -->
+                        <section id="tab-appointments" class="tab-content" style="display:none;">
+                            <div class="content-panel">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
+                                    <div>
+                                        <h1>Agenda de Citas</h1>
+                                        <p>Gestiona las citas solicitadas por tus clientes desde tu enlace web público.</p>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="alert('Configuración de horarios disponible en breve.')" style="background:var(--accent-violet);"><i class="fa-solid fa-clock"></i> Configurar Horarios</button>
+                                </div>
+                                <div class="glass-card" style="padding: 24px;">
+                                    <div id="appointments-list-container" style="display:flex; flex-direction:column; gap:12px;">
+                                        <p style="color:var(--text-muted); text-align:center; padding: 20px;"><i class="fa-solid fa-calendar-day"></i> Aún no tienes citas agendadas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                         <section id="tab-branches" class="tab-content">
                 <div class="workspace-header">
                     <div>

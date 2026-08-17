@@ -852,6 +852,86 @@ Contexto del Negocio actual: ${JSON.stringify(merchantContext || {})}
     }
 });
 
+
+// --- MULTI-CARD (CAMPAIGNS) API ---
+app.get('/api/campaigns', async (req, res) => {
+    try {
+        const { merchantId } = req;
+        if (!merchantId) return res.status(401).json({ error: 'No merchantId' });
+        
+        const { data: campaigns, error } = await supabase
+            .from('campaigns')
+            .select('*')
+            .eq('merchant_id', merchantId)
+            .order('created_at', { ascending: false });
+            
+        if (error) throw error;
+        res.json({ campaigns });
+    } catch (ex) {
+        console.error('Error fetching campaigns:', ex);
+        res.status(500).json({ error: ex.message });
+    }
+});
+
+app.post('/api/campaigns', async (req, res) => {
+    try {
+        const { merchantId } = req;
+        const payload = req.body;
+        payload.merchant_id = merchantId;
+        
+        // Si no se manda rules_config, poner defaults para no romper
+        if (!payload.rules_config) {
+            payload.rules_config = {
+                stamps_total: 5,
+                cashback_percent: 10,
+                stamps_reward_text: 'Premio Gratis'
+            };
+        }
+
+        if (payload.id) {
+            // Update
+            const { data, error } = await supabase
+                .from('campaigns')
+                .update(payload)
+                .eq('id', payload.id)
+                .eq('merchant_id', merchantId)
+                .select()
+                .single();
+            if (error) throw error;
+            res.json({ success: true, campaign: data });
+        } else {
+            // Insert
+            const { data, error } = await supabase
+                .from('campaigns')
+                .insert([payload])
+                .select()
+                .single();
+            if (error) throw error;
+            res.json({ success: true, campaign: data });
+        }
+    } catch (ex) {
+        console.error('Error saving campaign:', ex);
+        res.status(500).json({ error: ex.message });
+    }
+});
+
+app.post('/api/stripe/keys', async (req, res) => {
+    try {
+        const { merchantId } = req;
+        const { stripe_pub_key, stripe_secret_key } = req.body;
+        const { error } = await supabase
+            .from('merchants')
+            .update({ stripe_pub_key, stripe_secret_key })
+            .eq('id', merchantId);
+        if (error) throw error;
+        res.json({ success: true });
+    } catch (ex) {
+        res.status(500).json({ error: ex.message });
+    }
+});
+
+// --- FIN MULTI-CARD API ---
+
 app.listen(PORT, () => {
     console.log(`🚀 Fidelio Backend Server active on http://localhost:${PORT}`);
 });
