@@ -359,10 +359,10 @@
             </div>
 
             <div class="balances-grid">
-                <!-- Monedero -->
-                <div class="balance-card" id="card-monedero" style="display:none;">
-                    <div class="b-title" style="color:var(--success);"><i class="fa-solid fa-wallet"></i> Monedero</div>
-                    <div class="b-amount" style="color:var(--success);" id="c-monedero">$0.00</div>
+                <!-- Saldo Digital -->
+                <div class="balance-card" id="card-saldo digital" style="display:none;">
+                    <div class="b-title" style="color:var(--success);"><i class="fa-solid fa-wallet"></i> Saldo Digital</div>
+                    <div class="b-amount" style="color:var(--success);" id="c-saldo digital">$0.00</div>
                 </div>
                 <!-- Cashback -->
                 <div class="balance-card" id="card-cashback" style="display:none;">
@@ -403,6 +403,33 @@
                 </button>
                 <button class="btn btn-secondary" id="btn-redeem-reward" onclick="processAction('redeem_reward')" disabled style="padding:24px; font-size:1.3rem; border: 2px solid var(--accent-violet); color: var(--accent-violet);">
                     <i class="fa-solid fa-gift"></i> Cobrar Recompensa
+                </button>
+            </div>
+            
+            <div id="multipass-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
+                <button class="btn btn-primary" id="btn-redeem-multipass" onclick="processAction('redeem_multipass')" disabled style="padding:24px; font-size:1.3rem; background: var(--accent-gradient);">
+                    <i class="fa-solid fa-ticket"></i> Descontar Pase (Multipass)
+                </button>
+            </div>
+            
+            <div id="membership-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
+                <div id="membership-status-warning" style="display:none; background:rgba(239,68,68,0.1); border: 1px solid var(--danger); color:var(--danger); padding:16px; border-radius:12px; margin-bottom:12px; text-align:center; font-weight:bold;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Membresía Expirada
+                </div>
+                <button class="btn btn-primary" id="btn-register-visit" onclick="processAction('register_visit')" disabled style="padding:24px; font-size:1.3rem; background: var(--success);">
+                    <i class="fa-solid fa-check"></i> Registrar Visita de Membresía
+                </button>
+            </div>
+            
+            <div id="coupon-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
+                <button class="btn btn-primary" id="btn-redeem-coupon" onclick="processAction('redeem_coupon')" disabled style="padding:24px; font-size:1.3rem; background: var(--accent-gradient);">
+                    <i class="fa-solid fa-ticket"></i> Redimir Cupón
+                </button>
+            </div>
+
+            <div id="discount-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
+                <button class="btn btn-primary" id="btn-apply-discount" onclick="processAction('apply_discount')" disabled style="padding:24px; font-size:1.3rem; background: var(--accent-violet);">
+                    <i class="fa-solid fa-percent"></i> Registrar Uso de Descuento
                 </button>
             </div>
             
@@ -723,21 +750,56 @@
             document.getElementById('empty-state').style.opacity = '0';
             setTimeout(() => { document.getElementById('empty-state').style.display = 'none'; }, 300);
             
-            if (currentMerchantData && currentMerchantData.business_type === 'professional') {
-                document.getElementById('card-monedero').style.display = 'none';
-                document.getElementById('card-cashback').style.display = 'none';
-                document.getElementById('payment-input-group').style.display = 'none';
-                document.getElementById('payment-actions-grid').style.display = 'none';
-                document.getElementById('professional-actions-grid').style.display = 'grid';
+            // Esconder todo por defecto
+            document.getElementById('card-saldo digital').style.display = 'none';
+            document.getElementById('card-cashback').style.display = 'none';
+            document.getElementById('payment-input-group').style.display = 'none';
+            document.getElementById('payment-actions-grid').style.display = 'none';
+            document.getElementById('professional-actions-grid').style.display = 'none';
+            document.getElementById('multipass-actions-grid').style.display = 'none';
+            document.getElementById('membership-actions-grid').style.display = 'none';
+            document.getElementById('membership-status-warning').style.display = 'none';
+            document.getElementById('coupon-actions-grid').style.display = 'none';
+            document.getElementById('discount-actions-grid').style.display = 'none';
+            
+            if (currentMerchantData && currentMerchantData.activeMode === 'membership') {
+                document.getElementById('membership-actions-grid').style.display = 'grid';
                 
+                let isExpired = false;
+                if (currentMerchantData.customRules && currentMerchantData.customRules.membership && currentMerchantData.customRules.membership.endDate) {
+                    const endDate = new Date(currentMerchantData.customRules.membership.endDate);
+                    const now = new Date();
+                    if (now > endDate) {
+                        isExpired = true;
+                    }
+                }
+                
+                if (isExpired) {
+                    document.getElementById('membership-status-warning').style.display = 'block';
+                    document.getElementById('btn-register-visit').disabled = true;
+                    document.getElementById('btn-register-visit').style.opacity = '0.5';
+                } else {
+                    document.getElementById('btn-register-visit').disabled = false;
+                    document.getElementById('btn-register-visit').style.opacity = '1';
+                }
+            } else if (currentMerchantData && currentMerchantData.activeMode === 'multipass') {
+                document.getElementById('multipass-actions-grid').style.display = 'grid';
+                document.getElementById('btn-redeem-multipass').disabled = false;
+            } else if (currentMerchantData && currentMerchantData.activeMode === 'coupons') {
+                document.getElementById('coupon-actions-grid').style.display = 'grid';
+                document.getElementById('btn-redeem-coupon').disabled = false;
+            } else if (currentMerchantData && currentMerchantData.activeMode === 'discount') {
+                document.getElementById('discount-actions-grid').style.display = 'grid';
+                document.getElementById('btn-apply-discount').disabled = false;
+            } else if (currentMerchantData && currentMerchantData.business_type === 'professional') {
+                document.getElementById('professional-actions-grid').style.display = 'grid';
                 document.getElementById('btn-stamp-only').disabled = false;
                 document.getElementById('btn-redeem-reward').disabled = false;
             } else {
-                document.getElementById('card-monedero').style.display = 'flex';
+                document.getElementById('card-saldo digital').style.display = 'flex';
                 document.getElementById('card-cashback').style.display = 'flex';
                 document.getElementById('payment-input-group').style.display = 'block';
                 document.getElementById('payment-actions-grid').style.display = 'grid';
-                document.getElementById('professional-actions-grid').style.display = 'none';
                 
                 document.getElementById('op-amount').disabled = false;
                 document.getElementById('btn-charge').disabled = false;
@@ -747,11 +809,11 @@
             document.getElementById('c-name').textContent = data.full_name || data.name || 'Cliente';
             document.getElementById('c-tier').innerHTML = `<i class="fa-solid fa-crown"></i> Cliente ${data.vip_tier || 'Bronce'}`;
             
-            document.getElementById('c-monedero').innerHTML = `$${parseFloat(data.wallet_balance || 0).toFixed(2)}`;
+            document.getElementById('c-saldo digital').innerHTML = `$${parseFloat(data.wallet_balance || 0).toFixed(2)}`;
             document.getElementById('c-cashback').innerHTML = `$${parseFloat(data.balance_cashback || 0).toFixed(2)}`;
             
             let stampsHtml = '';
-            const totalStampsReq = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stamps_total) ? window.currentCampaignData.rules_config.stamps_total : (currentMerchantData?.stamps_total || 10);
+            const totalStampsReq = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stampsTotal) ? window.currentCampaignData.rules_config.stampsTotal : (currentMerchantData?.stamps_total || 10);
             const currentStamps = data.stamps_count || 0;
             
             for(let i=0; i < totalStampsReq; i++) {
@@ -920,7 +982,7 @@
                 newWallet += amount;
                 walletAmount = amount;
                 newLifetime += amount;
-                statusMsg = `<strong style="color:var(--text-main);">Depósito Completado</strong><br><br>Se abonaron <span style="color:var(--success); font-weight:800;">$${amount.toFixed(2)} USD</span><br>al Monedero del cliente.`;
+                statusMsg = `<strong style="color:var(--text-main);">Depósito Completado</strong><br><br>Se abonaron <span style="color:var(--success); font-weight:800;">$${amount.toFixed(2)} USD</span><br>al Saldo Digital del cliente.`;
             } 
             else if (actionType === 'charge_ticket') {
                 txType = 'redeem';
@@ -933,7 +995,7 @@
                     if (newCashback >= amountToPay) { newCashback -= amountToPay; amountToPay = 0; }
                     else { amountToPay -= newCashback; newCashback = 0; }
                 }
-                const cashbackRate = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.cashback_percent) ? window.currentCampaignData.rules_config.cashback_percent : (currentMerchantData?.cashback_percent || 0);
+                const cashbackRate = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.cashbackPercent) ? window.currentCampaignData.rules_config.cashbackPercent : (currentMerchantData?.cashback_percent || 0);
                 cashbackEarned = amount * (cashbackRate / 100);
                 newCashback += cashbackEarned;
                 totalSpent += amount;
@@ -946,7 +1008,7 @@
             }
             else if (actionType === 'redeem_reward') {
                 txType = 'redeem';
-                const required = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stamps_total) ? window.currentCampaignData.rules_config.stamps_total : (currentMerchantData?.stamps_total || 10);
+                const required = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stampsTotal) ? window.currentCampaignData.rules_config.stampsTotal : (currentMerchantData?.stamps_total || 10);
                 if (newStamps >= required) {
                     newStamps -= required;
                     statusMsg = `<strong style="color:var(--success);">¡Recompensa Canjeada!</strong><br><br>Se restaron ${required} sellos.`;
@@ -954,6 +1016,28 @@
                     showToast(`No tiene suficientes sellos (Requiere ${required})`, 'error');
                     return;
                 }
+            }
+            else if (actionType === 'redeem_multipass') {
+                txType = 'redeem';
+                if (newStamps > 0) {
+                    newStamps -= 1;
+                    statusMsg = `<strong style="color:var(--success);">¡Pase Descontado!</strong><br><br>Pases restantes: <span style="color:var(--text-main); font-weight:800;">${newStamps}</span>.`;
+                } else {
+                    showToast(`No tiene pases disponibles.`, 'error');
+                    return;
+                }
+            }
+            else if (actionType === 'register_visit') {
+                txType = 'earn';
+                statusMsg = `<strong style="color:var(--success);">¡Visita Registrada!</strong><br><br>Se ha registrado el acceso mediante la membresía.`;
+            }
+            else if (actionType === 'redeem_coupon') {
+                txType = 'redeem';
+                statusMsg = `<strong style="color:var(--success);">¡Cupón Redimido!</strong><br><br>El beneficio del cupón fue otorgado con éxito.`;
+            }
+            else if (actionType === 'apply_discount') {
+                txType = 'earn';
+                statusMsg = `<strong style="color:var(--success);">¡Descuento Aplicado!</strong><br><br>Se ha registrado el uso de este descuento.`;
             }
 
             try {

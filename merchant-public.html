@@ -397,11 +397,32 @@
                             card.style.setProperty('--card-primary', camp.color_primary);
                         }
                         
-                        const typeLabel = camp.type === 'stamps' ? 'Sellos' : 'Cashback';
+                        let typeLabel = 'Campaña';
+                        let purposeHtml = '';
+                        let termsHtml = '';
+
+                        if (camp.type === 'stamps') typeLabel = 'Sellos';
+                        else if (camp.type === 'cashback') typeLabel = 'Cashback';
+                        else if (camp.type === 'discount') {
+                            typeLabel = 'Descuento';
+                            if (camp.rules_config?.discount?.purpose) purposeHtml = `<p style="font-size:13px; margin:8px 0; color:var(--text-muted);">${camp.rules_config.discount.purpose}</p>`;
+                            if (camp.rules_config?.discount?.conditions) termsHtml = `<p style="font-size:11px; margin-top:8px; color:rgba(0,0,0,0.5);">* ${camp.rules_config.discount.conditions}</p>`;
+                        }
+                        else if (camp.type === 'coupons') {
+                            typeLabel = 'Cupón Promocional';
+                            if (camp.rules_config?.coupons?.desc) purposeHtml = `<p style="font-size:13px; margin:8px 0; color:var(--text-muted);">${camp.rules_config.coupons.desc}</p>`;
+                            if (camp.rules_config?.coupons?.terms) termsHtml = `<p style="font-size:11px; margin-top:8px; color:rgba(0,0,0,0.5);">* ${camp.rules_config.coupons.terms}</p>`;
+                        }
+                        else if (camp.type === 'multipass') {
+                            typeLabel = 'Multipass';
+                            if (camp.rules_config?.multipass?.service) purposeHtml = `<p style="font-size:13px; margin:8px 0; color:var(--text-muted);">${camp.rules_config.multipass.count} Pases para ${camp.rules_config.multipass.service}</p>`;
+                        }
                         
                         card.innerHTML = `
                             <div class="campaign-type-badge">${typeLabel}</div>
                             <h3 class="campaign-name">${camp.name}</h3>
+                            ${purposeHtml}
+                            ${termsHtml}
                         `;
                         
                         card.addEventListener('click', () => {

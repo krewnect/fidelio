@@ -638,7 +638,7 @@
                                 <div id="program-type-container">
                                     <label class="premium-label">Tipo de Programa</label>
                                     <select id="program-type-select" class="premium-input" style="font-weight:600;" onchange="if(window.updatePassRender) window.updatePassRender();">
-                                        <option value="cashback" selected>Monedero Digital (Cashback & QR)</option>
+                                        <option value="cashback" selected>Saldo Digital (Cashback & QR)</option>
                                         <option value="stamps">Tarjeta de Sellos (Visitas frecuentes)</option>
                                     </select>
                                 </div>
@@ -707,11 +707,11 @@
                                                         <div id="render-vip-caption" style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;">ORO VIP</div>
                                                     </div>
                                                     <div id="render-wallet-block" style="display:none; text-align:center;">
-                                                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Monedero</div>
+                                                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Saldo Digital</div>
                                                         <div style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;" id="render-wallet-balance">$600.00</div>
                                                     </div>
                                                     <div id="render-cashback-block" style="text-align:right;">
-                                                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Cashback</div>
+                                                        <div id="render-cashback-label" style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Cashback</div>
                                                         <div style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;" id="render-balance">$145.00</div>
                                                     </div>
                                                 </div>
@@ -726,7 +726,7 @@
                                             <div class="pass-body-section">
                                                 <div style="display:flex; gap:16px; margin-bottom:16px;">
                                                     <div style="flex:1;">
-                                                        <div class="pass-field-label">Próxima Recompensa</div>
+                                                        <div class="pass-field-label" id="render-reward-label">Próxima Recompensa</div>
                                                         <div class="pass-field-value" style="color:var(--accent-violet);" id="render-reward-text">Bebida de Cortesía Gratis</div>
                                                     </div>
                                                     <div style="text-align:right;">
@@ -1234,7 +1234,7 @@
                     <div>
                         <span class="workspace-eyebrow">OPERACIÓN DEL NEGOCIO</span>
                         <h1>The Bank</h1>
-                        <p>Lleva el control exacto del dinero prepagado a los monederos de tus clientes.</p>
+                        <p>Lleva el control exacto del dinero prepagado a los saldos digitales de tus clientes.</p>
                     </div>
                     <button class="btn btn-primary" style="background: #8b5cf6 !important; border: none;" onclick="loadBankStats()"><i class="fa-solid fa-rotate-right"></i> Actualizar Banco</button>
                 </div>
@@ -1246,7 +1246,7 @@
                         <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; color: rgba(16,185,129,0.05);"><i class="fa-solid fa-vault"></i></div>
                         <div style="font-size: 13px; font-weight: bold; color: #10b981; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Total Prepagado (Histórico)</div>
                         <div id="bank-total-deposited" style="font-size: 3rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">$0.00</div>
-                        <div style="font-size: 13px; color: var(--text-muted);">Dinero ingresado por tarjetas de regalo y monederos.</div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Dinero ingresado por tarjetas de regalo y saldos digitales.</div>
                     </div>
 
                     <!-- Metric Card 2: Pasivo Circulante -->
@@ -1382,6 +1382,19 @@
                     </div>
                 </div>
 
+                <div class="accordion-card" style="margin-bottom: 24px; display:flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                    <div class="form-group" style="flex:1; margin-bottom: 0;">
+                        <label>Seleccionar Campaña Existente (o Crear Nueva)</label>
+                        <select id="campaign-select-config" class="fidelio-input" style="width:100%;">
+                            <option value="new">+ Crear Nueva Campaña</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1; margin-bottom: 0;">
+                        <label>Nombre de la Campaña (Interno)</label>
+                        <input type="text" id="campaign-name" class="fidelio-input" placeholder="Ej: Membresía VIP 2024" style="width:100%;">
+                    </div>
+                </div>
+
                 <div class="accordion-card" style="margin-bottom: 24px;">
                     <h3 style="margin-bottom:20px; font-size: 16px;"><i class="fa-solid fa-gears" style="color:var(--accent-violet); margin-right:8px;"></i> Motor Principal de Recompensas</h3>
                     
@@ -1400,8 +1413,8 @@
                             <input type="radio" name="loyalty_mode" value="cashback" style="display:none;">
                             <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-wallet"></i></div>
                             <div class="role-info">
-                                <h4>Solo Cashback</h4>
-                                <p>Clientes acumulan saldo por compras.</p>
+                                <h4>Saldo Digital</h4>
+                                <p>Clientes acumulan dinero (Cashback) o Puntos.</p>
                             </div>
                             <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
                         </label>
@@ -1412,17 +1425,6 @@
                             <div class="role-info">
                                 <h4>Solo Sellos</h4>
                                 <p>Clientes acumulan visitas por un premio.</p>
-                            </div>
-                            <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
-                        </label>
-
-
-                        <label class="role-card" id="loyalty-mode-points">
-                            <input type="radio" name="loyalty_mode" value="points" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-coins"></i></div>
-                            <div class="role-info">
-                                <h4>Reward Cards (Puntos)</h4>
-                                <p>Acumulación de puntos por metas y recompensas.</p>
                             </div>
                             <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
                         </label>
@@ -1494,20 +1496,33 @@
                     <!-- CASHBACK SETTINGS -->
                     <div class="accordion-card" style="flex: 1; min-width: 300px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración de Cashback</h3>
+                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración de Saldo Digital</h3>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-cashback" checked>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
                         
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Tipo de Moneda</label>
+                            <select id="wallet-currency-type" class="fidelio-input">
+                                <option value="cashback">Dinero (Cashback en $)</option>
+                                <option value="points">Puntos (Fidelidad)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="wallet-points-name-group" style="display:none; margin-bottom: 16px;">
+                            <label>Nombre de los Puntos</label>
+                            <input type="text" id="wallet-points-name" class="fidelio-input" placeholder="Ej. Estrellas, FidelioPoints">
+                        </div>
+
                         <div class="form-group">
                             <label>Porcentaje Base de Retorno (%)</label>
                             <div style="display:flex; align-items:center; gap: 12px;">
                                 <input type="range" id="cashback-slider" min="1" max="25" value="10" style="flex:1; accent-color: var(--accent-violet);">
                                 <span id="cashback-percent-display" style="font-size:18px; font-weight:700; color:var(--accent-violet); min-width:50px;">10%</span>
                             </div>
-                            <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Por cada $100 gastados, el cliente recibe $<span id="cashback-example">10</span> en su saldo.</p>
+                            <p id="wallet-example-text" style="font-size:12px; color:var(--text-muted); margin-top:8px;">Por cada $100 gastados, el cliente recibe $<span id="cashback-example">10</span> en su saldo.</p>
                         </div>
                     </div>
 
@@ -1605,7 +1620,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <span style="background: #8b5cf6 !important; color:white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight:700; margin-bottom:8px; display:inline-block;">MÓDULO ADICIONAL</span>
-                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-money-bill-transfer" style="color:var(--accent-violet); margin-right:8px;"></i> Monedero de Prepago</h3>
+                            <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-money-bill-transfer" style="color:var(--accent-violet); margin-right:8px;"></i> Saldo de Recargas</h3>
                             <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Inyecta liquidez permitiendo recargas adelantadas. Funciona en paralelo con tu plan de recompensas.</p>
                         </div>
                         <label class="toggle-switch">
@@ -1663,34 +1678,52 @@
 
                     <!-- Panel Membresías -->
                     <div id="settings-membership-prog" style="display:none;">
+                        <div style="display:flex; gap: 16px; margin-bottom: 16px; flex-wrap:wrap;">
+                            <div class="form-group" style="flex:1;">
+                                <label>Fecha de Inicio</label>
+                                <input type="date" id="mem-start-date" class="fidelio-input">
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label>Fecha de Vencimiento</label>
+                                <input type="date" id="mem-end-date" class="fidelio-input">
+                            </div>
+                        </div>
                         <div class="form-group" style="margin-bottom: 16px;">
-                            <label>Ciclo de Validez</label>
-                            <select id="mem-cycle" class="fidelio-input">
-                                <option value="monthly">Mensual</option>
-                                <option value="yearly">Anual</option>
-                                <option value="infinite">Indefinido / Permanente</option>
-                            </select>
+                            <label>Beneficio Principal</label>
+                            <textarea id="mem-benefit" class="fidelio-input" rows="2" placeholder="Ej. Acceso ilimitado al gimnasio en horario matutino."></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Beneficio Principal</label>
-                            <textarea id="mem-benefit" class="fidelio-input" rows="3" placeholder="Ej. Acceso ilimitado al gimnasio en horario matutino."></textarea>
+                            <label>Condiciones</label>
+                            <textarea id="mem-conditions" class="fidelio-input" rows="2" placeholder="Ej. Solo para mayores de edad. No transferible."></textarea>
                         </div>
                     </div>
 
                     <!-- Panel Descuentos -->
                     <div id="settings-discount-prog" style="display:none;">
                         <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Nombre del Descuento</label>
+                            <input type="text" id="dsc-name" class="fidelio-input" placeholder="Ej. Descuento para Estudiantes" value="Descuento VIP">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 16px;">
                             <label>Porcentaje de Descuento Fijo (%)</label>
                             <input type="number" id="dsc-percent" class="fidelio-input" placeholder="Ej. 15" value="10" min="1" max="100">
                         </div>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>¿Para qué es el descuento? (Propósito)</label>
+                            <input type="text" id="dsc-purpose" class="fidelio-input" placeholder="Ej. Aplicable en toda la tienda" value="Descuento general">
+                        </div>
                         <div class="form-group">
-                            <label>Condiciones / Excepciones</label>
-                            <textarea id="dsc-conditions" class="fidelio-input" rows="3" placeholder="Ej. No aplica en bebidas alcohólicas ni promociones."></textarea>
+                            <label>Condiciones y Excepciones (Letras chiquitas)</label>
+                            <textarea id="dsc-conditions" class="fidelio-input" rows="3" placeholder="Ej. No aplica en bebidas alcohólicas ni promociones. Válido solo de Lunes a Viernes."></textarea>
                         </div>
                     </div>
 
                     <!-- Panel Cupones -->
                     <div id="settings-coupons-prog" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>¿Para qué es el Cupón? (Descripción)</label>
+                            <input type="text" id="cpn-desc" class="fidelio-input" placeholder="Ej. 2x1 en Hamburguesas los Jueves" value="Cupón de Regalo">
+                        </div>
                         <div style="display:flex; gap: 16px; margin-bottom: 16px; flex-wrap:wrap;">
                             <div class="form-group" style="flex:1;">
                                 <label>Tipo de Promoción</label>
@@ -1706,14 +1739,23 @@
                                 <input type="number" id="cpn-limit" class="fidelio-input" value="1" min="1">
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 16px;">
                             <label>Fecha de Caducidad (Opcional)</label>
                             <input type="date" id="cpn-expiry" class="fidelio-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Términos y Condiciones</label>
+                            <textarea id="cpn-terms" class="fidelio-input" rows="3" placeholder="Ej. Promoción no acumulable con otras ofertas. Aplica solo en sucursal centro."></textarea>
                         </div>
                     </div>
 
                     <!-- Panel Multipass -->
                     <div id="settings-multipass-prog" style="display:none;">
+                        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                            <p style="font-size: 13px; color: #047857; margin: 0; font-weight: 500;">
+                                <i class="fa-solid fa-circle-info"></i> <strong>Información:</strong> El número de pases se irá descontando automáticamente en el sistema (restará -1) cada vez que tú o tu staff escaneen la tarjeta del cliente con el Escáner.
+                            </p>
+                        </div>
                         <div class="form-group" style="margin-bottom: 16px;">
                             <label>Cantidad de Pases Incluidos</label>
                             <input type="number" id="mp-count" class="fidelio-input" placeholder="Ej. 10" value="10" min="2">
@@ -1726,13 +1768,19 @@
 
                     <!-- Panel Certificates -->
                     <div id="settings-certificates-prog" style="display:none;">
-                        <div class="form-group" style="margin-bottom: 16px;">
-                            <label>Configuración de Montos Predeterminados (MXN)</label>
-                            <input type="text" id="cert-amounts" class="fidelio-input" placeholder="Ej. 500, 1000, 2000" value="500, 1000, 2000">
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label>Monto Único del Certificado ($)</label>
+                            <input type="number" id="cert-fixed-amount" class="fidelio-input" placeholder="Ej. 1000" value="500" min="1">
+                            <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">Define un solo monto fijo para evitar errores o confusiones en la compra del certificado.</p>
                         </div>
                         
-                        <div style="background: rgba(139, 92, 246, 0.05); border: 1px dashed var(--accent-violet); padding: 16px; border-radius: 12px; margin-top: 16px;">
+                        <div style="background: rgba(139, 92, 246, 0.05); border: 1px dashed var(--accent-violet); padding: 16px; border-radius: 12px;">
                             <h4 style="margin-top:0; font-size:14px; color:var(--text-main); margin-bottom:12px;"><i class="fa-solid fa-paper-plane" style="color:var(--accent-violet);"></i> Emisión Manual Directa</h4>
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label style="font-size:12px; font-weight:bold; color:var(--accent-violet);">Monto a Cargar ($)</label>
+                                <input type="number" id="cert-exact-amount" class="fidelio-input" placeholder="Ej. 750" style="font-size:16px; font-weight:bold;">
+                                <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">El monto exacto que se enviará al destinatario como saldo de regalo.</p>
+                            </div>
                             <div style="display:flex; gap: 16px; margin-bottom: 12px; flex-wrap:wrap;">
                                 <div class="form-group" style="flex:1;">
                                     <label style="font-size:12px;">Nombre de quien regala</label>
@@ -2251,7 +2299,7 @@
                             </div>
                             <ul style="color: #374151; font-size: 14.5px; line-height: 1.6; padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 12px;">
                                 <li><strong>Doble Motor:</strong> Puedes elegir entre Cashback (dinero virtual) o Sellos (visitas), pero NUNCA ambos al mismo tiempo.</li>
-                                <li><strong>Modo Cashback:</strong> Configura el porcentaje (ej. 10%). Si el cliente gasta $1000, su monedero recibe $100 automáticamente para su próxima visita.</li>
+                                <li><strong>Modo Cashback:</strong> Configura el porcentaje (ej. 10%). Si el cliente gasta $1000, su saldo digital recibe $100 automáticamente para su próxima visita.</li>
                                 <li><strong>Modo Sellos:</strong> Define cuántos sellos se necesitan para ganar. El escáner dará 1 sello por cada visita o ticket pagado.</li>
                                 <li><strong>Premio Atractivo:</strong> Si usas sellos, escribe exactamente qué regalas (ej. "1 Hamburguesa Clásica"). Esto aparecerá en la App del cliente.</li>
                                 <li><strong>En Tiempo Real:</strong> Cualquier cambio que hagas en el premio o porcentaje se actualizará instantáneamente en el Wallet de todos tus clientes.</li>
@@ -2264,11 +2312,11 @@
                                 <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #eab308, #a16207); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 10px 25px rgba(234, 179, 8, 0.3);">
                                     <i class="fa-solid fa-vault"></i>
                                 </div>
-                                <h2 style="font-size: 1.6rem; font-weight: 800; color: #111827; margin: 0;">3. Monedero "The Bank"</h2>
+                                <h2 style="font-size: 1.6rem; font-weight: 800; color: #111827; margin: 0;">3. Saldo Digital "The Bank"</h2>
                             </div>
                             <ul style="color: #374151; font-size: 14.5px; line-height: 1.6; padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 12px;">
                                 <li><strong>Control de Dinero:</strong> The Bank es tu panel financiero maestro. Aquí ves exactamente cuánto saldo a favor tienen tus clientes.</li>
-                                <li><strong>Recargas (Top-ups):</strong> Tus clientes pueden pagar por adelantado para meterle dinero a su monedero digital de tu restaurante.</li>
+                                <li><strong>Recargas (Top-ups):</strong> Tus clientes pueden pagar por adelantado para meterle dinero a su saldo digital digital de tu restaurante.</li>
                                 <li><strong>Métrica de Deuda:</strong> El indicador de "Saldo Pendiente" te avisa cuánto producto aún debes entregar por el dinero que ya cobraste.</li>
                                 <li><strong>Historial Transparente:</strong> Cada vez que el cajero escanea, The Bank registra quién, cuándo, y cuánto saldo se descontó o sumó.</li>
                                 <li><strong>Cero Fugas:</strong> Ningún empleado puede alterar este saldo manualmente sin escanear el QR encriptado del cliente.</li>

@@ -88,3 +88,88 @@ ALTER TABLE public.promo_codes ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Promo_Codes_Select" ON public.promo_codes FOR SELECT USING (true);
 CREATE POLICY "Promo_Codes_Update" ON public.promo_codes FOR UPDATE USING (true);
 CREATE POLICY "Promo_Codes_Insert" ON public.promo_codes FOR INSERT WITH CHECK (true);
+-- Fase 1: Arquitectura Multi-Tarjeta (Pases)
+
+-- 1. Crear tabla para las diferentes campañas (tarjetas) de cada negocio
+CREATE TABLE public.campaigns (
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    merchant_id uuid NOT NULL REFERENCES public.merchants(id) ON DELETE CASCADE,
+    type text NOT NULL CHECK (type IN ('stamps', 'cashback', 'membership', 'coupon', 'multipass')),
+    name text NOT NULL,
+    description text,
+    
+    -- Configuración visual específica de esta campaña
+    color_primary text,
+    color_accent text,
+    logo_url text,
+    banner_url text,
+    stamp_icon_url text, -- Permite subir un icono personalizado para los sellos
+    background_image_url text, -- Permite una imagen de fondo completa (eventTicket)
+    
+    -- Customización de Landing/Botón
+    custom_cta_label text, -- Ej. "Agendar Cita", "Comprar Servicio"
+    custom_cta_url text, -- El link a donde dirige el botón
+    
+    -- Configuración de reglas (JSON flexible para soportar sellos, % cashback, etc.)
+    rules_config jsonb NOT NULL DEFAULT '{}'::jsonb,
+    
+    is_active boolean DEFAULT true,
+    created_at timestamp with time zone DEFAULT now()
+);
+
+-- 1.5. Agregar campos de integración de Stripe a los comercios (merchants)
+ALTER TABLE public.merchants 
+ADD COLUMN IF NOT EXISTS stripe_pub_key text,
+ADD COLUMN IF NOT EXISTS stripe_secret_key text;
+
+
+-- 2. Políticas RLS (Row Level Security) para campaigns
+ALTER TABLE public.campaigns ENABLE ROW LEVEL SECURITY;
+
+-- Por simplicidad del MVP (igual que en merchants), permitimos acceso global por ahora
+CREATE POLICY "Campaigns_Select" ON public.campaigns FOR SELECT USING (true);
+CREATE POLICY "Campaigns_Insert" ON public.campaigns FOR INSERT WITH CHECK (true);
+CREATE POLICY "Campaigns_Update" ON public.campaigns FOR UPDATE USING (true);
+CREATE POLICY "Campaigns_Delete" ON public.campaigns FOR DELETE USING (true);
+
+-- 3. Crear tabla pivote para los pases guardados por los clientes
+-- (Esto permite que un cliente guarde varias tarjetas del mismo negocio)
+CREATE TABLE public.customer_campaigns (
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    customer_id uuid NOT NULL REFERENCES public.customers(id) ON DELETE CASCADE,
+    campaign_id uuid NOT NULL REFERENCES public.campaigns(id) ON DELETE CASCADE,
+    
+    -- Progreso o balance actual específico para esta tarjeta
+    current_balance numeric(10,2) DEFAULT 0, -- Sellos acumulados, saldo cashback, etc.
+    
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    
+    UNIQUE(customer_id, campaign_id)
+);
+
+ALTER TABLE public.customer_campaigns ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Customer_Campaigns_Select" ON public.customer_campaigns FOR SELECT USING (true);
+CREATE POLICY "Customer_Campaigns_Insert" ON public.customer_campaigns FOR INSERT WITH CHECK (true);
+CREATE POLICY "Customer_Campaigns_Update" ON public.customer_campaigns FOR UPDATE USING (true);
+CREATE POLICY "Customer_Campaigns_Delete" ON public.customer_campaigns FOR DELETE USING (true);
+
+-- 4. Opcional: Migración de datos
+-- (Mover las configuraciones globales actuales de merchants a una campaña inicial por defecto)
+INSERT INTO public.campaigns (merchant_id, type, name, description, color_primary, color_accent, logo_url, banner_url, rules_config)
+SELECT 
+    id, 
+    'stamps', 
+    business_name || ' Rewards', 
+    'Tarjeta principal de lealtad', 
+    color_primary, 
+    color_accent, 
+    logo_url, 
+    banner_url, 
+    jsonb_build_object(
+        'stamps_total', stamps_total, 
+        'stamps_reward_text', stamps_reward_text,
+        'cashback_percent', cashback_percent
+    )
+FROM public.merchants;
