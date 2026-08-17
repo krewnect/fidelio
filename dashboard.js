@@ -1723,11 +1723,11 @@ function updatePassRender() {
             if (configStamps) configStamps.style.display = 'flex';
             
             // Force redraw of stamps just in case
-            const stampsGrid = document.getElementById('render-stamps-grid');
-            if (stampsGrid && !stampsGrid.innerHTML) {
-                 stampsGrid.innerHTML = '';
+            let stampsGrid_injected = document.getElementById('render-stamps-grid');
+            if (stampsGrid_injected && !stampsGrid_injected.innerHTML) {
+                 stampsGrid_injected.innerHTML = '';
                  for(let i=1; i<=10; i++) {
-                     stampsGrid.innerHTML += `<div class="stamp-coin ${i<=3?'filled':'empty'}" style="background-color:${i<=3?cAcc:''};">${i>3?i:''}</div>`;
+                     stampsGrid_injected.innerHTML += `<div class="stamp-coin ${i<=3?'filled':'empty'}" style="background-color:${i<=3?cAcc:''};">${i>3?i:''}</div>`;
                  }
             }
             
