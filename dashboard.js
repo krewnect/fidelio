@@ -3160,10 +3160,13 @@ function updatePassRender() {
     const btnEmitCert = document.getElementById('btn-emit-cert');
     if (btnEmitCert) {
         btnEmitCert.addEventListener('click', async () => {
+            const senderName = document.getElementById('cert-sender-name').value;
+            const senderEmail = document.getElementById('cert-sender-email').value;
             const email = document.getElementById('cert-email').value;
             const message = document.getElementById('cert-message').value;
+            
             if (!email) {
-                showToast('Por favor, ingresa un correo electrónico válido.', 'warning');
+                showToast('Por favor, ingresa el correo del destinatario.', 'warning');
                 return;
             }
             
@@ -3173,7 +3176,16 @@ function updatePassRender() {
             try {
                 // Simulate API call to send email with certificate
                 await new Promise(resolve => setTimeout(resolve, 1500));
-                showToast(`¡Certificado enviado exitosamente a ${email}!`, 'success');
+                
+                let successMsg = `¡Certificado enviado exitosamente a ${email}!`;
+                if(senderEmail) {
+                    successMsg += ` Se envió copia de confirmación a ${senderEmail}.`;
+                }
+                
+                showToast(successMsg, 'success');
+                
+                document.getElementById('cert-sender-name').value = '';
+                document.getElementById('cert-sender-email').value = '';
                 document.getElementById('cert-email').value = '';
                 document.getElementById('cert-message').value = '';
             } catch (err) {
