@@ -330,8 +330,17 @@
                 const config = await configRes.json();
                 supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
                 
-                // 2. Get slug from URL
-                const slug = window.location.pathname.replace('/', '').toLowerCase();
+                // 2. Get slug from URL or Subdomain
+                const hostname = window.location.hostname;
+                const parts = hostname.split('.');
+                const ignoredSubdomains = ['www', 'app', 'panel', 'api', 'localhost', 'fideliorewards', '127'];
+                let slug = '';
+
+                if (parts.length >= 2 && !ignoredSubdomains.includes(parts[0])) {
+                    slug = parts[0];
+                } else {
+                    slug = window.location.pathname.replace('/', '').toLowerCase();
+                }
                 
                 if (!slug) {
                     Swal.fire('Error', 'Restaurante no especificado', 'error');

@@ -52,13 +52,28 @@ window.loadCampaigns = async function() {
         const list = document.getElementById('campaigns-list');
         if (!list) return;
         
-        list.innerHTML = data.campaigns.map(c => `
+        list.innerHTML = data.campaigns
+            .filter(c => !['membership', 'multipass', 'certificates'].includes(c.type))
+            .map(c => `
             <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="selectCampaign('${c.id}')">
                 <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
                 <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
                 <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
             </div>
         `).join('');
+        
+        const specialList = document.getElementById('special-cards-list');
+        if (specialList) {
+            specialList.innerHTML = data.campaigns
+                .filter(c => ['membership', 'multipass', 'certificates'].includes(c.type))
+                .map(c => `
+                <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="selectCampaign('${c.id}')">
+                    <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
+                    <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
+                </div>
+            `).join('');
+        }
     } catch(e) {
         console.error("Error loading campaigns", e);
     }
@@ -76,6 +91,20 @@ window.createNewCampaign = function() {
     if(loyaltyTabBtn) {
         loyaltyTabBtn.click();
     }
+    updatePassRender();
+};
+
+window.createNewSpecialCard = function() {
+    state.currentCampaignId = 'camp_sp_' + Date.now();
+    state.restaurantName = "Nueva Tarjeta Especial";
+    state.colorPrimary = "#10b981";
+    state.colorAccent = "#8b5cf6";
+    state.activeMode = "membership"; // default
+    if (typeof showToast === 'function') showToast("Nueva tarjeta creada, edita y guarda.", "info");
+    
+    const specialTabBtn = document.querySelector('.nav-tab[data-tab="tab-special-cards"]');
+    if(specialTabBtn) specialTabBtn.click();
+    
     updatePassRender();
 };
 
@@ -3099,8 +3128,11 @@ function updatePassRender() {
         // Save Button Logic
 
         const btnSaveLoyalty = document.getElementById('btn-save-loyalty');
-        if (btnSaveLoyalty) {
-            btnSaveLoyalty.addEventListener('click', async () => {
+        const btnSaveSpecial = document.getElementById('btn-save-special');
+        const saveButtons = [btnSaveLoyalty, btnSaveSpecial].filter(Boolean);
+        
+        saveButtons.forEach(btn => {
+            btn.addEventListener('click', async () => {
                 const activeMode = document.querySelector('input[name="loyalty_mode"]:checked').value;
                 const cashbackActive = toggleCashback.checked;
                 const cashbackPercent = parseInt(cashbackSlider.value);
@@ -3124,7 +3156,7 @@ function updatePassRender() {
 
                 const vipTiers = {
                     bronce: { 
-                        name: "Bronce", minSpent: 0, 
+                        name: "Bronce VIP", minSpent: parseInt(document.getElementById('vip-bronce-min')?.value || 0), 
                         benefits: getBenefitsForTier('bronce')
                     },
                     plata: { 
@@ -3137,8 +3169,9 @@ function updatePassRender() {
                     }
                 };
                 
-                btnSaveLoyalty.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
-                btnSaveLoyalty.disabled = true;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+                btn.disabled = true;
                 
                 try {
                     const { error } = await window.supabaseClient.from('merchants').update({
@@ -3183,18 +3216,18 @@ function updatePassRender() {
                     updatePassRender();
 
                     
-                    showToast('Reglas de Fidelización guardadas exitosamente.', 'success');
+                    showToast('Configuración guardada exitosamente.', 'success');
                 } catch (err) {
-                    console.error("Error saving loyalty config:", err);
+                    console.error("Error saving config:", err);
                     showToast('Error al guardar: ' + err.message, 'warning');
                 } finally {
-                    btnSaveLoyalty.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Reglas';
-                    btnSaveLoyalty.disabled = false;
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 }
             });
-        }
-    }
-    
+        });
+    } // Closes if (tabLoyalty)
+
     // Certificate Email Emission Logic
     const btnEmitCert = document.getElementById('btn-emit-cert');
     if (btnEmitCert) {

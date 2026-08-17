@@ -888,6 +888,26 @@ app.get('/', (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
+    
+    const host = req.hostname;
+    const parts = host.split('.');
+    const ignoredSubdomains = ['www', 'app', 'panel', 'api', 'localhost', 'fideliorewards'];
+    
+    let isSubdomain = false;
+    let slug = null;
+
+    if (parts.length >= 2) {
+        const sub = parts[0];
+        if (!ignoredSubdomains.includes(sub) && sub !== '127') {
+            isSubdomain = true;
+            slug = sub;
+        }
+    }
+
+    if (isSubdomain) {
+        return res.sendFile(path.join(__dirname, 'merchant-public.html'));
+    }
+
     const targetPath = path.join(__dirname, 'landing.html');
     res.sendFile(targetPath, { dotfiles: 'allow' });
 });

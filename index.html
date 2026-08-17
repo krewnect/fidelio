@@ -302,6 +302,7 @@
 
                 <div class="menu-label mt-20">Estrategia y Crecimiento</div>
                 <button class="nav-tab" data-tab="tab-loyalty"><i class="fa-solid fa-gift"></i> Fidelización</button>
+                <button class="nav-tab" data-tab="tab-special-cards" id="nav-special-cards"><i class="fa-solid fa-address-card"></i> Tarjetas Especiales</button>
                 <button class="nav-tab" data-tab="tab-marketing"><i class="fa-solid fa-bolt"></i> Campañas IA</button>
                 <button class="nav-tab" data-tab="tab-api"><i class="fa-solid fa-code"></i> API</button>
                 <button class="nav-tab" data-tab="tab-mybusiness"><i class="fa-solid fa-bullhorn"></i> My Business</button>
@@ -1429,15 +1430,6 @@
                             <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
                         </label>
 
-                        <label class="role-card" id="loyalty-mode-membership">
-                            <input type="radio" name="loyalty_mode" value="membership" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-id-card"></i></div>
-                            <div class="role-info">
-                                <h4>Membresías</h4>
-                                <p>Acceso exclusivo a gimnasios/clubes con validez temporal.</p>
-                            </div>
-                            <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
-                        </label>
 
                         <label class="role-card" id="loyalty-mode-discount">
                             <input type="radio" name="loyalty_mode" value="discount" style="display:none;">
@@ -1459,25 +1451,6 @@
                             <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
                         </label>
 
-                        <label class="role-card" id="loyalty-mode-multipass">
-                            <input type="radio" name="loyalty_mode" value="multipass" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-layer-group"></i></div>
-                            <div class="role-info">
-                                <h4>Multipass (Paquetes)</h4>
-                                <p>Venta por volumen (ej. paquete de 10 clases o cafés).</p>
-                            </div>
-                            <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
-                        </label>
-
-                        <label class="role-card" id="loyalty-mode-certificates">
-                            <input type="radio" name="loyalty_mode" value="certificates" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-gift"></i></div>
-                            <div class="role-info">
-                                <h4>Certificados / Gift Cards</h4>
-                                <p>Tarjetas de regalo o saldo prepagado por un monto.</p>
-                            </div>
-                            <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
-                        </label>
 
                         <label class="role-card" id="loyalty-mode-custom">
                             <input type="radio" name="loyalty_mode" value="custom" style="display:none;">
@@ -1676,27 +1649,6 @@
                         </div>
                     </div>
 
-                    <!-- Panel Membresías -->
-                    <div id="settings-membership-prog" style="display:none;">
-                        <div style="display:flex; gap: 16px; margin-bottom: 16px; flex-wrap:wrap;">
-                            <div class="form-group" style="flex:1;">
-                                <label>Fecha de Inicio</label>
-                                <input type="date" id="mem-start-date" class="fidelio-input">
-                            </div>
-                            <div class="form-group" style="flex:1;">
-                                <label>Fecha de Vencimiento</label>
-                                <input type="date" id="mem-end-date" class="fidelio-input">
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 16px;">
-                            <label>Beneficio Principal</label>
-                            <textarea id="mem-benefit" class="fidelio-input" rows="2" placeholder="Ej. Acceso ilimitado al gimnasio en horario matutino."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Condiciones</label>
-                            <textarea id="mem-conditions" class="fidelio-input" rows="2" placeholder="Ej. Solo para mayores de edad. No transferible."></textarea>
-                        </div>
-                    </div>
 
                     <!-- Panel Descuentos -->
                     <div id="settings-discount-prog" style="display:none;">
@@ -1749,6 +1701,87 @@
                         </div>
                     </div>
 
+
+                </div>
+            </section>
+
+            <!-- TAB SPECIAL CARDS -->
+            <section id="tab-special-cards" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">MONETIZACIÓN Y PRODUCTOS</span>
+                        <h1>Tarjetas Especiales</h1>
+                        <p>Emite y gestiona productos independientes como membresías, multipasses y certificados de regalo.</p>
+                    </div>
+                </div>
+                
+                <div class="workspace-header" style="margin-top: 24px;">
+                    <div>
+                        <h2>Mis Tarjetas Especiales</h2>
+                    </div>
+                    <button class="btn btn-primary" onclick="createNewSpecialCard()"><i class="fa-solid fa-plus"></i> Nueva Tarjeta</button>
+                </div>
+                <div id="special-cards-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 32px;">
+                </div>
+
+                <!-- Tipo de Producto Especial -->
+                <div class="content-panel" style="margin-bottom: 24px;">
+                    <h2 style="font-size: 1.6rem; font-weight: 800; color: #111827; margin: 0; padding-bottom: 16px; border-bottom: 1px solid var(--border-glass); margin-bottom: 24px;">Configuración de Producto</h2>
+                    
+                    <div class="grid-roles" style="margin-bottom: 32px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                        <label class="role-card" id="loyalty-mode-membership">
+                            <input type="radio" name="loyalty_mode" value="membership" style="display:none;">
+                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-id-card"></i></div>
+                            <div class="role-info">
+                                <h4>Membresías</h4>
+                                <p>Acceso exclusivo a gimnasios/clubes con validez temporal.</p>
+                            </div>
+                            <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </label>
+
+                        <label class="role-card" id="loyalty-mode-multipass">
+                            <input type="radio" name="loyalty_mode" value="multipass" style="display:none;">
+                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-layer-group"></i></div>
+                            <div class="role-info">
+                                <h4>Multipass (Paquetes)</h4>
+                                <p>Venta por volumen (ej. paquete de 10 clases o cafés).</p>
+                            </div>
+                            <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </label>
+
+                        <label class="role-card" id="loyalty-mode-certificates">
+                            <input type="radio" name="loyalty_mode" value="certificates" style="display:none;">
+                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-gift"></i></div>
+                            <div class="role-info">
+                                <h4>Certificados / Gift Cards</h4>
+                                <p>Tarjetas de regalo o saldo prepagado por un monto.</p>
+                            </div>
+                            <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </label>
+                    </div>
+
+                    <!-- Panel Membresías -->
+                    <div id="settings-membership-prog" style="display:none;">
+                        <div style="display:flex; gap: 16px; margin-bottom: 16px; flex-wrap:wrap;">
+                            <div class="form-group" style="flex:1;">
+                                <label>Fecha de Inicio</label>
+                                <input type="date" id="mem-start-date" class="fidelio-input">
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label>Fecha de Vencimiento</label>
+                                <input type="date" id="mem-end-date" class="fidelio-input">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Beneficio Principal</label>
+                            <textarea id="mem-benefit" class="fidelio-input" rows="2" placeholder="Ej. Acceso ilimitado al gimnasio en horario matutino."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Condiciones</label>
+                            <textarea id="mem-conditions" class="fidelio-input" rows="2" placeholder="Ej. Solo para mayores de edad. No transferible."></textarea>
+                        </div>
+                    </div>
+
                     <!-- Panel Multipass -->
                     <div id="settings-multipass-prog" style="display:none;">
                         <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
@@ -1798,6 +1831,8 @@
                             <button id="btn-emit-cert" class="btn btn-primary" style="width:100%; font-size:12px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%);"><i class="fa-solid fa-gift"></i> Emitir y Enviar Certificado</button>
                         </div>
                     </div>
+                    
+                    <button class="btn btn-primary" id="btn-save-special" style="width:100%; margin-top:24px;"><i class="fa-solid fa-floppy-disk"></i> Guardar y Aplicar Producto</button>
                 </div>
             </section>
 
