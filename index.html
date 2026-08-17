@@ -82,7 +82,7 @@
         .nav-tab i { font-size: 15px; color: var(--text-muted); width: 20px; text-align: center; transition: var(--transition); }
         .nav-tab:hover { color: var(--text-main); background: rgba(0,0,0,0.03); }
         .nav-tab.active {
-            background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); border: 1px solid var(--border-accent);
+            background: var(--bg-input); color: var(--accent-violet); border: 1px solid var(--border-accent);
         }
         .nav-tab.active i { color: var(--accent-violet); }
 
@@ -122,13 +122,13 @@
         .accordion-card:hover::before { opacity:1; }
 
         .card-title-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
-        .card-step-badge { font-size: 13px; font-weight: 800; background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); padding: 6px 14px; border-radius: var(--radius-pill); font-family: var(--font-main); letter-spacing: 0.5px; }
+        .card-step-badge { font-size: 13px; font-weight: 800; background: var(--bg-input); color: var(--accent-violet); padding: 6px 14px; border-radius: var(--radius-pill); font-family: var(--font-main); letter-spacing: 0.5px; }
         .card-title-bar h2 { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; }
 
                 
         /* FILE DROPZONE */
         .file-dropzone { border: 2px dashed #d1d5db; border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; background: var(--bg-input); }
-        .file-dropzone:hover { border-color: var(--accent-violet); background: rgba(139, 92, 246, 0.05); }
+        .file-dropzone:hover { border-color: var(--accent-violet); background: var(--bg-input); }
         .file-dropzone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         .file-dropzone i { font-size: 28px; color: #9ca3af; margin-bottom: 12px; display: block; transition: var(--transition); }
         .file-dropzone:hover i { color: var(--accent-violet); transform: scale(1.1); }
@@ -162,7 +162,7 @@
         .btn-secondary:hover { border-color: var(--text-main); background: #f9fafb; transform: translateY(-1px); }
 
         .btn-outline { background: transparent; color: var(--accent-violet); border: 1px solid var(--accent-violet); }
-        .btn-outline:hover { background: rgba(139, 92, 246, 0.05); }
+        .btn-outline:hover { background: var(--bg-input); }
         .btn-outline:active { transform: translateY(0); }
         .btn-block { width: 100%; }
 
@@ -295,7 +295,7 @@
                 <button class="nav-tab" data-tab="tab-builder" id="nav-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Card</button>
                 <button class="nav-tab" data-tab="tab-stripe" id="nav-stripe"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</button>
                 <button class="nav-tab" data-tab="tab-branches" id="nav-branches"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
-                <button class="nav-tab" data-tab="tab-appointments" id="nav-appointments" style="display:none;"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios</button>
+                <button class="nav-tab" data-tab="tab-appointments" id="nav-appointments"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios</button>
                 <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></button>
                 <button class="nav-tab" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
                 <button class="nav-tab" data-tab="tab-bank"><i class="fa-solid fa-piggy-bank"></i> The Bank</button>
@@ -361,25 +361,50 @@
                 <div class="workspace-header">
                     <div>
                         <span class="workspace-eyebrow">STRIPE</span>
-                        <h1>Monetización</h1>
-                        <p>Configura tus llaves de Stripe para cobrar.</p>
+                        <h1>Monetización (BETA)</h1>
+                        <p>Vende membresías y saldo prepagado directamente a través de Apple y Google Wallet.</p>
                     </div>
                 </div>
-                <div class="settings-card" style="background: var(--surface); padding: 32px; border-radius: 20px; border: 1px solid var(--surface-light); text-align: center;">
+                
+                <!-- PROFESSIONAL TIER LOCK -->
+                <div id="stripe-pro-lock" style="display:none; background: linear-gradient(135deg, rgba(139,92,246,0.05) 0%, rgba(0,0,0,0) 100%); border: 1px solid rgba(139,92,246,0.2); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 24px; position:relative; overflow:hidden;">
+                    <div style="font-size: 48px; color: var(--accent-amber); margin-bottom: 16px;"><i class="fa-solid fa-crown"></i></div>
+                    <h3 style="margin-bottom: 12px; color: var(--text-main); font-size: 24px; font-weight:800;">Exclusivo para Cuentas Profesionales</h3>
+                    <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; line-height:1.5;">
+                        La monetización nativa y la venta directa de beneficios desde Apple Wallet requieren una cuenta de nivel Profesional. Sube de nivel para desbloquear los enlaces de pago de Stripe.
+                    </p>
+                    <button class="btn btn-primary" style="background: var(--accent-amber) !important; color: #000 !important; font-weight: 800; border: none;"><i class="fa-solid fa-arrow-up-right-dots"></i> Hacer Upgrade a Pro</button>
+                </div>
+
+                <div id="stripe-active-ui" class="settings-card" style="background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid var(--surface-light); text-align: center; position:relative;">
+                    
+                    <div style="position:absolute; top:20px; right:20px; background:rgba(16,185,129,0.1); color:#10b981; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700;"><i class="fa-solid fa-check-circle"></i> Cuenta Pro Activa</div>
+
                     <div style="font-size: 48px; color: #6366f1; margin-bottom: 16px;">
                         <i class="fa-brands fa-stripe"></i>
                     </div>
                     <h3 style="margin-bottom: 12px; color: var(--text-main); font-size: 20px;">Vende tus beneficios directo desde Wallet</h3>
                     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">
-                        Crea un producto en tu cuenta de Stripe (ej. "Membresía Anual" o "Saldo Prepagado") y pega aquí el enlace de pago. Nosotros nos encargamos de integrarlo en tu tarjeta de Apple Wallet.
+                        Crea un producto en tu cuenta de Stripe (ej. "Membresía Anual VIP") y pega aquí el enlace de pago. Selecciona a qué tarjeta deseas asociarlo.
                     </p>
                     
-                    <div class="form-group" style="margin-bottom: 24px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px;">Payment Link de Stripe</label>
-                        <input type="url" id="stripe-payment-link" class="form-control" placeholder="https://buy.stripe.com/test_..." style="width: 100%; padding: 16px; border-radius: 12px; border: 2px solid var(--surface-light); background: var(--bg-color); color: var(--text-color); font-size: 15px; transition: all 0.3s ease;">
+                    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color:var(--accent-violet);">1. Tarjeta / Campaña a Monetizar</label>
+                            <select id="stripe-campaign-select" class="form-control" style="width: 100%; padding: 16px; border-radius: 12px; border: 2px solid var(--surface-light); background: var(--bg-color); color: var(--text-color); font-size: 15px; font-weight:600;">
+                                <option value="">-- Selecciona una tarjeta/campaña --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 32px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color:var(--accent-violet);">2. Payment Link de Stripe</label>
+                            <input type="url" id="stripe-payment-link" class="form-control" placeholder="https://buy.stripe.com/test_..." style="width: 100%; padding: 16px; border-radius: 12px; border: 2px solid var(--surface-light); background: var(--bg-color); color: var(--text-color); font-size: 15px;">
+                        </div>
+                        
+                        <div style="text-align:center;">
+                            <button class="btn btn-primary" onclick="saveStripeKeys()" style="background: #8b5cf6 !important; color: #fff !important; padding: 16px 32px; font-size: 16px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(139,92,246,0.3); transition: all 0.3s ease; width:100%;"><i class="fa-solid fa-link" style="margin-right: 8px;"></i> Vincular Checkout a Tarjeta</button>
+                        </div>
                     </div>
-                    
-                    <button class="btn btn-primary" onclick="saveStripeKeys()" style="background: #8b5cf6 !important; color: #fff !important; padding: 16px 32px; font-size: 16px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(139,92,246,0.3); transition: all 0.3s ease;"><i class="fa-solid fa-link" style="margin-right: 8px;"></i> Vincular Payment Link</button>
                 </div>
             </section>
 
@@ -525,6 +550,14 @@
                             <div class="premium-section-title">Identidad de Marca</div>
                             
                             <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
+                                <div style="margin-bottom: 24px;">
+                                    <label class="premium-label" style="color:var(--accent-violet);">Campaña de Fidelización Asociada</label>
+                                    <select id="builder-campaign-select" class="premium-input" style="font-weight:600; border-color:var(--accent-violet);" onchange="if(window.loadCampaignToBuilder) window.loadCampaignToBuilder(this.value)">
+                                        <option value="">-- Selecciona una campaña --</option>
+                                    </select>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Asocia este diseño a un programa específico. El diseño será único para la campaña seleccionada.</p>
+                                </div>
+                                
                                 <div>
                                     <label class="premium-label">Nombre del Negocio</label>
                                     <input type="text" id="rest-name" class="premium-input" value="Mi Negocio">
@@ -773,14 +806,14 @@
                 <!-- KPI Dashboard -->
                 <div class="stats-grid" style="margin-bottom: 24px;">
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-icon" style="background: var(--bg-input); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
                         <div class="stat-info">
                             <span class="stat-label">Total Clientes</span>
                             <span class="stat-value" id="kpi-total-customers">0</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div class="stat-icon" style="background: var(--bg-input); color: var(--accent-violet);"><i class="fa-solid fa-sack-dollar"></i></div>
                         <div class="stat-info">
                             <span class="stat-label">Gasto Promedio (LTV)</span>
                             <span class="stat-value" id="kpi-avg-spent">$0</span>
@@ -864,14 +897,14 @@
             </section>
 
             <!-- BRANCHES TAB -->
-                        <section id="tab-appointments" class="tab-content" style="display:none;">
+                        <section id="tab-appointments" class="tab-content">
                             <div class="content-panel">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
                                     <div>
                                         <h1>Citas/Servicios</h1>
                                         <p>Gestiona las citas solicitadas por tus clientes desde tu enlace web público.</p>
                                     </div>
-                                    <button class="btn btn-primary" onclick="alert('Configuración de horarios disponible en breve.')" style="background:var(--accent-violet);"><i class="fa-solid fa-clock"></i> Configurar Horarios</button>
+                                    <button class="btn btn-primary" onclick="alert('Configuración de horarios disponible en breve.')" style="background: var(--bg-input);"><i class="fa-solid fa-clock"></i> Configurar Horarios</button>
                                 </div>
                                 <div class="glass-card" style="padding: 24px;">
                                     <div id="appointments-list-container" style="display:flex; flex-direction:column; gap:12px;">
@@ -892,7 +925,7 @@
                 <div class="accordion-card" style="max-width: 800px;">
                     <div class="card-title-bar" style="margin-bottom:16px; justify-content:space-between;">
                         <div style="display:flex; align-items:center; gap:16px;">
-                            <div style="width:48px; height:48px; border-radius:12px; background:rgba(139, 92, 246, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px;">
+                            <div style="width:48px; height:48px; border-radius:12px; background: var(--bg-input); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px;">
                                 <i class="fa-solid fa-map-location-dot"></i>
                             </div>
                             <div>
@@ -906,7 +939,7 @@
                                 <i class="fa-solid fa-cloud-arrow-up"></i> Subir CSV
                                 <input type="file" id="upload-branches-csv" accept=".csv" style="display: none;" onchange="uploadBranchesCSV(event)">
                             </label>
-                            <button class="btn btn-primary" id="btn-add-branch-modal" style="background:var(--accent-violet);"><i class="fa-solid fa-plus"></i> Añadir Sucursal</button>
+                            <button class="btn btn-primary" id="btn-add-branch-modal" style="background: var(--bg-input);"><i class="fa-solid fa-plus"></i> Añadir Sucursal</button>
                         </div>
                     </div>
                     
@@ -933,7 +966,7 @@
                     <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
                         
                         <div class="accordion-card campaign-module active" onclick="selectAICampaign('recuperacion', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-heart-crack"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-heart-crack"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Recuperar Perdidos</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Clientes sin visitas en >30 días</p>
@@ -941,7 +974,7 @@
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('cumpleanos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-cake-candles"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-cake-candles"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Cumpleañeros del Mes</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Envía regalo en su mes de cumpleaños</p>
@@ -949,7 +982,7 @@
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('dias_lentos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-clock"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-clock"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Inyección Días Lentos</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Aumenta tráfico en horas valle</p>
@@ -957,7 +990,7 @@
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('vip_exclusivo', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-crown"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-crown"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Recompensa VIP</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Trato preferencial solo para Nivel Oro</p>
@@ -965,7 +998,7 @@
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('geofencing', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-location-dot"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Cerca de Ti (Geocerca)</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Notifica cuando pasen cerca del local</p>
@@ -973,7 +1006,7 @@
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('aniversario', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gift"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gift"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Aniversario</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">A clientes que cumplen un año en Fidelio</p>
@@ -981,7 +1014,7 @@
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('winback', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gem"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gem"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Win-back Premium</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Rescata a los clientes que más gastaban</p>
@@ -989,7 +1022,7 @@
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('manual', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-pen-nib"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-pen-nib"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Campaña Libre</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Segmentación y mensaje manual</p>
@@ -1015,7 +1048,7 @@
                     <div class="content-panel" style="display:flex; flex-direction:column; position: sticky; top: 0; max-height: calc(100vh - 150px); overflow-y: auto;">
                         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-glass); padding-bottom:16px; margin-bottom:20px;">
                             <h3 id="config-camp-title" style="margin:0;"><i class="fa-solid fa-heart-crack" style="color:var(--accent-violet); margin-right:8px;"></i> Recuperar Perdidos</h3>
-                            <span class="live-badge" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); border: 1px solid rgba(139, 92, 246, 0.2);"><div class="live-dot" style="background:var(--accent-violet);"></div> Listo para configurar</span>
+                            <span class="live-badge" style="background: var(--bg-input); color: var(--accent-violet); border: 1px solid rgba(139, 92, 246, 0.2);"><div class="live-dot" style="background: var(--bg-input);"></div> Listo para configurar</span>
                         </div>
 
                         <!-- CHANNELS -->
@@ -1114,7 +1147,7 @@
                         <!-- AI GENERATOR -->
                         <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
                             <h4 style="font-size:14px; margin:0; color:var(--text-main);">Mensaje Omnicanal</h4>
-                            <button class="btn" style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); padding: 6px 12px; font-size:12px; font-weight:700;" onclick="window.generateAIPush()"><i class="fa-solid fa-wand-magic-sparkles"></i> Optimizar con IA</button>
+                            <button class="btn" style="background: var(--bg-input); color:var(--accent-violet); padding: 6px 12px; font-size:12px; font-weight:700;" onclick="window.generateAIPush()"><i class="fa-solid fa-wand-magic-sparkles"></i> Optimizar con IA</button>
                         </div>
                         <div class="form-group" style="flex:1; position:relative; overflow: hidden; border-radius:12px;">
                             <textarea id="camp-push-message" class="fidelio-input" style="height: 120px; resize: none; font-size: 1rem; padding: 16px;" placeholder="Escribe tu mensaje o usa la IA..."></textarea>
@@ -1161,7 +1194,7 @@
                         <!-- Input Area -->
                         <div style="padding:16px 20px; background:#11111A; border-top:1px solid rgba(255,255,255,0.05); display:flex; gap:12px; align-items:center;">
                             <input type="text" id="gemini-chat-input" placeholder="Ej. Inventario extra de cerveza..." style="flex:1; background:var(--bg-input); border:1px solid var(--border-glass); border-radius:24px; padding:12px 20px; color:white; font-size:14px; outline:none;" onkeypress="if(event.key === 'Enter') sendGeminiMessage()" />
-                            <button onclick="sendGeminiMessage()" style="width:44px; height:44px; border-radius:50%; background:var(--accent-violet); color:white; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; font-size:16px;"><i class="fa-solid fa-paper-plane"></i></button>
+                            <button onclick="sendGeminiMessage()" style="width:44px; height:44px; border-radius:50%; background: var(--bg-input); color:white; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; font-size:16px;"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -1192,16 +1225,21 @@
                 </div>
 
                 <!-- Resumen Financiero -->
-                <div class="metrics-grid" style="margin-bottom: 24px; grid-template-columns: 1fr 1fr;">
-                    <div class="metric-card" style="border-left: 4px solid var(--accent-violet);">
-                        <div class="metric-title"><i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-right:8px;"></i> Total Prepagado (Histórico)</div>
-                        <div class="metric-value" id="bank-total-deposited">$0.00</div>
-                        <div class="metric-trend" style="color: var(--text-muted);">Dinero total que han metido tus clientes al monedero.</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px;">
+                    <!-- Metric Card 1: Total Prepagado -->
+                    <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid rgba(16,185,129,0.2); border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; color: rgba(16,185,129,0.05);"><i class="fa-solid fa-vault"></i></div>
+                        <div style="font-size: 13px; font-weight: bold; color: #10b981; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Total Prepagado (Histórico)</div>
+                        <div id="bank-total-deposited" style="font-size: 3rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">$0.00</div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Dinero ingresado por tarjetas de regalo y monederos.</div>
                     </div>
-                    <div class="metric-card" style="border-left: 4px solid #10b981;">
-                        <div class="metric-title"><i class="fa-solid fa-vault" style="color:#10b981; margin-right:8px;"></i> Bolsa de Dinero No Gastado</div>
-                        <div class="metric-value" id="bank-total-unspent" style="color: #10b981;">$0.00</div>
-                        <div class="metric-trend" style="color: var(--text-muted);">Pasivo actual: Dinero que tienen a favor para gastar.</div>
+
+                    <!-- Metric Card 2: Pasivo Circulante -->
+                    <div style="background: linear-gradient(135deg, rgba(244,63,94,0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid rgba(244,63,94,0.2); border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; color: rgba(244,63,94,0.05);"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                        <div style="font-size: 13px; font-weight: bold; color: #f43f5e; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Pasivo Circulante Vivo</div>
+                        <div id="bank-total-unspent" style="font-size: 3rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">$0.00</div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Bolsa de dinero no gastado a favor del cliente.</div>
                     </div>
                 </div>
 
@@ -1244,7 +1282,7 @@
                             <div class="role-selector">
                                 <label class="role-card active" id="role-scanner-card">
                                     <input type="radio" name="staff_role" value="scanner" checked style="display:none;">
-                                    <div class="role-icon" style="color:#059669; background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-mobile-screen"></i></div>
+                                    <div class="role-icon" style="color:#059669; background: var(--bg-input);"><i class="fa-solid fa-mobile-screen"></i></div>
                                     <div class="role-info">
                                         <h4>Usuario Escáner</h4>
                                         <p>Solo pueden abrir el lector QR para cobrar y dar puntos. No ven el panel.</p>
@@ -1254,7 +1292,7 @@
 
                                 <label class="role-card" id="role-system-card">
                                     <input type="radio" name="staff_role" value="system" style="display:none;">
-                                    <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-laptop-code"></i></div>
+                                    <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-laptop-code"></i></div>
                                     <div class="role-info">
                                         <h4>Acceso Sistema</h4>
                                         <p>Acceso al dashboard y métricas. Pueden añadir escáneres, pero no otros admins.</p>
@@ -1335,7 +1373,7 @@
                     <div class="role-selector" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                         <label class="role-card" id="loyalty-mode-hybrid">
                             <input type="radio" name="loyalty_mode" value="hybrid" checked style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-layer-group"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-layer-group"></i></div>
                             <div class="role-info">
                                 <h4>Modalidad Híbrida (Recomendado)</h4>
                                 <p>Activa Cashback, Sellos y Niveles VIP simultáneamente.</p>
@@ -1345,7 +1383,7 @@
 
                         <label class="role-card" id="loyalty-mode-cashback">
                             <input type="radio" name="loyalty_mode" value="cashback" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-wallet"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-wallet"></i></div>
                             <div class="role-info">
                                 <h4>Solo Cashback</h4>
                                 <p>Clientes acumulan saldo por compras.</p>
@@ -1355,7 +1393,7 @@
                         
                         <label class="role-card" id="loyalty-mode-stamps">
                             <input type="radio" name="loyalty_mode" value="stamps" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-stamp"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-stamp"></i></div>
                             <div class="role-info">
                                 <h4>Solo Sellos</h4>
                                 <p>Clientes acumulan visitas por un premio.</p>
@@ -1367,7 +1405,7 @@
                         
                         <label class="role-card" id="loyalty-mode-custom">
                             <input type="radio" name="loyalty_mode" value="custom" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background:rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                             <div class="role-info">
                                 <h4>Personalizado</h4>
                                 <p>Diseña tu propia mecánica, métricas y recompensas 100% a tu gusto.</p>
@@ -1535,10 +1573,10 @@
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
                     <!-- E-Commerce -->
                     <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start; position:relative; overflow:hidden;">
-                        <div style="position:absolute; top:24px; right:24px; background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
+                        <div style="position:absolute; top:24px; right:24px; background: var(--bg-input); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
                             PRÓXIMAMENTE
                         </div>
-                        <div style="width:48px; height:48px; border-radius:12px; background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
+                        <div style="width:48px; height:48px; border-radius:12px; background: var(--bg-input); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
                             <i class="fa-solid fa-cart-shopping"></i>
                         </div>
                         <h3 style="margin:0 0 8px 0; font-size:18px;">E-Commerce</h3>
@@ -1551,10 +1589,10 @@
 
                     <!-- Punto de Venta (POS) -->
                     <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start; position:relative; overflow:hidden;">
-                        <div style="position:absolute; top:24px; right:24px; background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
+                        <div style="position:absolute; top:24px; right:24px; background: var(--bg-input); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
                             PRÓXIMAMENTE
                         </div>
-                        <div style="width:48px; height:48px; border-radius:12px; background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
+                        <div style="width:48px; height:48px; border-radius:12px; background: var(--bg-input); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
                             <i class="fa-solid fa-cash-register"></i>
                         </div>
                         <h3 style="margin:0 0 8px 0; font-size:18px;">Punto de Venta (POS)</h3>
@@ -2366,7 +2404,7 @@
                     .metric-card-hover { transition: all 0.3s ease; }
                     .metric-card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(76, 29, 149, 0.12); border-color: rgba(76, 29, 149, 0.3); }
                     
-                    .live-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid rgba(139, 92, 246, 0.2); }
+                    .live-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-input); color: var(--accent-violet); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid rgba(139, 92, 246, 0.2); }
                     .live-dot { width: 8px; height: 8px; background: #8b5cf6 !important; border-radius: 50%; animation: pulseGlow 2s infinite; }
                     
                     .bento-chart-bar { animation: chartBarGrow 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: bottom; }
@@ -2411,7 +2449,7 @@
                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;" class="stagger-1">
                     <div class="metric-card-hover" style="background: linear-gradient(135deg, var(--accent-violet) 0%, #1e0542 100%); border-radius: var(--radius-md); padding: 40px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
                         <!-- Background glow effect -->
-                        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; filter: blur(40px);"></div>
+                        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: var(--bg-input); border-radius: 50%; filter: blur(40px);"></div>
                         
                         <div style="position: relative; z-index: 2;">
                             <span style="text-transform: uppercase; letter-spacing: 2px; font-size: 12px; opacity: 0.8; font-weight: 700; display:flex; align-items:center; gap:8px;">
@@ -2448,7 +2486,7 @@
                                     <div style="font-size:11px; color:var(--text-muted);">Hace 2m</div>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:12px; font-size:13px;">
-                                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-qrcode"></i></div>
+                                    <div style="width:32px; height:32px; border-radius:50%; background: var(--bg-input); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-qrcode"></i></div>
                                     <div style="flex:1;"><strong>Ana G.</strong> escaneó mesa #4 (+120 pts)</div>
                                     <div style="font-size:11px; color:var(--text-muted);">Hace 5m</div>
                                 </div>
@@ -2477,7 +2515,7 @@
                             </div>
                             <div class="stat-icon" style="background: rgba(76, 29, 149, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background:rgba(139, 92, 246, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> +12% mes anterior</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> +12% mes anterior</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -2485,9 +2523,9 @@
                                 <div class="stat-label" style="font-weight:600; text-transform:uppercase; letter-spacing:0.5px; font-size:11px;">Ticket Promedio (VIP)</div>
                                 <div class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">$0.00</div>
                             </div>
-                            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-receipt"></i></div>
+                            <div class="stat-icon" style="background: var(--bg-input); color: var(--accent-violet);"><i class="fa-solid fa-receipt"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background:rgba(139, 92, 246, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> 22% > No-VIP</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> 22% > No-VIP</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -2497,7 +2535,7 @@
                             </div>
                             <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B;"><i class="fa-solid fa-fire"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background:rgba(139, 92, 246, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> Alto Engagement</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> Alto Engagement</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -2507,7 +2545,7 @@
                             </div>
                             <div class="stat-icon" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4;"><i class="fa-solid fa-rotate-right"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background:rgba(139, 92, 246, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> +0.4x desde Mayo</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> +0.4x desde Mayo</div>
                     </div>
                 </div>
 
@@ -2636,7 +2674,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
                         <h3 style="color: var(--text-main); font-size: 18px; margin:0;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-violet); margin-right:8px;"></i>Rendimiento de Campañas (Motor IA)</h3>
                         <div style="display:flex; gap:8px;">
-                            <span style="background:rgba(139, 92, 246, 0.1); color:var(--accent-violet); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">+24% Eficiencia vs Correos Tradicionales</span>
+                            <span style="background: var(--bg-input); color:var(--accent-violet); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">+24% Eficiencia vs Correos Tradicionales</span>
                         </div>
                     </div>
                     
@@ -2973,7 +3011,7 @@
             
             <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
                 <button class="btn btn-primary" style="border:1px solid #ccc; background:white; color:var(--text-main);" onclick="document.getElementById('modal-custom-filter').style.display='none'">Cancelar</button>
-                <button class="btn" style="background:var(--accent-violet); color:white;" onclick="alert('Guardado')">Guardar y Aplicar</button>
+                <button class="btn" style="background: var(--bg-input); color:white;" onclick="alert('Guardado')">Guardar y Aplicar</button>
             </div>
         </div>
     </div>
@@ -3027,7 +3065,7 @@
         <div style="background:white; width:480px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
             
             <div id="push-modal-step-1">
-                <div style="width:50px; height:50px; border-radius:50%; background:rgba(139, 92, 246, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
+                <div style="width:50px; height:50px; border-radius:50%; background: var(--bg-input); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
                     <i class="fa-solid fa-tower-broadcast"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Actualización Over-the-Air</h2>
@@ -3064,13 +3102,13 @@
                 <h2 style="font-size:20px; font-weight:700; color:#111827; margin-bottom:8px;">Contactando a APNs y Google...</h2>
                 <p style="font-size:13px; color:#6b7280; margin-bottom:16px;">Sincronizando diseño con los teléfonos de los clientes.</p>
                 <div style="width:100%; height:6px; background:#f3f4f6; border-radius:3px; overflow:hidden;">
-                    <div id="push-progress-bar" style="width:0%; height:100%; background:var(--accent-violet); transition:width 0.2s;"></div>
+                    <div id="push-progress-bar" style="width:0%; height:100%; background: var(--bg-input); transition:width 0.2s;"></div>
                 </div>
                 <div id="push-progress-text" style="font-size:11px; font-weight:700; color:#9ca3af; margin-top:8px; text-transform:uppercase; letter-spacing:1px;">0 / 1,428</div>
             </div>
             
             <div id="push-modal-step-3" style="display:none; text-align:center; padding:20px 0;">
-                <div style="width:64px; height:64px; border-radius:50%; background:var(--accent-violet); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
+                <div style="width:64px; height:64px; border-radius:50%; background: var(--bg-input); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
                     <i class="fa-solid fa-check"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">¡Tarjetas Actualizadas!</h2>
@@ -3080,7 +3118,7 @@
             
             <style>
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-                .hover-border-violet:hover { border-color:var(--accent-violet) !important; background:rgba(139, 92, 246, 0.02); }
+                .hover-border-violet:hover { border-color:var(--accent-violet) !important; background: var(--bg-input); }
             </style>
         </div>
     </div>
@@ -3089,7 +3127,7 @@
         <div style="background:white; width:480px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
             
             <div id="mkt-push-step-1">
-                <div style="width:50px; height:50px; border-radius:50%; background:rgba(139, 92, 246, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
+                <div style="width:50px; height:50px; border-radius:50%; background: var(--bg-input); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
                     <i class="fa-solid fa-bullhorn"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Campaña Promocional Push</h2>
@@ -3118,12 +3156,12 @@
                 <h2 style="font-size:20px; font-weight:700; color:#111827; margin-bottom:8px;">Contactando a APNs...</h2>
                 <p style="font-size:13px; color:#6b7280; margin-bottom:16px;">Transmitiendo campaña masiva a los teléfonos.</p>
                 <div style="width:100%; height:6px; background:#f3f4f6; border-radius:3px; overflow:hidden;">
-                    <div id="mkt-progress-bar" style="width:0%; height:100%; background:var(--accent-violet); transition:width 0.2s;"></div>
+                    <div id="mkt-progress-bar" style="width:0%; height:100%; background: var(--bg-input); transition:width 0.2s;"></div>
                 </div>
             </div>
             
             <div id="mkt-push-step-3" style="display:none; text-align:center; padding:20px 0;">
-                <div style="width:64px; height:64px; border-radius:50%; background:var(--accent-violet); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
+                <div style="width:64px; height:64px; border-radius:50%; background: var(--bg-input); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
                     <i class="fa-solid fa-check"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">¡Campaña Enviada!</h2>

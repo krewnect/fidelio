@@ -133,18 +133,77 @@ window.selectCampaign = async function(id) {
 
 window.saveStripeKeys = async function() {
     const linkInput = document.getElementById('stripe-payment-link');
+    const campSelect = document.getElementById('stripe-campaign-select');
+    
     const paymentLink = linkInput ? linkInput.value : '';
+    const campId = campSelect ? campSelect.value : '';
+    
+    if (!campId) {
+        if (typeof showToast === 'function') showToast("Debes seleccionar una tarjeta a monetizar", "warning");
+        return;
+    }
     
     if (!paymentLink || !paymentLink.includes('stripe.com')) {
         if (typeof showToast === 'function') showToast("Ingresa un Payment Link válido de Stripe", "warning");
         return;
     }
     
-    // We save this into the current active campaign (if there is one) or locally
-    state.customBannerUrl = paymentLink;
+    // Asignar el payment link a la campaña especificada (Mock)
+    console.log("Stripe Linked to campaign: " + campId);
     
-    if (typeof showToast === 'function') showToast("Payment Link de Stripe vinculado con éxito", "success");
+    if (typeof showToast === 'function') showToast("Checkout de Stripe vinculado exitosamente a la Tarjeta", "success");
 };
+
+// POPULATE STRIPE CAMPAIGNS AND HANDLE PRO LOCK
+window.initStripeUI = function() {
+    const sel = document.getElementById('stripe-campaign-select');
+    const lock = document.getElementById('stripe-pro-lock');
+    const activeUI = document.getElementById('stripe-active-ui');
+    
+    // Mock user tier
+    const isPro = true; // Set to true so they can see the UI, or false to test the lock
+    
+    if (!isPro) {
+        if(lock) lock.style.display = 'block';
+        if(activeUI) activeUI.style.display = 'none';
+        return;
+    } else {
+        if(lock) lock.style.display = 'none';
+        if(activeUI) activeUI.style.display = 'block';
+    }
+    
+    if (!sel) return;
+    
+    sel.innerHTML = '<option value="">-- Selecciona una tarjeta/campaña --</option>';
+    let camps = state.campaigns || [];
+    if (camps.length === 0) {
+        camps = [
+            { id: 'camp_1', name: 'Monedero Digital General' },
+            { id: 'camp_2', name: 'Tarjeta de Sellos' },
+            { id: 'camp_3', name: 'Membresía VIP' }
+        ];
+    }
+    
+    camps.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name || c.tipo || 'Programa';
+        sel.appendChild(opt);
+    });
+};
+
+// Hook it into switchTab
+const origSwitchTabForStripe = window.switchTab;
+window.switchTab = function(tabId) {
+    if (origSwitchTabForStripe) origSwitchTabForStripe(tabId);
+    if (tabId === 'tab-builder' && window.populateBuilderCampaignSelect) {
+        window.populateBuilderCampaignSelect();
+    }
+    if (tabId === 'tab-stripe' && window.initStripeUI) {
+        window.initStripeUI();
+    }
+};
+
 
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
 
@@ -4074,3 +4133,59 @@ window.startDesignerFlow = function(programType) {
         typeSelect.dispatchEvent(new Event('change'));
     }
 }
+
+// --- MULTI-CARD BUILDER LOGIC ---
+window.populateBuilderCampaignSelect = function() {
+    const sel = document.getElementById('builder-campaign-select');
+    if (!sel) return;
+    
+    // Clear
+    sel.innerHTML = '<option value="">-- Selecciona una campaña --</option>';
+    
+    // Mock campaigns if state.campaigns is empty
+    let camps = state.campaigns || [];
+    if (camps.length === 0) {
+        camps = [
+            { id: 'camp_1', name: 'Monedero Digital General' },
+            { id: 'camp_2', name: 'Tarjeta de Sellos' },
+            { id: 'camp_3', name: 'Membresía VIP' }
+        ];
+    }
+    
+    camps.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name || c.tipo || 'Programa';
+        sel.appendChild(opt);
+    });
+    
+    if (state.currentCampaignId) {
+        sel.value = state.currentCampaignId;
+    }
+};
+
+window.loadCampaignToBuilder = function(campaignId) {
+    if (!campaignId) return;
+    state.currentCampaignId = campaignId;
+    
+    // Generate a fresh mock config based on the ID to simulate loading distinct designs
+    if (campaignId === 'camp_2') {
+        document.getElementById('program-type-select').value = 'stamps';
+        document.getElementById('color-primary').value = '#1e1b4b';
+        document.getElementById('color-accent').value = '#4ade80';
+    } else if (campaignId === 'camp_3') {
+        document.getElementById('program-type-select').value = 'cashback';
+        document.getElementById('color-primary').value = '#000000';
+        document.getElementById('color-accent').value = '#fbbf24';
+        document.getElementById('rest-name').value = 'Membresía VIP';
+    } else {
+        document.getElementById('program-type-select').value = 'cashback';
+        document.getElementById('color-primary').value = '#1e1b4b';
+        document.getElementById('color-accent').value = '#8b5cf6';
+    }
+    
+    if (window.updatePassRender) window.updatePassRender();
+    if (typeof showToast === 'function') showToast("Diseño cargado para la campaña seleccionada.", "success");
+};
+
+
