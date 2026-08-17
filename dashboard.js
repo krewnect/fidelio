@@ -1667,6 +1667,28 @@ function updatePassRender() {
             vipCaption.textContent = currentTierConfig.name.toUpperCase();
         }
 
+        // Render back of card benefits dynamically
+        const renderVipBack = document.getElementById('render-vip-benefits-back');
+        const renderVipList = document.getElementById('render-vip-benefits-list');
+        if (renderVipBack && renderVipList) {
+            if (currentTierConfig.benefits && currentTierConfig.benefits.length > 0) {
+                renderVipBack.style.display = 'block';
+                renderVipList.innerHTML = currentTierConfig.benefits.map(b => {
+                    let typeLabel = b.type;
+                    if(b.type === 'cashback') typeLabel = 'Cashback';
+                    else if(b.type === 'puntos') typeLabel = 'Multiplicador Puntos';
+                    else if(b.type === 'descuento') typeLabel = 'Descuento';
+                    else if(b.type === 'producto') typeLabel = 'Producto Gratis';
+                    else if(b.type === 'upgrade') typeLabel = 'Upgrade';
+                    else if(b.type === 'otro') typeLabel = 'Beneficio';
+                    return `<li style="margin-bottom:4px;"><strong>${typeLabel}:</strong> ${b.value}</li>`;
+                }).join('');
+            } else {
+                renderVipBack.style.display = 'none';
+                renderVipList.innerHTML = '';
+            }
+        }
+
         const rBal = document.getElementById('render-balance');
         if (rBal) {
             const bal = sampleClient.current_balance !== undefined ? sampleClient.current_balance : (sampleClient.balance || 0);
