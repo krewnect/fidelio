@@ -1920,6 +1920,8 @@ function updatePassRender() {
                 else if(targetTab === 'tab-merchants-control' && typeof window.loadMerchantsControl === 'function') window.loadMerchantsControl();
                 else if(targetTab === 'tab-inbox' && typeof window.loadInbox === 'function') window.loadInbox();
                 else if(targetTab === 'tab-fidelio-team' && typeof window.loadFidelioTeam === 'function') window.loadFidelioTeam();
+                else if(targetTab === 'tab-appointments' && typeof window.loadAppointments === 'function') window.loadAppointments();
+                else if(targetTab === 'tab-bank' && typeof window.loadBankStats === 'function') window.loadBankStats();
 
                 localStorage.setItem('activeFidelioTab', targetTab);
             }
@@ -4001,3 +4003,63 @@ window.updateStripeLink = function(val) {
 // Auto-fill the input if it has a stripe link
 const oldSelectCamp = "        state.customBannerUrl = camp.banner_url || null;";
 const newSelectCamp = "        state.customBannerUrl = camp.banner_url || null;\n        if(state.customBannerUrl && state.customBannerUrl.includes('stripe.com')) {\n            const linkInput = document.getElementById('stripe-payment-link');\n            if(linkInput) linkInput.value = state.customBannerUrl;\n        }";
+
+
+// ==========================================
+// UNIFIED WORKFLOW: CAMPAIGNS -> LOYALTY -> DESIGNER
+// ==========================================
+
+window.openCampaignModal = function() {
+    // Start the unified flow
+    showToast("Paso 1: Elige el Programa de Fidelización para tu campaña.", "success");
+    
+    // Switch to loyalty tab
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    navTabs.forEach(t => t.classList.remove('active'));
+    tabContents.forEach(c => c.classList.remove('active'));
+    
+    document.getElementById('tab-loyalty').classList.add('active');
+    const loyTab = document.getElementById('nav-loyalty');
+    if(loyTab) loyTab.classList.add('active');
+    
+    // Highlight the programs grid
+    const programsGrid = document.querySelector('#tab-loyalty .content-panel');
+    if(programsGrid) {
+        programsGrid.style.border = "2px solid var(--primary)";
+        programsGrid.style.boxShadow = "0 0 20px rgba(139,92,246,0.3)";
+        setTimeout(() => {
+            programsGrid.style.border = "none";
+            programsGrid.style.boxShadow = "var(--shadow-sm)";
+        }, 3000);
+    }
+}
+
+window.startDesignerFlow = function(programType) {
+    // They selected a program in tab-loyalty. Move to Step 2.
+    showToast(`Paso 2: Diseñando tarjeta para ${programType}. Personaliza los colores.`, "success");
+    
+    // Switch to designer tab
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    navTabs.forEach(t => t.classList.remove('active'));
+    tabContents.forEach(c => c.classList.remove('active'));
+    
+    document.getElementById('tab-builder').classList.add('active');
+    const bldTab = document.getElementById('nav-builder');
+    if(bldTab) bldTab.classList.add('active');
+    
+    // Auto-select the program type in the designer dropdown
+    const typeSelect = document.getElementById('card-pass-type');
+    if(typeSelect) {
+        // Map simplified names to the dropdown values
+        let mappedValue = 'storeCard';
+        if(programType.toLowerCase().includes('sello')) mappedValue = 'stampCard';
+        if(programType.toLowerCase().includes('membresía')) mappedValue = 'membershipCard';
+        if(programType.toLowerCase().includes('cupón')) mappedValue = 'coupon';
+        
+        typeSelect.value = mappedValue;
+        // Trigger change to update preview
+        typeSelect.dispatchEvent(new Event('change'));
+    }
+}
