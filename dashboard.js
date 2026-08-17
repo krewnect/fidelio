@@ -5003,6 +5003,20 @@ window.openCajaModal = function() {
     if(modal) {
         modal.style.display = 'flex';
         // Reset fields
+        const customerSelect = document.getElementById('caja-customer');
+        if(customerSelect) {
+            customerSelect.innerHTML = '<option value="">-- Cliente General (Venta de mostrador) --</option>';
+            if(window.state && window.state.customers) {
+                window.state.customers.forEach(cust => {
+                    const option = document.createElement('option');
+                    option.value = cust.id;
+                    option.textContent = `${cust.full_name || 'Sin Nombre'} (${cust.email || 'Sin Correo'})`;
+                    customerSelect.appendChild(option);
+                });
+            }
+            customerSelect.value = '';
+        }
+
         document.getElementById('caja-concept').value = '';
         document.getElementById('caja-amount').value = '';
         document.getElementById('caja-method').value = 'Efectivo';
@@ -5048,7 +5062,7 @@ window.loadCajaTransactions = async function() {
         if(!tbody) return;
         
         if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-muted);">No hay movimientos registrados.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">No hay movimientos registrados.</td></tr>`;
         } else {
             let html = '';
             data.forEach(txn => {
@@ -5057,16 +5071,21 @@ window.loadCajaTransactions = async function() {
                     hour: '2-digit', minute:'2-digit'
                 });
                 
-                let iconMethod = '💵';
-                if(txn.payment_method === 'Tarjeta') iconMethod = '💳';
-                if(txn.payment_method === 'Transferencia') iconMethod = '🏦';
-                if(txn.payment_method === 'Stripe') iconMethod = '📱';
+                // Buscar nombre del cliente si existe
+                let customerName = '-';
+                if(txn.customer_id && window.state && window.state.customers) {
+                    const cust = window.state.customers.find(c => c.id === txn.customer_id);
+                    if(cust) {
+                        customerName = `<span style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">${cust.full_name || cust.email}</span>`;
+                    }
+                }
                 
                 html += `
                     <tr style="border-bottom: 1px solid var(--border-color);">
                         <td style="padding: 16px 24px; color: var(--text-muted); font-size: 13px;">${date}</td>
+                        <td style="padding: 16px 24px;">${customerName}</td>
                         <td style="padding: 16px 24px; font-weight: 500;">${txn.concept}</td>
-                        <td style="padding: 16px 24px;">${iconMethod} ${txn.payment_method}</td>
+                        <td style="padding: 16px 24px;">${txn.payment_method}</td>
                         <td style="padding: 16px 24px; text-align: right; font-weight: 700; color: #10b981;">+$${parseFloat(txn.amount).toFixed(2)}</td>
                     </tr>
                 `;
@@ -5109,6 +5128,7 @@ window.loadCajaTransactions = async function() {
 window.saveCajaTransaction = async function() {
     if(!window.merchantId) return;
     
+    const customerId = document.getElementById('caja-customer').value || null;
     const concept = document.getElementById('caja-concept').value.trim();
     const amount = parseFloat(document.getElementById('caja-amount').value);
     const method = document.getElementById('caja-method').value;
@@ -5125,14 +5145,20 @@ window.saveCajaTransaction = async function() {
     btn.disabled = true;
     
     try {
+        const payload = {
+            merchant_id: window.merchantId,
+            concept: concept,
+            amount: amount,
+            payment_method: method
+        };
+        
+        if (customerId) {
+            payload.customer_id = customerId;
+        }
+
         const { error } = await _supabase
             .from('merchant_transactions')
-            .insert([{
-                merchant_id: window.merchantId,
-                concept: concept,
-                amount: amount,
-                payment_method: method
-            }]);
+            .insert([payload]);
             
         if (error) {
             throw error;
