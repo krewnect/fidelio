@@ -724,6 +724,7 @@ let saveTimeout = null;
             setTimeout(() => toast.remove(), 300);
         }, 4000);
     }
+    window.showToast = showToast;
 
     // --- 1-CLICK INTUITIVE PRESET LOAD FUNCTION ---
     window.loadDemoPreset = async function(presetKey) {
@@ -4863,7 +4864,7 @@ window.fetchCopilotIdeas = async function() {
         
     } catch (e) {
         console.error(e);
-        showToast("Error al generar ideas con Copiloto AI", "error");
+        if (typeof window.showToast === 'function') window.showToast("Error al generar ideas con Copiloto AI", "error");
     } finally {
         loadingEl.style.display = 'none';
         resultsEl.style.display = 'block';
