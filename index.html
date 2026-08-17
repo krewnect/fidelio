@@ -1541,37 +1541,54 @@
                         </label>
                     </div>
                     
-                    <div style="overflow-x: auto;">
-                        <table class="crm-table">
-                            <thead>
-                                <tr>
-                                    <th>Nivel VIP</th>
-                                    <th>Gasto Acumulado (Mínimo)</th>
-                                    <th>% Cashback VIP</th>
-                                    <th>Beneficio Extra (Opcional)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong style="color: #B87333;">Bronce (Base)</strong></td>
-                                    <td><input type="number" id="vip-bronce-min" class="fidelio-input" value="0" disabled style="width:100px; background:var(--bg-card); cursor:not-allowed;"> MXN</td>
-                                    <td><input type="number" id="vip-bronce-cb" class="fidelio-input" value="5" style="width:80px;"> %</td>
-                                    <td><input type="text" id="vip-bronce-perk" class="fidelio-input" placeholder="Ej. Ninguno" value="Beneficio Base"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong style="color: #C0C0C0;">Plata VIP</strong></td>
-                                    <td><input type="number" id="vip-plata-min" class="fidelio-input" value="1000" style="width:100px;"> MXN</td>
-                                    <td><input type="number" id="vip-plata-cb" class="fidelio-input" value="10" style="width:80px;"> %</td>
-                                    <td><input type="text" id="vip-plata-perk" class="fidelio-input" placeholder="Ej. Refill Gratis" value="Beneficio Plata"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong style="color: #FFD700;">Oro VIP</strong></td>
-                                    <td><input type="number" id="vip-oro-min" class="fidelio-input" value="3000" style="width:100px;"> MXN</td>
-                                    <td><input type="number" id="vip-oro-cb" class="fidelio-input" value="15" style="width:80px;"> %</td>
-                                    <td><input type="text" id="vip-oro-perk" class="fidelio-input" placeholder="Ej. Postre Gratis" value="Beneficio Oro"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div id="vip-tiers-container" style="display: flex; gap: 24px; flex-wrap: wrap;">
+                        <!-- Bronce -->
+                        <div class="vip-tier-card" data-tier="bronce" style="flex:1; min-width: 300px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+                            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 16px;">
+                                <strong style="color: #B87333; font-size:16px;">Bronce (Base)</strong>
+                            </div>
+                            <div class="form-group">
+                                <label>Gasto Acumulado Mínimo</label>
+                                <input type="number" id="vip-bronce-min" class="fidelio-input" value="0" disabled style="background:var(--bg-input); cursor:not-allowed;">
+                            </div>
+                            <div style="margin-top:16px;">
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:8px;">Beneficios del Nivel</label>
+                                <div id="vip-bronce-benefits" class="vip-benefits-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                                <button type="button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('bronce')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
+                            </div>
+                        </div>
+
+                        <!-- Plata -->
+                        <div class="vip-tier-card" data-tier="plata" style="flex:1; min-width: 300px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+                            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 16px;">
+                                <strong style="color: #C0C0C0; font-size:16px;">Plata VIP</strong>
+                            </div>
+                            <div class="form-group">
+                                <label>Gasto Acumulado Mínimo</label>
+                                <input type="number" id="vip-plata-min" class="fidelio-input" value="1000">
+                            </div>
+                            <div style="margin-top:16px;">
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:8px;">Beneficios del Nivel</label>
+                                <div id="vip-plata-benefits" class="vip-benefits-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                                <button type="button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('plata')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
+                            </div>
+                        </div>
+
+                        <!-- Oro -->
+                        <div class="vip-tier-card" data-tier="oro" style="flex:1; min-width: 300px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+                            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 16px;">
+                                <strong style="color: #FFD700; font-size:16px;">Oro VIP</strong>
+                            </div>
+                            <div class="form-group">
+                                <label>Gasto Acumulado Mínimo</label>
+                                <input type="number" id="vip-oro-min" class="fidelio-input" value="3000">
+                            </div>
+                            <div style="margin-top:16px;">
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:8px;">Beneficios del Nivel</label>
+                                <div id="vip-oro-benefits" class="vip-benefits-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                                <button type="button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('oro')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 </div>

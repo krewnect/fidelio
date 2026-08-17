@@ -2953,19 +2953,25 @@ function updatePassRender() {
             // Set VIP
             toggleVip.checked = state.vipActive !== false;
             if (state.vipTiers) {
+                // Bronce
                 if(state.vipTiers.bronce) {
-                    document.getElementById('vip-bronce-cb').value = state.vipTiers.bronce.cashbackPercent || 5;
-                    document.getElementById('vip-bronce-perk').value = state.vipTiers.bronce.perk || 'Beneficio Base';
+                    const bBenefits = state.vipTiers.bronce.benefits || [{ type: 'cashback', value: state.vipTiers.bronce.cashbackPercent || 5 }];
+                    document.getElementById('vip-bronce-benefits').innerHTML = '';
+                    bBenefits.forEach(b => window.addVipBenefit('bronce', b.type, b.value));
                 }
+                // Plata
                 if(state.vipTiers.plata) {
-                    document.getElementById('vip-plata-min').value = state.vipTiers.plata.minSpent || 1000;
-                    document.getElementById('vip-plata-cb').value = state.vipTiers.plata.cashbackPercent || 10;
-                    document.getElementById('vip-plata-perk').value = state.vipTiers.plata.perk || 'Beneficio Plata';
+                    if(document.getElementById('vip-plata-min')) document.getElementById('vip-plata-min').value = state.vipTiers.plata.minSpent || 1000;
+                    const pBenefits = state.vipTiers.plata.benefits || [{ type: 'cashback', value: state.vipTiers.plata.cashbackPercent || 10 }];
+                    document.getElementById('vip-plata-benefits').innerHTML = '';
+                    pBenefits.forEach(b => window.addVipBenefit('plata', b.type, b.value));
                 }
+                // Oro
                 if(state.vipTiers.oro) {
-                    document.getElementById('vip-oro-min').value = state.vipTiers.oro.minSpent || 3000;
-                    document.getElementById('vip-oro-cb').value = state.vipTiers.oro.cashbackPercent || 15;
-                    document.getElementById('vip-oro-perk').value = state.vipTiers.oro.perk || 'Beneficio Oro';
+                    if(document.getElementById('vip-oro-min')) document.getElementById('vip-oro-min').value = state.vipTiers.oro.minSpent || 3000;
+                    const oBenefits = state.vipTiers.oro.benefits || [{ type: 'cashback', value: state.vipTiers.oro.cashbackPercent || 15 }];
+                    document.getElementById('vip-oro-benefits').innerHTML = '';
+                    oBenefits.forEach(b => window.addVipBenefit('oro', b.type, b.value));
                 }
             }
             if (state.customRules) {
@@ -3080,21 +3086,30 @@ function updatePassRender() {
                 const reward = stampsReward.value;
                 
                 const vipActive = toggleVip.checked;
+                
+                const getBenefitsForTier = (tier) => {
+                    const rows = document.querySelectorAll(`#vip-${tier}-benefits .vip-benefit-row`);
+                    const benefits = [];
+                    rows.forEach(r => {
+                        const type = r.querySelector('.benefit-type').value;
+                        const value = r.querySelector('.benefit-value').value;
+                        if(value.trim() !== '') benefits.push({ type, value });
+                    });
+                    return benefits;
+                };
+
                 const vipTiers = {
                     bronce: { 
                         name: "Bronce", minSpent: 0, 
-                        cashbackPercent: parseInt(document.getElementById('vip-bronce-cb').value), 
-                        perk: document.getElementById('vip-bronce-perk').value 
+                        benefits: getBenefitsForTier('bronce')
                     },
                     plata: { 
-                        name: "Plata VIP", minSpent: parseInt(document.getElementById('vip-plata-min').value), 
-                        cashbackPercent: parseInt(document.getElementById('vip-plata-cb').value), 
-                        perk: document.getElementById('vip-plata-perk').value 
+                        name: "Plata VIP", minSpent: parseInt(document.getElementById('vip-plata-min')?.value || 1000), 
+                        benefits: getBenefitsForTier('plata')
                     },
                     oro: { 
-                        name: "Oro VIP", minSpent: parseInt(document.getElementById('vip-oro-min').value), 
-                        cashbackPercent: parseInt(document.getElementById('vip-oro-cb').value), 
-                        perk: document.getElementById('vip-oro-perk').value 
+                        name: "Oro VIP", minSpent: parseInt(document.getElementById('vip-oro-min')?.value || 3000), 
+                        benefits: getBenefitsForTier('oro')
                     }
                 };
                 
@@ -4478,4 +4493,54 @@ window.initLoyaltyTab = function() {
     safeSetValue('pre-bonus', state.prepaidBonus || 100);
     const panelPrepaid = document.getElementById('panel-prepaid-config');
     if (panelPrepaid) panelPrepaid.style.display = state.prepaidActive ? 'block' : 'none';
+};
+
+// Dynamic VIP Benefits Logic
+window.addVipBenefit = function(tier, type = 'cashback', value = '') {
+    const container = document.getElementById(`vip-${tier}-benefits`);
+    if (!container) return;
+
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.gap = '8px';
+    row.style.alignItems = 'center';
+    row.classList.add('vip-benefit-row');
+    
+    // Select Type
+    const select = document.createElement('select');
+    select.classList.add('fidelio-input', 'benefit-type');
+    select.style.flex = '1';
+    select.style.padding = '4px 8px';
+    select.innerHTML = `
+        <option value="cashback" ${type === 'cashback' ? 'selected' : ''}>Cashback (%)</option>
+        <option value="puntos" ${type === 'puntos' ? 'selected' : ''}>Multiplicador Puntos</option>
+        <option value="descuento" ${type === 'descuento' ? 'selected' : ''}>Descuento Fijo (%)</option>
+        <option value="producto" ${type === 'producto' ? 'selected' : ''}>Producto Gratis</option>
+        <option value="upgrade" ${type === 'upgrade' ? 'selected' : ''}>Upgrade</option>
+        <option value="otro" ${type === 'otro' ? 'selected' : ''}>Otro</option>
+    `;
+
+    // Input Value
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.classList.add('fidelio-input', 'benefit-value');
+    input.style.flex = '2';
+    input.placeholder = 'Valor / Descripción';
+    input.value = value;
+
+    // Delete Button
+    const btnDel = document.createElement('button');
+    btnDel.type = 'button';
+    btnDel.innerHTML = '<i class="fa-solid fa-trash"></i>';
+    btnDel.style.background = 'transparent';
+    btnDel.style.color = 'var(--accent-red)';
+    btnDel.style.border = 'none';
+    btnDel.style.cursor = 'pointer';
+    btnDel.onclick = () => row.remove();
+
+    row.appendChild(select);
+    row.appendChild(input);
+    row.appendChild(btnDel);
+
+    container.appendChild(row);
 };
