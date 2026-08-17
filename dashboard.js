@@ -2640,8 +2640,9 @@ function updatePassRender() {
             return;
         }
         
+        window.currentInboxTickets = filteredData;
         tbody.innerHTML = '';
-        filteredData.forEach(t => {
+        filteredData.forEach((t, index) => {
             const date = new Date(t.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric', hour:'2-digit', minute:'2-digit' });
             let statusBadge = t.status === 'abierto' ? '<span class="menu-badge" style="background:#ef4444;color:#fff;font-size:10px;">ABIERTO</span>' : '<span class="menu-badge" style="background:#10b981;color:#fff;font-size:10px;">RESUELTO</span>';
             
@@ -2658,12 +2659,46 @@ function updatePassRender() {
                     </td>
                     <td style="padding: 16px;">${statusBadge}</td>
                     <td style="padding: 16px; text-align: right;">
-                        <button class="btn-preset" onclick="alert('Mensaje completo:\n\n' + \`${t.message}\`)" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
+                        <button class="btn-preset" onclick="viewTicketDetail(${index})" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
                         ${t.status === 'abierto' ? `<button class="btn-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--accent-violet);"></i></button>` : ''}
                     </td>
                 </tr>
             `;
         });
+        });
+    };
+
+    window.viewTicketDetail = function(index) {
+        const t = window.currentInboxTickets[index];
+        if(!t) return;
+        
+        document.getElementById('ticket-modal-subject').innerText = t.subject || 'Sin asunto';
+        document.getElementById('ticket-modal-id').innerText = '#' + t.id;
+        document.getElementById('ticket-modal-email').innerText = t.email || 'Desconocido';
+        document.getElementById('ticket-modal-merchant').innerText = t.merchant_id || 'Visitante';
+        
+        const dateStr = new Date(t.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric', hour:'2-digit', minute:'2-digit' });
+        document.getElementById('ticket-modal-date').innerText = dateStr;
+        
+        let statusHtml = t.status === 'abierto' ? '<span style="background:#ef4444;color:#fff;padding:4px 8px;border-radius:12px;font-size:10px;font-weight:bold;">ABIERTO</span>' : '<span style="background:#10b981;color:#fff;padding:4px 8px;border-radius:12px;font-size:10px;font-weight:bold;">RESUELTO</span>';
+        document.getElementById('ticket-modal-status').innerHTML = statusHtml;
+        
+        document.getElementById('ticket-modal-message').innerText = t.message || 'Sin contenido';
+        
+        const actionsDiv = document.getElementById('ticket-modal-actions');
+        actionsDiv.innerHTML = '';
+        
+        // Botón de email
+        if(t.email) {
+            const mailto = `mailto:${t.email}?subject=RE: ${encodeURIComponent(t.subject)}&body=${encodeURIComponent('\n\n--- Tu mensaje original ---\n' + t.message)}`;
+            actionsDiv.innerHTML += `<a href="${mailto}" class="btn btn-secondary" style="padding:10px 16px; text-decoration:none; display:inline-block;"><i class="fa-solid fa-reply"></i> Responder por Correo</a>`;
+        }
+        
+        if(t.status === 'abierto') {
+            actionsDiv.innerHTML += `<button class="btn btn-primary" onclick="resolveTicket('${t.id}'); document.getElementById('modal-ticket-detail').style.display='none';" style="padding:10px 16px; background:var(--success); border:none;"><i class="fa-solid fa-check"></i> Marcar Resuelto</button>`;
+        }
+        
+        document.getElementById('modal-ticket-detail').style.display = 'flex';
     };
 
     window.resolveTicket = async function(id) {
