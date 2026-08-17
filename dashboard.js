@@ -4871,53 +4871,72 @@ window.fetchCopilotIdeas = async function() {
 };
 
 window.executeCopilotIdea = function(opp) {
-    // 1. Cambiar a la pestaña de Campañas Push
     const navTabs = document.querySelectorAll('.nav-tab');
     const tabContents = document.querySelectorAll('.tab-content');
     navTabs.forEach(t => t.classList.remove('active'));
     tabContents.forEach(c => c.classList.remove('active'));
-    
-    const marketingTabBtn = document.querySelector('.nav-tab[data-tab="tab-marketing"]');
-    const marketingTabContent = document.getElementById('tab-marketing');
-    
-    if(marketingTabBtn) marketingTabBtn.classList.add('active');
-    if(marketingTabContent) marketingTabContent.classList.add('active');
-    
-    // 2. Rellenar los campos
-    const messageInput = document.getElementById('camp-push-message');
-    const segmentSelect = document.getElementById('camp-segment-select');
-    
-    if(messageInput) {
-        messageInput.value = opp.pushMessage;
-    }
-    if(segmentSelect) {
-        // Encontrar si la opción existe, si no, dejar "all"
-        let optionExists = false;
-        for (let i = 0; i < segmentSelect.options.length; i++) {
-            if (segmentSelect.options[i].value === opp.segment) {
-                optionExists = true;
-                break;
+
+    if (opp.format === 'card') {
+        // 1. Cambiar a la pestaña de Builder
+        const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
+        const builderTabContent = document.getElementById('tab-builder');
+        
+        if(builderTabBtn) builderTabBtn.classList.add('active');
+        if(builderTabContent) builderTabContent.classList.add('active');
+
+        // 2. Rellenar campos de la tarjeta
+        const titleInput = document.getElementById('rest-name');
+        const descInput = document.getElementById('rest-desc');
+        
+        if(titleInput) titleInput.value = opp.title;
+        if(descInput) descInput.value = opp.pushMessage.substring(0, 40); // max 40 chars
+
+        // Disparar render
+        if(window.updatePassRender) window.updatePassRender();
+        showToast("Tarjeta Especial configurada por IA. Revisa el diseño.", "success");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } else {
+        // 1. Cambiar a la pestaña de Campañas Push (comportamiento default)
+        const marketingTabBtn = document.querySelector('.nav-tab[data-tab="tab-marketing"]');
+        const marketingTabContent = document.getElementById('tab-marketing');
+        
+        if(marketingTabBtn) marketingTabBtn.classList.add('active');
+        if(marketingTabContent) marketingTabContent.classList.add('active');
+        
+        // 2. Rellenar los campos
+        const messageInput = document.getElementById('camp-push-message');
+        const segmentSelect = document.getElementById('camp-segment-select');
+        
+        if(messageInput) {
+            messageInput.value = opp.pushMessage;
+        }
+        if(segmentSelect) {
+            let optionExists = false;
+            for (let i = 0; i < segmentSelect.options.length; i++) {
+                if (segmentSelect.options[i].value === opp.segment) {
+                    optionExists = true;
+                    break;
+                }
+            }
+            if(optionExists) {
+                segmentSelect.value = opp.segment;
+            } else {
+                segmentSelect.value = 'all';
             }
         }
-        if(optionExists) {
-            segmentSelect.value = opp.segment;
-        } else {
-            segmentSelect.value = 'all';
-        }
+        
+        // 3. Seleccionar visualmente el cuadro de tipo (libre)
+        document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('active'));
+        document.getElementById('camp-card-libre')?.classList.add('active');
+        
+        // 4. Disparar actualizaciones visuales
+        if(window.updatePushPreview) window.updatePushPreview();
+        if(window.updateAudienceEstimate) window.updateAudienceEstimate();
+        
+        showToast("Campaña Push pre-configurada por la IA. Revisa y envía.", "success");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    
-    // 3. Seleccionar visualmente el cuadro de tipo (libre)
-    document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('active'));
-    document.getElementById('camp-card-libre')?.classList.add('active');
-    
-    // 4. Disparar actualizaciones visuales
-    if(window.updatePushPreview) window.updatePushPreview();
-    if(window.updateAudienceEstimate) window.updateAudienceEstimate();
-    
-    showToast("Campaña pre-configurada por la IA. Revisa y envía.", "success");
-    
-    // Scrollear hacia arriba
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 // Add CSS keyframe for fadeInUp if not exists

@@ -1014,17 +1014,23 @@ app.post('/api/ai/copilot', apiLimiter, requireMerchantAuth, async (req, res) =>
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const systemPrompt = `
-Eres el Copiloto de Marketing AI de Fidelio. Tu objetivo es analizar la situación actual del restaurante y proponer exactamente 3 campañas de marketing altamente efectivas (Notificaciones Push).
+Eres el Copiloto de Marketing AI de Fidelio. Tu objetivo es analizar la situación actual del restaurante y proponer exactamente 3 campañas de marketing altamente efectivas.
+Estas campañas pueden ser de dos formatos:
+1. "push": Notificaciones Push al celular.
+2. "card": Tarjetas Especiales (promociones o eventos que el cliente guarda en su Apple/Google Wallet).
+
 Debes devolver ÚNICAMENTE un arreglo JSON válido (sin markdown, sin bloques de código, sin texto antes ni después) con exactamente 3 objetos. 
 Cada objeto debe tener esta estructura exacta:
 {
-  "title": "Título llamativo para la tarjeta",
+  "title": "Título llamativo para la tarjeta (ej. Día de Pizza)",
   "description": "Explicación de por qué esta campaña es buena idea",
-  "pushMessage": "El texto persuasivo de la Notificación Push (max 120 caracteres)",
+  "format": "push o card",
+  "pushMessage": "El texto persuasivo de la Notificación Push o Descripción de la Tarjeta (max 120 caracteres)",
   "segment": "uno de estos: [all, active, risk, inactive, vip_oro, vip_plata, cumpleaneros, aniversario]",
   "estimatedReach": "Ej. ~150 Clientes",
   "type": "uno de estos: [recuperacion, cumpleanos, dias_lentos, vip_exclusivo, winback]"
 }
+Asegúrate de incluir al menos una sugerencia de tipo "card".
 
 Contexto actual del negocio:
 ${JSON.stringify(merchantContext || {})}
@@ -1046,22 +1052,25 @@ ${JSON.stringify(merchantContext || {})}
                 {
                     title: "Recuperar Clientes en Riesgo",
                     description: "Tienes varios clientes que no te visitan desde hace más de 30 días. Envíales un incentivo ahora.",
+                    format: "push",
                     pushMessage: "¡Te extrañamos! Vuelve esta semana y te regalamos el postre en tu consumo.",
                     segment: "risk",
                     estimatedReach: "~45 Clientes",
                     type: "recuperacion"
                 },
                 {
-                    title: "Inyectar Ventas Hoy",
-                    description: "Parece un día lento. Lanza un 2x1 en bebidas solo por las próximas 3 horas.",
-                    pushMessage: "¡Hora Feliz sorpresa! 2x1 en toda la coctelería si muestras este mensaje antes de las 6 PM.",
-                    segment: "active",
-                    estimatedReach: "~120 Clientes",
-                    type: "dias_lentos"
+                    title: "Pase VIP Exclusivo",
+                    description: "Crea una tarjeta especial dorada para tus mejores clientes con beneficios únicos.",
+                    format: "card",
+                    pushMessage: "Tarjeta de Beneficios Oro. Acceso sin filas y postre de cortesía en cada visita.",
+                    segment: "vip_oro",
+                    estimatedReach: "~20 Clientes",
+                    type: "vip_exclusivo"
                 },
                 {
                     title: "Premiar a los Cumpleañeros",
                     description: "Fideliza a los que cumplen años este mes con un pequeño detalle.",
+                    format: "push",
                     pushMessage: "¡Feliz mes de cumpleaños! Ven a celebrar y nosotros invitamos la ronda de shots.",
                     segment: "cumpleaneros",
                     estimatedReach: "~12 Clientes",
