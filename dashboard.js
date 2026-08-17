@@ -45,7 +45,7 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
 
 // --- FIDELIO UNIVERSAL BUSINESS ENGINE (FIDELITO SUPPORT ASSISTANT) --- //
 
-let document.getElementById('sub-status-text').innerHTML = merchantData.plan_status === 'active' ? '<i class="fa-solid fa-check-circle"></i> Activo' : '<i class="fa-solid fa-clock"></i> Pruebas / Inactivo';
+
         state = {
     team: [
         { id: 'usr-001', name: 'Master Admin', email: 'hola@fideliorewards.com', role: 'system', status: 'activo' },
@@ -362,19 +362,39 @@ let saveTimeout = null;
                 return false;
             }
             merchantData = newMerchant;
-        window.
         }
 
         window.merchantData = merchantData;
-        const { data: custData } = await window.supabaseClient
-            .from('customers')
-            .select('*')
-            .eq('merchant_id', merchantId);
+        let custQuery = window.supabaseClient.from('customers').select('*');
+        if (window.merchantSession.user.email !== 'hola@fideliorewards.com') {
+            custQuery = custQuery.eq('merchant_id', merchantId);
+        }
+        const { data: custData } = await custQuery;
 
         const { data: transData } = await window.supabaseClient
             .from('transactions')
             .select('*')
             .eq('merchant_id', merchantId);
+            
+        let appQuery = window.supabaseClient.from('appointments').select('*').order('appointment_date', { ascending: true });
+        if (window.merchantSession.user.email !== 'hola@fideliorewards.com') {
+            appQuery = appQuery.eq('merchant_id', merchantId);
+        }
+        const { data: appointmentsData } = await appQuery;
+        
+        const navBranches = document.getElementById('nav-branches');
+        const navAppointments = document.getElementById('nav-appointments');
+        
+        if (window.merchantSession.user.email === 'hola@fideliorewards.com') {
+            if (navBranches) navBranches.style.display = 'block';
+            if (navAppointments) navAppointments.style.display = 'block';
+        } else if (merchantData.business_type === 'professional') {
+            if (navBranches) navBranches.style.display = 'none';
+            if (navAppointments) navAppointments.style.display = 'block';
+        } else {
+            if (navBranches) navBranches.style.display = 'block';
+            if (navAppointments) navAppointments.style.display = 'none';
+        }
 
         document.getElementById('sub-status-text').innerHTML = merchantData.plan_status === 'active' ? '<i class="fa-solid fa-check-circle"></i> Activo' : '<i class="fa-solid fa-clock"></i> Pruebas / Inactivo';
         state = {
@@ -403,6 +423,7 @@ let saveTimeout = null;
             branches: merchantData.branches || [],
             customers: custData || [],
             transactions: transData || [],
+            appointments: appointmentsData || [],
             activeWallet: "apple"
         };
 
@@ -428,6 +449,25 @@ let saveTimeout = null;
             };
         }
         
+        if (merchantData.business_type === 'professional') {
+            // Force mode to stamps
+            const pSelect = document.getElementById('program-type-select');
+            if (pSelect) {
+                pSelect.value = 'stamps';
+                pSelect.disabled = true;
+                if (pSelect.parentElement) pSelect.parentElement.style.display = 'none'; // Hide the whole block
+            }
+            // Hide VIP toggle block
+            const vipToggle = document.getElementById('toggle-vip');
+            if (vipToggle && vipToggle.parentElement && vipToggle.parentElement.parentElement) {
+                vipToggle.parentElement.parentElement.style.display = 'none';
+            }
+            // Force state
+            state.activeMode = 'stamps';
+            state.cashbackActive = false;
+            state.vipActive = false;
+        }
+
         return true;
     }
 
@@ -491,7 +531,7 @@ let saveTimeout = null;
     }
 
     // --- 1-CLICK INTUITIVE PRESET LOAD FUNCTION ---
-    window.loadDemoPreset = function(presetKey) {
+    window.loadDemoPreset = async function(presetKey) {
         const preset = categoryPresets[presetKey] || categoryPresets.general;
         const categorySel = document.getElementById('business-category-select');
         if (categorySel) categorySel.value = presetKey;
@@ -521,7 +561,7 @@ let saveTimeout = null;
         if(document.getElementById('metrics-cards-issued')) document.getElementById('metrics-cards-issued').textContent = custData.length;
 
         updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         showToast(`Plantilla cargada en Fidelio: ${preset.name} (${preset.label}).`, "success");
@@ -542,7 +582,7 @@ let saveTimeout = null;
             const tierConfig = state.vipTiers[tier];
             sampleClient.tier = tierConfig ? tierConfig.name : (tier === 'oro' ? 'Oro VIP' : tier === 'plata' ? 'Plata VIP' : 'Bronce');
             updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
             showToast(`Vista previa del pase actualizada a: ${sampleClient.tier}`, "info");
@@ -553,37 +593,37 @@ let saveTimeout = null;
     const bindVipTierInputs = () => {
         safeAdd('tier-bronce-name', 'input', (e) => {
             state.vipTiers.bronce.name = e.target.value; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
         safeAdd('tier-bronce-cb', 'input', (e) => {
             state.vipTiers.bronce.cashbackPercent = parseFloat(e.target.value) || 5; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
         safeAdd('tier-plata-name', 'input', (e) => {
             state.vipTiers.plata.name = e.target.value; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
         safeAdd('tier-plata-cb', 'input', (e) => {
             state.vipTiers.plata.cashbackPercent = parseFloat(e.target.value) || 10; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
         safeAdd('tier-oro-name', 'input', (e) => {
             state.vipTiers.oro.name = e.target.value; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
         safeAdd('tier-oro-cb', 'input', (e) => {
             state.vipTiers.oro.cashbackPercent = parseFloat(e.target.value) || 15; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
@@ -664,7 +704,7 @@ let saveTimeout = null;
 
             applyModeToParams(mode);
             updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
             showToast(`Formato de Lealtad actualizado: ${tile.querySelector('strong').textContent}`, "info");
@@ -788,6 +828,45 @@ let saveTimeout = null;
         reader.readAsText(file);
         event.target.value = ''; // Reset input
     };
+
+    function renderAppointments() {
+        const container = document.getElementById('appointments-list-container');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (!state.appointments || state.appointments.length === 0) {
+            container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;"><i class="fa-solid fa-calendar-day"></i> Aún no tienes citas agendadas.</p>`;
+            return;
+        }
+
+        let html = '';
+        state.appointments.forEach(app => {
+            const dateObj = new Date(app.appointment_date);
+            const dateStr = dateObj.toLocaleDateString();
+            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const statusColor = app.status === 'pending' ? 'var(--warning)' : (app.status === 'confirmed' ? 'var(--success)' : 'var(--text-muted)');
+            
+            html += `
+                <div style="background: var(--card-bg); border: 1px solid var(--border-soft); border-radius: 12px; padding: 16px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 16px;">${app.customer_name}</div>
+                        <div style="font-size: 13px; color: var(--text-muted); margin-top:4px;"><i class="fa-solid fa-envelope"></i> ${app.customer_email} ${app.customer_phone ? ' | <i class="fa-solid fa-phone"></i> ' + app.customer_phone : ''}</div>
+                        <div style="font-size: 14px; margin-top: 8px; color:var(--text-main);"><i class="fa-regular fa-calendar"></i> ${dateStr} a las ${timeStr}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="display:inline-block; padding: 4px 12px; background: rgba(255,255,255,0.05); border: 1px solid ${statusColor}; color: ${statusColor}; border-radius: 20px; font-size: 12px; font-weight:700; margin-bottom: 8px;">
+                            ${app.status ? app.status.toUpperCase() : 'PENDIENTE'}
+                        </span>
+                        <br>
+                        <button class="btn-outline" style="padding: 6px 12px; font-size: 12px; margin-right:4px;" onclick="alert('Funcionalidad de contacto próximamente')">Contactar</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
 
     function renderBranches() {
         try {
@@ -1606,7 +1685,7 @@ function updatePassRender() {
                     
                     btnRemoveLogo.style.display = 'inline-block';
                     updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
                     showToast("Logo cargado con éxito en la tarjeta digital.", "success");
@@ -1623,7 +1702,7 @@ function updatePassRender() {
             logoFileInput.value = '';
             btnRemoveLogo.style.display = 'none';
             updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
             showToast("Logo removido.", "info");
@@ -1640,7 +1719,7 @@ function updatePassRender() {
                     
                     btnRemoveBanner.style.display = 'inline-block';
                     updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
                     showToast("Imagen de portada de tarjeta aplicada.", "success");
@@ -1657,7 +1736,7 @@ function updatePassRender() {
             bannerFileInput.value = '';
             btnRemoveBanner.style.display = 'none';
             updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
             showToast("Imagen de portada removida.", "info");
@@ -1740,7 +1819,7 @@ function updatePassRender() {
             state.activeWallet = 'apple';
             passRender.style.borderRadius = '20px';
             updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
@@ -1753,7 +1832,7 @@ function updatePassRender() {
             state.activeWallet = 'google';
             passRender.style.borderRadius = '16px';
             updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         });
@@ -1762,73 +1841,73 @@ function updatePassRender() {
     // --- INPUT BINDINGS ---
     safeAdd('rest-name', 'input', (e) => {
         state.restaurantName = e.target.value || "Comercio"; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('color-primary', 'input', (e) => {
         state.colorPrimary = e.target.value; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('color-accent', 'input', (e) => {
         state.colorAccent = e.target.value; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('rest-icon', 'change', (e) => {
         state.iconClass = e.target.value; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('mech-cashback-check', 'change', (e) => {
         state.cashbackActive = e.target.checked; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('cashback-percent', 'input', (e) => {
         state.cashbackPercent = parseFloat(e.target.value) || 0; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('mech-stamps-check', 'change', (e) => {
         state.stampsActive = e.target.checked; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('stamps-total', 'input', (e) => {
         state.stampsTotal = parseInt(e.target.value) || 5; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('stamps-reward', 'input', (e) => {
         state.stampsReward = e.target.value || "Premio"; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('mech-dynamic-check', 'change', (e) => {
         state.dynamicActive = e.target.checked; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('dynamic-desc', 'input', (e) => {
         state.dynamicDesc = e.target.value; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
     safeAdd('mech-vip-check', 'change', (e) => {
         state.vipActive = e.target.checked; updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
     });
@@ -2370,10 +2449,11 @@ function updatePassRender() {
     };
 
     // // Initial Render Calls
+    renderAppointments();
     renderBranches();
     renderCRMTable();
     updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
 
@@ -2528,7 +2608,7 @@ function updatePassRender() {
 
         // Inicializar UI
         updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
         renderBranches();
@@ -2741,7 +2821,7 @@ function updatePassRender() {
                 if(cashbackDisplay) cashbackDisplay.textContent = e.target.value + '%';
                 if(cashbackExample) cashbackExample.textContent = e.target.value;
                 if (window.updatePassRender) window.updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
             });
@@ -2757,7 +2837,7 @@ function updatePassRender() {
             togglePrepaid.addEventListener('change', (e) => {
                 panelPrepaidConfig.style.display = e.target.checked ? 'block' : 'none';
                 if (window.updatePassRender) window.updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
             });
@@ -2771,7 +2851,7 @@ function updatePassRender() {
                 if(prePay) prePay.textContent = amount;
                 preTotal.textContent = '$' + total;
                 if (window.updatePassRender) window.updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
             };
@@ -2851,7 +2931,7 @@ function updatePassRender() {
                     
                     // Re-render card preview if mode changed
                     updatePassRender();
-        await checkPricingStatus();
+        checkPricingStatus();
         // Expose to window for stripe button
         window.isFounder = isFounder;
                     

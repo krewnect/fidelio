@@ -238,6 +238,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Servir archivos estáticos (Frontend)
 app.use(express.static(path.join(__dirname, '/'), { 
+    maxAge: '1d',
+    dotfiles: 'allow',
     index: false,
     setHeaders: (res, path) => {
         if (path.endsWith('.html') || path.endsWith('.js')) {
@@ -276,7 +278,7 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Registro de Negocios
 app.post('/api/auth/register', async (req, res) => {
-    const { businessName, email, password, phone, promoCode } = req.body;
+    const { businessType, businessName, email, password, phone, promoCode } = req.body;
     
     if (!supabase) return res.status(500).json({ error: 'Supabase no configurado' });
 
@@ -319,7 +321,7 @@ app.post('/api/auth/register', async (req, res) => {
             const { error: dbError } = await supabase
                 .from('merchants')
                 .insert([
-                    { id: authData.user.id, business_name: businessName, plan_status: planStatus }
+                    { id: authData.user.id, business_name: businessName, plan_status: planStatus, business_type: businessType || 'restaurant' }
                 ]);
             
             if (dbError) console.error("Error al crear merchant:", dbError);
@@ -378,11 +380,34 @@ app.post('/api/auth/staff/create', apiLimiter, requireMerchantAuth, async (req, 
 
 // Checkout con Stripe
 app.post('/api/stripe/checkout', async (req, res) => {
-    const { merchantId, email } = req.body;
+    const { merchantId, email, businessType, plan, interval } = req.body;
     
     if (!stripe) return res.status(500).json({ error: 'Stripe no configurado' });
 
     try {
+        // Diccionario de precios dinámicos (en centavos de MXN)
+        let amount = 99900; // default (Restaurante Founder Mensual)
+        let productName = 'Suscripción Fidelio';
+        
+        if (businessType === 'professional') {
+            if (plan === 'founder') {
+                amount = (interval === 'year') ? 199900 : 19900;
+                productName = 'Licencia Founder (Fidelio Professionals)';
+            } else {
+                amount = (interval === 'year') ? 399900 : 39900;
+                productName = 'Licencia Estándar (Fidelio Professionals)';
+            }
+        } else {
+            // Business (Antes Restaurantes)
+            if (plan === 'founder') {
+                amount = (interval === 'year') ? 999900 : 99900;
+                productName = 'Licencia Founder (Fidelio Negocios)';
+            } else {
+                amount = (interval === 'year') ? 1999900 : 199900;
+                productName = 'Licencia Estándar (Fidelio Negocios)';
+            }
+        }
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             customer_email: email,
@@ -392,11 +417,11 @@ app.post('/api/stripe/checkout', async (req, res) => {
                     price_data: {
                         currency: 'mxn',
                         product_data: {
-                            name: 'Suscripción Enterprise Fidelio',
+                            name: productName,
                             description: 'Acceso a la plataforma B2B para pases en Apple & Google Wallet'
                         },
-                        unit_amount: 99900,
-                        recurring: { interval: 'month' },
+                        unit_amount: amount,
+                        recurring: { interval: interval || 'month' },
                     },
                     quantity: 1,
                 },
@@ -731,7 +756,8 @@ app.get('/', (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    res.sendFile(path.join(__dirname, 'landing.html'));
+    const targetPath = path.join(__dirname, 'landing.html');
+    res.sendFile(targetPath, { dotfiles: 'allow' });
 });
 
 app.get('/panel', (req, res) => {
@@ -742,7 +768,15 @@ app.get('/panel', (req, res) => {
 });
 
 app.get('/privacidad.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'privacidad.html'));
+    res.sendFile(path.join(__dirname, 'privacidad.html'), { dotfiles: 'allow' });
+});
+
+app.get('/pro', (req, res) => {
+    res.sendFile(path.join(__dirname, 'professionals.html'), { dotfiles: 'allow' });
+});
+
+app.get('/business', (req, res) => {
+    res.sendFile(path.join(__dirname, 'business.html'), { dotfiles: 'allow' });
 });
 
 // Ruta Dinámica (Catch-all) para páginas de restaurantes (ej. fideliorewards.com/starbucks)
