@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mi Tarjeta Digital - Portal del Cliente</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --primary: #8b5cf6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+        .merchant-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 5px;
+        }
+        .card-preview {
+            width: 100%;
+            max-width: 350px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .balance-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+        .balance-amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .customer-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        .action-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn.secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .history-list {
+            width: 100%;
+            max-width: 350px;
+            margin-top: 30px;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .history-item:last-child { border-bottom: none; }
+        
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading"><i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary"></i></div>
+
+    <div class="header">
+        <div class="merchant-name" id="ui-merchant-name">Cargando...</div>
+        <p style="opacity:0.6; font-size:0.9rem;">Portal de Lealtad VIP</p>
+    </div>
+
+    <div class="card-preview" id="ui-card">
+        <div class="balance-label">Tu Saldo Disponible</div>
+        <div class="balance-amount" id="ui-balance">$0.00</div>
+        <div class="customer-name" id="ui-customer-name">Cargando...</div>
+    </div>
+
+    <a href="#" class="action-btn" id="btn-review" style="display:none;" target="_blank">
+        <i class="fa-solid fa-star"></i> Calificar en Google Maps
+    </a>
+    <a href="#" class="action-btn secondary">
+        <i class="fa-brands fa-apple"></i> Añadir a Apple Wallet
+    </a>
+
+    <div class="history-list">
+        <h3 style="font-size:1rem; margin-bottom:15px; opacity:0.8;">Historial Reciente</h3>
+        <div id="ui-transactions">
+            <!-- Transactions injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        async function init() {
+            try {
+                // Configurar Supabase
+                const configRes = await fetch('/api/config');
+                const config = await configRes.json();
+                const supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const customerId = urlParams.get('id');
+
+                if (!customerId) throw new Error("ID de cliente inválido.");
+
+                // Cargar datos del cliente
+                const { data: customer, error: cErr } = await supabase.from('customers').select('*').eq('id', customerId).single();
+                if (cErr || !customer) throw new Error("Cliente no encontrado.");
+
+                // Cargar datos del comercio
+                const { data: merchant, error: mErr } = await supabase.from('merchants').select('*').eq('id', customer.merchant_id).single();
+                if (mErr) throw new Error("Comercio no encontrado.");
+
+                // Aplicar UI
+                document.getElementById('ui-merchant-name').textContent = merchant.business_name;
+                document.getElementById('ui-customer-name').textContent = customer.name;
+                document.getElementById('ui-balance').textContent = `$${customer.current_balance.toFixed(2)}`;
+
+                // Colores dinámicos
+                if(merchant.color_primary) {
+                    document.getElementById('ui-card').style.background = `linear-gradient(135deg, ${merchant.color_primary}, #000000)`;
+                }
+                if(merchant.color_accent) {
+                    document.documentElement.style.setProperty('--primary', merchant.color_accent);
+                }
+
+                // Mostrar botón de reseña si hay enlace
+                if(merchant.google_maps_url) {
+                    const btnReview = document.getElementById('btn-review');
+                    btnReview.style.display = 'inline-block';
+                    btnReview.href = merchant.google_maps_url;
+                }
+
+                // Cargar últimas transacciones
+                const { data: txs } = await supabase.from('transactions').select('*').eq('customer_id', customerId).order('created_at', { ascending: false }).limit(3);
+                const txContainer = document.getElementById('ui-transactions');
+                if (txs && txs.length > 0) {
+                    txContainer.innerHTML = txs.map(tx => `
+                        <div class="history-item">
+                            <div>
+                                <strong>${tx.type === 'earn' ? 'Compra' : 'Canje'}</strong>
+                                <div style="font-size:0.8rem; opacity:0.6;">${new Date(tx.created_at).toLocaleDateString()}</div>
+                            </div>
+                            <div style="font-weight:700; color:${tx.type === 'earn' ? '#4ade80' : '#ef4444'}">
+                                ${tx.type === 'earn' ? '+' : '-'}$${tx.amount.toFixed(2)}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    txContainer.innerHTML = '<p style="opacity:0.5; font-size:0.9rem;">Sin transacciones aún.</p>';
+                }
+
+                document.getElementById('loading').style.display = 'none';
+
+            } catch(e) {
+                alert("Error: " + e.message);
+                document.getElementById('loading').innerHTML = `<p>${e.message}</p>`;
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+ALTER TABLE public.merchants ADD COLUMN IF NOT EXISTS country TEXT;
+ALTER TABLE public.merchants ADD COLUMN IF NOT EXISTS state TEXT;
+ALTER TABLE public.merchants ADD COLUMN IF NOT EXISTS city TEXT;
