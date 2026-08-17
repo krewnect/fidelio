@@ -1806,33 +1806,45 @@
                             <input type="number" id="cert-fixed-amount" class="fidelio-input" placeholder="Ej. 1000" value="500" min="1">
                             <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">Define un solo monto fijo para evitar errores o confusiones en la compra del certificado.</p>
                         </div>
-                        
-                        <div style="background: rgba(139, 92, 246, 0.05); border: 1px dashed var(--accent-violet); padding: 16px; border-radius: 12px;">
-                            <h4 style="margin-top:0; font-size:14px; color:var(--text-main); margin-bottom:12px;"><i class="fa-solid fa-paper-plane" style="color:var(--accent-violet);"></i> Emisión Manual Directa</h4>
-
-                            <div style="display:flex; gap: 16px; margin-bottom: 12px; flex-wrap:wrap;">
-                                <div class="form-group" style="flex:1;">
-                                    <label style="font-size:12px;">Nombre de quien regala</label>
-                                    <input type="text" id="cert-sender-name" class="fidelio-input" placeholder="Ej. Juan Pérez">
-                                </div>
-                                <div class="form-group" style="flex:1;">
-                                    <label style="font-size:12px;">Email de quien regala</label>
-                                    <input type="email" id="cert-sender-email" class="fidelio-input" placeholder="juan@correo.com">
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom: 12px;">
-                                <label style="font-size:12px;">Email del Destinatario (Para regalo)</label>
-                                <input type="email" id="cert-email" class="fidelio-input" placeholder="ejemplo@correo.com">
-                            </div>
-                            <div class="form-group" style="margin-bottom: 12px;">
-                                <label style="font-size:12px;">Mensaje personalizado (Opcional)</label>
-                                <textarea id="cert-message" class="fidelio-input" rows="2" placeholder="¡Feliz cumpleaños!"></textarea>
-                            </div>
-                            <button id="btn-emit-cert" class="btn btn-primary" style="width:100%; font-size:12px; background:linear-gradient(135deg, var(--accent-violet) 0%, #4C1D95 100%);"><i class="fa-solid fa-gift"></i> Emitir y Enviar Certificado</button>
-                        </div>
                     </div>
                     
                     <button class="btn btn-primary" id="btn-save-special" style="width:100%; margin-top:24px;"><i class="fa-solid fa-floppy-disk"></i> Guardar y Aplicar Producto</button>
+                </div>
+
+                <!-- Panel de Emisión General -->
+                <div class="content-panel" id="panel-emit-special" style="margin-bottom: 24px;">
+                    <h2 style="font-size: 1.6rem; font-weight: 800; color: #111827; margin: 0; padding-bottom: 16px; border-bottom: 1px solid var(--border-glass); margin-bottom: 24px;">Emisión y Distribución</h2>
+                    <p style="color:var(--text-muted); font-size:13px; margin-bottom: 16px;">Genera una tarjeta y envíala al comprador o destinatario. No requiere integraciones externas.</p>
+                    
+                    <div style="display:flex; gap: 16px; margin-bottom: 16px; flex-wrap:wrap;">
+                        <div class="form-group" style="flex:1;">
+                            <label>Nombre del Cliente / Destinatario</label>
+                            <input type="text" id="emit-special-name" class="fidelio-input" placeholder="Ej. Juan Pérez">
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; gap: 16px; margin-bottom: 24px; flex-wrap:wrap;">
+                        <div class="form-group" style="flex:1;">
+                            <label>Teléfono (WhatsApp)</label>
+                            <input type="text" id="emit-special-phone" class="fidelio-input" placeholder="Ej. +521234567890">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>Correo Electrónico (Opcional)</label>
+                            <input type="email" id="emit-special-email" class="fidelio-input" placeholder="juan@correo.com">
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                        <button class="btn btn-outline" style="color:#25D366; border-color:#25D366;" onclick="window.emitirEspecial('whatsapp')">
+                            <i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp
+                        </button>
+                        <button class="btn btn-outline" style="color:var(--accent-violet); border-color:var(--accent-violet);" onclick="window.emitirEspecial('email')">
+                            <i class="fa-solid fa-envelope"></i> Enviar por Email
+                        </button>
+                        <button class="btn btn-outline" style="color:var(--text-main); border-color:var(--border-glass);" onclick="window.emitirEspecial('link')">
+                            <i class="fa-solid fa-link"></i> Generar Enlace Único
+                        </button>
+                    </div>
                 </div>
             </section>
 

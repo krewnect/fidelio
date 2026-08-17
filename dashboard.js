@@ -3229,45 +3229,51 @@ function updatePassRender() {
     } // Closes if (tabLoyalty)
 
     // Certificate Email Emission Logic
-    const btnEmitCert = document.getElementById('btn-emit-cert');
-    if (btnEmitCert) {
-        btnEmitCert.addEventListener('click', async () => {
-            const senderName = document.getElementById('cert-sender-name').value;
-            const senderEmail = document.getElementById('cert-sender-email').value;
-            const email = document.getElementById('cert-email').value;
-            const message = document.getElementById('cert-message').value;
-            
-            if (!email) {
-                showToast('Por favor, ingresa el correo del destinatario.', 'warning');
+    window.emitirEspecial = async function(method) {
+        const name = document.getElementById('emit-special-name').value;
+        const phone = document.getElementById('emit-special-phone').value;
+        const email = document.getElementById('emit-special-email').value;
+        
+        if (!name) {
+            if(typeof showToast === 'function') showToast('Por favor ingresa el nombre del destinatario.', 'warning');
+            return;
+        }
+        
+        const cardName = state.restaurantName || "Tarjeta Especial";
+        const link = `https://fideliorewards.com/c/${state.currentCampaignId || 'mock'}-${Date.now().toString().slice(-4)}`;
+        
+        if (method === 'whatsapp') {
+            if (!phone) {
+                if(typeof showToast === 'function') showToast('Ingresa el teléfono para enviar por WhatsApp.', 'warning');
                 return;
             }
-            
-            btnEmitCert.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
-            btnEmitCert.disabled = true;
-            
-            try {
-                // Simulate API call to send email with certificate
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                let successMsg = `¡Certificado enviado exitosamente a ${email}!`;
-                if(senderEmail) {
-                    successMsg += ` Se envió copia de confirmación a ${senderEmail}.`;
-                }
-                
-                showToast(successMsg, 'success');
-                
-                document.getElementById('cert-sender-name').value = '';
-                document.getElementById('cert-sender-email').value = '';
-                document.getElementById('cert-email').value = '';
-                document.getElementById('cert-message').value = '';
-            } catch (err) {
-                showToast('Error al enviar el certificado.', 'warning');
-            } finally {
-                btnEmitCert.innerHTML = '<i class="fa-solid fa-gift"></i> Emitir y Enviar Certificado';
-                btnEmitCert.disabled = false;
+            const text = `¡Hola ${name}! Aquí tienes tu ${cardName}. Descárgala en el siguiente enlace: ${link}`;
+            window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
+            if(typeof showToast === 'function') showToast('Abriendo WhatsApp Web...', 'info');
+        } else if (method === 'email') {
+            if (!email) {
+                if(typeof showToast === 'function') showToast('Ingresa el correo para enviar por Email.', 'warning');
+                return;
             }
-        });
-    }
+            const subject = `Tu ${cardName} está lista`;
+            const body = `Hola ${name},\n\nAquí tienes tu ${cardName}.\n\nPuedes acceder y descargar tu tarjeta desde este enlace:\n${link}\n\n¡Gracias!`;
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            if(typeof showToast === 'function') showToast('Abriendo cliente de correo...', 'info');
+        } else if (method === 'link') {
+            try {
+                await navigator.clipboard.writeText(link);
+                if(typeof showToast === 'function') showToast('Enlace copiado al portapapeles', 'success');
+            } catch (err) {
+                if(typeof showToast === 'function') showToast('Error al copiar enlace. Enlace: ' + link, 'warning');
+            }
+        }
+        
+        // Limpiar
+        document.getElementById('emit-special-name').value = '';
+        document.getElementById('emit-special-phone').value = '';
+        document.getElementById('emit-special-email').value = '';
+    };
+
 })();
 
 // --- GLOBAL AI CAMPAIGN FUNCTIONS ---
