@@ -4375,11 +4375,7 @@ window.saveComplexSchedule = function() {
             console.error("Modal element not found to close it!");
         }
         
-        if(typeof showToast === 'function') {
-            showToast("Franjas horarias guardadas exitosamente", "success");
-        } else {
-            alert("Franjas horarias guardadas exitosamente");
-        }
+        // Notificación silenciosa (se quitó el toast a petición del usuario)
     } catch (err) {
         console.error("CRASH in saveComplexSchedule:", err);
         alert("CRASH AL GUARDAR HORARIOS: " + err.message);
