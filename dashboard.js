@@ -4217,9 +4217,11 @@ window.checkRedundancy = function() {
     
     const msgInput = document.getElementById('rest-desc');
     const rewardInput = document.getElementById('stamps-reward');
+    const programTypeContainer = document.getElementById('program-type-container');
     
     if(msgInput && msgInput.parentElement) msgInput.parentElement.style.display = isCamp ? 'none' : 'block';
     if(rewardInput && rewardInput.parentElement) rewardInput.parentElement.style.display = isCamp ? 'none' : 'block';
+    if(programTypeContainer) programTypeContainer.style.display = isCamp ? 'none' : 'block';
 };
 
 document.addEventListener('DOMContentLoaded', () => {
