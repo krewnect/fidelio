@@ -1025,6 +1025,56 @@ app.get('/api/campaigns', async (req, res) => {
     }
 });
 
+// --- SPECIAL CARDS EMISSIONS API ---
+app.get('/api/special-emissions', async (req, res) => {
+    try {
+        const { merchantId } = req;
+        if (!merchantId) return res.status(401).json({ error: 'No merchantId' });
+
+        const { data, error } = await supabase
+            .from('special_card_emissions')
+            .select('*')
+            .eq('merchant_id', merchantId)
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        res.json(data || []);
+    } catch (err) {
+        console.error("Error GET /special-emissions:", err);
+        res.status(500).json({ error: 'Error del servidor' });
+    }
+});
+
+app.post('/api/special-emissions', async (req, res) => {
+    try {
+        const { merchantId } = req;
+        if (!merchantId) return res.status(401).json({ error: 'No merchantId' });
+
+        const { client_name, client_phone, client_email, card_type, card_name, expiry_date } = req.body;
+        
+        const { data, error } = await supabase
+            .from('special_card_emissions')
+            .insert([{
+                merchant_id: merchantId,
+                client_name,
+                client_phone,
+                client_email,
+                card_type,
+                card_name,
+                expiry_date,
+                status: 'active'
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        console.error("Error POST /special-emissions:", err);
+        res.status(500).json({ error: 'Error al registrar la emisión' });
+    }
+});
+
 app.post('/api/campaigns', async (req, res) => {
     try {
         const { merchantId } = req;
