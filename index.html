@@ -1724,7 +1724,49 @@
                 <div id="special-cards-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 32px;">
                 </div>
 
-                <!-- Tipo de Producto Especial -->
+                <!-- Historial de Tarjetas Especiales Emitidas -->
+                <div class="content-panel" style="margin-bottom: 32px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <div>
+                            <h2 style="font-size: 1.6rem; font-weight: 800; color: #111827; margin: 0;">Historial de Emisiones</h2>
+                            <p style="color:var(--text-muted); font-size:13px; margin: 4px 0 0 0;">Registro de tarjetas especiales emitidas a clientes.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="table-filters" style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <select id="hist-filter-type" class="fidelio-input" style="flex: 1; min-width: 150px;">
+                            <option value="all">Cualquier Tipo</option>
+                            <option value="membership">Membresías</option>
+                            <option value="multipass">Multipass</option>
+                            <option value="certificates">Certificados</option>
+                        </select>
+                        <select id="hist-filter-status" class="fidelio-input" style="flex: 1; min-width: 150px;">
+                            <option value="all">Cualquier Estado</option>
+                            <option value="active">Activos</option>
+                            <option value="expired">Vencidos</option>
+                        </select>
+                        <input type="date" id="hist-filter-date" class="fidelio-input" style="flex: 1; min-width: 150px;">
+                        <button class="btn btn-outline" id="hist-btn-filter" style="padding: 0 16px;"><i class="fa-solid fa-filter"></i> Filtrar</button>
+                        <button class="btn btn-outline" id="hist-btn-clear" style="padding: 0 16px;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="fidelio-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border-glass);">
+                                    <th style="padding: 12px; color: var(--text-muted); font-weight: 600; font-size: 13px;">Cliente</th>
+                                    <th style="padding: 12px; color: var(--text-muted); font-weight: 600; font-size: 13px;">Tipo de Tarjeta</th>
+                                    <th style="padding: 12px; color: var(--text-muted); font-weight: 600; font-size: 13px;">Fecha Emisión</th>
+                                    <th style="padding: 12px; color: var(--text-muted); font-weight: 600; font-size: 13px;">Vencimiento</th>
+                                    <th style="padding: 12px; color: var(--text-muted); font-weight: 600; font-size: 13px;">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hist-special-body">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                <!-- Tipo de Producto Especial -->
                 <div class="content-panel" style="margin-bottom: 24px;">
                     <h2 style="font-size: 1.6rem; font-weight: 800; color: #111827; margin: 0; padding-bottom: 16px; border-bottom: 1px solid var(--border-glass); margin-bottom: 24px;">Configuración de Producto</h2>
                     

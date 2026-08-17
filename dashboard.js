@@ -3272,7 +3272,106 @@ function updatePassRender() {
         document.getElementById('emit-special-name').value = '';
         document.getElementById('emit-special-phone').value = '';
         document.getElementById('emit-special-email').value = '';
+        
+        // Agregar al historial
+        const currentDate = new Date();
+        const expirationDate = new Date();
+        expirationDate.setDate(currentDate.getDate() + 30); // 30 days default expiration for mock
+        
+        window.emittedSpecialCards.unshift({
+            id: 'em_' + Date.now(),
+            clientName: name,
+            cardType: state.activeMode || 'membership', // Default to membership if undefined
+            cardName: cardName,
+            issueDate: currentDate.toISOString().split('T')[0],
+            expiryDate: expirationDate.toISOString().split('T')[0],
+            status: 'active'
+        });
+        
+        if (window.renderSpecialCardsHistory) {
+            window.renderSpecialCardsHistory();
+        }
     };
+
+    // --- HISTORIAL DE TARJETAS ESPECIALES ---
+    window.emittedSpecialCards = [
+        { id: 'em_101', clientName: 'María García', cardType: 'membership', cardName: 'Membresía VIP', issueDate: '2026-07-15', expiryDate: '2026-08-15', status: 'expired' },
+        { id: 'em_102', clientName: 'Carlos López', cardType: 'multipass', cardName: 'Café 10 Pases', issueDate: '2026-08-01', expiryDate: '2026-09-01', status: 'active' },
+        { id: 'em_103', clientName: 'Ana Martínez', cardType: 'certificates', cardName: 'Certificado Regalo $500', issueDate: '2026-08-10', expiryDate: '2026-11-10', status: 'active' }
+    ];
+
+    window.renderSpecialCardsHistory = function() {
+        const tbody = document.getElementById('hist-special-body');
+        if (!tbody) return;
+
+        const filterType = document.getElementById('hist-filter-type')?.value || 'all';
+        const filterStatus = document.getElementById('hist-filter-status')?.value || 'all';
+        const filterDate = document.getElementById('hist-filter-date')?.value || '';
+
+        let filtered = window.emittedSpecialCards.filter(c => {
+            let matchType = filterType === 'all' || c.cardType === filterType;
+            let matchStatus = filterStatus === 'all' || c.status === filterStatus;
+            let matchDate = !filterDate || c.issueDate === filterDate;
+            return matchType && matchStatus && matchDate;
+        });
+
+        tbody.innerHTML = '';
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="padding: 16px; text-align: center; color: var(--text-muted);">No hay emisiones que coincidan con los filtros.</td></tr>`;
+            return;
+        }
+
+        const typeLabels = {
+            'membership': '<i class="fa-solid fa-id-card" style="color:var(--accent-violet);"></i> Membresía',
+            'multipass': '<i class="fa-solid fa-layer-group" style="color:var(--accent-violet);"></i> Multipass',
+            'certificates': '<i class="fa-solid fa-gift" style="color:var(--accent-violet);"></i> Certificado'
+        };
+
+        filtered.forEach(c => {
+            const statusBadge = c.status === 'active' 
+                ? '<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">Activo</span>'
+                : '<span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">Vencido</span>';
+
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid var(--border-glass)";
+            tr.innerHTML = `
+                <td style="padding: 12px; font-weight: 500;">${c.clientName}</td>
+                <td style="padding: 12px;">
+                    <div style="font-weight: 600;">${c.cardName}</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">${typeLabels[c.cardType] || c.cardType}</div>
+                </td>
+                <td style="padding: 12px; color: var(--text-muted);">${c.issueDate}</td>
+                <td style="padding: 12px; color: var(--text-muted);">${c.expiryDate}</td>
+                <td style="padding: 12px;">${statusBadge}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    };
+
+    // Attach filter listeners
+    const histFilters = ['hist-filter-type', 'hist-filter-status', 'hist-filter-date'];
+    histFilters.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', window.renderSpecialCardsHistory);
+    });
+
+    const btnHistFilter = document.getElementById('hist-btn-filter');
+    if (btnHistFilter) btnHistFilter.addEventListener('click', window.renderSpecialCardsHistory);
+
+    const btnHistClear = document.getElementById('hist-btn-clear');
+    if (btnHistClear) {
+        btnHistClear.addEventListener('click', () => {
+            document.getElementById('hist-filter-type').value = 'all';
+            document.getElementById('hist-filter-status').value = 'all';
+            document.getElementById('hist-filter-date').value = '';
+            window.renderSpecialCardsHistory();
+        });
+    }
+
+    // Initial render
+    setTimeout(() => {
+        if (window.renderSpecialCardsHistory) window.renderSpecialCardsHistory();
+    }, 500);
 
 })();
 
