@@ -904,7 +904,7 @@
                                         <h1>Citas/Servicios</h1>
                                         <p>Gestiona las citas solicitadas por tus clientes desde tu enlace web público.</p>
                                     </div>
-                                    <button class="btn btn-primary" onclick="document.getElementById('schedule-config-modal').style.display='flex';" style="background: var(--accent-violet) !important; color: #fff !important; border:none;"><i class="fa-solid fa-clock"></i> Configurar Horarios</button>
+                                    <button class="btn btn-primary" onclick="document.getElementById('schedule-config-modal').style.display='flex'; if(window.renderScheduleDays) window.renderScheduleDays();" style="background: var(--accent-violet) !important; color: #fff !important; border:none;"><i class="fa-solid fa-clock"></i> Configurar Horarios</button>
                                 </div>
                                 <div class="glass-card" style="padding: 24px;">
                                     <div id="appointments-list-container" style="display:flex; flex-direction:column; gap:12px;">
