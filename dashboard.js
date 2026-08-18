@@ -582,9 +582,10 @@ let saveTimeout = null;
         window.checkPlanPermissions = function() {
             if (!window.merchantData) return;
             const plan = window.merchantData.business_type || 'starter';
-            const isAdmin = window.merchantSession && window.merchantSession.user.email === 'hola@fideliorewards.com';
+            const isAdmin = window.merchantSession && window.merchantSession.user.email.endsWith('@fideliorewards.com');
             
-            const isBusiness = plan === 'business' || plan === 'professional' || plan === 'enterprise' || isAdmin;
+            // Professional is the most limited, Business has almost everything
+            const isBusiness = plan === 'business' || plan === 'enterprise' || isAdmin;
             const isPro = plan === 'professional' || plan === 'enterprise' || isAdmin;
             
             // Toggle Business-only tabs
@@ -596,9 +597,26 @@ let saveTimeout = null;
                 }
             });
             
+            if (!isBusiness) {
+                const stampsRadio = document.querySelector('input[name="loyalty_mode"][value="stamps"]');
+                if (stampsRadio && !stampsRadio.checked) {
+                    stampsRadio.checked = true;
+                    setTimeout(() => stampsRadio.dispatchEvent(new Event('change', {bubbles: true})), 100);
+                }
+            }
+
             // Toggle Pro-only tabs
             document.querySelectorAll('.plan-pro-only').forEach(el => {
                 if(isPro) {
+                    el.style.display = 'flex';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Toggle Paid-only tabs (both Business and Professional)
+            document.querySelectorAll('.plan-paid-only').forEach(el => {
+                if(isBusiness || isPro) {
                     el.style.display = 'flex';
                 } else {
                     el.style.display = 'none';
@@ -640,7 +658,8 @@ let saveTimeout = null;
         };
 
         // --- INJECT MERCHANT QR ---
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/pass.html?m=' + merchantId)}`;
+        const slugUrl = window.merchantData.slug || window.merchantData.business_name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + slugUrl)}`;
         const qrPreview = document.getElementById('merchant-qr-preview');
         const btnDownloadQr = document.getElementById('btn-download-merchant-qr');
         

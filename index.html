@@ -293,12 +293,12 @@
                 <div class="menu-label mt-20">Operación del Negocio</div>
                 <button class="nav-tab plan-business-only" data-tab="tab-campaigns" id="nav-campaigns" style="display:none;"><i class="fa-solid fa-list"></i> Mis Campañas</button>
                 <button class="nav-tab" data-tab="tab-builder" id="nav-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñador Card</button>
-                <button class="nav-tab plan-business-only" data-tab="tab-stripe" id="nav-stripe" style="display:none;"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</button>
+                <button class="nav-tab plan-paid-only" data-tab="tab-stripe" id="nav-stripe" style="display:none;"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</button>
                 <button class="nav-tab plan-pro-only" data-tab="tab-branches" id="nav-branches" style="display:none;"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
-                <button class="nav-tab plan-pro-only" data-tab="tab-appointments" id="nav-appointments" style="display:none;"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios</button>
+                <button class="nav-tab plan-paid-only" data-tab="tab-appointments" id="nav-appointments" style="display:none;"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios</button>
                 <button class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></button>
-                <button class="nav-tab" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
-                <button class="nav-tab" data-tab="tab-bank"><i class="fa-solid fa-piggy-bank"></i> The Bank</button>
+                <button class="nav-tab plan-business-only" data-tab="tab-staff"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</button>
+                <button class="nav-tab plan-business-only" data-tab="tab-bank"><i class="fa-solid fa-piggy-bank"></i> The Bank</button>
 
                 <div class="menu-label mt-20">Estrategia y Crecimiento</div>
                 <button class="nav-tab" data-tab="tab-loyalty"><i class="fa-solid fa-gift"></i> Fidelización</button>
@@ -309,7 +309,7 @@
                 <button class="nav-tab plan-business-only" data-tab="tab-mybusiness" style="display:none;"><i class="fa-solid fa-bullhorn"></i> My Business</button>
 
                 <div class="menu-label mt-20">Herramientas</div>
-                <button class="nav-tab" data-tab="tab-caja"><i class="fa-solid fa-cash-register"></i> Caja (PoS)</button>
+                <button class="nav-tab plan-business-only" data-tab="tab-caja"><i class="fa-solid fa-cash-register"></i> Caja (PoS)</button>
                 <button class="nav-tab" onclick="window.open('scanner.html?v=' + new Date().getTime(), '_blank')"><i class="fa-solid fa-qrcode"></i> Escáner Staff <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px; margin-left:auto;"></i></button>
                 <button class="nav-tab" data-tab="tab-store"><i class="fa-solid fa-shop"></i> Tienda Fidelio</button>
                 
@@ -454,7 +454,7 @@
                         </button>
                     </div>
                     <div style="background:white; padding:16px; border-radius:16px;">
-                        <img id="merchant-qr-preview" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://fidelio.com/download&color=4C1D95" alt="QR del Restaurante" style="width: 150px; height: 150px;">
+                        <img id="merchant-qr-preview" alt="Tu Código QR" style="width: 150px; height: 150px;">
                     </div>
                 </div>
             </section>
@@ -1459,7 +1459,7 @@
                     <h3 style="margin-bottom:20px; font-size: 16px;"><i class="fa-solid fa-gears" style="color:var(--accent-violet); margin-right:8px;"></i> Motor Principal de Recompensas</h3>
                     
                     <div class="role-selector" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-                        <label class="role-card" id="loyalty-mode-hybrid">
+                        <label class="role-card plan-business-only" id="loyalty-mode-hybrid">
                             <input type="radio" name="loyalty_mode" value="hybrid" checked style="display:none;">
                             <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-layer-group"></i></div>
                             <div class="role-info">
@@ -1469,7 +1469,7 @@
                             <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
                         </label>
 
-                        <label class="role-card" id="loyalty-mode-cashback">
+                        <label class="role-card plan-business-only" id="loyalty-mode-cashback">
                             <input type="radio" name="loyalty_mode" value="cashback" style="display:none;">
                             <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-wallet"></i></div>
                             <div class="role-info">
@@ -1490,7 +1490,7 @@
                         </label>
 
 
-                        <label class="role-card" id="loyalty-mode-discount">
+                        <label class="role-card plan-business-only" id="loyalty-mode-discount">
                             <input type="radio" name="loyalty_mode" value="discount" style="display:none;">
                             <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-tag"></i></div>
                             <div class="role-info">
@@ -1500,7 +1500,7 @@
                             <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
                         </label>
 
-                        <label class="role-card" id="loyalty-mode-coupons">
+                        <label class="role-card plan-business-only" id="loyalty-mode-coupons">
                             <input type="radio" name="loyalty_mode" value="coupons" style="display:none;">
                             <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-ticket"></i></div>
                             <div class="role-info">
@@ -1511,7 +1511,7 @@
                         </label>
 
 
-                        <label class="role-card" id="loyalty-mode-custom">
+                        <label class="role-card plan-business-only" id="loyalty-mode-custom">
                             <input type="radio" name="loyalty_mode" value="custom" style="display:none;">
                             <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                             <div class="role-info">
@@ -1526,7 +1526,7 @@
                 <div id="panel-loyalty-standard">
                 <div style="display:flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
                     <!-- CASHBACK SETTINGS -->
-                    <div class="accordion-card" style="flex: 1; min-width: 300px;">
+                    <div class="accordion-card plan-business-only" style="flex: 1; min-width: 300px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración de Saldo Digital</h3>
                             <label class="toggle-switch">
@@ -1583,7 +1583,7 @@
 
 
                 <!-- VIP TIERS SETTINGS -->
-                <div class="accordion-card">
+                <div class="accordion-card plan-business-only">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-crown" style="color:var(--accent-violet); margin-right:8px;"></i> Niveles VIP Automáticos</h3>
@@ -3494,7 +3494,7 @@
                 
                 // SUPER ADMIN INLINE OVERRIDE (Failsafe)
                 const currentEmail = data.session.user.email.toLowerCase();
-                if (currentEmail.includes('hola') || currentEmail.includes('fidelio')) {
+                if (currentEmail === 'hola@fideliorewards.com') {
                     const sbName = document.getElementById('header-restaurant-name');
                     const sbRole = document.getElementById('header-business-category');
                     const sbAvatar = document.getElementById('header-business-icon');
