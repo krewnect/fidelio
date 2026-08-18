@@ -1,0 +1,18 @@
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: "new", args: ['--no-sandbox'] });
+  const page = await browser.newPage();
+  page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+  page.on('pageerror', error => console.log('PAGE ERROR:', error.message));
+  
+  await page.goto('http://localhost:3001/demoprofessional', { waitUntil: 'networkidle0' });
+  
+  const loadingDisplay = await page.$eval('#loading-screen', el => el.style.display);
+  console.log('Loading screen display:', loadingDisplay);
+  
+  const formDisplay = await page.$eval('#registration-form-container', el => el.style.display);
+  console.log('Form display:', formDisplay);
+  
+  await browser.close();
+})();

@@ -1,0 +1,416 @@
+html = """<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Lealtad</title>
+    <!-- FontAwesome y Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #000000;
+            --bg-color: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #111827;
+            --text-sec: #6b7280;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .portal-card {
+            background: var(--surface);
+            max-width: 420px;
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            padding: 40px 30px;
+            text-align: center;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+            border-radius: 24px;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--primary);
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        p {
+            color: var(--text-sec);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .input-field, select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            font-size: 15px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.2s;
+            background-color: #fafafa;
+        }
+        .input-field:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        .btn-download {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        .btn-download:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .wallet-badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #f3f4f6;
+        }
+        .wallet-badges img {
+            height: 38px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        .wallet-badges img:hover {
+            transform: scale(1.05);
+        }
+        .loader {
+            display: none;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-card" id="main-card">
+        <div id="loading-initial">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 40px; color: var(--primary); margin-bottom: 20px;"></i>
+            <p style="font-size: 16px;">Cargando tu experiencia...</p>
+        </div>
+
+        <div id="error-state" style="display: none;">
+            <div style="width: 80px; height: 80px; background: #fee2e2; color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 20px auto;">
+                <i class="fa-solid fa-store-slash"></i>
+            </div>
+            <h1 style="color: #ef4444;">Negocio no encontrado</h1>
+            <p id="error-msg">Por favor verifica el enlace e intenta nuevamente.</p>
+        </div>
+
+        <div id="portal-content" style="display: none;">
+            <div id="logo-container" class="logo-container">
+                <i class="fa-solid fa-store"></i>
+            </div>
+            
+            <h1 id="business-name">Cargando...</h1>
+            <p id="business-subtitle">Regístrate para obtener tu tarjeta digital y empezar a disfrutar de beneficios exclusivos.</p>
+
+            <form id="register-form">
+                <input type="hidden" id="merchant-id">
+                
+                <div class="form-group" id="campaign-group" style="display: none;">
+                    <label>Selecciona un Programa</label>
+                    <select id="campaign-select" class="input-field" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="cust-name" class="input-field" required placeholder="Ej. Ana Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="cust-email" class="input-field" required placeholder="tu@correo.com">
+                </div>
+                <div class="form-group" id="phone-group" style="display: none;">
+                    <label>Teléfono (WhatsApp)</label>
+                    <input type="tel" id="cust-phone" class="input-field" placeholder="10 dígitos">
+                </div>
+                <div class="form-group" id="birthday-group" style="display: none;">
+                    <label>Cumpleaños</label>
+                    <input type="date" id="cust-birthday" class="input-field">
+                </div>
+
+                <button type="submit" class="btn-download" id="btn-submit">
+                    <i class="fa-solid fa-wallet" id="btn-icon"></i>
+                    <span id="btn-text">Generar y Descargar Tarjeta</span>
+                    <div class="loader" id="btn-loader"></div>
+                </button>
+            </form>
+            
+            <div class="wallet-badges">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Apple_Wallet_Icon.svg/512px-Apple_Wallet_Icon.svg.png" alt="Apple Wallet">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Google_Wallet_2022_logo.svg/512px-Google_Wallet_2022_logo.svg.png" alt="Google Wallet" style="padding:4px; background:white;">
+            </div>
+            
+            <!-- Powered By Fidelio sutil al final -->
+            <div style="margin-top: 30px; opacity: 0.5;">
+                <img src="/fidelio_logo_purple.png" alt="Fidelio" style="height: 20px;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let supabaseClient;
+        let merchantData;
+        let visibleCampaigns = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 1. Init Supabase
+                const configRes = await fetch('/api/config');
+                const config = await configRes.json();
+                supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+                
+                // 2. Get slug
+                const hostname = window.location.hostname;
+                const parts = hostname.split('.');
+                const ignored = ['www', 'app', 'panel', 'api', 'localhost', 'fideliorewards', '127'];
+                let slug = '';
+                if (parts.length >= 2 && !ignored.includes(parts[0])) slug = parts[0];
+                else slug = window.location.pathname.replace('/', '').toLowerCase();
+                
+                if (!slug) throw new Error('Restaurante no especificado');
+
+                // 3. Fetch Merchant
+                let { data: merch, error } = await supabaseClient
+                    .from('merchants')
+                    .select('*')
+                    .filter('appointment_settings->landing_prefs->>username', 'eq', slug)
+                    .limit(1).single();
+                    
+                if (error || !merch) {
+                    let { data: fallback } = await supabaseClient
+                        .from('merchants').select('*').ilike('business_name', '%' + slug + '%')
+                        .limit(1).single();
+                    if (fallback) merch = fallback;
+                    else throw new Error('No se encontró el negocio.');
+                }
+                merchantData = merch;
+
+                // 4. Fetch Campaigns
+                const { data: camps } = await supabaseClient
+                    .from('campaigns').select('*').eq('merchant_id', merch.id).eq('is_active', true);
+                
+                visibleCampaigns = camps || [];
+                if (merch.business_type === 'professional') {
+                    visibleCampaigns = visibleCampaigns.filter(c => c.type === 'stamps');
+                }
+                
+                if (visibleCampaigns.length === 0) {
+                    throw new Error('Este negocio no tiene programas activos en este momento.');
+                }
+
+                // 5. Apply Visual Branding
+                const prefs = merch.appointment_settings?.landing_prefs || {};
+                
+                if (prefs.portal_color || merch.color_primary) {
+                    const color = prefs.portal_color || merch.color_primary;
+                    document.documentElement.style.setProperty('--primary', color);
+                    // Add subtle glow to logo box using primary color
+                    document.getElementById('logo-container').style.boxShadow = `0 15px 30px ${color}33`;
+                }
+                
+                if (prefs.portal_logo || merch.logo_url) {
+                    const logo = prefs.portal_logo || merch.logo_url;
+                    document.getElementById('logo-container').innerHTML = `<img src="${logo}" alt="Logo">`;
+                    document.getElementById('logo-container').style.background = 'transparent';
+                    document.getElementById('logo-container').style.boxShadow = 'none'; // Clear shadow for transparent bg
+                } else {
+                    document.getElementById('logo-container').innerHTML = `<img src="/fidelio_logo_purple.png" alt="Logo">`;
+                    document.getElementById('logo-container').style.background = '#ffffff';
+                }
+                
+                document.getElementById('business-name').textContent = merch.business_name;
+                document.title = `${merch.business_name} - Tarjeta Digital`;
+                document.getElementById('merchant-id').value = merch.id;
+
+                // If multiple campaigns, show dropdown
+                if (visibleCampaigns.length > 1) {
+                    const select = document.getElementById('campaign-select');
+                    visibleCampaigns.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = c.name + (c.type==='cashback' ? ' (Cashback)' : ' (Sellos)');
+                        select.appendChild(opt);
+                    });
+                    document.getElementById('campaign-group').style.display = 'block';
+                    document.getElementById('business-subtitle').textContent = "Selecciona el programa al que deseas unirte y obtén tu tarjeta.";
+                }
+
+                // Show/hide optional fields
+                if (prefs.require_phone !== false) {
+                    document.getElementById('phone-group').style.display = 'block';
+                    document.getElementById('cust-phone').required = true;
+                }
+                if (prefs.require_birthday !== false) {
+                    document.getElementById('birthday-group').style.display = 'block';
+                    document.getElementById('cust-birthday').required = true;
+                }
+
+                // Render success
+                document.getElementById('loading-initial').style.display = 'none';
+                document.getElementById('portal-content').style.display = 'block';
+
+            } catch (err) {
+                document.getElementById('loading-initial').style.display = 'none';
+                document.getElementById('error-state').style.display = 'block';
+                document.getElementById('error-msg').textContent = err.message;
+            }
+        });
+
+        // 6. Handle Registration & Redirect
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btn-submit');
+            btn.disabled = true;
+            document.getElementById('btn-icon').style.display = 'none';
+            document.getElementById('btn-text').style.display = 'none';
+            document.getElementById('btn-loader').style.display = 'block';
+
+            const name = document.getElementById('cust-name').value.trim();
+            const email = document.getElementById('cust-email').value.trim().toLowerCase();
+            const phone = document.getElementById('cust-phone') ? document.getElementById('cust-phone').value.trim() : null;
+            const birthday = document.getElementById('cust-birthday') ? document.getElementById('cust-birthday').value : null;
+            const merchantId = document.getElementById('merchant-id').value;
+            
+            // Get selected campaign ID
+            let selectedCampaignId;
+            if (visibleCampaigns.length === 1) {
+                selectedCampaignId = visibleCampaigns[0].id;
+            } else {
+                selectedCampaignId = document.getElementById('campaign-select').value;
+            }
+
+            try {
+                // Find or Create Customer
+                const { data: existing } = await supabaseClient
+                    .from('customers').select('id').eq('merchant_id', merchantId).eq('email', email).maybeSingle();
+
+                let customerId;
+                if (existing) {
+                    customerId = existing.id;
+                    await supabaseClient.from('customers').update({ 
+                        full_name: name, phone: phone || null, birthday: birthday || null 
+                    }).eq('id', customerId);
+                } else {
+                    const { data: newCust, error: errCust } = await supabaseClient
+                        .from('customers').insert([{
+                            merchant_id: merchantId,
+                            full_name: name,
+                            email: email,
+                            phone: phone || null,
+                            birthday: birthday || null,
+                            balance_cashback: 0,
+                            stamps_count: 0,
+                            vip_tier: 'Bronce'
+                        }]).select().single();
+                    if (errCust) throw errCust;
+                    customerId = newCust.id;
+                }
+
+                // Link Customer to Campaign if not linked
+                const { data: link } = await supabaseClient
+                    .from('customer_campaigns')
+                    .select('id').eq('customer_id', customerId).eq('campaign_id', selectedCampaignId).maybeSingle();
+
+                if (!link) {
+                    await supabaseClient.from('customer_campaigns').insert([{
+                        customer_id: customerId,
+                        campaign_id: selectedCampaignId,
+                        status: 'active'
+                    }]);
+                }
+
+                // Generate Pass - Redirect to pass.html
+                window.location.href = `/pass.html?id=${customerId}&campaign=${selectedCampaignId}`;
+
+            } catch (err) {
+                Swal.fire('Error', err.message, 'error');
+                btn.disabled = false;
+                document.getElementById('btn-icon').style.display = 'inline-block';
+                document.getElementById('btn-text').style.display = 'inline-block';
+                document.getElementById('btn-loader').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+"""
+with open("merchant-public.html", "w", encoding="utf-8") as f:
+    f.write(html)

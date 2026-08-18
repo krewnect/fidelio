@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const { generateStampsStrip } = require('./render_stamps.js');
 const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
@@ -606,9 +607,9 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                 organizationName: campaign.name || "Mi Negocio",
                 description: campaign.description || "Tarjeta de Lealtad",
                 logoText: campaign.name || "Mi Negocio",
-                backgroundColor: campaign.color_primary || "#090d16",
-                foregroundColor: "#ffffff",
-                labelColor: campaign.color_accent || "#8b5cf6",
+                backgroundColor: "rgb(255, 255, 255)",
+                foregroundColor: "rgb(17, 24, 39)",
+                labelColor: "rgb(107, 114, 128)",
                 storeCard: {
                     headerFields: [
                         { key: "balance", label: labelVal, value: balanceVal }
@@ -643,6 +644,20 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
 
         // Certificados ya cargados en constructor
 
+        // Generar strip.png usando Puppeteer si es tipo stamps
+        if (campaign.type === 'stamps') {
+            try {
+                const totalStamps = campaign.rules_config?.stamps_total || 5;
+                const earnedStamps = stamps;
+                const cPrimary = campaign.color_primary || '#8b5cf6';
+                const stripBuffer = await generateStampsStrip(totalStamps, earnedStamps, cPrimary);
+                pass.addBuffer('strip.png', stripBuffer);
+                pass.addBuffer('strip@2x.png', stripBuffer);
+            } catch (e) {
+                console.error("Puppeteer strip generation failed", e);
+            }
+        }
+        
         // Intentar agregar iconos o logos customizados
         try {
             // El módulo passkit-generator requiere al menos un icono
