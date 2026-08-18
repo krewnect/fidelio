@@ -733,9 +733,10 @@ let saveTimeout = null;
         };
 
         // --- INJECT MERCHANT QR ---
+        const prefs = window.merchantData.appointment_settings?.landing_prefs || {};
         const bName = window.merchantData.business_name || 'negocio';
-        const slugUrl = window.merchantData.slug || bName.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + slugUrl)}`;
+        const username = prefs.username || window.merchantData.slug || bName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + username)}`;
         const qrPreview = document.getElementById('merchant-qr-preview');
         const btnDownloadQr = document.getElementById('btn-download-merchant-qr');
         
@@ -2906,8 +2907,9 @@ function updatePassRender() {
                     window.merchantData.industry = newCat;
                     
                     // Actualizar QR si es posible
-                    const slugUrl = window.merchantData.slug || newName.toLowerCase().replace(/[^a-z0-9]/g, '');
-                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + slugUrl)}`;
+                    const prefs = window.merchantData.appointment_settings?.landing_prefs || {};
+                    const username = prefs.username || window.merchantData.slug || newName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + username)}`;
                     const qrPreview = document.getElementById('merchant-qr-preview');
                     if (qrPreview) qrPreview.src = qrUrl;
                 }
