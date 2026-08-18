@@ -2191,10 +2191,11 @@
                     <!-- Left Column: Navigation / Summary -->
                     <div style="display: flex; flex-direction: column; gap: 24px;">
                         <div class="premium-card stagger-1" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border-soft); text-align: center;" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border-soft); text-align: center;">
-                            <div class="animated-avatar" style="position:relative; width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 16px; background: linear-gradient(135deg, var(--accent-violet), #c084fc); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; color: white; transition: all 0.3s ease;">
+                            <div id="acc-avatar-container" class="animated-avatar" style="position:relative; width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 16px; background: linear-gradient(135deg, var(--accent-violet), #c084fc); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; color: white; transition: all 0.3s ease; background-size: cover; background-position: center;">
                                 <span id="acc-avatar-letter">N</span>
-                                <div style="position:absolute; bottom: 0; right: 0; background: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; color: var(--accent-violet); font-size: 14px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                                    <i class="fa-solid fa-camera"></i>
+                                <input type="file" id="acc-avatar-upload" accept="image/*" style="display:none;">
+                                <div onclick="document.getElementById('acc-avatar-upload').click()" style="position:absolute; bottom: 0; right: 0; background: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; color: var(--accent-violet); font-size: 14px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                                    <i class="fa-solid fa-camera" id="acc-camera-icon"></i>
                                 </div>
                             </div>
                             <h3 id="acc-summary-name" style="font-size: 18px; font-weight: 800; margin-bottom: 4px; color: var(--text-main);">Tu Negocio</h3>
