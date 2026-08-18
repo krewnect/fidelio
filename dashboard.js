@@ -5516,3 +5516,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Form fields toggles
+    ['req-phone', 'req-birthday'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', (e) => {
+                const knob = document.getElementById(id + '-knob');
+                if (knob) {
+                    knob.parentElement.children[1].style.backgroundColor = e.target.checked ? '#8b5cf6' : '#ccc';
+                    knob.style.transform = e.target.checked ? 'translateX(14px)' : 'translateX(0)';
+                }
+            });
+        }
+    });
+
+    const btnSaveForm = document.getElementById('btn-save-form-fields');
+    if (btnSaveForm) {
+        btnSaveForm.addEventListener('click', async () => {
+            if (!window.merchantData) return;
+            const originalText = btnSaveForm.innerHTML;
+            btnSaveForm.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+            btnSaveForm.disabled = true;
+
+            try {
+                const prefs = {
+                    require_phone: document.getElementById('req-phone').checked,
+                    require_birthday: document.getElementById('req-birthday').checked
+                };
+
+                const currentApptSettings = window.merchantData.appointment_settings || {};
+                currentApptSettings.landing_prefs = prefs;
+
+                const { error } = await window.supabaseClient.from('merchants').update({
+                    appointment_settings: currentApptSettings
+                }).eq('id', window.merchantSession.user.id);
+
+                if (error) throw error;
+                
+                window.merchantData.appointment_settings = currentApptSettings;
+                if (typeof showToast === 'function') showToast('Formulario actualizado correctamente', 'success');
+            } catch (e) {
+                if (typeof showToast === 'function') showToast(e.message, 'error');
+            } finally {
+                btnSaveForm.innerHTML = originalText;
+                btnSaveForm.disabled = false;
+            }
+        });
+    }
+});
