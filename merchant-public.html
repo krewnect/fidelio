@@ -302,9 +302,13 @@
                     <input type="email" class="form-input" id="email" required placeholder="juan@correo.com">
                 </div>
 
-                <div class="form-group">
-                    <label>Teléfono (Opcional)</label>
+                <div class="form-group" id="group-phone">
+                    <label id="label-phone">Teléfono</label>
                     <input type="tel" class="form-input" id="phone" placeholder="55 1234 5678">
+                </div>
+                <div class="form-group" id="group-birthday" style="display: none;">
+                    <label id="label-birthday">Cumpleaños</label>
+                    <input type="date" class="form-input" id="birthday">
                 </div>
 
                 <button type="submit" class="btn-primary" id="btn-submit">Generar Mi Tarjeta Digital</button>
@@ -347,18 +351,40 @@
                     return;
                 }
 
-                // 3. Fetch Merchant by Slug
-                const { data, error } = await supabase
+                // 3. Fetch Merchant by Username
+                let { data, error } = await supabase
                     .from('merchants')
                     .select('*')
-                    .eq('slug', slug)
+                    .filter('appointment_settings->landing_prefs->>username', 'eq', slug)
+                    .limit(1)
                     .single();
+                    
+                if (error || !data) {
+                    // Try by business name fallback just in case
+                    let { data: fallbackData } = await supabase
+                        .from('merchants')
+                        .select('*')
+                        .ilike('business_name', '%' + slug + '%')
+                        .limit(1)
+                        .single();
+                        
+                    if (fallbackData) {
+                        data = fallbackData;
+                    } else {
+                        throw new Error('Merchant not found');
+                    }
+                }
 
                 if (error || !data) {
                     throw new Error('Restaurante no encontrado');
                 }
 
                 merchantData = data;
+                
+                // Override con landing_prefs si existen
+                const prefs = merchantData.appointment_settings?.landing_prefs || {};
+                if (prefs.portal_color) merchantData.color_primary = prefs.portal_color;
+                if (prefs.portal_logo) merchantData.logo_url = prefs.portal_logo;
 
                 // 4. Apply Visual Branding
                 document.getElementById('merchant_id').value = merchantData.id;
@@ -492,6 +518,8 @@
             const fullName = document.getElementById('full_name').value.trim();
             const email = document.getElementById('email').value.trim().toLowerCase();
             const phone = document.getElementById('phone').value.trim();
+            const birthdayInput = document.getElementById('birthday');
+            const birthday = birthdayInput ? birthdayInput.value : null;
             const merchantId = document.getElementById('merchant_id').value;
 
             try {
@@ -516,6 +544,7 @@
                             full_name: fullName,
                             email: email,
                             phone: phone || null,
+                            birthday: birthday || null,
                             balance_cashback: 0,
                             stamps_count: 0,
                             vip_tier: 'Bronce'
