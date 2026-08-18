@@ -436,14 +436,14 @@
                     .single();
 
                 // 6. Populate UI based on Campaign
-                document.title = \`Tarjeta Digital - \${campaign.name || 'Campaña'}\`;
+                document.title = `Tarjeta Digital - ${campaign.name || 'Campaña'}`;
                 
                 document.getElementById('ui-customer-name').textContent = customer.full_name || customer.name;
                 document.getElementById('ui-campaign-title').textContent = campaign.name;
                 document.getElementById('ui-vip').textContent = customer.vip_tier || 'BRONCE';
 
                 // Stats mapping
-                document.getElementById('ui-balance').textContent = \`$\${parseFloat(customer.balance_cashback || 0).toFixed(2)}\`;
+                document.getElementById('ui-balance').textContent = `$${parseFloat(customer.balance_cashback || 0).toFixed(2)}`;
                 
                 // Generar Cuadrícula de Sellos Visual
                 const gridContainer = document.getElementById('ui-stamps-grid');
@@ -487,14 +487,14 @@
                 }
 
                 // Branding
-                document.getElementById('ui-merchant-logo').src = campaign.logo_url || (merchant ? \`https://ui-avatars.com/api/?name=\${encodeURIComponent(merchant.business_name)}&background=000&color=fff\` : \`https://ui-avatars.com/api/?name=F&background=000&color=fff\`);
+                document.getElementById('ui-merchant-logo').src = campaign.logo_url || (merchant ? `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.business_name)}&background=000&color=fff` : `https://ui-avatars.com/api/?name=F&background=000&color=fff`);
                 
                 if (campaign.color_primary) {
                     document.documentElement.style.setProperty('--primary', campaign.color_primary);
                 }
                 
                 if (campaign.banner_url) {
-                    document.getElementById('ui-card-banner').style.backgroundImage = \`url('\${campaign.banner_url}')\`;
+                    document.getElementById('ui-card-banner').style.backgroundImage = `url('${campaign.banner_url}')`;
                 }
 
                 
@@ -524,7 +524,7 @@
 
 
                 // 7. Generate QR Code (CUSTOMER_ID|CAMPAIGN_ID)
-                const qrContent = \`\${customer.id}|\${campaign.id}\`;
+                const qrContent = `${customer.id}|${campaign.id}`;
                 new QRCode(document.getElementById("qrcode"), {
                     text: qrContent,
                     width: 150,
@@ -539,13 +539,13 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('loading-screen').innerHTML = \`
+                document.getElementById('loading-screen').innerHTML = `
                     <div style="text-align:center;">
                         <i class="fa-solid fa-triangle-exclamation" style="font-size:48px; color:var(--text-muted); margin-bottom:16px;"></i>
                         <h2 style="margin-bottom:8px;">Pase Inválido</h2>
                         <p style="color:var(--text-muted); font-size:14px;">El enlace no es válido o la campaña ha expirado.</p>
                     </div>
-                \`;
+                `;
             }
         });
 
@@ -636,7 +636,7 @@
                 const { data: customer } = await supabase.from('customers').select('*').eq('id', customerId).single();
                 
                 if(customer) {
-                    const appointmentDate = new Date(\`\${dateStr}T\${timeStr}\`);
+                    const appointmentDate = new Date(`${dateStr}T${timeStr}`);
                     const { error } = await supabase.from('appointments').insert([{
                         merchant_id: customer.merchant_id,
                         customer_id: customer.id,
