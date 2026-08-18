@@ -760,6 +760,8 @@ let saveTimeout = null;
             if (merchantData.appointment_settings && merchantData.appointment_settings.schedules) {
                 window.scheduleData = merchantData.appointment_settings.schedules;
             }
+            if (typeof state !== 'undefined') state.schedules = window.scheduleData;
+            if (window.state) window.state.schedules = window.scheduleData;
         } catch(e) { console.error("Error restoring schedules:", e); }
 
         // --- INJECT MERCHANT QR ---
@@ -3141,6 +3143,7 @@ function updatePassRender() {
         // Actualizar métricas del dashboard principal
         updateDashboardMetrics();
         if (typeof window.loadAppointments === 'function') window.loadAppointments();
+        if (typeof window.renderScheduleSummary === 'function') window.renderScheduleSummary();
 
         // Actualizar encabezados (solo si no es admin)
         if (state && state.restaurantName && currentEmail.trim().toLowerCase() !== 'hola@fideliorewards.com') {
@@ -4993,9 +4996,12 @@ window.saveComplexSchedule = function() {
             
             window.supabaseClient.from('merchants').update({
                 appointment_settings: newSettings
-            }).eq('id', targetState.tenantId).then(({error}) => {
-                if (error) console.error("Error saving schedules to DB", error);
-                else {
+            }).eq('id', window.merchantData.id).select().then(({data, error}) => {
+                if (error) {
+                    alert("Error en la nube: " + error.message);
+                } else if (!data || data.length === 0) {
+                    alert("Error de permisos: No tienes autorización para modificar este negocio. Tu sesión puede haber expirado.");
+                } else {
                     if (typeof showToast === 'function') showToast('Horarios guardados en la nube', 'success');
                     const modal = document.getElementById('schedule-config-modal');
                     if (modal) modal.style.display = 'none';
