@@ -885,8 +885,11 @@ let saveTimeout = null;
         const mRoi = document.getElementById('metric-roi');
         const mRoiRatio = document.getElementById('metric-roi-ratio');
         if(mRoi && mRoiRatio) {
-            // Asumimos un costo base del software
-            const fidelioCost = window.merchantData.tier === 'business' ? 2499 : 999;
+            // Tabla de Precios Oficial (Mensual, Licencia Founder como baseline para calcular ROI mensual)
+            // Professional: $199 (Founder) | $399 (Estandar)
+            // Business: $999 (Founder) | $1999 (Estandar)
+            // Calculamos asumiendo Licencia Founder Mensual para ser consistentes con los primeros clientes
+            const fidelioCost = window.merchantData.tier === 'business' ? 999 : 199;
             
             if (totalSales === 0) {
                 mRoi.textContent = '0%';
