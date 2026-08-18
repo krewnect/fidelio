@@ -347,7 +347,7 @@
 
                 <div class="menu-label mt-20">Operación del Negocio</div>
                 <button class="nav-tab" data-tab="tab-campaigns" id="nav-campaigns"><i class="fa-solid fa-list"></i> Mis Campañas</button>
-                <button class="nav-tab" data-tab="tab-builder" id="nav-builder"><i class="fa-solid fa-wand-magic-sparkles"></i> Creador de Tarjetas</button>
+                <!-- Creador de Tarjetas oculto del sidebar (fusionado) -->
                 <button class="nav-tab plan-professional-only" data-tab="tab-stripe" id="nav-stripe"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</button>
                 <button class="nav-tab plan-pro-only" data-tab="tab-branches" id="nav-branches" style="display:none;"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</button>
                 <button class="nav-tab plan-professional-only" data-tab="tab-appointments" id="nav-appointments"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios <span class="menu-badge" id="appointments-count-badge" style="background:#ef4444; color:white; margin-left:8px; display:none;">0</span></button>
@@ -734,7 +734,11 @@
                     <!-- LEFT SIDEBAR: CONTROLS -->
                     <div class="builder-sidebar">
                         <div>
-                            <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -1px; color: #111827;">✨ Creador de Tarjetas Mágico</h1>
+                            
+                            <button onclick="document.querySelector('.nav-tab[data-tab=\'tab-campaigns\']').click()" style="background:transparent; border:none; color:#6b7280; font-size:14px; font-weight:600; cursor:pointer; margin-bottom:16px; display:flex; align-items:center; gap:8px; padding:0; transition:color 0.2s;" onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#6b7280'">
+                                <i class="fa-solid fa-arrow-left"></i> Volver a Mis Campañas
+                            </button>
+                            <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -1px; color: #111827;">✨ Creador Mágico</h1>
                             <p style="font-size: 14px; color: #6b7280; margin-top: 8px;">Configura la tarjeta digital que tus clientes instalarán en sus teléfonos. Todo cambio se refleja al instante.</p>
                             
                             <div style="margin-top:20px; background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); padding:20px; border-radius:16px; color:white; display:flex; align-items:center; gap:16px; box-shadow:0 10px 30px rgba(76,29,149,0.3); border:1px solid rgba(255,255,255,0.1);">

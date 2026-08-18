@@ -212,8 +212,16 @@ window.applyQuickTemplate = function(type) {
         if (typeof showToast === 'function') showToast("¡Magia lista! Tu campaña ha sido pre-configurada.", "success");
         
         // Redirigir al constructor visual para que la vean y hagan ajustes mínimos
-        const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
-        if(builderTabBtn) builderTabBtn.click();
+    // FUSION ROUTING
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    
+    const builderTab = document.getElementById('tab-builder');
+    if(builderTab) builderTab.classList.add('active');
+    
+    const campBtn = document.querySelector('.nav-tab[data-tab="tab-campaigns"]');
+    if(campBtn) campBtn.classList.add('active');
+
 
     }, 800); // Simulamos "creación con inteligencia"
 };
