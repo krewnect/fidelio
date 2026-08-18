@@ -618,7 +618,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                         { key: "reward", label: "BENEFICIO", value: campaign.custom_cta_label || "Saldo VIP" }
                     ],
                     secondaryFields: [
-                        { key: "name", label: "SU TARJETA VIRTUAL", value: customer.name || "Invitado" },
+                        { key: "name", label: "SU TARJETA VIRTUAL", value: customer.full_name || "Invitado" },
                         { key: "type", label: "TIPO", value: campaign.type === 'stamps' ? 'Sellos' : 'Cashback' }
                     ],
                     auxiliaryFields: [],
@@ -766,7 +766,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                         { key: "balance", label: "SALDO", value: `$${customer.current_balance}` }
                     ],
                     secondaryFields: [
-                        { key: "name", label: "SU TARJETA VIRTUAL", value: customer.name || "Invitado" },
+                        { key: "name", label: "SU TARJETA VIRTUAL", value: customer.full_name || "Invitado" },
                         { key: "type", label: "TIPO", value: campaign.type === 'stamps' ? 'Sellos' : 'Cashback' }
                     ],
                     backFields: (() => {
