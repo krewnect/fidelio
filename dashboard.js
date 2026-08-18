@@ -3140,6 +3140,7 @@ function updatePassRender() {
 
         // Actualizar métricas del dashboard principal
         updateDashboardMetrics();
+        if (typeof window.loadAppointments === 'function') window.loadAppointments();
 
         // Actualizar encabezados (solo si no es admin)
         if (state && state.restaurantName && currentEmail.trim().toLowerCase() !== 'hola@fideliorewards.com') {
@@ -4996,6 +4997,8 @@ window.saveComplexSchedule = function() {
                 if (error) console.error("Error saving schedules to DB", error);
                 else {
                     if (typeof showToast === 'function') showToast('Horarios guardados en la nube', 'success');
+                    const modal = document.getElementById('schedule-config-modal');
+                    if (modal) modal.style.display = 'none';
                 }
             });
         }
