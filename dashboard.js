@@ -1612,7 +1612,7 @@ function renderCRMTable() {
 
         // FILTER
         const filtered = processedCustomers.filter(c => {
-            const matchesSearch = c.name.toLowerCase().includes(searchTerm) || 
+            const matchesSearch = (c.full_name || c.name || '').toLowerCase().includes(searchTerm) || 
                                   (c.phone && c.phone.includes(searchTerm)) || 
                                   (c.email && c.email.toLowerCase().includes(searchTerm)) ||
                                   (c.id && c.id.toLowerCase().includes(searchTerm));
