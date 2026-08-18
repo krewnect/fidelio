@@ -3004,7 +3004,7 @@ function updatePassRender() {
                     industry: newCat
                 }).eq('id', window.merchantSession.user.id);
                 
-                btnSaveAccProfile.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Perfil';
+                btnSaveAccProfile.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Perfil';
                 if (error) {
                     if (typeof showToast === 'function') showToast('Error al actualizar el perfil', 'error');
                 } else {
@@ -3099,7 +3099,7 @@ function updatePassRender() {
 
             if (Object.keys(updates).length === 0) return;
 
-            btnSaveAccount.textContent = 'Actualizando...';
+            btnSaveAccount.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Actualizando...';
             const { data, error } = await window.supabaseClient.auth.updateUser(updates);
             
             if (error) {
@@ -3109,7 +3109,7 @@ function updatePassRender() {
                 if (newPassword) accPassword.value = '';
                 if (data.user) window.merchantSession.user = data.user;
             }
-            btnSaveAccount.textContent = 'Actualizar Credenciales';
+            btnSaveAccount.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Actualizar Seguridad';
         });
     }
 
@@ -5674,19 +5674,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Form fields toggles
-    ['req-phone', 'req-birthday'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', (e) => {
-                const knob = document.getElementById(id + '-knob');
-                if (knob) {
-                    knob.parentElement.children[1].style.backgroundColor = e.target.checked ? '#8b5cf6' : '#ccc';
-                    knob.style.transform = e.target.checked ? 'translateX(14px)' : 'translateX(0)';
-                }
-            });
-        }
-    });
+    // Form fields toggles (now handled via pure CSS, no JS animation needed here)
+
 
 }); // Close previous DOMContentLoaded early to put these in global scope
 
@@ -5711,23 +5700,13 @@ window.updateLandingUI = function() {
             if (linkDisplay) linkDisplay.textContent = landingLink;
 
             const reqPhone = document.getElementById('req-phone');
-            const reqPhoneKnob = document.getElementById('req-phone-knob');
             if (reqPhone) {
                 reqPhone.checked = prefs.require_phone !== false;
-                if (reqPhoneKnob) {
-                    reqPhoneKnob.parentElement.children[1].style.backgroundColor = reqPhone.checked ? '#8b5cf6' : '#ccc';
-                    reqPhoneKnob.style.transform = reqPhone.checked ? 'translateX(14px)' : 'translateX(0)';
-                }
             }
             
             const reqBday = document.getElementById('req-birthday');
-            const reqBdayKnob = document.getElementById('req-birthday-knob');
             if (reqBday) {
                 reqBday.checked = prefs.require_birthday !== false;
-                if (reqBdayKnob) {
-                    reqBdayKnob.parentElement.children[1].style.backgroundColor = reqBday.checked ? '#8b5cf6' : '#ccc';
-                    reqBdayKnob.style.transform = reqBday.checked ? 'translateX(14px)' : 'translateX(0)';
-                }
             }
             
             const portalColor = document.getElementById('portal-color-primary');
