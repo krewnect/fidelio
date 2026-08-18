@@ -5541,11 +5541,21 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSaveForm.disabled = true;
 
             try {
+                const logoFile = document.getElementById('portal-logo-upload')?.files[0];
+                if (logoFile) {
+                    const ext = logoFile.name.split('.').pop();
+                    const filename = `${window.merchantSession.user.id}_${Date.now()}.${ext}`;
+                    const { data, error: uploadError } = await window.supabaseClient.storage.from('logos').upload(filename, logoFile, { upsert: true });
+                    if (uploadError) throw new Error('Error al subir el logo: ' + uploadError.message);
+                    
+                    const { data: publicUrlData } = window.supabaseClient.storage.from('logos').getPublicUrl(filename);
+                    window.currentPortalLogo = publicUrlData.publicUrl;
+                }
                 const prefs = {
                     require_phone: document.getElementById('req-phone').checked,
                     require_birthday: document.getElementById('req-birthday').checked,
                     portal_color: document.getElementById('portal-color-primary')?.value || '#8b5cf6',
-                    portal_logo: document.getElementById('portal-logo-url')?.value || '',
+                    portal_logo: window.currentPortalLogo || '',
                     username: window.merchantData.appointment_settings?.landing_prefs?.username || window.merchantData.business_name.toLowerCase().replace(/[^a-z0-9]/g, '')
                 };
 

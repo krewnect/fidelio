@@ -305,6 +305,46 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Registro de Negocios
+app.post('/api/portal/:username/register', async (req, res) => {
+    try {
+        const { username } = req.params;
+        const { fullName, email, phone, birthday } = req.body;
+        
+        // Find merchant
+        const { data: merchant, error: mError } = await supabase
+            .from('merchants')
+            .select('id')
+            .filter('appointment_settings->landing_prefs->>username', 'eq', username)
+            .limit(1)
+            .single();
+            
+        if (mError || !merchant) return res.status(404).json({ error: 'Negocio no encontrado' });
+        
+        // Insert customer
+        const insertData = {
+            merchant_id: merchant.id,
+            full_name: fullName,
+            email: email
+        };
+        if (phone) insertData.phone = phone;
+        if (birthday) insertData.birthday = birthday;
+        
+        const { error: insertError } = await supabase.from('customers').insert([insertData]);
+        
+        if (insertError) {
+            // If already exists, we might want to just update or ignore
+            if (insertError.code === '23505') {
+                return res.json({ success: true, message: 'El cliente ya estaba registrado.' });
+            }
+            throw insertError;
+        }
+        
+        res.json({ success: true });
+    } catch (ex) {
+        res.status(500).json({ error: ex.message });
+    }
+});
+
 app.get('/api/portal/:username', async (req, res) => {
     try {
         const { username } = req.params;
