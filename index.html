@@ -723,122 +723,93 @@
                                 </div>
 
                                 <!-- THE PASS -->
-                                <div class="card-3d-scene">
-                                    <div class="card-3d-object" id="pass-render">
+                                <div class="card-3d-scene" style="perspective: 1000px; display: flex; justify-content: center; align-items: center; padding: 20px;">
+                                    <div class="card-3d-object" id="pass-render" style="width: 100%; max-width: 360px; position: relative; transition: transform 0.6s; transform-style: preserve-3d;">
                                         
-                                        <!-- Front of Card -->
-                                        <div class="card-face card-front pass-preview-card">
-                                            <!-- Header Area -->
-                                            <div class="pass-top-section" id="pass-front-face">
-                                                <div class="pass-brand-row">
-                                                    <div style="display: flex; align-items: center; gap: 12px;">
-                                                        <div class="pass-logo-circle">
-                                                            <i class="fa-solid fa-crown" id="render-icon"></i>
-                                                        </div>
-                                                        <div>
-                                                            <div id="render-name" style="font-weight:700; font-size:17px; letter-spacing:-0.5px;">Mi Negocio</div>
-                                                            <div id="render-category" style="font-size:12px; opacity:0.8; font-weight:500;">Restaurante & Gastronomía</div>
-                                                        </div>
+                                        <!-- FRONT OF CARD -->
+                                        <div class="card-face card-front pass-preview-card premium-white-card" style="background: #ffffff; border-radius: 20px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; min-height: 250px; backface-visibility: hidden; border: 1px solid var(--pass-primary, #8b5cf6);">
+                                            
+                                            <!-- Top row: Logo and "10 SELLOS" -->
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                                                <div class="pass-logo-container" style="flex: 1; max-width: 160px; display: flex; align-items: center;">
+                                                    <img id="render-custom-logo" src="" style="width: 100%; max-height: 45px; object-fit: contain; display: none; object-position: left center;" />
+                                                    <div id="render-default-logo" style="display: flex; align-items: center; gap: 8px;">
+                                                        <i class="fa-solid fa-crown" id="render-icon" style="color: var(--pass-primary, #8b5cf6); font-size: 24px;"></i>
+                                                        <span id="render-name" style="font-weight: 800; font-size: 20px; color: #111827; letter-spacing: -0.5px;">Fidelio</span>
                                                     </div>
                                                 </div>
+                                                <div id="render-top-right" style="text-align: right; display: flex; align-items: center; gap: 8px;">
+                                                    <span id="render-top-right-text" style="font-size: 11px; font-weight: 700; color: var(--pass-primary, #8b5cf6); text-transform: uppercase; letter-spacing: 0.5px;">10 SELLOS</span>
+                                                    <i class="fa-solid fa-wifi" style="transform: rotate(90deg); color: var(--pass-primary, #8b5cf6); opacity: 0.8; font-size: 14px;"></i>
+                                                </div>
+                                            </div>
+
+                                            <!-- Middle Body (Dynamic: Stamps vs Cashback) -->
+                                            <div id="render-body-stamps" style="display: flex; flex-direction: column; flex-grow: 1;">
+                                                <div style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; line-height: 1.4;">ACUMULA <span id="render-stamps-total-text">10</span> SELLOS<br>Y OBTÉN TU RECOMPENSA</div>
                                                 
-                                                <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                                                    <div id="render-vip-block">
-                                                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Nivel Actual</div>
-                                                        <div id="render-vip-caption" style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;">ORO VIP</div>
+                                                <!-- Stamps Grid -->
+                                                <div id="render-stamps-grid" style="display: flex; flex-wrap: wrap; gap: 14px; position: relative; margin-bottom: 20px;">
+                                                    <!-- Generated via JS -->
+                                                </div>
+                                            </div>
+
+                                            <div id="render-body-cashback" style="display: none; flex-direction: column; flex-grow: 1;">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                                                    <div>
+                                                        <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">NIVEL</div>
+                                                        <div id="render-vip-caption" style="font-size: 28px; font-weight: 800; color: var(--pass-primary, #8b5cf6); letter-spacing: -1px; display: flex; align-items: center; gap: 8px;">ÉLITE <i class="fa-solid fa-crown" style="font-size: 18px; color: #eab308;"></i></div>
+                                                        <div style="margin-top: 12px; background: rgba(139, 92, 246, 0.1); padding: 6px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; color: var(--pass-primary, #8b5cf6); display: inline-block;">1,250 pts para NIVEL PRO</div>
                                                     </div>
-                                                    <div id="render-wallet-block" style="display:none; text-align:center;">
-                                                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Saldo Digital</div>
-                                                        <div style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;" id="render-wallet-balance">$600.00</div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">CASHBACK</div>
+                                                        <div id="render-balance" style="font-size: 24px; font-weight: 800; color: #111827;">$325.00</div>
+                                                        <div style="font-size: 10px; font-weight: 600; color: var(--pass-primary, #8b5cf6); text-transform: uppercase; margin-top: 2px;">Disponible</div>
                                                     </div>
-                                                    <div id="render-cashback-block" style="text-align:right;">
-                                                        <div id="render-cashback-label" style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:2px;">Cashback</div>
-                                                        <div style="font-size:20px; font-weight:800; letter-spacing:-0.5px; font-family:-apple-system, sans-serif;" id="render-balance">$145.00</div>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;">
+                                                    <div>
+                                                        <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">MONEDERO</div>
+                                                        <div id="render-wallet-balance" style="font-size: 20px; font-weight: 800; color: #111827;">$1,250.00</div>
+                                                        <div style="font-size: 10px; font-weight: 600; color: var(--pass-primary, #8b5cf6); text-transform: uppercase; margin-top: 2px;">Disponible</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            
-                                            <!-- Middle Image -->
-                                            <div id="render-banner-container" style="background:#f9fafb;">
-                                                <img id="render-banner-img" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=800&h=300" alt="Banner" class="pass-banner-img">
-                                            </div>
-                                            
-                                            <!-- Body Info -->
-                                            <div class="pass-body-section">
-                                                <div style="display:flex; gap:16px; margin-bottom:16px;">
-                                                    <div style="flex:1;">
-                                                        <div class="pass-field-label" id="render-reward-label">Próxima Recompensa</div>
-                                                        <div class="pass-field-value" style="color:var(--accent-violet);" id="render-reward-text">Bebida de Cortesía Gratis</div>
-                                                    </div>
-                                                    <div style="text-align:right;">
-                                                        <div class="pass-field-label">Visitas</div>
-                                                        <div class="pass-field-value">3 / 5</div>
-                                                    </div>
+
+                                            <!-- Bottom row: Instructions and QR -->
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding-top: 16px;">
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <div style="color: var(--pass-primary, #8b5cf6); font-size: 24px;"><i class="fa-solid fa-expand"></i></div>
+                                                    <div style="font-size: 10px; font-weight: 600; color: #4b5563; text-transform: uppercase; line-height: 1.4; letter-spacing: 0.5px;">ESCANEA TU TARJETA<br>EN CAJA</div>
                                                 </div>
-                                                
-                                                <div style="margin-bottom:16px;">
-                                                    <div class="pass-field-label">Notificación Flash</div>
-                                                    <div class="pass-field-value" style="font-size:14px; font-weight:600; background:#f3f4f6; padding:10px 12px; border-radius:10px; display:inline-block; width:100%; box-sizing:border-box;">
-                                                        <i class="fa-solid fa-bolt" style="color:var(--accent-violet); margin-right:6px;"></i> <span id="render-promo-text">Martes Doble Cashback</span>
-                                                    </div>
-                                                </div>
-                                                
-                                                
-                                                <div id="render-stamps-view" style="display:none; flex-direction:column; align-items:center; padding-top:20px; border-top: 1px dashed #e5e7eb;">
-                                                    <div style="font-size:11px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Tus Visitas</div>
-                                                    <div id="render-stamps-grid" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; max-width:280px;">
-                                                        <!-- Stamps will be generated here -->
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="pass-qr-section" id="render-qr-view">
-                                                    <!-- Use a REAL active QR code API so it never breaks -->
-                                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FidelioRewards123&bgcolor=ffffff&color=000000" alt="QR Code" style="width:130px; height:130px; mix-blend-mode:multiply;">
-                                                    <div style="margin-top:8px; font-size:10px; font-weight:700; color:#9ca3af; letter-spacing:1px; font-family:monospace;">FIDELIO-8842-MEX</div>
+                                                <div style="width: 55px; height: 55px; background: white; padding: 4px; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fa-solid fa-qrcode" style="font-size: 42px; color: #111827;"></i>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Back of Card -->
-                                        <div class="card-face card-back pass-preview-card">
-                                            <div style="background:rgba(255,255,255,0.1); padding:8px 12px; border-radius:12px; font-size:12px; font-weight:600; text-align:center; margin-bottom:24px; display:inline-block;">
-                                                <i class="fa-brands fa-apple"></i> Apple Wallet &nbsp;|&nbsp; <i class="fa-brands fa-google"></i> Google Wallet
-                                            </div>
+                                        <!-- BACK OF CARD -->
+                                        <div class="card-face card-back pass-preview-card premium-white-card" style="background: #ffffff; border-radius: 20px; padding: 24px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; transform: rotateY(180deg); backface-visibility: hidden; border: 1px solid var(--pass-primary, #8b5cf6);">
+                                            <div style="font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">Términos y Políticas</div>
+                                            <div id="render-policies-text" style="font-size: 11px; color: #4b5563; line-height: 1.6; overflow-y: auto; flex-grow: 1;">Las recompensas no son transferibles ni canjeables por efectivo.</div>
                                             
-                                            <div id="render-wallet-links-back" style="display:none; margin-bottom: 24px;">
-                                                <h4 style="font-size:14px; color:#fff; margin-bottom:12px;">Acciones Rápidas</h4>
-                                                <div id="render-wallet-link-appointment" style="background:#2c2c2e; padding:12px; border-radius:8px; margin-bottom:8px; display:none; align-items:center; gap:12px;">
-                                                    <i class="fa-solid fa-calendar-check" style="color:#8b5cf6;"></i> <span style="font-size:13px;">Agendar Cita</span>
+                                            <div id="render-wallet-links-back" style="display:none; margin-bottom: 16px;">
+                                                <div style="font-size: 12px; font-weight: 700; color: #111827; margin-bottom: 8px;">Acciones Rápidas</div>
+                                                <div id="render-wallet-link-appointment" style="background:#f9fafb; border: 1px solid #e5e7eb; padding:10px; border-radius:8px; margin-bottom:6px; display:none; align-items:center; gap:10px; color: #111827;">
+                                                    <i class="fa-solid fa-calendar-check" style="color:var(--pass-primary, #8b5cf6);"></i> <span style="font-size:12px; font-weight: 600;">Agendar Cita</span>
                                                 </div>
-                                                <div id="render-wallet-link-payment" style="background:#2c2c2e; padding:12px; border-radius:8px; display:none; align-items:center; gap:12px;">
-                                                    <i class="fa-solid fa-credit-card" style="color:#10b981;"></i> <span style="font-size:13px;">Pagar Cita</span>
+                                                <div id="render-wallet-link-payment" style="background:#f9fafb; border: 1px solid #e5e7eb; padding:10px; border-radius:8px; display:none; align-items:center; gap:10px; color: #111827;">
+                                                    <i class="fa-solid fa-credit-card" style="color:#10b981;"></i> <span style="font-size:12px; font-weight: 600;">Pagar Cita</span>
                                                 </div>
-                                                <div style="width:100%; height:1px; background:#333; margin:24px 0 0 0;"></div>
                                             </div>
 
-                                            <div id="render-vip-benefits-back" style="display:none; margin-bottom: 24px;">
-                                                <h4 style="font-size:14px; color:#fff; margin-bottom:8px;">Beneficios de tu Nivel</h4>
-                                                <ul id="render-vip-benefits-list" style="font-size:12px; color:#a1a1aa; line-height:1.6; padding-left:16px; margin:0;">
-                                                </ul>
-                                                <div style="width:100%; height:1px; background:#333; margin:24px 0 0 0;"></div>
-                                            </div>
-
-                                            <h4 style="font-size:14px; color:#fff; margin-bottom:8px;">Términos y Políticas Legales</h4>
-                                            <p id="render-policies-text" style="font-size:12px; color:#a1a1aa; line-height:1.6;">Las recompensas no son transferibles ni canjeables por efectivo.</p>
-                                            
-                                            <div style="width:100%; height:1px; background:#333; margin:24px 0;"></div>
-                                            
-                                            <h4 style="font-size:14px; color:#fff; margin-bottom:8px;">Acerca de este Pase</h4>
-                                            <p style="font-size:12px; color:#a1a1aa; line-height:1.6;">Este pase digital está administrado por Fidelio Rewards. Cualquier modificación de saldo se refleja automáticamente mediante tecnología Push.</p>
-                                            
-                                            <div style="margin-top:40px; text-align:center; opacity:0.5;">
-                                                <img src="./fidelio_logo_purple.png" style="width:60px; filter:grayscale(1) brightness(2);">
+                                            <div style="text-align: center; margin-top: 16px; font-size: 10px; color: #9ca3af; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                                <img src="./fidelio_logo_purple.png" style="height: 14px; filter: grayscale(1) opacity(0.5);">
                                             </div>
                                         </div>
 
                                     </div>
                                 </div>
-                                
                                 <div style="width:100%; display:flex; justify-content:center; padding-top:10px;">
                                     <div style="width:120px; height:5px; background:rgba(255,255,255,0.8); border-radius:3px;"></div>
                                 </div>
