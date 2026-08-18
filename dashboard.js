@@ -3306,30 +3306,14 @@ function updatePassRender() {
                 btn.disabled = true;
                 
                 try {
+                    // Update ONLY valid merchant columns if needed, but mostly we rely on campaigns.rules_config
                     const { error } = await window.supabaseClient.from('merchants').update({
-                        activeMode: activeMode,
-                        cashbackActive: cashbackActive,
-                        cashbackPercent: cashbackPercent,
-                        stampsActive: stampsActive,
-                        stampsTotal: totalStamps,
-                        stampsReward: reward,
-                        vipActive: vipActive,
-                        vipTiers: vipTiers,
-                        prepaidActive: togglePrepaid ? togglePrepaid.checked : false,
-                        prepaidAmount: document.getElementById('pre-amount') ? parseFloat(document.getElementById('pre-amount').value) : 500,
-                        prepaidBonus: document.getElementById('pre-bonus') ? parseFloat(document.getElementById('pre-bonus').value) : 100,
-                        customRules: {
-                            membership: { cycle: document.getElementById('mem-cycle')?.value, benefit: document.getElementById('mem-benefit')?.value },
-                            custom: { name: document.getElementById('cus-name')?.value, rules: document.getElementById('cus-rules')?.value },
-                            points: { rate: document.getElementById('pts-rate')?.value, reward: document.getElementById('pts-reward')?.value },
-                            discount: { percent: document.getElementById('dsc-percent')?.value, purpose: document.getElementById('dsc-purpose')?.value, conditions: document.getElementById('dsc-conditions')?.value },
-                            coupons: { type: document.getElementById('cpn-type')?.value, limit: document.getElementById('cpn-limit')?.value, expiry: document.getElementById('cpn-expiry')?.value, terms: document.getElementById('cpn-terms')?.value },
-                            multipass: { count: document.getElementById('mp-count')?.value, service: document.getElementById('mp-service')?.value },
-                            certificates: { fixedAmount: document.getElementById('cert-fixed-amount')?.value }
-                        }
+                        cashback_percent: cashbackPercent,
+                        stamps_total: totalStamps,
+                        stamps_reward_text: reward
                     }).eq('id', state.tenantId);
                     
-                    if (error) throw error;
+                    if (error) console.warn('Warning updating merchants table:', error);
                     
                     // Update local state
                     state.activeMode = activeMode;
