@@ -1519,7 +1519,7 @@ app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAut
                 description: `Pase de Lealtad de ${merchant.business_name}`,
                 logoText: merchant.business_name,
                 foregroundColor: "rgb(255, 255, 255)",
-                backgroundColor: "rgb(17, 24, 39)",
+                backgroundColor: "rgb(255, 255, 255)",
                 labelColor: "rgb(139, 92, 246)",
                 storeCard: {
                     headerFields: [
