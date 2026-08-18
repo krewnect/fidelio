@@ -608,8 +608,8 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                 description: campaign.description || "Tarjeta de Lealtad",
                 logoText: campaign.name || "Mi Negocio",
                 backgroundColor: "rgb(255, 255, 255)",
-                foregroundColor: "rgb(17, 24, 39)",
-                labelColor: "rgb(107, 114, 128)",
+                foregroundColor: "rgb(0, 0, 0)",
+                labelColor: "rgb(100, 100, 100)",
                 storeCard: {
                     headerFields: [
                         { key: "balance", label: labelVal, value: balanceVal }
@@ -618,12 +618,10 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                         { key: "reward", label: "BENEFICIO", value: campaign.custom_cta_label || "Saldo VIP" }
                     ],
                     secondaryFields: [
-                        { key: "name", label: "CLIENTE", value: customer.name || "Invitado" },
-                        { key: "status", label: "ESTADO", value: "Activo" }
+                        { key: "name", label: "SU TARJETA VIRTUAL", value: customer.name || "Invitado" },
+                        { key: "type", label: "TIPO", value: campaign.type === 'stamps' ? 'Sellos' : 'Cashback' }
                     ],
-                    auxiliaryFields: [
-                        { key: "type", label: "PROGRAMA", value: campaign.type === 'stamps' ? 'Tarjetas de Sellos' : 'Cashback VIP' }
-                    ],
+                    auxiliaryFields: [],
                     backFields: (() => {
                         const arr = [
                             { key: "portal", label: "MI TARJETA VIRTUAL", value: "Abrir mi tarjeta web", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}">Haz clic aquí para abrir</a>` }
@@ -761,14 +759,15 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 description: "Tarjeta de Lealtad",
                 logoText: merchant.business_name || "Mi Negocio",
                 backgroundColor: "rgb(255, 255, 255)",
-                foregroundColor: "rgb(17, 24, 39)",
-                labelColor: "rgb(107, 114, 128)",
+                foregroundColor: "rgb(0, 0, 0)",
+                labelColor: "rgb(100, 100, 100)",
                 storeCard: {
                     primaryFields: [
                         { key: "balance", label: "SALDO", value: `$${customer.current_balance}` }
                     ],
                     secondaryFields: [
-                        { key: "name", label: "CLIENTE", value: customer.name || "Invitado" }
+                        { key: "name", label: "SU TARJETA VIRTUAL", value: customer.name || "Invitado" },
+                        { key: "type", label: "TIPO", value: campaign.type === 'stamps' ? 'Sellos' : 'Cashback' }
                     ],
                     backFields: (() => {
                         const arr = [
