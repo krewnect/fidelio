@@ -347,17 +347,19 @@ app.post('/api/auth/register', async (req, res) => {
         });
 
         if (authError) throw authError;
+        
+        if (!authData || !authData.user) {
+            throw new Error("El correo electrónico ya está registrado o hubo un problema con el registro.");
+        }
 
         // 2. Insertar perfil en merchants
-        if (authData.user) {
-            const { error: dbError } = await supabase
-                .from('merchants')
-                .insert([
-                    { id: authData.user.id, business_name: businessName, plan_status: planStatus, business_type: businessType || 'restaurant' }
-                ]);
-            
-            if (dbError) console.error("Error al crear merchant:", dbError);
-        }
+        const { error: dbError } = await supabase
+            .from('merchants')
+            .insert([
+                { id: authData.user.id, business_name: businessName, plan_status: planStatus, business_type: businessType || 'restaurant' }
+            ]);
+        
+        if (dbError) console.error("Error al crear merchant:", dbError);
 
         res.json({ success: true, user: authData.user, skipStripe });
     } catch (error) {
