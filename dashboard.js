@@ -96,10 +96,15 @@ window.createNewCampaign = function() {
     state.colorAccent = "#8b5cf6";
     if (typeof showToast === 'function') showToast("Nueva campaña creada, edita y guarda.", "info");
     
-    // Redirect to Loyalty Setup first
-    const loyaltyTabBtn = document.querySelector('.nav-tab[data-tab="tab-loyalty"]');
-    if(loyaltyTabBtn) {
-        loyaltyTabBtn.click();
+    // Redirect logic: Professionals skip Loyalty and go directly to Builder
+    const isPro = (window.merchantData && window.merchantData.business_type === 'professional');
+    if (isPro) {
+        state.activeMode = 'stamps';
+        const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
+        if(builderTabBtn) builderTabBtn.click();
+    } else {
+        const loyaltyTabBtn = document.querySelector('.nav-tab[data-tab="tab-loyalty"]');
+        if(loyaltyTabBtn) loyaltyTabBtn.click();
     }
     updatePassRender();
 };
