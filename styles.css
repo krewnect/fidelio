@@ -15,12 +15,14 @@
 
 .crm-table {
     width: 100%;
+    min-width: 1200px;
     border-collapse: separate;
     border-spacing: 0 10px !important;
     margin-top: 12px;
 }
 
 .crm-table th {
+    white-space: nowrap;
     background: transparent;
     color: var(--crm-text-muted);
     font-size: 11px;
@@ -46,6 +48,7 @@
 }
 
 .crm-table td {
+    white-space: nowrap;
     padding: 16px 24px !important;
     color: var(--crm-text-primary);
     font-size: 13px;
