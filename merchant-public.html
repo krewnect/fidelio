@@ -404,7 +404,9 @@
                 if (merchantData.logo_url) {
                     logoEl.src = merchantData.logo_url;
                 } else {
-                    logoEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(merchantData.business_name)}&background=${(merchantData.color_primary||'8b5cf6').replace('#','')}&color=fff&size=128`;
+                    logoEl.src = '/fidelio_logo_purple.png';
+                    logoEl.style.backgroundColor = 'white';
+                    logoEl.style.padding = '10px';
                 }
 
                 // 5. Fetch Campaigns
