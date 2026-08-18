@@ -600,13 +600,12 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
-                serialNumber: `${customerId}|${campaignId}|v6_${Date.now()}`,
+                serialNumber: `${customerId}|${campaignId}|v7_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fideliorewards.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16),
                 organizationName: campaign.name || "Mi Negocio",
                 description: campaign.description || "Tarjeta de Lealtad",
-                logoText: campaign.name || "Mi Negocio",
                 backgroundColor: "rgb(255, 255, 255)",
                 foregroundColor: "rgb(0, 0, 0)",
                 labelColor: "rgb(100, 100, 100)",
@@ -683,10 +682,44 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             // Se asume que icon.png y logo.png existen en la raíz o cargarlos desde URL
             // Como fallback, Passkit-generator requiere archivos locales. 
             const fs = require('fs');
+            
+            // Generate icon
             if (fs.existsSync('./icon-192.png')) {
                 pass.addBuffer('icon.png', fs.readFileSync('./icon-192.png'));
                 pass.addBuffer('icon@2x.png', fs.readFileSync('./icon-192.png'));
-                pass.addBuffer('logo.png', fs.readFileSync('./icon-192.png'));
+            }
+            
+            // Download and add logo
+            let logoAdded = false;
+            if (campaign.logo_url && campaign.logo_url.startsWith('http')) {
+                try {
+                    const logoRes = await fetch(campaign.logo_url);
+                    if (logoRes.ok) {
+                        const logoArrayBuffer = await logoRes.arrayBuffer();
+                        const logoBuffer = Buffer.from(logoArrayBuffer);
+                        pass.addBuffer('logo.png', logoBuffer);
+                        pass.addBuffer('logo@2x.png', logoBuffer);
+                        logoAdded = true;
+                    }
+                } catch (err) {
+                    console.error("Error downloading logo_url:", err);
+                }
+            } else if (campaign.logo_url && campaign.logo_url.startsWith('data:image')) {
+                try {
+                    const base64Data = campaign.logo_url.replace(/^data:image\/\w+;base64,/, "");
+                    const logoBuffer = Buffer.from(base64Data, 'base64');
+                    pass.addBuffer('logo.png', logoBuffer);
+                    pass.addBuffer('logo@2x.png', logoBuffer);
+                    logoAdded = true;
+                } catch (err) {
+                    console.error("Error parsing base64 logo_url:", err);
+                }
+            }
+            
+            if (!logoAdded) {
+                if (fs.existsSync('./icon-192.png')) {
+                    pass.addBuffer('logo.png', fs.readFileSync('./icon-192.png'));
+                }
             }
             
             // Si el user tiene strip_icon (Base64)
@@ -765,11 +798,10 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fidelio-41j9.onrender.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16), // A token must be at least 16 chars
-                serialNumber: `${customer.id}|v6_${Date.now()}`,
+                serialNumber: `${customer.id}|v7_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 organizationName: merchant.business_name || "Mi Negocio",
                 description: "Tarjeta de Lealtad",
-                logoText: merchant.business_name || "Mi Negocio",
                 backgroundColor: "rgb(255, 255, 255)",
                 foregroundColor: "rgb(0, 0, 0)",
                 labelColor: "rgb(100, 100, 100)",
@@ -1666,7 +1698,6 @@ app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAut
                 authenticationToken: serialNumber.replace(/-/g, '').substring(0, 16),
                 organizationName: merchant.business_name || "Mi Negocio",
                 description: `Pase de Lealtad de ${merchant.business_name}`,
-                logoText: merchant.business_name,
                 foregroundColor: "rgb(255, 255, 255)",
                 backgroundColor: "rgb(255, 255, 255)",
                 labelColor: "rgb(139, 92, 246)",
