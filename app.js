@@ -1223,27 +1223,15 @@ app.post('/api/campaigns', async (req, res) => {
             };
         }
 
-        if (payload.id) {
-            // Update
-            const { data, error } = await supabase
-                .from('campaigns')
-                .update(payload)
-                .eq('id', payload.id)
-                .eq('merchant_id', merchantId)
-                .select()
-                .single();
-            if (error) throw error;
-            res.json({ success: true, campaign: data });
-        } else {
-            // Insert
-            const { data, error } = await supabase
-                .from('campaigns')
-                .insert([payload])
-                .select()
-                .single();
-            if (error) throw error;
-            res.json({ success: true, campaign: data });
-        }
+        // Upsert (Insert or Update based on ID)
+        const { data, error } = await supabase
+            .from('campaigns')
+            .upsert([payload])
+            .select()
+            .single();
+            
+        if (error) throw error;
+        res.json({ success: true, campaign: data });
     } catch (ex) {
         console.error('Error saving campaign:', ex);
         res.status(500).json({ error: ex.message });
