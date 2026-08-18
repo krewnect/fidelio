@@ -589,6 +589,12 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
         // Fetch Branches for Geofencing
         const { data: branches } = await supabase.from('branches').select('lat, lng, name').eq('merchant_id', campaign.merchant_id);
 
+        const certs = {
+            wwdr: Buffer.from(wwdr, 'base64'),
+            signerCert: Buffer.from(signerCert, 'base64'),
+            signerKey: Buffer.from(signerKey, 'base64'),
+            signerKeyPassphrase: signerKeyPassphrase || undefined
+        };
         const pass = new PKPass({
             "pass.json": {
                 formatVersion: 1,
@@ -622,7 +628,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                     altText: "Código Cliente"
                 }
             }
-        });
+        }, certs);
 
         // Geofencing (si hay sucursales)
         if (branches && branches.length > 0) {
@@ -634,13 +640,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             pass.add('locations', locations);
         }
 
-        // Cargar Certificados
-        pass.certificates({
-            wwdr: Buffer.from(wwdr, 'base64'),
-            signerCert: Buffer.from(signerCert, 'base64'),
-            signerKey: Buffer.from(signerKey, 'base64'),
-            signerKeyPassphrase: signerKeyPassphrase || undefined
-        });
+        // Certificados ya cargados en constructor
 
         // Intentar agregar iconos o logos customizados
         try {
@@ -713,6 +713,12 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
 
         // Crear la estructura de la tarjeta
         // Crear la estructura de la tarjeta
+        const certs = {
+            wwdr: Buffer.from(wwdr, 'base64'),
+            signerCert: Buffer.from(signerCert, 'base64'),
+            signerKey: Buffer.from(signerKey, 'base64'),
+            signerKeyPassphrase: signerKeyPassphrase || undefined
+        };
         const pass = new PKPass({
             "pass.json": {
                 formatVersion: 1,
@@ -747,7 +753,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                     altText: customer.id
                 }
             }
-        });
+        }, certs);
 
         // Geofencing (si hay sucursales)
         if (branches && branches.length > 0) {
@@ -758,14 +764,6 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
             }));
             pass.add('locations', locations);
         }
-
-        // Cargar Certificados (decodificados de base64)
-        pass.certificates({
-            wwdr: Buffer.from(wwdr, 'base64'),
-            signerCert: Buffer.from(signerCert, 'base64'),
-            signerKey: Buffer.from(signerKey, 'base64'),
-            signerKeyPassphrase: signerKeyPassphrase || undefined
-        });
 
         // Generar archivo binario (.pkpass)
         const buffer = await pass.getAsBuffer();
@@ -1489,6 +1487,12 @@ app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAut
             pushBody = latestPush[0].body;
         }
 
+        const certs = {
+            wwdr: Buffer.from(wwdr, 'base64'),
+            signerCert: Buffer.from(signerCert, 'base64'),
+            signerKey: Buffer.from(signerKey, 'base64'),
+            signerKeyPassphrase: signerKeyPassphrase || undefined
+        };
         const pass = new PKPass({
             "pass.json": {
                 formatVersion: 1,
