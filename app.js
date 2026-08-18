@@ -1139,7 +1139,7 @@ ${JSON.stringify(merchantContext || {})}
 
 
 // --- MULTI-CARD (CAMPAIGNS) API ---
-app.get('/api/campaigns', async (req, res) => {
+app.get('/api/campaigns', requireMerchantAuth, async (req, res) => {
     try {
         const { merchantId } = req;
         if (!merchantId) return res.status(401).json({ error: 'No merchantId' });
@@ -1159,7 +1159,7 @@ app.get('/api/campaigns', async (req, res) => {
 });
 
 // --- SPECIAL CARDS EMISSIONS API ---
-app.get('/api/special-emissions', async (req, res) => {
+app.get('/api/special-emissions', requireMerchantAuth, async (req, res) => {
     try {
         const { merchantId } = req;
         if (!merchantId) return res.status(401).json({ error: 'No merchantId' });
@@ -1178,7 +1178,7 @@ app.get('/api/special-emissions', async (req, res) => {
     }
 });
 
-app.post('/api/special-emissions', async (req, res) => {
+app.post('/api/special-emissions', requireMerchantAuth, async (req, res) => {
     try {
         const { merchantId } = req;
         if (!merchantId) return res.status(401).json({ error: 'No merchantId' });
@@ -1208,7 +1208,7 @@ app.post('/api/special-emissions', async (req, res) => {
     }
 });
 
-app.post('/api/campaigns', async (req, res) => {
+app.post('/api/campaigns', requireMerchantAuth, async (req, res) => {
     try {
         const { merchantId } = req;
         const payload = req.body;

@@ -28,7 +28,10 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
     try {
         const res = await fetch('/api/campaigns', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${window.merchantSession?.access_token || ''}`
+            },
             body: JSON.stringify(payload)
         });
         if (res.ok) {
@@ -47,7 +50,9 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
 
 window.loadCampaigns = async function() {
     try {
-        const res = await fetch('/api/campaigns');
+        const res = await fetch('/api/campaigns', {
+            headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
+        });
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         state.campaigns = data.campaigns;
@@ -124,7 +129,9 @@ window.createNewSpecialCard = function() {
 
 window.selectCampaign = async function(id) {
     try {
-        const res = await fetch('/api/campaigns');
+        const res = await fetch('/api/campaigns', {
+            headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
+        });
         const data = await res.json();
         const camp = data.campaigns.find(c => c.id === id);
         if (!camp) return;
