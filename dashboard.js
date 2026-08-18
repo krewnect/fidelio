@@ -1741,7 +1741,7 @@ function renderCRMTable() {
                         <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Notificación Push a Wallet" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Notificaciones Push','El envío de notificaciones directas al Apple Wallet/Google Wallet se habilitará cuando contrates un Add-on o subas de plan.','info');}else{alert('El envío de notificaciones directas requiere un add-on adicional.');}">
                             <i class="fa-regular fa-bell"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Ver Perfil Detallado" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Perfil del Cliente','Detalles extendidos del cliente muy pronto.','info');}else{alert('Detalles del perfil pronto.');}">
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Ver Perfil Detallado" onclick="window.showCustomerProfile('${c.id}')">
                             <i class="fa-solid fa-qrcode"></i>
                         </button>
                     </div>
