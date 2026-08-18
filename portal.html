@@ -2,216 +2,266 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mi Tarjeta Digital - Portal del Cliente</title>
-    <!-- Google Fonts: Inter -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Cliente</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-color: #000000;
-            --text-color: #ffffff;
             --primary: #8b5cf6;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        .header {
-            text-align: center;
-            margin-top: 40px;
-            margin-bottom: 30px;
-        }
-        .merchant-name {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            margin-bottom: 5px;
-        }
-        .card-preview {
-            width: 100%;
-            max-width: 350px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        .balance-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.7;
-            margin-bottom: 10px;
-        }
-        .balance-amount {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .customer-name {
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-        .action-btn {
-            display: inline-block;
-            background: var(--primary);
-            color: #fff;
-            text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-            margin-bottom: 15px;
-            transition: all 0.2s;
-        }
-        .action-btn:active { transform: scale(0.98); }
-        .action-btn.secondary {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .history-list {
-            width: 100%;
-            max-width: 350px;
-            margin-top: 30px;
-        }
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .history-item:last-child { border-bottom: none; }
-        
-        #loading {
-            position: fixed;
-            inset: 0;
-            background: #000;
+            margin: 0;
+            padding: 0;
+            background: #f9fafb;
+            color: #1f2937;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            min-height: 100vh;
+        }
+        .portal-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 30px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            background: #f3f4f6;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary);
+        }
+        h1 {
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 0 30px 0;
+            line-height: 1.5;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            font-size: 15px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .btn-download {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+        }
+        .btn-download:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .wallet-badges {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .wallet-badges img {
+            height: 35px;
+            border-radius: 6px;
+        }
+        .loader {
+            display: none;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
         }
     </style>
 </head>
 <body>
 
-    <div id="loading"><i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary"></i></div>
+    <div class="portal-card" id="main-card">
+        <div id="loading-initial">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 30px; color: var(--primary);"></i>
+            <p style="margin-top: 20px;">Cargando portal...</p>
+        </div>
 
-    <div class="header">
-        <div class="merchant-name" id="ui-merchant-name">Cargando...</div>
-        <p style="opacity:0.6; font-size:0.9rem;">Portal de Lealtad VIP</p>
-    </div>
+        <div id="portal-content" style="display: none;">
+            <div id="logo-container" class="logo">
+                <i class="fa-solid fa-store"></i>
+            </div>
+            
+            <h1 id="business-name">Tu Negocio</h1>
+            <p>Regístrate para obtener tu tarjeta digital y empezar a disfrutar de beneficios exclusivos.</p>
 
-    <div class="card-preview" id="ui-card">
-        <div class="balance-label">Tu Saldo Disponible</div>
-        <div class="balance-amount" id="ui-balance">$0.00</div>
-        <div class="customer-name" id="ui-customer-name">Cargando...</div>
-    </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="cust-name" class="input-field" required placeholder="Ej. Ana Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="cust-email" class="input-field" required placeholder="tu@correo.com">
+                </div>
+                <div class="form-group" id="phone-group" style="display: none;">
+                    <label>Teléfono (WhatsApp)</label>
+                    <input type="tel" id="cust-phone" class="input-field" placeholder="10 dígitos">
+                </div>
+                <div class="form-group" id="birthday-group" style="display: none;">
+                    <label>Cumpleaños</label>
+                    <input type="date" id="cust-birthday" class="input-field">
+                </div>
 
-    <a href="#" class="action-btn" id="btn-review" style="display:none;" target="_blank">
-        <i class="fa-solid fa-star"></i> Calificar en Google Maps
-    </a>
-    <a href="#" class="action-btn secondary">
-        <i class="fa-brands fa-apple"></i> Añadir a Apple Wallet
-    </a>
+                <button type="submit" class="btn-download" id="btn-submit">
+                    <span id="btn-text">Descargar Tarjeta</span>
+                    <div class="loader" id="btn-loader"></div>
+                </button>
+            </form>
+            
+            <div class="wallet-badges">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Apple_Wallet_Icon.svg/512px-Apple_Wallet_Icon.svg.png" alt="Apple Wallet" style="box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Google_Wallet_2022_logo.svg/512px-Google_Wallet_2022_logo.svg.png" alt="Google Wallet" style="box-shadow:0 2px 5px rgba(0,0,0,0.1); padding:4px; background:white;">
+            </div>
+        </div>
 
-    <div class="history-list">
-        <h3 style="font-size:1rem; margin-bottom:15px; opacity:0.8;">Historial Reciente</h3>
-        <div id="ui-transactions">
-            <!-- Transactions injected via JS -->
+        <div class="success-state" id="success-state">
+            <div style="width: 80px; height: 80px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 20px;">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h1>¡Todo Listo!</h1>
+            <p>Tu tarjeta ha sido generada con éxito.</p>
+            <p style="font-size: 13px; margin-top: -20px;">Revisa tu Apple Wallet o Google Wallet para verla.</p>
+            
+            <button class="btn-download" style="background: #111827; margin-top: 20px;" onclick="location.reload()">
+                Volver
+            </button>
         </div>
     </div>
 
     <script>
-        async function init() {
-            try {
-                // Configurar Supabase
-                const configRes = await fetch('/api/config');
-                const config = await configRes.json();
-                const supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+        document.addEventListener('DOMContentLoaded', async () => {
+            const pathParts = window.location.pathname.split('/').filter(p => p);
+            const username = pathParts[0];
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const customerId = urlParams.get('id');
-
-                if (!customerId) throw new Error("ID de cliente inválido.");
-
-                // Cargar datos del cliente
-                const { data: customer, error: cErr } = await supabase.from('customers').select('*').eq('id', customerId).single();
-                if (cErr || !customer) throw new Error("Cliente no encontrado.");
-
-                // Cargar datos del comercio
-                const { data: merchant, error: mErr } = await supabase.from('merchants').select('*').eq('id', customer.merchant_id).single();
-                if (mErr) throw new Error("Comercio no encontrado.");
-
-                // Aplicar UI
-                document.getElementById('ui-merchant-name').textContent = merchant.business_name;
-                document.getElementById('ui-customer-name').textContent = customer.name;
-                document.getElementById('ui-balance').textContent = `$${customer.current_balance.toFixed(2)}`;
-
-                // Colores dinámicos
-                if(merchant.color_primary) {
-                    document.getElementById('ui-card').style.background = `linear-gradient(135deg, ${merchant.color_primary}, #000000)`;
-                }
-                if(merchant.color_accent) {
-                    document.documentElement.style.setProperty('--primary', merchant.color_accent);
-                }
-
-                // Mostrar botón de reseña si hay enlace
-                if(merchant.google_maps_url) {
-                    const btnReview = document.getElementById('btn-review');
-                    btnReview.style.display = 'inline-block';
-                    btnReview.href = merchant.google_maps_url;
-                }
-
-                // Cargar últimas transacciones
-                const { data: txs } = await supabase.from('transactions').select('*').eq('customer_id', customerId).order('created_at', { ascending: false }).limit(3);
-                const txContainer = document.getElementById('ui-transactions');
-                if (txs && txs.length > 0) {
-                    txContainer.innerHTML = txs.map(tx => `
-                        <div class="history-item">
-                            <div>
-                                <strong>${tx.type === 'earn' ? 'Compra' : 'Canje'}</strong>
-                                <div style="font-size:0.8rem; opacity:0.6;">${new Date(tx.created_at).toLocaleDateString()}</div>
-                            </div>
-                            <div style="font-weight:700; color:${tx.type === 'earn' ? '#4ade80' : '#ef4444'}">
-                                ${tx.type === 'earn' ? '+' : '-'}$${tx.amount.toFixed(2)}
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    txContainer.innerHTML = '<p style="opacity:0.5; font-size:0.9rem;">Sin transacciones aún.</p>';
-                }
-
-                document.getElementById('loading').style.display = 'none';
-
-            } catch(e) {
-                alert("Error: " + e.message);
-                document.getElementById('loading').innerHTML = `<p>${e.message}</p>`;
+            if (!username) {
+                document.getElementById('loading-initial').innerHTML = '<p>URL inválida. Falta nombre de usuario.</p>';
+                return;
             }
-        }
 
-        init();
+            try {
+                const res = await fetch(`/api/portal/${username}`);
+                if (!res.ok) throw new Error('Portal no encontrado o enlace incorrecto.');
+                const data = await res.json();
+                
+                const prefs = data.landing_prefs || {};
+                
+                if (prefs.portal_color) {
+                    document.documentElement.style.setProperty('--primary', prefs.portal_color);
+                }
+                
+                if (prefs.portal_logo) {
+                    document.getElementById('logo-container').innerHTML = `<img src="${prefs.portal_logo}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                    document.getElementById('logo-container').style.background = 'transparent';
+                }
+                
+                document.getElementById('business-name').textContent = data.business_name;
+
+                if (prefs.require_phone !== false) {
+                    const pg = document.getElementById('phone-group');
+                    pg.style.display = 'block';
+                    document.getElementById('cust-phone').required = true;
+                }
+                if (prefs.require_birthday !== false) {
+                    const bg = document.getElementById('birthday-group');
+                    bg.style.display = 'block';
+                    document.getElementById('cust-birthday').required = true;
+                }
+
+                document.getElementById('loading-initial').style.display = 'none';
+                document.getElementById('portal-content').style.display = 'block';
+
+            } catch (err) {
+                document.getElementById('loading-initial').innerHTML = `<p>${err.message}</p>`;
+            }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            const txt = document.getElementById('btn-text');
+            const ldr = document.getElementById('btn-loader');
+            
+            btn.disabled = true;
+            txt.style.display = 'none';
+            ldr.style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('portal-content').style.display = 'none';
+                document.getElementById('success-state').style.display = 'flex';
+            }, 1500);
+        });
     </script>
 </body>
 </html>

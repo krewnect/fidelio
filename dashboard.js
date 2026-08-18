@@ -5543,7 +5543,10 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const prefs = {
                     require_phone: document.getElementById('req-phone').checked,
-                    require_birthday: document.getElementById('req-birthday').checked
+                    require_birthday: document.getElementById('req-birthday').checked,
+                    portal_color: document.getElementById('portal-color-primary')?.value || '#8b5cf6',
+                    portal_logo: document.getElementById('portal-logo-url')?.value || '',
+                    username: window.merchantData.appointment_settings?.landing_prefs?.username || window.merchantData.business_name.toLowerCase().replace(/[^a-z0-9]/g, '')
                 };
 
                 const currentApptSettings = window.merchantData.appointment_settings || {};

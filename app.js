@@ -305,6 +305,28 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Registro de Negocios
+app.get('/api/portal/:username', async (req, res) => {
+    try {
+        const { username } = req.params;
+        const { data, error } = await supabase
+            .from('merchants')
+            .select('id, business_name, appointment_settings')
+            .filter('appointment_settings->landing_prefs->>username', 'eq', username)
+            .limit(1)
+            .single();
+            
+        if (error || !data) {
+            return res.status(404).json({ error: 'Portal no encontrado' });
+        }
+        res.json({
+            business_name: data.business_name,
+            landing_prefs: data.appointment_settings?.landing_prefs || {}
+        });
+    } catch (ex) {
+        res.status(500).json({ error: ex.message });
+    }
+});
+
 app.post('/api/auth/register', async (req, res) => {
     let { businessType, businessName, email, password, phone, promoCode, username } = req.body;
     username = username || businessName.toLowerCase().replace(/[^a-z0-9]/g, '');
