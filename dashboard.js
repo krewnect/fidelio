@@ -2906,9 +2906,13 @@ function updatePassRender() {
         updateDashboardMetrics();
 
         // Actualizar encabezados (solo si no es admin)
-        if (state && state.restaurantName && !(currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
-                document.getElementById('header-restaurant-name').textContent = state.restaurantName;
-                document.getElementById('header-business-category').textContent = state.category || "Restaurante";
+        if (state && state.restaurantName && currentEmail.trim().toLowerCase() !== 'hola@fideliorewards.com') {
+                const bNameDisp = window.merchantData.business_name || window.merchantSession.user.user_metadata?.first_name || "Mi Cuenta";
+                document.getElementById('header-restaurant-name').textContent = bNameDisp;
+                
+                let bCatDisp = state.category || "Profesional";
+                if (bCatDisp === 'restaurant') bCatDisp = "Profesional";
+                document.getElementById('header-business-category').textContent = bCatDisp;
         }
 
         // Inicializar UI
