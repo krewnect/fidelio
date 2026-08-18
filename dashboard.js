@@ -611,6 +611,16 @@ let saveTimeout = null;
                 }
             });
             
+            // Hide Fidelizacion tab for non-business (professionals)
+            const navLoyalty = document.getElementById('nav-loyalty');
+            if (navLoyalty) {
+                if (isBusiness) {
+                    navLoyalty.style.display = 'block';
+                } else {
+                    navLoyalty.style.display = 'none';
+                }
+            }
+            
             if (!isBusiness) {
                 const stampsRadio = document.querySelector('input[name="loyalty_mode"][value="stamps"]');
                 if (stampsRadio && !stampsRadio.checked) {
