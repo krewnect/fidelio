@@ -19,7 +19,7 @@ async function fetchImageBuffer(url) {
 
 async function generateHybridStrip(total, earned, color, bannerUrl) {
     const width = 1125;
-    const height = 432; // EXACT Apple Wallet max height for coupon strips to prevent scaling
+    const height = 432; // Maximum coupon strip height
     
     let base64Banner = null;
     if (bannerUrl) {
@@ -28,32 +28,36 @@ async function generateHybridStrip(total, earned, color, bannerUrl) {
     
     let svgContent = '';
 
-    // 1. Banner Image (Top portion)
+    // 1. Full Background Image
     if (base64Banner) {
+        // Draw the image filling the entire background
         svgContent += `
-        <defs>
-            <clipPath id="bannerClip">
-                <rect x="40" y="20" width="1045" height="180" rx="25" ry="25" />
-            </clipPath>
-        </defs>
-        <image href="${base64Banner}" x="40" y="20" width="1045" height="180" preserveAspectRatio="xMidYMid slice" clip-path="url(#bannerClip)" />
+        <image href="${base64Banner}" x="0" y="0" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice" />
+        <!-- Dark gradient overlay to make stamps pop -->
+        <rect width="${width}" height="${height}" fill="black" fill-opacity="0.5" />
         `;
+    } else {
+        svgContent += `<rect width="${width}" height="${height}" fill="#111827" />`;
     }
 
-    // 2. Stamps Grid
-    const startY = base64Banner ? 220 : 60; // Push down if banner exists
+    // 2. Title
+    svgContent += `
+        <text x="${width/2}" y="80" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" fill="#ffffff" letter-spacing="3" text-anchor="middle">ACUMULA ${total} SELLOS</text>
+    `;
+
+    // 3. Stamps Grid
+    const startY = 100;
     let circlesSvg = '';
     
     if (total > 6) {
         const cols = Math.ceil(total / 2);
         const spacingX = width / (cols + 1);
-        const y1 = startY + 70;
-        const y2 = startY + 160;
-        const r = 32; // Circle radius
+        const y1 = startY + 90;
+        const y2 = startY + 220;
+        const r = 40; 
         
-        // Connecting lines
-        circlesSvg += `<line x1="${spacingX}" y1="${y1}" x2="${spacingX * cols}" y2="${y1}" stroke="#f1f5f9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
-        circlesSvg += `<line x1="${spacingX}" y1="${y2}" x2="${spacingX * Math.ceil((total - cols))}" y2="${y2}" stroke="#f1f5f9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
+        circlesSvg += `<line x1="${spacingX}" y1="${y1}" x2="${spacingX * cols}" y2="${y1}" stroke="rgba(255,255,255,0.2)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`;
+        circlesSvg += `<line x1="${spacingX}" y1="${y2}" x2="${spacingX * Math.ceil((total - cols))}" y2="${y2}" stroke="rgba(255,255,255,0.2)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`;
         
         for(let i=1; i<=total; i++) {
             const isRow2 = i > cols;
@@ -62,35 +66,35 @@ async function generateHybridStrip(total, earned, color, bannerUrl) {
             
             if (i <= earned) {
                 circlesSvg += `
-                <circle cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="${color}" stroke-width="3"/>
+                <circle cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="#ffffff" stroke-width="3"/>
                 <path d="M${x-12} ${y} L${x-4} ${y+10} L${x+14} ${y-12}" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
                 `;
             } else {
                 circlesSvg += `
-                <circle cx="${x}" cy="${y}" r="${r}" fill="#ffffff" stroke="#e2e8f0" stroke-width="4"/>
-                <text x="${x}" y="${y+10}" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="900" fill="#cbd5e1" text-anchor="middle">${i}</text>
+                <circle cx="${x}" cy="${y}" r="${r}" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.5)" stroke-width="4"/>
+                <text x="${x}" y="${y+12}" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="900" fill="rgba(255,255,255,0.6)" text-anchor="middle">${i}</text>
                 `;
             }
         }
     } else {
         const spacing = width / (total + 1);
-        const y = startY + 110;
-        const r = 45;
+        const y = startY + 160;
+        const r = 55;
         
-        circlesSvg += `<line x1="${spacing}" y1="${y}" x2="${spacing * total}" y2="${y}" stroke="#f1f5f9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`;
+        circlesSvg += `<line x1="${spacing}" y1="${y}" x2="${spacing * total}" y2="${y}" stroke="rgba(255,255,255,0.2)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`;
         
         for(let i=1; i<=total; i++) {
             const x = spacing * i;
             
             if (i <= earned) {
                 circlesSvg += `
-                <circle cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="${color}" stroke-width="4"/>
+                <circle cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="#ffffff" stroke-width="4"/>
                 <path d="M${x-16} ${y} L${x-5} ${y+12} L${x+18} ${y-16}" fill="none" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
                 `;
             } else {
                 circlesSvg += `
-                <circle cx="${x}" cy="${y}" r="${r}" fill="#ffffff" stroke="#e2e8f0" stroke-width="6"/>
-                <text x="${x}" y="${y+14}" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#cbd5e1" text-anchor="middle">${i}</text>
+                <circle cx="${x}" cy="${y}" r="${r}" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.5)" stroke-width="6"/>
+                <text x="${x}" y="${y+16}" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="900" fill="rgba(255,255,255,0.6)" text-anchor="middle">${i}</text>
                 `;
             }
         }
@@ -100,7 +104,6 @@ async function generateHybridStrip(total, earned, color, bannerUrl) {
 
     const svg = `
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#ffffff" />
         ${svgContent}
     </svg>
     `;
