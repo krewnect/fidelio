@@ -5532,6 +5532,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    window.copyLandingLink = function() {
+        const display = document.getElementById('landing-link-display');
+        if (display) {
+            navigator.clipboard.writeText('https://' + display.textContent.trim());
+            if (typeof showToast === 'function') showToast('Enlace copiado al portapapeles', 'success');
+        }
+    };
+
+    // Load initial portal settings
+    setTimeout(() => {
+        if (window.merchantData) {
+            const prefs = (window.merchantData.appointment_settings && window.merchantData.appointment_settings.landing_prefs) ? window.merchantData.appointment_settings.landing_prefs : {};
+            let slug = prefs.username;
+            if (!slug) {
+                const bName = window.merchantData.business_name || 'tu-negocio';
+                slug = bName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            }
+            const landingLink = `fideliorewards.com/${slug}`;
+            const linkDisplay = document.getElementById('landing-link-display');
+            if (linkDisplay) linkDisplay.textContent = landingLink;
+
+            const reqPhone = document.getElementById('req-phone');
+            const reqPhoneKnob = document.getElementById('req-phone-knob');
+            if (reqPhone) {
+                reqPhone.checked = prefs.require_phone !== false;
+                if (reqPhoneKnob) {
+                    reqPhoneKnob.parentElement.children[1].style.backgroundColor = reqPhone.checked ? '#8b5cf6' : '#ccc';
+                    reqPhoneKnob.style.transform = reqPhone.checked ? 'translateX(14px)' : 'translateX(0)';
+                }
+            }
+            
+            const reqBday = document.getElementById('req-birthday');
+            const reqBdayKnob = document.getElementById('req-birthday-knob');
+            if (reqBday) {
+                reqBday.checked = prefs.require_birthday !== false;
+                if (reqBdayKnob) {
+                    reqBdayKnob.parentElement.children[1].style.backgroundColor = reqBday.checked ? '#8b5cf6' : '#ccc';
+                    reqBdayKnob.style.transform = reqBday.checked ? 'translateX(14px)' : 'translateX(0)';
+                }
+            }
+            
+            const portalColor = document.getElementById('portal-color-primary');
+            if (portalColor) portalColor.value = prefs.portal_color || '#8b5cf6';
+            
+            if (prefs.portal_logo) {
+                window.currentPortalLogo = prefs.portal_logo;
+                const preview = document.getElementById('portal-logo-preview');
+                const img = document.getElementById('portal-logo-img');
+                if (preview && img) {
+                    img.src = prefs.portal_logo;
+                    preview.style.display = 'flex';
+                }
+            }
+        }
+    }, 1500);
+
     const btnSaveForm = document.getElementById('btn-save-form-fields');
     if (btnSaveForm) {
         btnSaveForm.addEventListener('click', async () => {
