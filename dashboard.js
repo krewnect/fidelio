@@ -82,8 +82,15 @@ window.loadCampaigns = async function() {
     }
 };
 
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 window.createNewCampaign = function() {
-    state.currentCampaignId = 'camp_' + Date.now();
+    state.currentCampaignId = generateUUID();
     state.restaurantName = "Nueva Campaña";
     state.colorPrimary = "#000000";
     state.colorAccent = "#8b5cf6";
@@ -98,7 +105,7 @@ window.createNewCampaign = function() {
 };
 
 window.createNewSpecialCard = function() {
-    state.currentCampaignId = 'camp_sp_' + Date.now();
+    state.currentCampaignId = generateUUID();
     state.restaurantName = "Nueva Tarjeta Especial";
     state.colorPrimary = "#10b981";
     state.colorAccent = "#8b5cf6";
@@ -1927,19 +1934,21 @@ function updatePassRender() {
         
         btnConfirmPush.addEventListener('click', async () => {
             try {
-                if (!state.tenantId) { alert('¡LA VARIABLE TENANT ID ESTÁ NULA AL HACER CLIC!'); } else if (window.supabaseClient && state.tenantId) {
+                if (typeof window.saveDesignToSupabase === 'function') {
+                    await window.saveDesignToSupabase();
+                }
+                
+                if (!state.tenantId) { console.warn('tenantId null'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
                         .eq('id', state.tenantId);
-                    if (!error) {
-                        console.log("Sucursal guardada en la base de datos."); alert("¡EXITO TOTAL! La base de datos aceptó la sucursal.");
-                    } else {
-                        alert("Error en DB: " + error.message);
+                    if (error) {
+                        console.error("Error en DB: " + error.message);
                     }
                 }
             } catch (ex) {
-                alert("Crash inline DB: " + ex.message);
+                console.error("Crash inline DB: " + ex.message);
             }
             step1.style.display = 'none';
             step2.style.display = 'block';
@@ -3353,7 +3362,7 @@ function updatePassRender() {
                     showToast('Configuración guardada exitosamente.', 'success');
                     
                     // Si veníamos de 'Nueva Campaña', avanzar al Diseñador Card
-                    if (state.currentCampaignId && state.currentCampaignId.startsWith('camp_')) {
+                    if (state.currentCampaignId) {
                         if (typeof window.saveDesignToSupabase === 'function') {
                             await window.saveDesignToSupabase();
                         }
