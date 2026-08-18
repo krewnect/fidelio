@@ -341,10 +341,23 @@ app.post('/api/auth/register', async (req, res) => {
         }
 
         // 1. Crear usuario en Auth
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-            email,
-            password,
-        });
+        let authData, authError;
+        if (supabaseAdmin) {
+            const res = await supabaseAdmin.auth.admin.createUser({
+                email,
+                password,
+                email_confirm: true
+            });
+            authData = res.data;
+            authError = res.error;
+        } else {
+            const res = await supabase.auth.signUp({
+                email,
+                password,
+            });
+            authData = res.data;
+            authError = res.error;
+        }
 
         if (authError) throw authError;
         
