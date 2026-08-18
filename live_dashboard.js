@@ -53,6 +53,20 @@ window.loadCampaigns = async function() {
         // Store in state so other tabs (Stripe, Builder) can read it
         if (typeof state !== 'undefined') {
             state.campaigns = data.campaigns;
+        } else {
+            window.state = { campaigns: data.campaigns };
+        }
+        
+        // Populate Stripe Dropdown immediately
+        const stripeSel = document.getElementById('stripe-campaign-select');
+        if (stripeSel) {
+            stripeSel.innerHTML = '<option value="">-- Selecciona una tarjeta/campaña --</option>';
+            data.campaigns.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name || c.type || 'Programa';
+                stripeSel.appendChild(opt);
+            });
         }
         
         const list = document.getElementById('campaigns-list');
@@ -180,22 +194,20 @@ window.initStripeUI = function() {
     
     if (!sel) return;
     
-    sel.innerHTML = '<option value="">-- Selecciona una tarjeta/campaña --</option>';
-    let camps = state.campaigns || [];
-    if (camps.length === 0) {
-        camps = [
-            { id: 'camp_1', name: 'Monedero Digital General' },
-            { id: 'camp_2', name: 'Tarjeta de Sellos' },
-            { id: 'camp_3', name: 'Membresía VIP' }
-        ];
+    // Populated dynamically by loadCampaigns
+    if (sel.options.length <= 1) {
+        // If not populated yet (only has default option), try to use state if available
+        let camps = (window.state && window.state.campaigns) ? window.state.campaigns : [];
+        if (camps.length > 0) {
+            sel.innerHTML = '<option value="">-- Selecciona una tarjeta/campaña --</option>';
+            camps.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name || c.type || 'Programa';
+                sel.appendChild(opt);
+            });
+        }
     }
-    
-    camps.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = c.name || c.tipo || 'Programa';
-        sel.appendChild(opt);
-    });
 };
 
 // Hook it into switchTab
