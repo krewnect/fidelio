@@ -751,9 +751,9 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 organizationName: merchant.business_name || "Mi Negocio",
                 description: "Tarjeta de Lealtad",
                 logoText: merchant.business_name || "Mi Negocio",
-                backgroundColor: merchant.color_primary || "#090d16",
-                foregroundColor: "#ffffff",
-                labelColor: merchant.color_accent || "#8b5cf6",
+                backgroundColor: "rgb(255, 255, 255)",
+                foregroundColor: "rgb(17, 24, 39)",
+                labelColor: "rgb(107, 114, 128)",
                 storeCard: {
                     primaryFields: [
                         { key: "balance", label: "SALDO", value: `$${customer.current_balance}` }
