@@ -79,11 +79,13 @@ window.loadCampaigns = async function() {
                     </div>
                 </div>
 
-                <div style="background:var(--surface); padding:16px 20px; border-top:1px dashed rgba(0,0,0,0.1); flex: 1;">
-                    <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+                <div style="background:var(--surface); padding:16px 20px; border-top:1px dashed rgba(0,0,0,0.1); flex: 1; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:12px; color:var(--text-muted); display:flex; align-items:center;">
                         <span><i class="fa-solid fa-pen-to-square" style="margin-right:6px;"></i> Editar Diseño</span>
-                        <i class="fa-solid fa-chevron-right" style="opacity:0.5;"></i>
                     </div>
+                    <button class="btn-delete-campaign" onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:4px 8px; border-radius:4px; transition:background 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.1)'" onmouseout="this.style.background='none'" title="Eliminar Campaña">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
                 </div>
             </div>
         `).join('');
@@ -144,6 +146,21 @@ window.createNewSpecialCard = function() {
     if(specialTabBtn) specialTabBtn.click();
     
     updatePassRender();
+};
+
+window.deleteCampaign = async function(id) {
+    if (!confirm('¿Estás seguro de que deseas eliminar esta campaña? Esta acción no se puede deshacer.')) return;
+    try {
+        const res = await fetch('/api/campaigns/' + id, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
+        });
+        if (!res.ok) throw new Error('Error al eliminar');
+        showToast('Campaña eliminada', 'success');
+        window.loadCampaigns();
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
 };
 
 window.selectCampaign = async function(id) {

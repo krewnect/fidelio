@@ -1208,6 +1208,25 @@ app.post('/api/special-emissions', requireMerchantAuth, async (req, res) => {
     }
 });
 
+app.delete('/api/campaigns/:id', requireMerchantAuth, async (req, res) => {
+    try {
+        const { merchantId } = req;
+        const campaignId = req.params.id;
+        if (!merchantId) return res.status(401).json({ error: 'No merchantId' });
+
+        const { error } = await supabase
+            .from('campaigns')
+            .delete()
+            .match({ id: campaignId, merchant_id: merchantId });
+            
+        if (error) throw error;
+        res.json({ success: true });
+    } catch (ex) {
+        console.error('Error deleting campaign:', ex);
+        res.status(500).json({ error: ex.message });
+    }
+});
+
 app.post('/api/campaigns', requireMerchantAuth, async (req, res) => {
     try {
         const { merchantId } = req;
