@@ -361,7 +361,7 @@
                     
                 if (error || !data) {
                     // Try by business name fallback just in case
-                    let { data: fallbackData } = await supabase
+                    let { data: fallbackData, error: fallbackError } = await supabase
                         .from('merchants')
                         .select('*')
                         .ilike('business_name', '%' + slug + '%')
@@ -370,12 +370,13 @@
                         
                     if (fallbackData) {
                         data = fallbackData;
+                        error = null; // Clear the error since fallback succeeded
                     } else {
-                        throw new Error('Merchant not found');
+                        throw new Error('Merchant not found: ' + (fallbackError ? fallbackError.message : ''));
                     }
                 }
 
-                if (error || !data) {
+                if (!data) {
                     throw new Error('Restaurante no encontrado');
                 }
 
@@ -487,6 +488,7 @@
                         <i class="fa-solid fa-store-slash" style="font-size:48px; color:var(--text-muted); margin-bottom:16px;"></i>
                         <h2>Restaurante/Negocio no encontrado</h2>
                         <p style="color:var(--text-muted); margin-top:8px;">Verifica que la dirección web sea correcta.</p>
+                        <p style="color:red; font-size:12px; margin-top:16px;">Debug: ${err.message}</p>
                     </div>
                 `;
                 document.getElementById('registration-form-container').style.display = 'block';
