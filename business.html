@@ -771,6 +771,14 @@
                             
                             // Si el registro devuelve que se aplicó una promo lifetime_free o 100% descuento, no pedir Stripe
                             if (data.skipStripe) {
+                                try {
+                                    const configRes = await fetch('/api/config');
+                                    const config = await configRes.json();
+                                    const sbClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+                                    await sbClient.auth.signInWithPassword({ email, password });
+                                } catch (e) {
+                                    console.error("Auto-login failed:", e);
+                                }
                                 window.location.href = '/index.html';
                                 return;
                             }
