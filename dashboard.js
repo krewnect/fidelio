@@ -3349,6 +3349,20 @@ function updatePassRender() {
 
                     
                     showToast('Configuración guardada exitosamente.', 'success');
+                    
+                    // Si veníamos de 'Nueva Campaña', avanzar al Diseñador Card
+                    if (state.currentCampaignId && state.currentCampaignId.startsWith('camp_')) {
+                        if (typeof window.saveDesignToSupabase === 'function') {
+                            await window.saveDesignToSupabase();
+                        }
+                        const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
+                        if (builderTabBtn) {
+                            setTimeout(() => {
+                                builderTabBtn.click();
+                                showToast('Reglas guardadas. Ahora diseña tu tarjeta.', 'info');
+                            }, 500);
+                        }
+                    }
                 } catch (err) {
                     console.error("Error saving config:", err);
                     showToast('Error al guardar: ' + err.message, 'warning');
