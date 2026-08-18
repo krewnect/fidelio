@@ -626,13 +626,13 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                     ],
                     backFields: (() => {
                         const arr = [
-                            { key: "portal", label: "MI TARJETA VIRTUAL", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}` }
+                            { key: "portal", label: "MI TARJETA VIRTUAL", value: "Abrir mi tarjeta web", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}">Haz clic aquí para abrir</a>` }
                         ];
                         if (campaign.rules_config?.show_appointment_btn) {
-                            arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}&action=appointment` });
+                            arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: "Agendar ahora", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}&action=appointment">Haz clic aquí para agendar</a>` });
                         }
                         if (campaign.rules_config?.show_payment_btn) {
-                            arr.push({ key: "payment", label: "PAGAR EN LÍNEA", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}&action=payment` });
+                            arr.push({ key: "payment", label: "PAGAR EN LÍNEA", value: "Realizar pago", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}&action=payment">Haz clic aquí para pagar</a>` });
                         }
                         arr.push({ key: "terms", label: "TÉRMINOS Y CONDICIONES", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes. Esta tarjeta es personal e intransferible." });
                         arr.push({ key: "contact", label: "CONTACTO", value: "soporte@fideliorewards.com" });
@@ -772,13 +772,13 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                     ],
                     backFields: (() => {
                         const arr = [
-                            { key: "portal", label: "MI TARJETA VIRTUAL", value: `https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}` }
+                            { key: "portal", label: "MI TARJETA VIRTUAL", value: "Abrir mi tarjeta web", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}">Haz clic aquí para abrir</a>` }
                         ];
                         if (campaign.rules_config?.show_appointment_btn) {
-                            arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: `https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}&action=appointment` });
+                            arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: "Agendar ahora", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}&action=appointment">Haz clic aquí para agendar</a>` });
                         }
                         if (campaign.rules_config?.show_payment_btn) {
-                            arr.push({ key: "payment", label: "PAGAR EN LÍNEA", value: `https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}&action=payment` });
+                            arr.push({ key: "payment", label: "PAGAR EN LÍNEA", value: "Realizar pago", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}&action=payment">Haz clic aquí para pagar</a>` });
                         }
                         arr.push({ key: "terms", label: "TÉRMINOS Y CONDICIONES", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes. Esta tarjeta es personal e intransferible." });
                         arr.push({ key: "contact", label: "CONTACTO", value: "soporte@fideliorewards.com" });
