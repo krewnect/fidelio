@@ -657,7 +657,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                 const totalStamps = campaign.rules_config?.stamps_total || 5;
                 const earnedStamps = stamps;
                 const cPrimary = campaign.color_primary || '#8b5cf6';
-                const stripBuffer = await generateStampsStrip(totalStamps, earnedStamps, cPrimary);
+                const stripBuffer = await generateStampsStrip(totalStamps, earnedStamps, cPrimary, campaign.banner_url);
                 pass.addBuffer('strip.png', stripBuffer);
                 pass.addBuffer('strip@2x.png', stripBuffer);
             } catch (e) {
