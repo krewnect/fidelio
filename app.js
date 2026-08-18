@@ -614,8 +614,8 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                     headerFields: [
                         { key: "balance", label: labelVal, value: balanceVal }
                     ],
-                    primaryFields: [
-                        { key: "reward", label: "BENEFICIO", value: campaign.custom_cta_label || (campaign.type === 'stamps' ? "Recompensa" : "Saldo VIP") }
+                    primaryFields: campaign.type === 'stamps' ? [] : [
+                        { key: "reward", label: "BENEFICIO", value: campaign.custom_cta_label || "Saldo VIP" }
                     ],
                     secondaryFields: [
                         { key: "name", label: "CLIENTE", value: customer.name || "Invitado" },
