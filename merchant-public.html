@@ -279,10 +279,13 @@
                     .from('campaigns').select('*').eq('merchant_id', merch.id).eq('is_active', true);
                 
                 visibleCampaigns = camps || [];
+                // Sort campaigns so the most recently created/edited one is first
+                visibleCampaigns.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                
                 const isProfessional = merch.business_type === 'professional' || (merch.industry && merch.industry.toLowerCase().includes('professional'));
                 
                 if (isProfessional && visibleCampaigns.length > 0) {
-                    // Force professionals to only use their first campaign to avoid dropdowns
+                    // Force professionals to only use their newest campaign to avoid dropdowns
                     visibleCampaigns = [ visibleCampaigns[0] ];
                 }
                 

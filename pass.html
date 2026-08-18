@@ -394,6 +394,8 @@
     </div>
 
     <script>
+        let globalCustomerId = null;
+        let globalCampaignId = null;
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 // 1. Init Supabase
@@ -405,6 +407,8 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const customerId = urlParams.get('id') || urlParams.get('c');
                 const campaignId = urlParams.get('campaign');
+                globalCustomerId = customerId;
+                globalCampaignId = campaignId;
                 
                 if (!customerId || !campaignId) {
                     throw new Error("Pase o campaña no encontrados");
@@ -498,7 +502,8 @@
                 }
 
                 
-                if (merchant && merchant.business_type === 'professional') {
+                const isProfessional = merchant && (merchant.business_type === 'professional' || (merchant.industry && merchant.industry.toLowerCase().includes('professional')));
+                if (isProfessional) {
                     document.getElementById('ui-vip').style.display = 'none';
                     const btnAppt = document.getElementById('btn-schedule-appointment');
                     btnAppt.style.display = 'block';
@@ -551,12 +556,12 @@
 
         
         function downloadAppleWallet() {
-            if (!customerId || !campaignId) {
+            if (!globalCustomerId || !globalCampaignId) {
                 alert("No se pudo identificar la campaña.");
                 return;
             }
             // Redirigir a la URL que genera y descarga el archivo .pkpass
-            const url = `/api/wallet/apple/${customerId}/${campaignId}`;
+            const url = `/api/wallet/apple/${globalCustomerId}/${globalCampaignId}`;
             window.location.href = url;
         }
 
