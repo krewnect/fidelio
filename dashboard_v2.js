@@ -3021,6 +3021,15 @@ function updatePassRender() {
                     if(avatarEl) avatarEl.style.display = 'none';
                     if(avatarContainer) avatarContainer.style.backgroundImage = `url(${newAvatarUrl})`;
                     
+                    const sbAvatarIcon = document.getElementById('header-business-icon');
+                    if (sbAvatarIcon) {
+                        sbAvatarIcon.innerHTML = '';
+                        sbAvatarIcon.style.backgroundImage = `url(${newAvatarUrl})`;
+                        sbAvatarIcon.style.backgroundSize = 'cover';
+                        sbAvatarIcon.style.backgroundPosition = 'center';
+                        sbAvatarIcon.style.backgroundRepeat = 'no-repeat';
+                    }
+                    
                     if (typeof showToast === 'function') showToast('Foto de perfil actualizada', 'success');
                 } catch (err) {
                     if (typeof showToast === 'function') showToast(err.message, 'error');
@@ -3206,6 +3215,20 @@ function updatePassRender() {
                 let bCatDisp = state.category || "Profesional";
                 if (bCatDisp === 'restaurant') bCatDisp = "Profesional";
                 document.getElementById('header-business-category').textContent = bCatDisp;
+
+                const sbAvatarIcon = document.getElementById('header-business-icon');
+                if (sbAvatarIcon && window.merchantData) {
+                    if (window.merchantData.avatar_url) {
+                        sbAvatarIcon.innerHTML = '';
+                        sbAvatarIcon.style.backgroundImage = `url(${window.merchantData.avatar_url})`;
+                        sbAvatarIcon.style.backgroundSize = 'cover';
+                        sbAvatarIcon.style.backgroundPosition = 'center';
+                        sbAvatarIcon.style.backgroundRepeat = 'no-repeat';
+                    } else {
+                        sbAvatarIcon.innerHTML = `<span style="font-weight:800; font-size:16px;">${bNameDisp.charAt(0).toUpperCase()}</span>`;
+                        sbAvatarIcon.style.backgroundImage = 'none';
+                    }
+                }
         }
 
         // Inicializar UI
