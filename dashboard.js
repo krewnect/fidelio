@@ -835,6 +835,20 @@ let saveTimeout = null;
         const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
         const scansToday = state.transactions.filter(t => new Date(t.created_at) >= yesterday).length;
         document.getElementById('metric-scans').textContent = scansToday.toLocaleString();
+        
+        // Citas Pendientes
+        let processed = [];
+        try { processed = window.merchantData.appointment_settings.processed_appointments || []; } catch(e){}
+        const pendingCitas = state.transactions.filter(t => t.transaction_type === 'appointment_request' && !processed.includes(t.id)).length;
+        const apptBadge = document.getElementById('appointments-count-badge');
+        if (apptBadge) {
+            if (pendingCitas > 0) {
+                apptBadge.style.display = 'inline-block';
+                apptBadge.textContent = pendingCitas;
+            } else {
+                apptBadge.style.display = 'none';
+            }
+        }
     }
 
 
@@ -4948,6 +4962,17 @@ window.saveComplexSchedule = function() {
         const targetState = typeof state !== 'undefined' ? state : window.state;
         targetState.schedules = JSON.parse(JSON.stringify(window.scheduleData));
         console.log("Horarios guardados en estado:", targetState.schedules);
+        
+        if (!targetState.tenantId) {
+            targetState.tenantId = window.merchantData ? window.merchantData.id : null;
+            if (!targetState.tenantId && window.merchantSession && window.merchantSession.user) {
+                targetState.tenantId = window.merchantSession.user.id;
+            }
+        }
+        if (!targetState.tenantId) {
+            alert("Error interno: No se pudo identificar tu cuenta (tenantId). Por favor recarga la página.");
+            return;
+        }
         
         // Update DB
         if (targetState.tenantId && window.supabaseClient) {
