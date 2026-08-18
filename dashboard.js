@@ -1,9 +1,8 @@
 window.saveDesignToSupabase = async function saveDesignToSupabase() {
     console.log("Global saveDesignToSupabase triggered!");
     if (!state.currentCampaignId) {
-        console.log("No campaign selected.");
-        if (typeof showToast === 'function') showToast("Selecciona una campaña primero", "warning");
-        return;
+        console.log("Auto-generating new campaign ID");
+        state.currentCampaignId = generateUUID();
     }
     
     const payload = {
