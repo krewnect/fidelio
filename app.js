@@ -600,7 +600,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
-                serialNumber: `${customerId}|${campaignId}`,
+                serialNumber: `${customerId}|${campaignId}|${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fideliorewards.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16),
@@ -753,7 +753,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fidelio-41j9.onrender.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16), // A token must be at least 16 chars
-                serialNumber: customer.id,
+                serialNumber: `${customer.id}|${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 organizationName: merchant.business_name || "Mi Negocio",
                 description: "Tarjeta de Lealtad",
