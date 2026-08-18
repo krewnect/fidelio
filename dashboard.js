@@ -39,8 +39,8 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
             if (typeof showToast === 'function') showToast("Error al guardar campaña", "error");
         }
     } catch (ex) {
-        console.error(ex);
-        alert("CRASH: " + ex.message);
+        console.error('Error de red saving campaign:', ex);
+        if (typeof showToast === 'function') showToast('Error de conexión al guardar campaña', 'error');
     }
 }
 
