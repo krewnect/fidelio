@@ -736,7 +736,7 @@ let saveTimeout = null;
         const prefs = window.merchantData.appointment_settings?.landing_prefs || {};
         const bName = window.merchantData.business_name || 'negocio';
         const username = prefs.username || window.merchantData.slug || bName.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + username)}`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + username + '?v=3')}`;
         const qrPreview = document.getElementById('merchant-qr-preview');
         const btnDownloadQr = document.getElementById('btn-download-merchant-qr');
         
@@ -2909,7 +2909,7 @@ function updatePassRender() {
                     // Actualizar QR si es posible
                     const prefs = window.merchantData.appointment_settings?.landing_prefs || {};
                     const username = prefs.username || window.merchantData.slug || newName.toLowerCase().replace(/[^a-z0-9]/g, '');
-                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + username)}`;
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + username + '?v=3')}`;
                     const qrPreview = document.getElementById('merchant-qr-preview');
                     if (qrPreview) qrPreview.src = qrUrl;
                 }
@@ -5554,7 +5554,7 @@ window.updateLandingUI = function() {
                 const bName = window.merchantData.business_name || 'tu-negocio';
                 slug = bName.toLowerCase().replace(/[^a-z0-9]/g, '');
             }
-            const landingLink = `fideliorewards.com/${slug}`;
+            const landingLink = `fideliorewards.com/${slug}?v=3`;
             const linkDisplay = document.getElementById('landing-link-display');
             if (linkDisplay) linkDisplay.textContent = landingLink;
 
