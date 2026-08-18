@@ -62,10 +62,29 @@ window.loadCampaigns = async function() {
         list.innerHTML = data.campaigns
             .filter(c => !['membership', 'multipass', 'certificates'].includes(c.type))
             .map(c => `
-            <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="selectCampaign('${c.id}')">
-                <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
-                <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
-                <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
+            <div style="cursor:pointer; position:relative; overflow:hidden; border-radius:16px; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.05); max-width: 320px; display: flex; flex-direction: column;" 
+                 onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.1)'" 
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'"
+                 onclick="selectCampaign('${c.id}')">
+                
+                <div style="background: linear-gradient(135deg, ${c.color_primary||'#111827'}, ${c.color_accent||'#8b5cf6'}); height:120px; padding:20px; color:white; display:flex; flex-direction:column; justify-content:space-between;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="width:36px; height:36px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            ${c.logo_url ? `<img src="${c.logo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : `<i class="fa-solid ${c.stamp_icon_url || 'fa-star'}" style="font-size:16px;"></i>`}
+                        </div>
+                        <div style="font-size:11px; font-weight:700; opacity:0.8; letter-spacing:1px; text-transform:uppercase;">${c.type === 'stamps' ? 'Sellos' : 'Wallet'}</div>
+                    </div>
+                    <div>
+                        <h3 style="margin:0; font-size:18px; font-weight:700; letter-spacing:-0.5px;">${c.name || 'Sin Nombre'}</h3>
+                    </div>
+                </div>
+
+                <div style="background:var(--surface); padding:16px 20px; border-top:1px dashed rgba(0,0,0,0.1); flex: 1;">
+                    <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+                        <span><i class="fa-solid fa-pen-to-square" style="margin-right:6px;"></i> Editar Diseño</span>
+                        <i class="fa-solid fa-chevron-right" style="opacity:0.5;"></i>
+                    </div>
+                </div>
             </div>
         `).join('');
         
