@@ -586,7 +586,7 @@ let saveTimeout = null;
             
             // Professional is the most limited, Business has almost everything
             const isBusiness = plan === 'business' || plan === 'enterprise' || isAdmin;
-            const isPro = plan === 'professional' || plan === 'enterprise' || isAdmin;
+            const isPro = plan === 'business' || plan === 'enterprise' || isAdmin;
             
             // Toggle Business-only tabs
             document.querySelectorAll('.plan-business-only').forEach(el => {
@@ -616,7 +616,7 @@ let saveTimeout = null;
             
             // Toggle Paid-only tabs (both Business and Professional)
             document.querySelectorAll('.plan-paid-only').forEach(el => {
-                if(isBusiness || isPro) {
+                if(isBusiness || isPro || plan === 'professional') {
                     el.style.display = 'flex';
                 } else {
                     el.style.display = 'none';
