@@ -596,7 +596,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             signerKeyPassphrase: signerKeyPassphrase || undefined
         };
         const pass = new PKPass({
-            "pass.json": {
+            "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
                 serialNumber: `${customerId}|${campaignId}`,
@@ -627,7 +627,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                     messageEncoding: "iso-8859-1",
                     altText: "Código Cliente"
                 }
-            }
+            }))
         }, certs);
 
         // Geofencing (si hay sucursales)
@@ -720,7 +720,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
             signerKeyPassphrase: signerKeyPassphrase || undefined
         };
         const pass = new PKPass({
-            "pass.json": {
+            "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
                 serialNumber: customerId,
@@ -752,7 +752,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                     messageEncoding: "iso-8859-1",
                     altText: customer.id
                 }
-            }
+            }))
         }, certs);
 
         // Geofencing (si hay sucursales)
@@ -1494,7 +1494,7 @@ app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAut
             signerKeyPassphrase: signerKeyPassphrase || undefined
         };
         const pass = new PKPass({
-            "pass.json": {
+            "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
                 serialNumber: serialNumber,
@@ -1518,7 +1518,7 @@ app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAut
                         { key: "promo", label: pushTitle || "Promociones", value: pushBody || "¡Visítanos pronto y acumula más sellos!", changeMessage: "%@" }
                     ]
                 }
-            }
+            }))
         });
         
         pass.setCertificates({
