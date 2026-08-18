@@ -992,7 +992,7 @@ let saveTimeout = null;
             const recentTx = [...state.transactions].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
             
             if(recentTx.length === 0) {
-                feedContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px 0;">No hay actividad reciente.</div>';
+                feedContainer.innerHTML = `<div style='text-align: center; padding: 30px 10px; background: rgba(139,92,246,0.05); border-radius: 16px; border: 1px dashed rgba(139,92,246,0.2);'><div style='font-size:32px; margin-bottom:12px;'>👻</div><h4 style='margin:0 0 8px; font-size:15px; color:var(--text-main);'>Todo está muy tranquilo...</h4><p style='margin:0; font-size:12px; color:var(--text-muted);'>Aún no tienes actividad. ¡Anima a tus clientes a visitarte!</p></div>`;
             } else {
                 feedContainer.innerHTML = '';
                 recentTx.forEach(tx => {
@@ -1088,7 +1088,7 @@ let saveTimeout = null;
             
             const sorted = Object.values(customerSpend).sort((a,b) => b.spend - a.spend).slice(0,3);
             if(sorted.length === 0) {
-                lbContainer.innerHTML = '<div style="text-align:center; padding:20px 0;">No hay clientes suficientes.</div>';
+                lbContainer.innerHTML = `<div style='text-align: center; padding: 20px 10px; background: rgba(59,130,246,0.05); border-radius: 16px; border: 1px dashed rgba(59,130,246,0.2);'><div style='font-size:28px; margin-bottom:8px;'>👑</div><p style='margin:0; font-size:12px; color:var(--text-muted);'>Acumula escaneos para ver a tus top fans aquí.</p></div>`;
             } else {
                 lbContainer.innerHTML = '';
                 const medals = ['#F59E0B', '#9CA3AF', '#D97706'];
@@ -2036,7 +2036,7 @@ function renderCRMTable() {
         tbody.innerHTML = '';
         
         if (!state.team || state.team.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 30px;">No hay personal registrado.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan='5' style='padding:40px; text-align:center;'><div style='display:inline-block; max-width:300px;'><div style='font-size:40px; margin-bottom:16px; color:#a78bfa;'><i class='fa-solid fa-users-viewfinder'></i></div><h4 style='margin:0 0 8px; font-size:18px;'>Tu equipo está vacío</h4><p style='color:var(--text-muted); font-size:14px; margin-bottom:16px;'>Invita a tus cajeros o meseros para que puedan dar puntos y cobrar sin que tú tengas que estar presente.</p></div></td></tr>`;
             return;
         }
         
@@ -2714,7 +2714,7 @@ function updatePassRender() {
         let totalUnspent = 0;
 
         if (!customers || customers.length === 0) {
-            if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay clientes registrados.</td></tr>';
+            if (tbody) tbody.innerHTML = `<tr><td colspan='4' style='padding:40px; text-align:center;'><div style='display:inline-block; max-width:300px;'><div style='font-size:40px; margin-bottom:16px; color:#3b82f6;'><i class='fa-solid fa-face-sad-tear'></i></div><h4 style='margin:0 0 8px; font-size:18px;'>Sin clientes aún</h4><p style='color:var(--text-muted); font-size:14px;'>Comparte tu código QR en tu mostrador o redes sociales para empezar a captar lealtad.</p></div></td></tr>`;
         } else {
             if (tbody) tbody.innerHTML = '';
             customers.forEach(c => {
@@ -3163,7 +3163,7 @@ function updatePassRender() {
         }
         
         if (!filteredData || filteredData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Bandeja de entrada limpia. No hay tickets.</td></tr>';
+            tbody.innerHTML = `<tr><td colspan='5' style='padding:40px; text-align:center;'><div style='display:inline-block; max-width:300px;'><div style='font-size:40px; margin-bottom:16px; color:#10b981;'><i class='fa-solid fa-inbox'></i></div><h4 style='margin:0 0 8px; font-size:18px;'>Bandeja Limpia</h4><p style='color:var(--text-muted); font-size:14px;'>¡Todo al día! No tienes mensajes ni tickets pendientes de revisar. Excelente trabajo.</p></div></td></tr>`;
             return;
         }
         
@@ -5806,7 +5806,7 @@ window.loadCajaTransactions = async function() {
         if(!tbody) return;
         
         if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">No hay movimientos registrados.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan='5' style='padding:40px; text-align:center;'><div style='display:inline-block; max-width:300px;'><div style='font-size:40px; margin-bottom:16px; color:#10b981;'><i class='fa-solid fa-receipt'></i></div><h4 style='margin:0 0 8px; font-size:18px;'>Cero Movimientos</h4><p style='color:var(--text-muted); font-size:14px;'>Aquí aparecerá todo el historial cuando tus clientes escaneen su tarjeta en caja.</p></div></td></tr>`;
         } else {
             let html = '';
             data.forEach(txn => {
