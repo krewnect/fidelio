@@ -323,7 +323,7 @@
     </div>
 
     <script>
-        let supabase;
+        let supabaseClient;
         let merchantData;
         let selectedCampaignId = null;
 
@@ -332,7 +332,7 @@
                 // 1. Fetch config to init Supabase
                 const configRes = await fetch('/api/config');
                 const config = await configRes.json();
-                supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+                supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
                 
                 // 2. Get slug from URL or Subdomain
                 const hostname = window.location.hostname;
@@ -352,7 +352,7 @@
                 }
 
                 // 3. Fetch Merchant by Username
-                let { data, error } = await supabase
+                let { data, error } = await supabaseClient
                     .from('merchants')
                     .select('*')
                     .filter('appointment_settings->landing_prefs->>username', 'eq', slug)
@@ -361,7 +361,7 @@
                     
                 if (error || !data) {
                     // Try by business name fallback just in case
-                    let { data: fallbackData, error: fallbackError } = await supabase
+                    let { data: fallbackData, error: fallbackError } = await supabaseClient
                         .from('merchants')
                         .select('*')
                         .ilike('business_name', '%' + slug + '%')
@@ -410,7 +410,7 @@
                 }
 
                 // 5. Fetch Campaigns
-                const { data: campaigns, error: campError } = await supabase
+                const { data: campaigns, error: campError } = await supabaseClient
                     .from('campaigns')
                     .select('*')
                     .eq('merchant_id', merchantData.id)
@@ -528,7 +528,7 @@
 
             try {
                 // Check if user already exists
-                const { data: existing } = await supabase
+                const { data: existing } = await supabaseClient
                     .from('customers')
                     .select('id')
                     .eq('merchant_id', merchantId)
@@ -541,7 +541,7 @@
                     customerId = existing.id;
                 } else {
                     // Insert new customer
-                    const { data: newCustomer, error } = await supabase
+                    const { data: newCustomer, error } = await supabaseClient
                         .from('customers')
                         .insert([{
                             merchant_id: merchantId,
@@ -561,7 +561,7 @@
                 }
                 
                 // Link customer to campaign
-                const { data: existingLink } = await supabase
+                const { data: existingLink } = await supabaseClient
                     .from('customer_campaigns')
                     .select('id')
                     .eq('customer_id', customerId)
@@ -569,7 +569,7 @@
                     .single();
                     
                 if (!existingLink) {
-                    await supabase.from('customer_campaigns').insert([{
+                    await supabaseClient.from('customer_campaigns').insert([{
                         customer_id: customerId,
                         campaign_id: selectedCampaignId
                     }]);
