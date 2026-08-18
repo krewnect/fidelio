@@ -610,23 +610,31 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                 foregroundColor: "#ffffff",
                 labelColor: campaign.color_accent || "#8b5cf6",
                 storeCard: {
-                    primaryFields: [
+                    headerFields: [
                         { key: "balance", label: labelVal, value: balanceVal }
                     ],
+                    primaryFields: [
+                        { key: "reward", label: "BENEFICIO", value: campaign.custom_cta_label || (campaign.type === 'stamps' ? "Recompensa" : "Saldo VIP") }
+                    ],
                     secondaryFields: [
-                        { key: "name", label: "CLIENTE", value: customer.name || "Invitado" }
+                        { key: "name", label: "CLIENTE", value: customer.name || "Invitado" },
+                        { key: "status", label: "ESTADO", value: "Activo" }
+                    ],
+                    auxiliaryFields: [
+                        { key: "type", label: "PROGRAMA", value: campaign.type === 'stamps' ? 'Tarjetas de Sellos' : 'Cashback VIP' }
                     ],
                     backFields: [
                         { key: "portal", label: "MI TARJETA VIRTUAL", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}` },
-                        { key: "terms", label: "TÉRMINOS", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes." }
+                        { key: "terms", label: "TÉRMINOS Y CONDICIONES", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes. Esta tarjeta es personal e intransferible." },
+                        { key: "contact", label: "CONTACTO", value: "soporte@fideliorewards.com" }
                     ]
                 },
-                barcode: {
+                barcodes: [{
                     format: "PKBarcodeFormatQR",
                     message: `${customerId}|${campaignId}`,
                     messageEncoding: "iso-8859-1",
-                    altText: "Código Cliente"
-                }
+                    altText: "Mostrar para escanear"
+                }]
             }))
         }, certs);
 
@@ -1499,25 +1507,30 @@ app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAut
                 backgroundColor: "rgb(17, 24, 39)",
                 labelColor: "rgb(139, 92, 246)",
                 storeCard: {
-                    primaryFields: [
+                    headerFields: [
                         { key: "stamps", label: "SELLOS", value: `${customer.stamps_count} / ${merchant.stamps_required}` }
+                    ],
+                    primaryFields: [
+                        { key: "reward", label: "RECOMPENSA", value: "Activa" }
                     ],
                     secondaryFields: [
                         { key: "name", label: "CLIENTE", value: customer.name || 'Invitado' }
                     ],
+                    auxiliaryFields: [
+                        { key: "member", label: "NIVEL", value: "VIP" }
+                    ],
                     backFields: [
                         { key: "promo", label: pushTitle || "Promociones", value: pushBody || "¡Visítanos pronto y acumula más sellos!", changeMessage: "%@" }
                     ]
-                }
+                },
+                barcodes: [{
+                    format: "PKBarcodeFormatQR",
+                    message: customer.id,
+                    messageEncoding: "iso-8859-1",
+                    altText: "Mostrar para escanear"
+                }]
             }))
-        });
-        
-        pass.setCertificates({
-            wwdr: Buffer.from(wwdr, 'base64'),
-            signerCert: Buffer.from(signerCert, 'base64'),
-            signerKey: Buffer.from(signerKey, 'base64'),
-            signerKeyPassphrase: signerKeyPassphrase
-        });
+        }, certs);
 
         // Try to fetch custom logo if any, otherwise use default
         try {
