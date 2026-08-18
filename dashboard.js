@@ -5534,7 +5534,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    window.copyLandingLink = function() {
+}); // Close previous DOMContentLoaded early to put these in global scope
+
+window.copyLandingLink = function() {
         const display = document.getElementById('landing-link-display');
         if (display) {
             navigator.clipboard.writeText('https://' + display.textContent.trim());
@@ -5542,7 +5544,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.updateLandingUI = function() {
+window.updateLandingUI = function() {
         if (window.merchantData) {
             const prefs = (window.merchantData.appointment_settings && window.merchantData.appointment_settings.landing_prefs) ? window.merchantData.appointment_settings.landing_prefs : {};
             let slug = prefs.username;
@@ -5589,8 +5591,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    setTimeout(() => { if(window.updateLandingUI) window.updateLandingUI(); }, 2000);
+setTimeout(() => { if(window.updateLandingUI) window.updateLandingUI(); }, 2000);
 
+document.addEventListener('DOMContentLoaded', () => {
     const btnSaveForm = document.getElementById('btn-save-form-fields');
     if (btnSaveForm) {
         btnSaveForm.addEventListener('click', async () => {
