@@ -2101,6 +2101,7 @@ function updatePassRender() {
                 else if(targetTab === 'tab-loyalty' && typeof window.initLoyaltyTab === 'function') window.initLoyaltyTab();
                 else if(targetTab === 'tab-inbox' && typeof window.loadInbox === 'function') window.loadInbox();
                 else if(targetTab === 'tab-fidelio-team' && typeof window.loadFidelioTeam === 'function') window.loadFidelioTeam();
+                else if(targetTab === 'tab-campaigns' && typeof window.loadCampaigns === 'function') window.loadCampaigns();
                 else if(targetTab === 'tab-appointments' && typeof window.loadAppointments === 'function') window.loadAppointments();
                 else if(targetTab === 'tab-bank' && typeof window.loadBankStats === 'function') window.loadBankStats();
 
