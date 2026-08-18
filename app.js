@@ -1214,6 +1214,13 @@ app.post('/api/campaigns', async (req, res) => {
         const payload = req.body;
         payload.merchant_id = merchantId;
         
+        // Coerce types to avoid violating campaigns_type_check constraint
+        const allowedTypes = ['cashback', 'stamps', 'membership', 'multipass'];
+        if (!allowedTypes.includes(payload.type)) {
+            if (payload.type === 'certificates') payload.type = 'multipass';
+            else payload.type = 'cashback'; // maps hybrid, discount, coupons, custom
+        }
+
         // Si no se manda rules_config, poner defaults para no romper
         if (!payload.rules_config) {
             payload.rules_config = {
