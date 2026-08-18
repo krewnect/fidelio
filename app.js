@@ -624,11 +624,20 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                     auxiliaryFields: [
                         { key: "type", label: "PROGRAMA", value: campaign.type === 'stamps' ? 'Tarjetas de Sellos' : 'Cashback VIP' }
                     ],
-                    backFields: [
-                        { key: "portal", label: "MI TARJETA VIRTUAL", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}` },
-                        { key: "terms", label: "TÉRMINOS Y CONDICIONES", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes. Esta tarjeta es personal e intransferible." },
-                        { key: "contact", label: "CONTACTO", value: "soporte@fideliorewards.com" }
-                    ]
+                    backFields: (() => {
+                        const arr = [
+                            { key: "portal", label: "MI TARJETA VIRTUAL", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}` }
+                        ];
+                        if (campaign.rules_config?.show_appointment_btn) {
+                            arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}&action=appointment` });
+                        }
+                        if (campaign.rules_config?.show_payment_btn) {
+                            arr.push({ key: "payment", label: "PAGAR EN LÍNEA", value: `https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}&action=payment` });
+                        }
+                        arr.push({ key: "terms", label: "TÉRMINOS Y CONDICIONES", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes. Esta tarjeta es personal e intransferible." });
+                        arr.push({ key: "contact", label: "CONTACTO", value: "soporte@fideliorewards.com" });
+                        return arr;
+                    })()
                 },
                 barcodes: [{
                     format: "PKBarcodeFormatQR",
@@ -761,9 +770,20 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                     secondaryFields: [
                         { key: "name", label: "CLIENTE", value: customer.name || "Invitado" }
                     ],
-                    backFields: [
-                        { key: "portal", label: "PORTAL WEB", value: `https://fidelio.com/portal.html?id=${customer.id}` }
-                    ]
+                    backFields: (() => {
+                        const arr = [
+                            { key: "portal", label: "MI TARJETA VIRTUAL", value: `https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}` }
+                        ];
+                        if (campaign.rules_config?.show_appointment_btn) {
+                            arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: `https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}&action=appointment` });
+                        }
+                        if (campaign.rules_config?.show_payment_btn) {
+                            arr.push({ key: "payment", label: "PAGAR EN LÍNEA", value: `https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}&action=payment` });
+                        }
+                        arr.push({ key: "terms", label: "TÉRMINOS Y CONDICIONES", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes. Esta tarjeta es personal e intransferible." });
+                        arr.push({ key: "contact", label: "CONTACTO", value: "soporte@fideliorewards.com" });
+                        return arr;
+                    })()
                 },
                 barcode: {
                     format: "PKBarcodeFormatQR",
