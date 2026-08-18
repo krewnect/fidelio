@@ -2779,7 +2779,14 @@ function updatePassRender() {
         
         const accBusinessName = document.getElementById('acc-business-name');
         const accBusinessCategory = document.getElementById('acc-business-category');
-        if (accBusinessName && window.merchantData) accBusinessName.value = window.merchantData.business_name || '';
+        if (accBusinessName && window.merchantData) {
+            accBusinessName.value = window.merchantData.business_name || '';
+            if (window.merchantData.business_name) {
+                accBusinessName.readOnly = true;
+                accBusinessName.style.backgroundColor = '#f3f4f6';
+                accBusinessName.style.cursor = 'not-allowed';
+            }
+        }
         if (accBusinessCategory && window.merchantData) accBusinessCategory.value = window.merchantData.industry || '';
         
         const btnSaveAccProfile = document.getElementById('btn-save-acc-profile');
