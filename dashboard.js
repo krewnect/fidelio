@@ -1818,11 +1818,16 @@ function updatePassRender() {
             if (rWalletBlock) rWalletBlock.style.display = 'none';
         }
         
-        // Hide Cashback Block if Cashback is false
-        if (state.cashbackActive === false && pType !== 'cashback' && pType !== 'hybrid') {
+        // Hide Cashback and VIP Blocks if mode is stamps or user is professional
+        const isProfessional = (window.merchantData && window.merchantData.business_type === 'professional');
+        const rVipBlock = document.getElementById('render-vip-block');
+        
+        if (pType === 'stamps' || state.activeMode === 'stamps' || isProfessional || (state.cashbackActive === false && pType !== 'cashback' && pType !== 'hybrid')) {
             if (rCashbackBlock) rCashbackBlock.style.display = 'none';
+            if (rVipBlock) rVipBlock.style.display = 'none';
         } else {
             if (rCashbackBlock) rCashbackBlock.style.display = 'block';
+            if (rVipBlock) rVipBlock.style.display = 'block';
         }
 
         
