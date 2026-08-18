@@ -279,8 +279,11 @@
                     .from('campaigns').select('*').eq('merchant_id', merch.id).eq('is_active', true);
                 
                 visibleCampaigns = camps || [];
-                if (merch.business_type === 'professional' || (merch.industry && merch.industry.toLowerCase().includes('professional'))) {
-                    visibleCampaigns = visibleCampaigns.filter(c => c.type === 'stamps');
+                const isProfessional = merch.business_type === 'professional' || (merch.industry && merch.industry.toLowerCase().includes('professional'));
+                
+                if (isProfessional && visibleCampaigns.length > 0) {
+                    // Force professionals to only use their first campaign to avoid dropdowns
+                    visibleCampaigns = [ visibleCampaigns[0] ];
                 }
                 
                 if (visibleCampaigns.length === 0) {
