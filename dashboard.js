@@ -619,6 +619,8 @@ let saveTimeout = null;
         }
 
         window.merchantData = merchantData;
+        // Trigger UI update for landing link explicitly when data loads
+        if (typeof window.updateLandingUI === 'function') window.updateLandingUI();
         let custQuery = window.supabaseClient.from('customers').select('*');
         if (window.merchantSession.user.email !== 'hola@fideliorewards.com') {
             custQuery = custQuery.eq('merchant_id', merchantId);
@@ -5540,8 +5542,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Load initial portal settings
-    setTimeout(() => {
+    window.updateLandingUI = function() {
         if (window.merchantData) {
             const prefs = (window.merchantData.appointment_settings && window.merchantData.appointment_settings.landing_prefs) ? window.merchantData.appointment_settings.landing_prefs : {};
             let slug = prefs.username;
@@ -5586,7 +5587,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-    }, 1500);
+    };
+    
+    setTimeout(() => { if(window.updateLandingUI) window.updateLandingUI(); }, 2000);
 
     const btnSaveForm = document.getElementById('btn-save-form-fields');
     if (btnSaveForm) {
