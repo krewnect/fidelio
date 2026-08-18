@@ -2087,6 +2087,45 @@ function renderCRMTable() {
             tbody.appendChild(tr);
         });
     }
+
+window.triggerAIMagicDesign = function() {
+    if (typeof showToast === 'function') showToast("IA generando diseño...", "info");
+    
+    const iphone = document.querySelector('.iphone-pro-mockup');
+    if(iphone) iphone.style.animation = "spinY 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+    
+    setTimeout(() => {
+        const palettes = [
+            { primary: '#0f172a', accent: '#3b82f6', name: 'Tech / Moderno', reward: '50% Off en tu Próxima Compra' },
+            { primary: '#451a03', accent: '#d97706', name: 'Café Artesanal', reward: 'Bebida Grande Gratis' },
+            { primary: '#831843', accent: '#ec4899', name: 'Beauty Spa', reward: 'Manicure de Cortesía' }
+        ];
+        const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
+        
+        state.colorPrimary = randomPalette.primary;
+        state.colorAccent = randomPalette.accent;
+        state.stampsReward = randomPalette.reward;
+        state.restaurantName = randomPalette.name;
+        
+        if (document.getElementById('color-primary')) document.getElementById('color-primary').value = state.colorPrimary;
+        if (document.getElementById('color-accent')) document.getElementById('color-accent').value = state.colorAccent;
+        if (document.getElementById('unified-reward')) document.getElementById('unified-reward').value = state.stampsReward;
+        if (document.getElementById('rest-name')) document.getElementById('rest-name').value = state.restaurantName;
+        
+        if (typeof updatePassRender === 'function') updatePassRender();
+        if (typeof showToast === 'function') showToast("¡Diseño Mágico Aplicado!", "success");
+        
+        try {
+            if (window.JSConfetti) {
+                const jsConfetti = new window.JSConfetti();
+                jsConfetti.addConfetti({ emojis: ['✨', '🎨', '🚀'], confettiNumber: 40 });
+            }
+        } catch(e) {}
+        
+        if(iphone) setTimeout(() => iphone.style.animation = "none", 800);
+    }, 800);
+};
+
 function updatePassRender() {
         window._updatePassRenderGlobal = true; // Debug flag
         const passRender = document.getElementById('pass-render');
