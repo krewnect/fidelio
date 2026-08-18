@@ -631,14 +631,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
         }, certs);
 
         // Geofencing (si hay sucursales)
-        if (branches && branches.length > 0) {
-            const locations = branches.map(b => ({
-                latitude: b.lat,
-                longitude: b.lng,
-                relevantText: `¡Hola! Estás cerca de ${b.name}. Pasa a escanear tu tarjeta.`
-            }));
-            pass.add('locations', locations);
-        }
+        /* Omitido por compatibilidad v3, se debe meter directo en pass.json si se requiere */
 
         // Certificados ya cargados en constructor
 
@@ -648,18 +641,21 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             // Se asume que icon.png y logo.png existen en la raíz o cargarlos desde URL
             // Como fallback, Passkit-generator requiere archivos locales. 
             const fs = require('fs');
-            if (fs.existsSync('./icon-192.png')) pass.add('icon.png', fs.readFileSync('./icon-192.png'));
-            if (fs.existsSync('./icon-192.png')) pass.add('logo.png', fs.readFileSync('./icon-192.png'));
+            if (fs.existsSync('./icon-192.png')) {
+                pass.addBuffer('icon.png', fs.readFileSync('./icon-192.png'));
+                pass.addBuffer('icon@2x.png', fs.readFileSync('./icon-192.png'));
+                pass.addBuffer('logo.png', fs.readFileSync('./icon-192.png'));
+            }
             
             // Si el user tiene strip_icon (Base64)
             if (campaign.stamp_icon_url && campaign.stamp_icon_url.startsWith('data:image')) {
                 const base64Data = campaign.stamp_icon_url.replace(/^data:image\/\w+;base64,/, "");
                 const stripBuffer = Buffer.from(base64Data, 'base64');
-                pass.add('strip.png', stripBuffer);
+                pass.addBuffer('strip.png', stripBuffer);
             } else if (campaign.banner_url && campaign.banner_url.startsWith('data:image')) {
                 const base64Data = campaign.banner_url.replace(/^data:image\/\w+;base64,/, "");
                 const stripBuffer = Buffer.from(base64Data, 'base64');
-                pass.add('strip.png', stripBuffer);
+                pass.addBuffer('strip.png', stripBuffer);
             }
         } catch(e) {
             console.error("Error agregando imagenes al pase:", e);
@@ -757,12 +753,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
 
         // Geofencing (si hay sucursales)
         if (branches && branches.length > 0) {
-            const locations = branches.map(b => ({
-                latitude: b.lat,
-                longitude: b.lng,
-                relevantText: `¡Bienvenido a ${b.name}! Tienes $${customer.current_balance} para usar hoy.`
-            }));
-            pass.add('locations', locations);
+            /* omitted locations for v3 compat */
         }
 
         // Generar archivo binario (.pkpass)

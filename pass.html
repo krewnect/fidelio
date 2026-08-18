@@ -576,15 +576,10 @@
                     Swal.fire('Aviso del Sistema', text || 'Configuración de Apple Wallet pendiente en el servidor (.env).', 'info');
                     return;
                 }
-                const blob = await response.blob();
-                const objUrl = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = objUrl;
-                a.download = 'fidelio.pkpass';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(objUrl);
+                // En iOS Safari, descargar un Blob de .pkpass vía AJAX falla silenciosamente o da error "no puede descargar este archivo".
+                // Por lo tanto, si la respuesta HTTP fue OK (los certificados existen), hacemos una redirección directa 
+                // para que el sistema operativo intercepte el archivo y abra la app nativa de Apple Wallet.
+                window.location.href = url;
             } catch (err) {
                 console.error(err);
                 Swal.fire('Error', 'No se pudo conectar con el servidor para generar la tarjeta.', 'error');
