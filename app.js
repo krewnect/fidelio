@@ -1230,7 +1230,10 @@ app.post('/api/campaigns', async (req, res) => {
             .select()
             .single();
             
-        if (error) throw error;
+        if (error) {
+            console.error('SUPABASE UPSERT ERROR:', error, 'PAYLOAD:', payload);
+            throw error;
+        }
         res.json({ success: true, campaign: data });
     } catch (ex) {
         console.error('Error saving campaign:', ex);
