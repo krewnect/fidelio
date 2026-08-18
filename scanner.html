@@ -325,7 +325,11 @@
         }, 1000);
     </script>
 
+
+    <!-- JS Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 </head>
+
 <body>
 
     <header>
@@ -861,7 +865,38 @@
                 document.getElementById('btn-add').disabled = false;
             }
             
-            document.getElementById('c-name').textContent = data.full_name || data.name || 'Cliente';
+            
+            const cName = data.full_name || data.name || 'Cliente';
+            document.getElementById('c-name').textContent = cName;
+            
+            // THE STARBUCKS EFFECT
+            try {
+                // Play Sound
+                // Note: We'll use the browser's speech synthesis for an even more magical effect!
+                const msg = new SpeechSynthesisUtterance("Bienvenido " + cName.split(' ')[0]);
+                msg.lang = 'es-MX';
+                msg.rate = 1.1;
+                window.speechSynthesis.speak(msg);
+                
+                // Show Overlay
+                const overlay = document.getElementById('starbucks-overlay');
+                document.getElementById('starbucks-name').textContent = cName.split(' ')[0];
+                overlay.style.display = 'flex';
+                
+                // Confetti
+                if (window.JSConfetti) {
+                    const jsConfetti = new window.JSConfetti();
+                    jsConfetti.addConfetti({ emojis: ['✨', '🌟', '🎉', '🔥'], confettiNumber: 60 });
+                }
+                
+                // Hide after 3.5 seconds
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.style.display = 'none', 400);
+                }, 3500);
+                
+            } catch(e) { console.error("Starbucks effect failed:", e); }
+
             document.getElementById('c-tier').innerHTML = `<i class="fa-solid fa-crown"></i> Cliente ${data.vip_tier || 'Bronce'}`;
             
             document.getElementById('c-saldo digital').innerHTML = `$${parseFloat(data.wallet_balance || 0).toFixed(2)}`;
