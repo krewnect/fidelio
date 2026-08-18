@@ -5713,3 +5713,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+window.loadAppointments = function() {
+    const container = document.getElementById('appointments-list-container');
+    if (!container) return;
+
+    if (!state.transactions) {
+        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding: 20px;">Cargando citas...</p>';
+        return;
+    }
+
+    const appts = state.transactions
+        .filter(t => t.transaction_type === 'appointment_request')
+        .sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+    if (appts.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding: 20px;"><i class="fa-solid fa-calendar-day"></i> Aún no tienes citas agendadas.</p>';
+        return;
+    }
+
+    // Try to get payment link from the first campaign if exists
+    let stripeLink = "";
+    if (state.campaigns && state.campaigns.length > 0) {
+        const rules = state.campaigns[0].rules_config || {};
+        stripeLink = rules.payment_url || state.campaigns[0].custom_cta_url || "";
+    }
+
+    container.innerHTML = appts.map(t => {
+        let details = {};
+        try { details = JSON.parse(t.notes || "{}"); } catch(e){}
+        const cust = state.customers.find(c => c.id === t.customer_id) || {};
+        
+        const dateRaw = details.date || 'Sin fecha';
+        const timeRaw = details.time || 'Sin hora';
+        const serviceNotes = details.notes || 'Ninguna';
+        const name = cust.full_name || cust.name || 'Cliente Desconocido';
+        const phone = cust.phone || '';
+        
+        let msg = `Hola ${name}, he recibido tu solicitud de cita para el día ${dateRaw} a las ${timeRaw}. Para confirmar tu lugar, por favor realiza el pago/anticipo aquí: ${stripeLink}`;
+        const waLink = phone ? `https://wa.me/${phone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}` : '#';
+        
+        return `
+            <div style="background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:12px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <h3 style="margin:0 0 4px 0; font-size:16px; color:#111827;">${name}</h3>
+                        <p style="margin:0; font-size:13px; color:#6b7280;"><i class="fa-solid fa-calendar-day"></i> ${dateRaw} a las ${timeRaw}</p>
+                    </div>
+                    <span style="background:#dbeafe; color:#1d4ed8; font-size:11px; font-weight:700; padding:4px 8px; border-radius:12px;">NUEVA SOLICITUD</span>
+                </div>
+                <div style="background:#f9fafb; padding:12px; border-radius:8px; font-size:13px; color:#374151;">
+                    <strong>Notas:</strong> ${serviceNotes}
+                </div>
+                <div style="display:flex; gap:8px; margin-top:4px;">
+                    ${phone ? `<a href="${waLink}" target="_blank" style="flex:1; text-align:center; background:#10b981; color:white; padding:10px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px;"><i class="fa-brands fa-whatsapp"></i> Confirmar y Cobrar</a>` : `<span style="flex:1; text-align:center; background:#f3f4f6; color:#9ca3af; padding:10px; border-radius:8px; font-size:14px;"><i class="fa-solid fa-phone-slash"></i> Sin teléfono</span>`}
+                </div>
+            </div>
+        `;
+    }).join('');
+};
