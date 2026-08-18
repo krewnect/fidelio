@@ -620,12 +620,12 @@ let saveTimeout = null;
                 }
             });
             
-            // Toggle Paid-only tabs (both Business and Professional)
-            document.querySelectorAll('.plan-paid-only').forEach(el => {
-                if(isBusiness || isPro || plan === 'professional') {
-                    el.style.display = 'flex';
+            // Toggle Professional-only tabs
+            document.querySelectorAll('.plan-professional-only').forEach(el => {
+                if(isBusiness && plan !== 'professional') {
+                    el.style.display = 'none'; // Solo ocultar si es 100% negocio y NO profesional
                 } else {
-                    el.style.display = 'none';
+                    el.style.display = 'flex'; // Mostrar por defecto para professionals
                 }
             });
         };
