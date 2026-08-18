@@ -638,6 +638,14 @@
                     <label>Correo Electrónico</label>
                     <input type="email" id="reg-email" required placeholder="tu@empresa.com">
                 </div>
+                            <div class="form-group" style="margin-top:15px;">
+                                <label>Nombre de Usuario (Para tu Portal Web)</label>
+                                <p style="font-size:11px; color:#6b7280; margin-top:-5px; margin-bottom:5px;">Este será tu enlace: fideliorewards.com/<strong>usuario</strong>. Solo letras minúsculas sin espacios.</p>
+                                <div class="input-with-icon">
+                                    <i class="fa-solid fa-globe"></i>
+                                    <input type="text" id="reg-username" class="fidelio-input" required placeholder="Ej: drjuanperez" pattern="^[a-z0-9]+$">
+                                </div>
+                            </div>
                 <div class="input-group">
                     <label>Contraseña</label>
                     <input type="password" id="reg-password" required placeholder="Mín. 8 caracteres, 1 mayúscula, 1 número">
@@ -655,6 +663,7 @@
                     
                     const businessType = document.getElementById('reg-business-type').value;
                     const businessName = document.getElementById('reg-business').value;
+                    const username = document.getElementById('reg-username') ? document.getElementById('reg-username').value.toLowerCase().replace(/[^a-z0-9]/g, '') : businessName.toLowerCase().replace(/[^a-z0-9]/g, '');
                     const email = document.getElementById('reg-email').value;
                     const password = document.getElementById('reg-password').value;
                     const pwdError = document.getElementById('pwd-error');
@@ -676,7 +685,7 @@
                         const res = await fetch('/api/auth/register', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ businessType, businessName, email, password, promoCode })
+                            body: JSON.stringify({ businessType, businessName, email, password, promoCode, username })
                         });
                         const data = await res.json();
                         

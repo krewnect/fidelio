@@ -306,7 +306,9 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Registro de Negocios
 app.post('/api/auth/register', async (req, res) => {
-    let { businessType, businessName, email, password, phone, promoCode } = req.body;
+    let { businessType, businessName, email, password, phone, promoCode, username } = req.body;
+    username = username || businessName.toLowerCase().replace(/[^a-z0-9]/g, '');
+
     
     if (!supabase) return res.status(500).json({ error: 'Supabase no configurado' });
 
