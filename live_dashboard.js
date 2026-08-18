@@ -53,6 +53,18 @@ window.loadCampaigns = async function() {
         // Store in state so other tabs (Stripe, Builder) can read it
         if (typeof state !== 'undefined') {
             state.campaigns = data.campaigns;
+        if (!window.state) window.state = {};
+        window.state.campaigns = data.campaigns;
+        const stripeSel = document.getElementById('stripe-campaign-select');
+        if (stripeSel) {
+            stripeSel.innerHTML = '<option value="">-- Selecciona una tarjeta/campaña --</option>';
+            data.campaigns.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name || c.type || 'Programa';
+                stripeSel.appendChild(opt);
+            });
+        }
         } else {
             window.state = { campaigns: data.campaigns };
         }
@@ -93,11 +105,13 @@ window.createNewCampaign = function() {
     if (typeof showToast === 'function') showToast("Nueva campaña creada, edita y guarda.", "info");
     
     document.getElementById('nav-builder').style.display = 'inline-block';
-    document.getElementById('nav-builder').click();
+    if (!autoInit) {
+        document.getElementById('nav-builder').click();
+    }
     updatePassRender();
 };
 
-window.selectCampaign = async function(id) {
+window.selectCampaign = async function(id, autoInit = false) {
     try {
         const res = await fetch('/api/campaigns');
         const data = await res.json();
@@ -143,7 +157,9 @@ window.selectCampaign = async function(id) {
 
         // Show builder tab
         document.getElementById('nav-builder').style.display = 'inline-block';
-        document.getElementById('nav-builder').click();
+        if (!autoInit) {
+            document.getElementById('nav-builder').click();
+        }
         
         updatePassRender();
         if (typeof showToast === 'function') showToast("Campaña cargada en el editor", "success");

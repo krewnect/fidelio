@@ -61,10 +61,22 @@ window.loadCampaigns = async function() {
             if (!state.currentCampaignId) {
                 // Initialize the designer with their newest campaign automatically
                 state.currentCampaignId = data.campaigns[0].id;
-                selectCampaign(data.campaigns[0].id);
+                selectCampaign(data.campaigns[0].id, true);
             }
         }
         state.campaigns = data.campaigns;
+        if (!window.state) window.state = {};
+        window.state.campaigns = data.campaigns;
+        const stripeSel = document.getElementById('stripe-campaign-select');
+        if (stripeSel) {
+            stripeSel.innerHTML = '<option value="">-- Selecciona una tarjeta/campaña --</option>';
+            data.campaigns.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name || c.type || 'Programa';
+                stripeSel.appendChild(opt);
+            });
+        }
         const list = document.getElementById('campaigns-list');
         if (!list) return;
         
@@ -172,7 +184,7 @@ window.deleteCampaign = async function(id) {
     }
 };
 
-window.selectCampaign = async function(id) {
+window.selectCampaign = async function(id, autoInit = false) {
     try {
         const res = await fetch('/api/campaigns', {
             headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
@@ -220,7 +232,9 @@ window.selectCampaign = async function(id) {
 
         // Show builder tab
         document.getElementById('nav-builder').style.display = 'inline-block';
-        document.getElementById('nav-builder').click();
+        if (!autoInit) {
+            document.getElementById('nav-builder').click();
+        }
         
         updatePassRender();
         if (typeof showToast === 'function') showToast("Campaña cargada en el editor", "success");
@@ -2203,6 +2217,19 @@ function updatePassRender() {
                     console.warn(`Pestaña en construcción o no encontrada: ${targetTab}`);
                 }
                 
+                if(targetTab === 'tab-stripe') {
+                    const sel = document.getElementById('stripe-campaign-select');
+                    let camps = (window.state && window.state.campaigns) ? window.state.campaigns : [];
+                    if (sel && camps.length > 0) {
+                        sel.innerHTML = '<option value="">-- Selecciona una tarjeta/campaña --</option>';
+                        camps.forEach(c => {
+                            const opt = document.createElement('option');
+                            opt.value = c.id;
+                            opt.textContent = c.name || c.type || 'Programa';
+                            sel.appendChild(opt);
+                        });
+                    }
+                }
                 if(targetTab === 'tab-leads' && typeof window.loadLeads === 'function') window.loadLeads();
                 else if(targetTab === 'tab-global-db' && typeof window.loadGlobalDatabase === 'function') window.loadGlobalDatabase();
                 else if(targetTab === 'tab-merchants-control' && typeof window.loadMerchantsControl === 'function') window.loadMerchantsControl();
