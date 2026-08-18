@@ -49,6 +49,12 @@ window.loadCampaigns = async function() {
         const res = await fetch('/api/campaigns');
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
+        
+        // Store in state so other tabs (Stripe, Builder) can read it
+        if (typeof state !== 'undefined') {
+            state.campaigns = data.campaigns;
+        }
+        
         const list = document.getElementById('campaigns-list');
         if (!list) return;
         
