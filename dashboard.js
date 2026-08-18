@@ -754,6 +754,13 @@ let saveTimeout = null;
             appointments: appointmentsData || [],
             activeWallet: "apple"
         };
+        
+        // Restore schedules from DB
+        try {
+            if (merchantData.appointment_settings && merchantData.appointment_settings.schedules) {
+                window.scheduleData = merchantData.appointment_settings.schedules;
+            }
+        } catch(e) { console.error("Error restoring schedules:", e); }
 
         // --- INJECT MERCHANT QR ---
         const prefs = window.merchantData.appointment_settings?.landing_prefs || {};

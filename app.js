@@ -1444,8 +1444,11 @@ app.post('/api/stripe/keys', async (req, res) => {
 // ------------------------------------------------------------
 // API: Solicitar Cita
 // ------------------------------------------------------------
-app.post('/api/appointments', apiLimiter, async (req, res) => {
-    const { customerId, campaignId, date, time, notes } = req.body;
+app.post('/api/appointments/request', apiLimiter, async (req, res) => {
+    const customerId = req.body.customerId || req.body.customer_id;
+    const campaignId = req.body.campaignId || req.body.campaign_id;
+    const { date, time, notes } = req.body;
+    
     if (!customerId || !campaignId || !date || !time) {
         return res.status(400).json({ success: false, error: "Faltan datos obligatorios" });
     }
