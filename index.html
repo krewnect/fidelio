@@ -641,7 +641,7 @@
                                 <div id="program-type-container">
                                     <label class="premium-label">Tipo de Programa</label>
                                     <select id="program-type-select" class="premium-input" style="font-weight:600;" onchange="if(window.updatePassRender) window.updatePassRender();">
-                                        <option value="cashback" selected>Saldo Digital (Cashback & QR)</option>
+                                        <option value="cashback" class="plan-business-only" selected>Saldo Digital (Cashback & QR)</option>
                                         <option value="stamps">Tarjeta de Sellos (Visitas frecuentes)</option>
                                     </select>
                                 </div>
@@ -1648,7 +1648,7 @@
                 </div>
 
                 <!-- PREPAID WALLET MODULE (ADD-ON) -->
-                <div class="accordion-card" style="margin-top: 24px; border: 2px solid rgba(139, 92, 246, 0.2);">
+                <div class="accordion-card plan-business-only" style="margin-top: 24px; border: 2px solid rgba(139, 92, 246, 0.2);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <span style="background: #8b5cf6 !important; color:white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight:700; margin-bottom:8px; display:inline-block;">MÓDULO ADICIONAL</span>
@@ -2173,6 +2173,24 @@
                         </div>
                         <div style="display:flex; gap:16px;">
                             <button id="btn-save-account" class="btn btn-primary" style="flex: 1; justify-content:center; background: #8b5cf6 !important; border: none;"><i class="fa-solid fa-floppy-disk"></i> Actualizar Seguridad</button>
+                        </div>
+                    </div>
+
+                    <!-- Perfil del Profesional -->
+                    <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 32px; box-shadow: var(--shadow-sm);">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 24px; font-weight: 700; border-bottom: 1px solid var(--border-soft); padding-bottom: 12px;"><i class="fa-solid fa-address-card" style="color: var(--accent-violet);"></i> Perfil Público</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Esta información aparecerá en tu menú lateral y en el generador de códigos QR.</p>
+                        
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Nombre / Marca</label>
+                            <input type="text" id="acc-business-name" class="fidelio-input" placeholder="Ej: Dr. Juan Pérez, Studio Beauty...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Giro o Profesión</label>
+                            <input type="text" id="acc-business-category" class="fidelio-input" placeholder="Ej: Dentista, Estilista, Veterinaria...">
+                        </div>
+                        <div style="display:flex; gap:16px;">
+                            <button id="btn-save-acc-profile" class="btn btn-primary" style="flex: 1; justify-content:center; background: #8b5cf6 !important; border: none;"><i class="fa-solid fa-floppy-disk"></i> Guardar Perfil</button>
                         </div>
                     </div>
 

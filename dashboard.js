@@ -582,7 +582,7 @@ let saveTimeout = null;
         window.checkPlanPermissions = function() {
             if (!window.merchantData) return;
             const plan = window.merchantData.business_type || 'starter';
-            const isAdmin = window.merchantSession && window.merchantSession.user.email === 'hola@fideliorewards.com';
+            const isAdmin = window.merchantSession && window.merchantSession.user && window.merchantSession.user.email === 'hola@fideliorewards.com';
             
             // Professional is the most limited, Business has almost everything
             const isBusiness = plan === 'business' || plan === 'enterprise' || isAdmin;
@@ -602,6 +602,12 @@ let saveTimeout = null;
                 if (stampsRadio && !stampsRadio.checked) {
                     stampsRadio.checked = true;
                     setTimeout(() => stampsRadio.dispatchEvent(new Event('change', {bubbles: true})), 100);
+                }
+                
+                const progSelect = document.getElementById('program-type-select');
+                if (progSelect && progSelect.value === 'cashback') {
+                    progSelect.value = 'stamps';
+                    setTimeout(() => progSelect.dispatchEvent(new Event('change', {bubbles: true})), 100);
                 }
             }
 
@@ -2771,6 +2777,42 @@ function updatePassRender() {
     if (accEmail && window.merchantSession) {
         accEmail.value = window.merchantSession.user.email;
         
+        const accBusinessName = document.getElementById('acc-business-name');
+        const accBusinessCategory = document.getElementById('acc-business-category');
+        if (accBusinessName && window.merchantData) accBusinessName.value = window.merchantData.business_name || '';
+        if (accBusinessCategory && window.merchantData) accBusinessCategory.value = window.merchantData.industry || '';
+        
+        const btnSaveAccProfile = document.getElementById('btn-save-acc-profile');
+        if (btnSaveAccProfile) {
+            btnSaveAccProfile.addEventListener('click', async () => {
+                if (!window.merchantSession) return;
+                const newName = accBusinessName.value.trim();
+                const newCat = accBusinessCategory.value.trim();
+                btnSaveAccProfile.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+                const { error } = await window.supabaseClient.from('merchants').update({
+                    business_name: newName,
+                    industry: newCat
+                }).eq('id', window.merchantSession.user.id);
+                
+                btnSaveAccProfile.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Perfil';
+                if (error) {
+                    if (typeof showToast === 'function') showToast('Error al actualizar el perfil', 'error');
+                } else {
+                    if (typeof showToast === 'function') showToast('Perfil actualizado con éxito', 'success');
+                    document.getElementById('header-restaurant-name').textContent = newName || 'Mi Cuenta';
+                    document.getElementById('header-business-category').textContent = newCat || 'Profesional';
+                    window.merchantData.business_name = newName;
+                    window.merchantData.industry = newCat;
+                    
+                    // Actualizar QR si es posible
+                    const slugUrl = window.merchantData.slug || newName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + slugUrl)}`;
+                    const qrPreview = document.getElementById('merchant-qr-preview');
+                    if (qrPreview) qrPreview.src = qrUrl;
+                }
+            });
+        }
+        
         // ADMIN CHECK FOR LEADS TAB & TEAM FIDELIO
         const initializeAdminUI = async () => {
             const userEmail = window.merchantSession.user.email;
@@ -2907,7 +2949,7 @@ function updatePassRender() {
 
         // Actualizar encabezados (solo si no es admin)
         if (state && state.restaurantName && currentEmail.trim().toLowerCase() !== 'hola@fideliorewards.com') {
-                const bNameDisp = window.merchantData.business_name || window.merchantSession.user.user_metadata?.first_name || "Mi Cuenta";
+                const bNameDisp = window.merchantData.business_name || (window.merchantSession && window.merchantSession.user && window.merchantSession.user.user_metadata && window.merchantSession.user.user_metadata.first_name) || "Mi Cuenta";
                 document.getElementById('header-restaurant-name').textContent = bNameDisp;
                 
                 let bCatDisp = state.category || "Profesional";
