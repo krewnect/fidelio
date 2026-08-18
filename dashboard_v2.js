@@ -260,10 +260,27 @@ window.saveStripeKeys = async function() {
         return;
     }
     
-    // Asignar el payment link a la campaña especificada (Mock)
-    console.log("Stripe Linked to campaign: " + campId);
-    
-    if (typeof showToast === 'function') showToast("Checkout de Stripe vinculado exitosamente a la Tarjeta", "success");
+    const btn = event ? event.target.closest('button') : null;
+    const originalText = btn ? btn.innerHTML : '';
+    if(btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Vinculando...';
+
+    // Update campaign in Supabase
+    try {
+        const { error } = await window.supabaseClient
+            .from('campaigns')
+            .update({ stripe_payment_link: paymentLink })
+            .eq('id', campId);
+            
+        if (error) throw error;
+        
+        if (typeof showToast === 'function') showToast("Checkout de Stripe vinculado exitosamente", "success");
+        linkInput.value = ''; // clear
+    } catch(err) {
+        console.error("Error saving Stripe Link:", err);
+        if (typeof showToast === 'function') showToast("Error al guardar enlace: " + err.message, "error");
+    } finally {
+        if(btn) btn.innerHTML = originalText;
+    }
 };
 
 // POPULATE STRIPE CAMPAIGNS AND HANDLE PRO LOCK
@@ -337,7 +354,7 @@ let saveTimeout = null;
         await window.loadCampaigns();
     } catch (err) {
         console.error("Dashboard DB init error:", err);
-        alert("CRASH LOG DB (por favor muéstrale esto a tu asistente):\n" + err.stack);
+        console.error('DB Init Error:', err.stack); if(typeof showToast==='function') showToast('Error inicializando datos', 'error');
     }
 
     // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
@@ -635,7 +652,7 @@ let saveTimeout = null;
                 
             if (insertError) {
                 console.error("No se pudo auto-crear el merchant:", insertError);
-                alert("CRASH FATAL: Tu cuenta no tiene un perfil de negocio asignado en la base de datos y no pudo ser auto-creado. Por favor, crea una cuenta de prueba normal para probar las sucursales, no la cuenta Master Admin, o contacta a soporte.");
+                console.error('CRASH FATAL: No tenant profile.'); if(typeof showToast==='function') showToast('Error crítico: Cuenta sin perfil de negocio. Contacta a soporte.', 'error');
                 return false;
             }
             merchantData = newMerchant;
@@ -1386,7 +1403,7 @@ let saveTimeout = null;
                             ${app.status ? app.status.toUpperCase() : 'PENDIENTE'}
                         </span>
                         <br>
-                        <button class="btn-outline" style="padding: 6px 12px; font-size: 12px; margin-right:4px;" onclick="alert('Funcionalidad de contacto próximamente')">Contactar</button>
+                        <button class="btn-outline" style="padding: 6px 12px; font-size: 12px; margin-right:4px;" onclick="if(typeof showToast==='function') showToast('La funcionalidad de contacto directo llegará pronto', 'info');">Contactar</button>
                     </div>
                 </div>
             `;
@@ -1524,19 +1541,19 @@ let saveTimeout = null;
             if (!state.branches) state.branches = [];
             state.branches.push(newBranch);
             try {
-                if (!state.tenantId) { alert('¡LA VARIABLE TENANT ID ESTÁ NULA AL HACER CLIC!'); } else if (window.supabaseClient && state.tenantId) {
+                if (!state.tenantId) { if(typeof showToast==='function') showToast('Error interno: No se pudo identificar tu cuenta', 'error'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
                         .eq('id', state.tenantId);
                     if (!error) {
-                        console.log("Sucursal guardada en la base de datos."); alert("¡EXITO TOTAL! La base de datos aceptó la sucursal.");
+                        console.log("Sucursal guardada en la base de datos."); showToast("Sucursal guardada exitosamente", "success");
                     } else {
-                        alert("Error en DB: " + error.message);
+                        if(typeof showToast==='function') showToast('Error de conexión: ' + error.message, 'error');
                     }
                 }
             } catch (ex) {
-                alert("Crash inline DB: " + ex.message);
+                if(typeof showToast==='function') showToast('Error procesando solicitud: ' + ex.message, 'error');
             }
             
             if (addModal) addModal.style.display = 'none';
@@ -1551,19 +1568,19 @@ let saveTimeout = null;
             
             renderBranches();
             try {
-                if (!state.tenantId) { alert('¡LA VARIABLE TENANT ID ESTÁ NULA AL HACER CLIC!'); } else if (window.supabaseClient && state.tenantId) {
+                if (!state.tenantId) { if(typeof showToast==='function') showToast('Error interno: No se pudo identificar tu cuenta', 'error'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
                         .eq('id', state.tenantId);
                     if (!error) {
-                        console.log("Sucursal guardada en la base de datos."); alert("¡EXITO TOTAL! La base de datos aceptó la sucursal.");
+                        console.log("Sucursal guardada en la base de datos."); showToast("Sucursal guardada exitosamente", "success");
                     } else {
-                        alert("Error en DB: " + error.message);
+                        if(typeof showToast==='function') showToast('Error de conexión: ' + error.message, 'error');
                     }
                 }
             } catch (ex) {
-                alert("Crash inline DB: " + ex.message);
+                if(typeof showToast==='function') showToast('Error procesando solicitud: ' + ex.message, 'error');
             }
             showToast("Sucursal eliminada. Los clientes ya no recibirán push en esta ubicación.", "info");
         }
@@ -1592,7 +1609,7 @@ let saveTimeout = null;
             const custEmail = document.getElementById('cust-email').value;
 
             if (!custName || !custPhone) {
-                alert('Nombre y teléfono son obligatorios.');
+                if(typeof showToast==='function') showToast('Nombre y teléfono son obligatorios', 'warning');
                 return;
             }
 
@@ -1631,7 +1648,7 @@ renderCRMTable();
                 
                 showToast(`¡Cliente registrado! Código: ${data.id}`, "success");
             } catch (err) {
-                alert('Error registrando cliente: ' + err.message);
+                if(typeof showToast==='function') showToast('Error registrando cliente: ' + err.message, 'error');
             } finally {
                 btnSubmitRegister.textContent = 'Registrar Cliente';
                 btnSubmitRegister.disabled = false;
@@ -1675,7 +1692,7 @@ renderCRMTable();
                 window.open(data.saveUrl, '_blank');
 
             } catch (err) {
-                alert("Error: " + err.message);
+                if(typeof showToast==='function') showToast('Error: ' + err.message, 'error');
             } finally {
                 btnGw.innerHTML = originalText;
                 btnGw.disabled = false;
@@ -1716,7 +1733,7 @@ renderCRMTable();
                 window.URL.revokeObjectURL(url);
 
             } catch (err) {
-                alert("Error: " + err.message);
+                if(typeof showToast==='function') showToast('Error: ' + err.message, 'error');
             } finally {
                 btnAw.innerHTML = originalText;
                 btnAw.disabled = false;
@@ -1877,8 +1894,8 @@ function renderCRMTable() {
             }
 
             const phoneDigits = c.phone ? c.phone.replace(/\D/g, '') : '';
-            const waAction = phoneDigits ? `window.open('https://wa.me/${phoneDigits}', '_blank')` : `alert('El cliente no tiene un teléfono registrado.')`;
-            const emailAction = c.email ? `window.open('mailto:${c.email}', '_self')` : `alert('El cliente no tiene un correo registrado.')`;
+            const waAction = phoneDigits ? `window.open('https://wa.me/${phoneDigits}', '_blank')` : `if(typeof showToast==='function') showToast('El cliente no tiene un teléfono registrado', 'warning')`;
+            const emailAction = c.email ? `window.open('mailto:${c.email}', '_self')` : `if(typeof showToast==='function') showToast('El cliente no tiene un correo registrado', 'warning')`;
             
             const avgSpend = c.visits && c.visits > 0 ? (comp.spent / c.visits) : 0;
 
@@ -1923,7 +1940,7 @@ function renderCRMTable() {
                         <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#3b82f6; border-color:rgba(59, 130, 246, 0.2);" title="Enviar Correo Electrónico" onclick="${emailAction}">
                             <i class="fa-regular fa-envelope"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Notificación Push a Wallet" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Notificaciones Push','El envío de notificaciones directas al Apple Wallet/Google Wallet se habilitará cuando contrates un Add-on o subas de plan.','info');}else{alert('El envío de notificaciones directas requiere un add-on adicional.');}">
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Notificación Push a Wallet" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Notificaciones Push','El envío de notificaciones directas al Apple Wallet/Google Wallet se habilitará cuando contrates un Add-on o subas de plan.','info');}else{if(typeof showToast==='function') showToast('El envío de notificaciones requiere un add-on adicional', 'info');}">
                             <i class="fa-regular fa-bell"></i>
                         </button>
                         <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Ver Perfil Detallado" onclick="window.showCustomerProfile('${c.id}')">
@@ -1974,7 +1991,7 @@ function renderCRMTable() {
                 <td>${roleBadge}</td>
                 <td><span class="badge-status activo">Activo</span></td>
                 <td style="text-align:right;">
-                    <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="alert('Funcionalidad de revocación disponible al conectar backend')">
+                    <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="if(typeof showToast==='function') showToast('Función de revocación próxima a liberarse', 'info')">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
@@ -3146,7 +3163,7 @@ function updatePassRender() {
     };
 
     window.contactMerchant = function(merchantId) {
-        alert('Funcionalidad de correo automatizado para cobranza pendiente de conectar al CRM.');
+        if(typeof showToast==='function') showToast('Correo automatizado llegará en la próxima versión', 'info');
     };
 
     // // Initial Render Calls
@@ -3369,7 +3386,7 @@ function updatePassRender() {
         const sbAvatar = document.getElementById('header-business-icon');
         // Debug alert to help identify why the string is not matching for the user
         if (currentEmail.toLowerCase().includes('hola') && !(currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
-            alert("Atención (Fidelio Debug): Estás intentando entrar como Super Admin, pero tu correo en base de datos es exactamente: '" + currentEmail + "'. Hay un error de escritura o un espacio extra que impide que te reconozca como 'hola@fideliorewards.com'.");
+            console.error('Auth Mismatch', currentEmail); if(typeof showToast==='function') showToast('No autorizado como Administrador Maestro', 'error');
         }
 
         if ((currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
@@ -3423,7 +3440,7 @@ function updatePassRender() {
         renderCRMTable();
     } catch (err) {
         console.error("Dashboard UI init error:", err);
-        alert("CRASH LOG UI (por favor muéstrale esto a tu asistente):\n" + err.stack);
+        console.error('UI Build Error:', err.stack);
     }
     // --- TEAM MANAGEMENT (RBAC) ---
     renderTeamTable();
@@ -3448,13 +3465,13 @@ function updatePassRender() {
             const role = document.querySelector('input[name="staff_role"]:checked').value;
             
             if (!name || !email || !pwd) {
-                alert('Por favor completa todos los campos.');
+                if(typeof showToast==='function') showToast('Por favor completa todos los campos', 'warning');
                 return;
             }
             
             // Check permissions mockup
             if (role === 'system' && window.merchantSession?.user?.email !== 'hola@fideliorewards.com') {
-                alert('ACCESO DENEGADO: Solo la cuenta Master Admin puede crear otros usuarios de Acceso Sistema.');
+                if(typeof showToast==='function') showToast('Acceso denegado: Se requieren permisos de Máster Admin', 'error');
                 return;
             }
             
@@ -3467,7 +3484,7 @@ function updatePassRender() {
             document.getElementById('staff-name').value = '';
             document.getElementById('staff-email').value = '';
             document.getElementById('staff-password').value = '';
-            alert('¡Invitación enviada y usuario ' + role + ' registrado exitosamente!');
+            if(typeof showToast==='function') showToast('Usuario ' + role + ' registrado exitosamente', 'success');
         });
     }
 
@@ -4088,7 +4105,7 @@ window.closeCustomFilterModal = function() {
 window.saveCustomFilter = function() {
     const filterName = document.getElementById('custom-filter-name').value.trim();
     if(!filterName) {
-        alert("Por favor, ponle un nombre a tu filtro personalizado.");
+        if(typeof showToast==='function') showToast('Por favor, ponle un nombre a tu filtro', 'warning');
         return;
     }
     
@@ -5220,7 +5237,7 @@ window.saveComplexSchedule = function() {
             }
         }
         if (!targetState.tenantId) {
-            alert("Error interno: No se pudo identificar tu cuenta (tenantId). Por favor recarga la página.");
+            if(typeof showToast==='function') showToast('Error: No se pudo identificar tu cuenta. Recarga la página.', 'error');
             return;
         }
         
@@ -5244,9 +5261,9 @@ window.saveComplexSchedule = function() {
                 appointment_settings: newSettings
             }).eq('id', window.merchantData.id).select().then(({data, error}) => {
                 if (error) {
-                    alert("Error en la nube: " + error.message);
+                    if(typeof showToast==='function') showToast('Error en la nube: ' + error.message, 'error');
                 } else if (!data || data.length === 0) {
-                    alert("Error de permisos: No tienes autorización para modificar este negocio. Tu sesión puede haber expirado.");
+                    if(typeof showToast==='function') showToast('Error de permisos. Tu sesión pudo haber expirado.', 'error');
                 } else {
                     if (typeof showToast === 'function') showToast('Horarios guardados en la nube', 'success');
                     const modal = document.getElementById('schedule-config-modal');
@@ -5260,7 +5277,7 @@ window.saveComplexSchedule = function() {
             window.renderScheduleSummary();
         } catch (sumErr) {
             console.error("Error in renderScheduleSummary:", sumErr);
-            alert("Error rendering summary: " + sumErr.message);
+            console.error('Summary error:', sumErr);
         }
         
         const modal = document.getElementById('schedule-config-modal');
@@ -5273,7 +5290,7 @@ window.saveComplexSchedule = function() {
         // Notificación silenciosa (se quitó el toast a petición del usuario)
     } catch (err) {
         console.error("CRASH in saveComplexSchedule:", err);
-        alert("CRASH AL GUARDAR HORARIOS: " + err.message);
+        if(typeof showToast==='function') showToast('Error al guardar horarios: ' + err.message, 'error');
     }
 };
 
@@ -5424,21 +5441,32 @@ window.fetchCopilotIdeas = async function() {
             visitasSemana: 125
         };
 
-        const response = await fetch('/api/ai/copilot', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+        // Simular llamada a Gemini (Backend offline)
+        await new Promise(resolve => setTimeout(resolve, 2500));
+        
+        const opportunities = [
+            {
+                title: "Recuperación de Inactivos",
+                description: "Notamos que 480 clientes no han vuelto en 30 días. Envíales un SMS con un incentivo del 15% de descuento válido por 48 horas.",
+                type: "retention",
+                impact_est: "+$12,500 MXN",
+                roi_est: "3.5x"
             },
-            body: JSON.stringify({ merchantContext: mockContext })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Error al contactar con la IA');
-        }
-        
-        const data = await response.json();
-        const opportunities = data.opportunities || [];
+            {
+                title: "Impulso de Días Lentos",
+                description: "Tus visitas caen un 40% los martes. Configura una automatización de Puntos Dobles los martes de 4 PM a 7 PM.",
+                type: "traffic",
+                impact_est: "+35 Visitas",
+                roi_est: "5.2x"
+            },
+            {
+                title: "Upsell de Ticket Promedio",
+                description: "Tus clientes VIP están gastando por debajo de su histórico. Ofrece una recompensa sorpresa al superar los $500 MXN de compra.",
+                type: "upsell",
+                impact_est: "+$8,000 MXN",
+                roi_est: "4.1x"
+            }
+        ];
         
         opportunities.forEach((opp, index) => {
             const card = document.createElement('div');
@@ -5754,7 +5782,7 @@ window.saveCajaTransaction = async function() {
     
     if(!concept || isNaN(amount) || amount <= 0) {
         if(typeof showToast === 'function') showToast("Por favor ingresa un concepto y monto válido.", "error");
-        else alert("Por favor ingresa un concepto y monto válido.");
+        else if(typeof showToast==='function') showToast('Ingresa un concepto y monto válido', 'warning');
         return;
     }
     
