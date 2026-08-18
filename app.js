@@ -1444,7 +1444,7 @@ app.post('/api/stripe/keys', async (req, res) => {
 // ------------------------------------------------------------
 // API: Solicitar Cita
 // ------------------------------------------------------------
-app.post('/api/appointments/request', apiLimiter, async (req, res) => {
+const appointmentHandler = async (req, res) => {
     const customerId = req.body.customerId || req.body.customer_id;
     const campaignId = req.body.campaignId || req.body.campaign_id;
     const { date, time, notes } = req.body;
@@ -1454,7 +1454,6 @@ app.post('/api/appointments/request', apiLimiter, async (req, res) => {
     }
 
     try {
-        // Obtenemos el merchant_id de la campaña
         const { data: campaign, error: campErr } = await supabase
             .from('campaigns')
             .select('merchant_id')
@@ -1465,7 +1464,6 @@ app.post('/api/appointments/request', apiLimiter, async (req, res) => {
             return res.status(404).json({ success: false, error: "Campaña no encontrada" });
         }
 
-        // Guardamos la cita en transactions para no requerir tabla nueva de inmediato
         const payload = { date, time, notes };
         
         const { error } = await supabase.from('transactions').insert([{
@@ -1482,7 +1480,9 @@ app.post('/api/appointments/request', apiLimiter, async (req, res) => {
         console.error("Error al agendar cita:", err);
         res.status(500).json({ success: false, error: err.message });
     }
-});
+};
+app.post('/api/appointments', apiLimiter, appointmentHandler);
+app.post('/api/appointments/request', apiLimiter, appointmentHandler);
 
 
 
