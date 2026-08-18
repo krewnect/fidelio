@@ -39,18 +39,17 @@
             position: relative;
         }
         .logo-container {
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: auto;
+            max-height: 140px;
             margin: 0 auto 20px auto;
-            border-radius: 24px;
-            background: var(--bg-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            color: var(--primary);
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            background: transparent;
+            box-shadow: none !important;
+            border-radius: 0;
+            overflow: visible;
         }
         .logo-container img {
             width: 100%;
@@ -267,7 +266,7 @@
                     .from('campaigns').select('*').eq('merchant_id', merch.id).eq('is_active', true);
                 
                 visibleCampaigns = camps || [];
-                if (merch.business_type === 'professional') {
+                if (merch.business_type === 'professional' || (merch.industry && merch.industry.toLowerCase().includes('professional'))) {
                     visibleCampaigns = visibleCampaigns.filter(c => c.type === 'stamps');
                 }
                 
@@ -282,17 +281,17 @@
                     const color = prefs.portal_color || merch.color_primary;
                     document.documentElement.style.setProperty('--primary', color);
                     // Add subtle glow to logo box using primary color
-                    document.getElementById('logo-container').style.boxShadow = `0 15px 30px ${color}33`;
+                    
                 }
                 
                 if (prefs.portal_logo || merch.logo_url) {
                     const logo = prefs.portal_logo || merch.logo_url;
                     document.getElementById('logo-container').innerHTML = `<img src="${logo}" alt="Logo">`;
-                    document.getElementById('logo-container').style.background = 'transparent';
+                    
                     document.getElementById('logo-container').style.boxShadow = 'none'; // Clear shadow for transparent bg
                 } else {
                     document.getElementById('logo-container').innerHTML = `<img src="/fidelio_logo_purple.png" alt="Logo">`;
-                    document.getElementById('logo-container').style.background = '#ffffff';
+                    
                 }
                 
                 document.getElementById('business-name').textContent = merch.business_name;
