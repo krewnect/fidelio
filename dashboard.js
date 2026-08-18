@@ -55,6 +55,15 @@ window.loadCampaigns = async function() {
         });
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
+        // Sort newest first
+        if (data.campaigns && data.campaigns.length > 0) {
+            data.campaigns.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+            if (!state.currentCampaignId) {
+                // Initialize the designer with their newest campaign automatically
+                state.currentCampaignId = data.campaigns[0].id;
+                selectCampaign(data.campaigns[0].id);
+            }
+        }
         state.campaigns = data.campaigns;
         const list = document.getElementById('campaigns-list');
         if (!list) return;
