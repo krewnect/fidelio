@@ -2170,7 +2170,9 @@ function updatePassRender() {
     // --- INPUT BINDINGS ---
     safeAdd('rest-name', 'input', (e) => {
         state.restaurantName = e.target.value || "Comercio"; updatePassRender();
-
+    });
+    safeAdd('business-category-input', 'input', (e) => {
+        updatePassRender();
     });
     safeAdd('color-primary', 'input', (e) => {
         state.colorPrimary = e.target.value; updatePassRender();
