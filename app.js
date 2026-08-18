@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { generatePremiumBanner } = require('./render_premium_banner.js');
+const { generateHybridStrip } = require('./render_hybrid_strip.js');
 const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
@@ -600,7 +600,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
-                serialNumber: `${customerId}|${campaignId}|v2_${Date.now()}`,
+                serialNumber: `${customerId}|${campaignId}|v3_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fideliorewards.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16),
@@ -610,7 +610,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                 backgroundColor: "rgb(255, 255, 255)",
                 foregroundColor: "rgb(0, 0, 0)",
                 labelColor: "rgb(100, 100, 100)",
-                storeCard: {
+                coupon: {
                     headerFields: [
                         { key: "status", label: "ESTADO", value: "ACTIVO" }
                     ],
@@ -644,14 +644,17 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             }))
         }, certs);
 
-        try {
-            const stripBuffer = await generatePremiumBanner(campaign.banner_url);
-            if (stripBuffer) {
+        if (campaign.type === 'stamps') {
+            try {
+                const totalStamps = campaign.rules_config?.stamps_total || 5;
+                const earnedStamps = stamps;
+                const cPrimary = campaign.color_primary || '#8b5cf6';
+                const stripBuffer = await generateHybridStrip(totalStamps, earnedStamps, cPrimary, campaign.banner_url);
                 pass.addBuffer('strip.png', stripBuffer);
                 pass.addBuffer('strip@2x.png', stripBuffer);
+            } catch (e) {
+                console.error("Hybrid strip generation failed", e);
             }
-        } catch (e) {
-            console.error("Premium banner generation failed", e);
         }
         
         // Geofencing (si hay sucursales)
@@ -660,14 +663,17 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
         // Certificados ya cargados en constructor
 
         // Generar strip.png usando Puppeteer si es tipo stamps
-        try {
-            const stripBuffer = await generatePremiumBanner(campaign.banner_url);
-            if (stripBuffer) {
+        if (campaign.type === 'stamps') {
+            try {
+                const totalStamps = campaign.rules_config?.stamps_total || 5;
+                const earnedStamps = stamps;
+                const cPrimary = campaign.color_primary || '#8b5cf6';
+                const stripBuffer = await generateHybridStrip(totalStamps, earnedStamps, cPrimary, campaign.banner_url);
                 pass.addBuffer('strip.png', stripBuffer);
                 pass.addBuffer('strip@2x.png', stripBuffer);
+            } catch (e) {
+                console.error("Hybrid strip generation failed", e);
             }
-        } catch (e) {
-            console.error("Premium banner generation failed", e);
         }
         
         // Intentar agregar iconos o logos customizados
@@ -758,7 +764,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fidelio-41j9.onrender.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16), // A token must be at least 16 chars
-                serialNumber: `${customer.id}|v2_${Date.now()}`,
+                serialNumber: `${customer.id}|v3_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 organizationName: merchant.business_name || "Mi Negocio",
                 description: "Tarjeta de Lealtad",
@@ -766,7 +772,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 backgroundColor: "rgb(255, 255, 255)",
                 foregroundColor: "rgb(0, 0, 0)",
                 labelColor: "rgb(100, 100, 100)",
-                storeCard: {
+                coupon: {
                     primaryFields: [
                         { key: "balance", label: "SALDO", value: `$${customer.current_balance}` }
                     ],
@@ -798,14 +804,17 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
             }))
         }, certs);
 
-        try {
-            const stripBuffer = await generatePremiumBanner(campaign.banner_url);
-            if (stripBuffer) {
+        if (campaign.type === 'stamps') {
+            try {
+                const totalStamps = campaign.rules_config?.stamps_total || 5;
+                const earnedStamps = stamps;
+                const cPrimary = campaign.color_primary || '#8b5cf6';
+                const stripBuffer = await generateHybridStrip(totalStamps, earnedStamps, cPrimary, campaign.banner_url);
                 pass.addBuffer('strip.png', stripBuffer);
                 pass.addBuffer('strip@2x.png', stripBuffer);
+            } catch (e) {
+                console.error("Hybrid strip generation failed", e);
             }
-        } catch (e) {
-            console.error("Premium banner generation failed", e);
         }
         
         // Geofencing (si hay sucursales)
@@ -1555,7 +1564,7 @@ app.get('/api/wallet/v1/passes/:passTypeIdentifier/:serialNumber', checkAppleAut
                 foregroundColor: "rgb(255, 255, 255)",
                 backgroundColor: "rgb(255, 255, 255)",
                 labelColor: "rgb(139, 92, 246)",
-                storeCard: {
+                coupon: {
                     headerFields: [
                         { key: "stamps", label: "SELLOS", value: `${customer.stamps_count} / ${merchant.stamps_required}` }
                     ],
