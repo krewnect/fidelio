@@ -1650,9 +1650,9 @@ function renderCRMTable() {
             tr.innerHTML = `
                 <td>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <div style="width:34px; height:34px; border-radius:50%; background:var(--fidelio-violet); color:white; display:flex; align-items:center; justify-content:center; font-weight:800;">${c.name.charAt(0).toUpperCase()}</div>
+                        <div style="width:34px; height:34px; border-radius:50%; background:var(--fidelio-violet); color:white; display:flex; align-items:center; justify-content:center; font-weight:800;">${(c.full_name || c.name || '?').charAt(0).toUpperCase()}</div>
                         <div>
-                            <strong>${c.name}</strong>
+                            <strong>${c.full_name || c.name || 'Cliente sin nombre'}</strong>
                             <small style="display:block; color:var(--text-muted);">${c.id.substring(0,8)}...</small>
                         </div>
                     </div>
@@ -1686,10 +1686,10 @@ function renderCRMTable() {
                         <button class="btn btn-outline" style="padding:6px 10px; font-size:12px;" title="Enviar Correo Electrónico" onclick="alert('Abriendo editor de correo para ${c.email || 'cliente'}')">
                             <i class="fa-regular fa-envelope"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Push a Apple/Google Wallet" onclick="alert('Redactando Notificación Push para ${c.name}')">
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Push a Apple/Google Wallet" onclick="alert('Redactando Notificación Push para ${(c.full_name || c.name || 'Cliente').replace(/'/g, "\\'")}')">
                             <i class="fa-regular fa-bell"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Escanear QR" onclick="window.showCustomerQR('${c.id}', '${c.name.replace(/'/g, "\\'")}')">
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Escanear QR" onclick="window.showCustomerQR('${c.id}', '${(c.full_name || c.name || 'Cliente').replace(/'/g, "\\'")}')">
                             <i class="fa-solid fa-qrcode"></i>
                         </button>
                     </div>
