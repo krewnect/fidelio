@@ -3086,7 +3086,7 @@
                             <h2 style="font-size: 64px; margin: 8px 0 0 0; color: white; font-weight: 900; letter-spacing:-1px;">
                                 <span id="metric-roi" style="animation: numberCounter 1s ease-out forwards;">0%</span>
                             </h2>
-                            <p style="opacity: 0.9; margin-top: 8px; max-width: 450px; font-size: 15px; line-height: 1.6;">Por cada $1 invertido en Fidelio, tus clientes han generado $3.42 en ventas adicionales y retención comprobada.</p>
+                            <p id="metric-roi-desc" style="opacity: 0.9; margin-top: 8px; max-width: 450px; font-size: 15px; line-height: 1.6;">Monitoreando el impacto económico real de tus programas de lealtad.</p>
                         </div>
                         <div style="position: relative; z-index: 2; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 0 20px rgba(255,255,255,0.05);">
                             <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-bottom: 8px;">Ingreso Atribuido a Lealtad</div>
@@ -3107,27 +3107,8 @@
                         <div style="flex:1; overflow:hidden; position:relative;">
                             <div style="position:absolute; top:0; left:0; width:100%; height:20px; background:linear-gradient(to bottom, white, transparent); z-index:2;"></div>
                             <div style="position:absolute; bottom:0; left:0; width:100%; height:20px; background:linear-gradient(to top, white, transparent); z-index:2;"></div>
-                            <div style="display:flex; flex-direction:column; gap:12px; padding: 10px 0;">
-                                <div style="display:flex; align-items:center; gap:12px; font-size:13px; opacity:0.6;">
-                                    <div style="width:32px; height:32px; border-radius:50%; background:var(--bg-input); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-wallet"></i></div>
-                                    <div style="flex:1;"><strong>Roberto O.</strong> usó $45 cashback</div>
-                                    <div style="font-size:11px; color:var(--text-muted);">Hace 2m</div>
-                                </div>
-                                <div style="display:flex; align-items:center; gap:12px; font-size:13px;">
-                                    <div style="width:32px; height:32px; border-radius:50%; background: var(--bg-input); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-qrcode"></i></div>
-                                    <div style="flex:1;"><strong>Ana G.</strong> escaneó mesa #4 (+120 pts)</div>
-                                    <div style="font-size:11px; color:var(--text-muted);">Hace 5m</div>
-                                </div>
-                                <div style="display:flex; align-items:center; gap:12px; font-size:13px; opacity:0.8;">
-                                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(245, 158, 11, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-crown"></i></div>
-                                    <div style="flex:1;"><strong>Carlos R.</strong> subió a VIP Oro</div>
-                                    <div style="font-size:11px; color:var(--text-muted);">Hace 14m</div>
-                                </div>
-                                <div style="display:flex; align-items:center; gap:12px; font-size:13px; opacity:0.5;">
-                                    <div style="width:32px; height:32px; border-radius:50%; background:var(--bg-input); display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fa-solid fa-envelope-open"></i></div>
-                                    <div style="flex:1;">24 clientes abrieron promo Cumpleaños</div>
-                                    <div style="font-size:11px; color:var(--text-muted);">Hace 30m</div>
-                                </div>
+                            <div id="live-activity-feed" style="display:flex; flex-direction:column; gap:12px; padding: 10px 0;">
+                                <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px 0;">No hay actividad reciente.</div>
                             </div>
                         </div>
                     </div>
@@ -3139,41 +3120,41 @@
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                             <div>
                                 <div class="stat-label" style="font-weight:600; text-transform:uppercase; letter-spacing:0.5px; font-size:11px;">Base de Lealtad</div>
-                                <div class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">0</div>
+                                <div id="metric-adv-loyalty" class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">0</div>
                             </div>
                             <div class="stat-icon" style="background: rgba(76, 29, 149, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> +12% mes anterior</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> Calculando...</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                             <div>
                                 <div class="stat-label" style="font-weight:600; text-transform:uppercase; letter-spacing:0.5px; font-size:11px;">Ticket Promedio (VIP)</div>
-                                <div class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">$0.00</div>
+                                <div id="metric-adv-ticket" class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">$0.00</div>
                             </div>
                             <div class="stat-icon" style="background: var(--bg-input); color: var(--accent-violet);"><i class="fa-solid fa-receipt"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> 22% > No-VIP</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;">Basado en historial</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                             <div>
                                 <div class="stat-label" style="font-weight:600; text-transform:uppercase; letter-spacing:0.5px; font-size:11px;">Tasa de Redención</div>
-                                <div class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">0%</div>
+                                <div id="metric-adv-redemption" class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">0%</div>
                             </div>
                             <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B;"><i class="fa-solid fa-fire"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> Alto Engagement</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;">Basado en premios</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                             <div>
                                 <div class="stat-label" style="font-weight:600; text-transform:uppercase; letter-spacing:0.5px; font-size:11px;">Frecuencia Visitas</div>
-                                <div class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">0x<span style="font-size:16px; color:var(--text-muted); font-weight:500;">/mes</span></div>
+                                <div id="metric-adv-freq" class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">0x<span style="font-size:16px; color:var(--text-muted); font-weight:500;">/mes</span></div>
                             </div>
                             <div class="stat-icon" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4;"><i class="fa-solid fa-rotate-right"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> +0.4x desde Mayo</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;">Últimos 30 días</div>
                     </div>
                 </div>
 
