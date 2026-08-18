@@ -582,7 +582,7 @@ let saveTimeout = null;
         window.checkPlanPermissions = function() {
             if (!window.merchantData) return;
             const plan = window.merchantData.business_type || 'starter';
-            const isAdmin = window.merchantSession && window.merchantSession.user.email.endsWith('@fideliorewards.com');
+            const isAdmin = window.merchantSession && window.merchantSession.user.email === 'hola@fideliorewards.com';
             
             // Professional is the most limited, Business has almost everything
             const isBusiness = plan === 'business' || plan === 'enterprise' || isAdmin;
@@ -658,7 +658,8 @@ let saveTimeout = null;
         };
 
         // --- INJECT MERCHANT QR ---
-        const slugUrl = window.merchantData.slug || window.merchantData.business_name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const bName = window.merchantData.business_name || 'negocio';
+        const slugUrl = window.merchantData.slug || bName.toLowerCase().replace(/[^a-z0-9]/g, '');
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(window.location.origin + '/' + slugUrl)}`;
         const qrPreview = document.getElementById('merchant-qr-preview');
         const btnDownloadQr = document.getElementById('btn-download-merchant-qr');
