@@ -20,7 +20,9 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
         rules_config: {
             cashback_percent: state.cashbackPercent,
             stamps_total: state.stampsTotal,
-            vip_tiers: state.vipTiers
+            vip_tiers: state.vipTiers,
+            show_appointment_btn: document.getElementById('builder-btn-appointment')?.value === 'yes',
+            show_payment_btn: document.getElementById('builder-btn-payment')?.value === 'yes'
         }
     };
 
@@ -49,6 +51,7 @@ window.loadCampaigns = async function() {
         const res = await fetch('/api/campaigns');
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
+        state.campaigns = data.campaigns;
         const list = document.getElementById('campaigns-list');
         if (!list) return;
         
@@ -1691,6 +1694,21 @@ function updatePassRender() {
         const pIcon = document.getElementById('rest-icon')?.value || state.iconClass || "fa-crown";
         const pReward = document.getElementById('stamps-reward')?.value || state.stampsReward || "Bebida de Cortesía Gratis";
         const pPolicies = document.getElementById('pass-policies')?.value || "";
+        const showAppt = document.getElementById('builder-btn-appointment')?.value === 'yes';
+        const showPay = document.getElementById('builder-btn-payment')?.value === 'yes';
+
+        const linksBack = document.getElementById('render-wallet-links-back');
+        const linkAppt = document.getElementById('render-wallet-link-appointment');
+        const linkPay = document.getElementById('render-wallet-link-payment');
+        if (linksBack) {
+            if (showAppt || showPay) {
+                linksBack.style.display = 'block';
+                if (linkAppt) linkAppt.style.display = showAppt ? 'flex' : 'none';
+                if (linkPay) linkPay.style.display = showPay ? 'flex' : 'none';
+            } else {
+                linksBack.style.display = 'none';
+            }
+        }
 
         const rName = document.getElementById('render-name');
         const rCat = document.getElementById('render-category');
@@ -4605,6 +4623,15 @@ window.loadCampaignToBuilder = function(campaignId) {
         const st = document.getElementById('stamps-total');
         if(st && c.stampsTotal) st.value = c.stampsTotal;
         
+        if (camp.raw_campaign && camp.raw_campaign.rules_config) {
+            const rules = camp.raw_campaign.rules_config;
+            const btnAppt = document.getElementById('builder-btn-appointment');
+            if (btnAppt) btnAppt.value = rules.show_appointment_btn ? 'yes' : 'no';
+            
+            const btnPay = document.getElementById('builder-btn-payment');
+            if (btnPay) btnPay.value = rules.show_payment_btn ? 'yes' : 'no';
+        }
+
         if (typeof showToast === 'function') showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
     } else {
         if (typeof showToast === 'function') showToast("Campaña nueva. Configura el diseño.", "info");
