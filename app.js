@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { generateStampsStrip } = require('./render_stamps.js');
+const { generatePremiumBanner } = require('./render_premium_banner.js');
 const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
@@ -600,7 +600,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
-                serialNumber: `${customerId}|${campaignId}|${Date.now()}`,
+                serialNumber: `${customerId}|${campaignId}|v2_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fideliorewards.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16),
@@ -612,14 +612,12 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                 labelColor: "rgb(100, 100, 100)",
                 storeCard: {
                     headerFields: [
-                        { key: "balance", label: labelVal, value: balanceVal }
+                        { key: "status", label: "ESTADO", value: "ACTIVO" }
                     ],
-                    primaryFields: campaign.type === 'stamps' ? [] : [
-                        { key: "reward", label: "BENEFICIO", value: campaign.custom_cta_label || "Saldo VIP" }
-                    ],
+                    primaryFields: [],
                     secondaryFields: [
                         { key: "name", label: "SU TARJETA VIRTUAL", value: customer.full_name || "Invitado" },
-                        { key: "type", label: "TIPO", value: campaign.type === 'stamps' ? 'Sellos' : 'Cashback' }
+                        { key: "progress", label: campaign.type === 'stamps' ? "SELLOS" : "CASHBACK", value: balanceVal }
                     ],
                     auxiliaryFields: [],
                     backFields: (() => {
@@ -646,23 +644,30 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             }))
         }, certs);
 
+        try {
+            const stripBuffer = await generatePremiumBanner(campaign.banner_url);
+            if (stripBuffer) {
+                pass.addBuffer('strip.png', stripBuffer);
+                pass.addBuffer('strip@2x.png', stripBuffer);
+            }
+        } catch (e) {
+            console.error("Premium banner generation failed", e);
+        }
+        
         // Geofencing (si hay sucursales)
         /* Omitido por compatibilidad v3, se debe meter directo en pass.json si se requiere */
 
         // Certificados ya cargados en constructor
 
         // Generar strip.png usando Puppeteer si es tipo stamps
-        if (campaign.type === 'stamps') {
-            try {
-                const totalStamps = campaign.rules_config?.stamps_total || 5;
-                const earnedStamps = stamps;
-                const cPrimary = campaign.color_primary || '#8b5cf6';
-                const stripBuffer = await generateStampsStrip(totalStamps, earnedStamps, cPrimary, campaign.banner_url);
+        try {
+            const stripBuffer = await generatePremiumBanner(campaign.banner_url);
+            if (stripBuffer) {
                 pass.addBuffer('strip.png', stripBuffer);
                 pass.addBuffer('strip@2x.png', stripBuffer);
-            } catch (e) {
-                console.error("Puppeteer strip generation failed", e);
             }
+        } catch (e) {
+            console.error("Premium banner generation failed", e);
         }
         
         // Intentar agregar iconos o logos customizados
@@ -753,7 +758,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fidelio-41j9.onrender.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16), // A token must be at least 16 chars
-                serialNumber: `${customer.id}|${Date.now()}`,
+                serialNumber: `${customer.id}|v2_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 organizationName: merchant.business_name || "Mi Negocio",
                 description: "Tarjeta de Lealtad",
@@ -793,6 +798,16 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
             }))
         }, certs);
 
+        try {
+            const stripBuffer = await generatePremiumBanner(campaign.banner_url);
+            if (stripBuffer) {
+                pass.addBuffer('strip.png', stripBuffer);
+                pass.addBuffer('strip@2x.png', stripBuffer);
+            }
+        } catch (e) {
+            console.error("Premium banner generation failed", e);
+        }
+        
         // Geofencing (si hay sucursales)
         if (branches && branches.length > 0) {
             /* omitted locations for v3 compat */
