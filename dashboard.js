@@ -3355,13 +3355,15 @@ function updatePassRender() {
                         if (typeof window.saveDesignToSupabase === 'function') {
                             await window.saveDesignToSupabase();
                         }
-                        const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
-                        if (builderTabBtn) {
-                            setTimeout(() => {
-                                builderTabBtn.click();
-                                showToast('Reglas guardadas. Ahora diseña tu tarjeta.', 'info');
-                            }, 500);
-                        }
+                        setTimeout(() => {
+                            if (typeof window.goToBuilder === 'function') {
+                                window.goToBuilder();
+                            } else {
+                                const bTab = document.querySelector('.nav-tab[data-tab="tab-builder"]');
+                                if (bTab) bTab.click();
+                            }
+                            showToast('Reglas guardadas. Ahora diseña tu tarjeta.', 'info');
+                        }, 500);
                     }
                 } catch (err) {
                     console.error("Error saving config:", err);
