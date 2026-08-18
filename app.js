@@ -600,7 +600,7 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
             "pass.json": Buffer.from(JSON.stringify({
                 formatVersion: 1,
                 passTypeIdentifier: passTypeIdentifier,
-                serialNumber: `${customerId}|${campaignId}|v4_${Date.now()}`,
+                serialNumber: `${customerId}|${campaignId}|v5_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fideliorewards.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16),
@@ -621,9 +621,10 @@ app.get('/api/wallet/apple/:customerId/:campaignId', apiLimiter, async (req, res
                     ],
                     auxiliaryFields: [],
                     backFields: (() => {
-                        const arr = [
-                            { key: "portal", label: "MI TARJETA VIRTUAL", value: "Abrir mi tarjeta web", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}">Haz clic aquí para abrir</a>` }
-                        ];
+                        const arr = [];
+                        if (campaign.custom_cta_url) {
+                            arr.push({ key: "website", label: "SITIO WEB O REDES SOCIALES", value: "Visitar el perfil del negocio", attributedValue: `<a href="${campaign.custom_cta_url}">Haz clic aquí para abrir</a>` });
+                        }
                         if (campaign.rules_config?.show_appointment_btn) {
                             arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: "Agendar ahora", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customerId}&camp=${campaignId}&action=appointment">Haz clic aquí para agendar</a>` });
                         }
@@ -764,7 +765,7 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                 teamIdentifier: teamIdentifier,
                 webServiceURL: "https://fidelio-41j9.onrender.com/api/wallet",
                 authenticationToken: customerId.replace(/-/g, '').substring(0, 16), // A token must be at least 16 chars
-                serialNumber: `${customer.id}|v4_${Date.now()}`,
+                serialNumber: `${customer.id}|v5_${Date.now()}`,
                 teamIdentifier: teamIdentifier,
                 organizationName: merchant.business_name || "Mi Negocio",
                 description: "Tarjeta de Lealtad",
@@ -781,9 +782,10 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                         { key: "type", label: "TIPO", value: campaign.type === 'stamps' ? 'Sellos' : 'Cashback' }
                     ],
                     backFields: (() => {
-                        const arr = [
-                            { key: "portal", label: "MI TARJETA VIRTUAL", value: "Abrir mi tarjeta web", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}">Haz clic aquí para abrir</a>` }
-                        ];
+                        const arr = [];
+                        if (campaign.custom_cta_url) {
+                            arr.push({ key: "website", label: "SITIO WEB O REDES SOCIALES", value: "Visitar el perfil del negocio", attributedValue: `<a href="${campaign.custom_cta_url}">Haz clic aquí para abrir</a>` });
+                        }
                         if (campaign.rules_config?.show_appointment_btn) {
                             arr.push({ key: "appointment", label: "AGENDAR CITA O SERVICIO", value: "Agendar ahora", attributedValue: `<a href="https://fideliorewards.com/pass.html?c=${customer.id}&camp=${campaignId}&action=appointment">Haz clic aquí para agendar</a>` });
                         }

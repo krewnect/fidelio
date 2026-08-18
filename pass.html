@@ -474,14 +474,31 @@
                     throw new Error("Pase o campaña no encontrados");
                 }
 
-                // 3. Fetch Customer
-                const { data: customer, error: cErr } = await supabase
-                    .from('customers')
-                    .select('*')
-                    .eq('id', customerId)
-                    .single();
+                let customer = null;
+                
+                if (customerId === 'DEMO') {
+                    // Mock data for demo passes
+                    customer = {
+                        id: 'DEMO',
+                        full_name: 'Invitado Demo',
+                        name: 'Invitado',
+                        vip_tier: 'DEMO',
+                        balance_cashback: 0,
+                        stamps_count: 3,
+                        visits: 1,
+                        merchant_id: 'DEMO'
+                    };
+                } else {
+                    // 3. Fetch Customer
+                    const { data: realCustomer, error: cErr } = await supabase
+                        .from('customers')
+                        .select('*')
+                        .eq('id', customerId)
+                        .single();
 
-                if (cErr || !customer) throw new Error("Cliente no encontrado");
+                    if (cErr || !realCustomer) throw new Error("Cliente no encontrado");
+                    customer = realCustomer;
+                }
 
                 // 4. Fetch Campaign
                 const { data: campaign, error: campErr } = await supabase
@@ -493,11 +510,17 @@
                 if (campErr || !campaign) throw new Error("Campaña no encontrada");
 
                 // 5. Fetch Merchant for fallback/business_type
-                const { data: merchant, error: mErr } = await supabase
-                    .from('merchants')
-                    .select('business_name, business_type')
-                    .eq('id', customer.merchant_id)
-                    .single();
+                let merchant = null;
+                if (customer.merchant_id === 'DEMO') {
+                    merchant = { business_name: 'Mi Negocio (Demo)', business_type: 'professional' };
+                } else {
+                    const { data: realMerchant, error: mErr } = await supabase
+                        .from('merchants')
+                        .select('business_name, business_type')
+                        .eq('id', customer.merchant_id)
+                        .single();
+                    merchant = realMerchant;
+                }
 
                 // 6. Populate UI based on Campaign
                 document.title = `Tarjeta Digital - ${campaign.name || 'Campaña'}`;
