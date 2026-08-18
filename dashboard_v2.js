@@ -191,6 +191,15 @@ window.applyQuickTemplate = function(type) {
         const catSelect = document.getElementById('business-category-select');
         if(catSelect) catSelect.value = type === 'custom' ? 'general' : (type === 'cafeteria' ? 'cafe' : type);
         
+        const uniReward = document.getElementById('unified-reward');
+        if(uniReward) uniReward.value = state.stampsReward;
+        
+        const uniDesc = document.getElementById('unified-desc');
+        if(uniDesc) uniDesc.value = state.dynamicDesc;
+        
+        const restName = document.getElementById('rest-name');
+        if(restName) restName.value = state.restaurantName;
+        
         // Trigger update functions
         if(typeof updatePassRender === 'function') updatePassRender();
         if(typeof saveDesignToSupabase === 'function') saveDesignToSupabase();
@@ -203,14 +212,8 @@ window.applyQuickTemplate = function(type) {
         if (typeof showToast === 'function') showToast("¡Magia lista! Tu campaña ha sido pre-configurada.", "success");
         
         // Redirigir al constructor visual para que la vean y hagan ajustes mínimos
-        const isPro = (window.merchantData && window.merchantData.business_type === 'professional');
-        if (isPro) {
-            const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
-            if(builderTabBtn) builderTabBtn.click();
-        } else {
-            const loyaltyTabBtn = document.querySelector('.nav-tab[data-tab="tab-loyalty"]');
-            if(loyaltyTabBtn) loyaltyTabBtn.click();
-        }
+        const builderTabBtn = document.querySelector('.nav-tab[data-tab="tab-builder"]');
+        if(builderTabBtn) builderTabBtn.click();
 
     }, 800); // Simulamos "creación con inteligencia"
 };
@@ -1116,6 +1119,19 @@ let saveTimeout = null;
     }
 
 
+
+    
+window.updateUnifiedReward = function(val) {
+    state.stampsReward = val;
+    if (typeof updatePassRender === 'function') updatePassRender();
+    scheduleAutoSave();
+};
+
+window.updateUnifiedDesc = function(val) {
+    state.dynamicDesc = val;
+    if (typeof updatePassRender === 'function') updatePassRender();
+    scheduleAutoSave();
+};
 
     function scheduleAutoSave() {
         if (saveTimeout) clearTimeout(saveTimeout);
