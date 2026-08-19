@@ -265,6 +265,14 @@ window.selectCampaign = async function(id, autoInit = false) {
         if (!camp) return;
 
         state.currentCampaignId = camp.id;
+        
+        // Force stamps for professionals
+        if (window.merchantData && window.merchantData.business_type === 'professional') {
+            const pType = document.getElementById('program-type-select');
+            if (pType) pType.value = 'stamps';
+            state.activeMode = 'stamps';
+        }
+        
         state.restaurantName = camp.name || "Campaña";
         state.dynamicDesc = camp.description || "";
         state.colorPrimary = camp.color_primary || "#000";
