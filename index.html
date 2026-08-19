@@ -462,7 +462,7 @@
 
                 <div id="stripe-active-ui" class="settings-card" style="background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid var(--surface-light); text-align: center; position:relative;">
                     
-                    <div style="position:absolute; top:20px; right:20px; background:rgba(16,185,129,0.1); color:#10b981; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700;"><i class="fa-solid fa-check-circle"></i> Cuenta Pro Activa</div>
+                    <div style="position:absolute; top:20px; right:20px; background:rgba(16,185,129,0.1); color:var(--text-muted); padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700;"><i class="fa-solid fa-check-circle"></i> Cuenta Pro Activa</div>
 
                     <div style="font-size: 48px; color: #6366f1; margin-bottom: 16px;">
                         <i class="fa-brands fa-stripe"></i>
@@ -895,7 +895,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="premium-label"><i class="fa-solid fa-credit-card" style="color:#10b981;"></i> Mostrar botón de 'Pagar Cita'</label>
+                                    <label class="premium-label"><i class="fa-solid fa-credit-card" style="color:var(--text-muted);"></i> Mostrar botón de 'Pagar Cita'</label>
                                     <select id="builder-btn-payment" class="premium-input">
                                         <option value="no">No, ocultar botón</option>
                                         <option value="yes">Sí, habilitar botón en la tarjeta</option>
@@ -1040,7 +1040,7 @@
                                                     <i class="fa-solid fa-calendar-check" style="color:var(--pass-primary, #8b5cf6);"></i> <span style="font-size:12px; font-weight: 600;">Agendar Cita</span>
                                                 </div>
                                                 <div id="render-wallet-link-payment" style="background:#f9fafb; border: 1px solid #e5e7eb; padding:10px; border-radius:8px; display:none; align-items:center; gap:10px; color: #111827;">
-                                                    <i class="fa-solid fa-credit-card" style="color:#10b981;"></i> <span style="font-size:12px; font-weight: 600;">Pagar Cita</span>
+                                                    <i class="fa-solid fa-credit-card" style="color:var(--text-muted);"></i> <span style="font-size:12px; font-weight: 600;">Pagar Cita</span>
                                                 </div>
                                             </div>
 
@@ -1180,7 +1180,7 @@
                                 </div>
                                 
                                 <div id="schedule-summary-container" style="background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:24px; display:none;">
-                                    <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#000000;"><i class="fa-solid fa-calendar-check" style="color:#10b981; margin-right:8px;"></i> Horario Configurado</h3>
+                                    <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#000000;"><i class="fa-solid fa-calendar-check" style="color:var(--text-muted); margin-right:8px;"></i> Horario Configurado</h3>
                                     <div id="schedule-summary-content" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px;">
                                         <!-- JS will populate -->
                                     </div>
@@ -3693,7 +3693,7 @@
                     </div>
                     <div style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid #e5e7eb; display:flex; flex-direction:column; gap:4px;">
                         <span style="color:var(--text-muted); font-size:12px; font-weight:700; text-transform:uppercase;">Monedero (Cash)</span>
-                        <span id="cp-balance" style="font-size:18px; font-weight:800; color:#10b981;">$0.00 MXN</span>
+                        <span id="cp-balance" style="font-size:18px; font-weight:800; color:var(--text-muted);">$0.00 MXN</span>
                     </div>
                     <div style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid #e5e7eb; display:flex; flex-direction:column; gap:4px;">
                         <span style="color:var(--text-muted); font-size:12px; font-weight:700; text-transform:uppercase;">Total Gastado (LTV)</span>
@@ -4009,7 +4009,7 @@
     <!-- MODAL DE FACTURACIÓN -->
     <div id="modal-factura" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); z-index:9999; align-items:center; justify-content:center; font-family:var(--font-main);">
         <div style="background:white; width:500px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
-            <div style="width:50px; height:50px; border-radius:50%; background:rgba(52, 211, 153, 0.1); display:flex; align-items:center; justify-content:center; color:#10b981; font-size:20px; margin-bottom:20px;">
+            <div style="width:50px; height:50px; border-radius:50%; background:rgba(52, 211, 153, 0.1); display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:20px; margin-bottom:20px;">
                 <i class="fa-solid fa-file-invoice"></i>
             </div>
             <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Solicitar Factura</h2>
@@ -4191,13 +4191,13 @@
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:32px;">
                     <div style="background:var(--bg-main); padding:20px; border-radius:16px; border:1px solid var(--border-glass);">
                         <div style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:8px;"><i class="fa-solid fa-qrcode" style="margin-right:6px;"></i> ESCANEOS TOTALES</div>
-                        <div id="hub-stat-scans" style="font-size:32px; font-weight:800; color:var(--text-main); letter-spacing:-1px;">1,204</div>
-                        <div style="font-size:12px; color:#10b981; font-weight:700; margin-top:4px;"><i class="fa-solid fa-arrow-trend-up"></i> +12% esta semana</div>
+                        <div id="hub-stat-scans" style="font-size:32px; font-weight:800; color:var(--text-main); letter-spacing:-1px;">0</div>
+                        <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-top:4px;"><i class="fa-solid fa-circle-info"></i> Esperando actividad</div>
                     </div>
                     <div style="background:var(--bg-main); padding:20px; border-radius:16px; border:1px solid var(--border-glass);">
                         <div style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:8px;"><i class="fa-solid fa-gift" style="margin-right:6px;"></i> PREMIOS CANJEADOS</div>
-                        <div id="hub-stat-rewards" style="font-size:32px; font-weight:800; color:var(--accent-violet); letter-spacing:-1px;">84</div>
-                        <div style="font-size:12px; color:#10b981; font-weight:700; margin-top:4px;"><i class="fa-solid fa-arrow-trend-up"></i> +5% esta semana</div>
+                        <div id="hub-stat-rewards" style="font-size:32px; font-weight:800; color:var(--accent-violet); letter-spacing:-1px;">0</div>
+                        <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-top:4px;"><i class="fa-solid fa-circle-info"></i> Esperando actividad</div>
                     </div>
                 </div>
                 

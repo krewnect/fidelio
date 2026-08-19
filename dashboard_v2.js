@@ -6397,9 +6397,9 @@ window.openCampaignHub = async function(id) {
         document.getElementById('hub-camp-type').innerHTML = `<i class="fa-solid fa-qrcode" style="margin-right:6px;"></i> ${camp.type === 'stamps' ? 'Tarjeta de Sellos' : 'Wallet Digital'}`;
         document.getElementById('hub-camp-icon').innerHTML = camp.logo_url ? `<img src="${camp.logo_url}" style="width:100%; height:100%; border-radius:16px; object-fit:cover;">` : `<i class="fa-solid ${camp.stamp_icon_url || 'fa-star'}"></i>`;
         
-        // Mock random stats based on name length for realism
-        const scans = 1204 + (camp.name ? camp.name.length * 14 : 0);
-        const rewards = Math.floor(scans / 10);
+        // Real stats (defaults to 0 for new campaigns)
+        const scans = camp.total_scans || 0;
+        const rewards = camp.total_rewards || 0;
         document.getElementById('hub-stat-scans').textContent = scans.toLocaleString();
         document.getElementById('hub-stat-rewards').textContent = rewards.toLocaleString();
 
