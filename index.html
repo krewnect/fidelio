@@ -61,28 +61,34 @@
         .app-shell { display: flex; width: 100vw; height: 100vh; position: relative; z-index: 1; }
 
         
-        /* ANIMATED FIDELIO LOGO */
-        .fidelio-svg-logo { height: 40px; width: auto; overflow: visible; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        /* ANIMATED FIDELIO LOGO (REAL) */
+        .fidelio-svg-logo { height: 44px; width: auto; overflow: visible; display: flex; align-items: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
-        .fidelio-face { width: 36px; height: 36px; position: relative; }
+        .fidelio-face { width: 44px; height: 44px; position: relative; margin-right: 2px; }
         
-        /* Ojo Izquierdo: Empieza cerrado (arco), se queda cerrado porque es un guiño ;) */
-        .f-eye-left { stroke-dasharray: 100; stroke-dashoffset: 0; animation: blink 4s infinite; }
+        /* Ojo Derecho (Guiño): Siempre cerrado, idéntico al logo original */
+        .f-eye-right { stroke-dasharray: 100; stroke-dashoffset: 0; }
         
-        /* Ojo Derecho: Empieza cerrado (arco abajo), luego se abre a un círculo (guiño) y se queda así */
-        .f-eye-right-closed { opacity: 1; animation: hideEyeClosed 2s forwards; animation-delay: 1.5s; }
-        .f-eye-right-open { opacity: 0; transform-origin: 65px 35px; transform: scale(0); animation: showEyeOpen 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 1.5s; }
+        /* Ojo Izquierdo: Empieza cerrado (curva), luego se abre a su forma original (óvalo) */
+        .f-eye-left-closed { opacity: 1; animation: hideEyeLeft 2s forwards; animation-delay: 1.2s; }
+        .f-eye-left-open { opacity: 0; transform-origin: 26px 36px; transform: scaleY(0); animation: openEyeLeft 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 1.2s; }
         
-        /* Sonrisa: Empieza chiquita y se hace grande */
-        .f-smile { stroke-dasharray: 100; stroke-dashoffset: 100; animation: drawSmile 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.5s; }
+        /* Sonrisa: Se dibuja desde el centro o de lado a lado */
+        .f-smile-real { stroke-dasharray: 150; stroke-dashoffset: 150; animation: drawSmileReal 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; animation-delay: 0.2s; }
         
-        @keyframes hideEyeClosed { 0% { opacity: 1; } 100% { opacity: 0; display: none; } }
-        @keyframes showEyeOpen { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1.2); } }
-        @keyframes drawSmile { 0% { stroke-dashoffset: 100; } 100% { stroke-dashoffset: 0; } }
-        @keyframes blink { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(0.1); } }
+        @keyframes hideEyeLeft { 0% { opacity: 1; } 100% { opacity: 0; display: none; } }
+        @keyframes openEyeLeft { 0% { opacity: 0; transform: scaleY(0); } 100% { opacity: 1; transform: scaleY(1); } }
+        @keyframes drawSmileReal { 0% { stroke-dashoffset: 150; } 100% { stroke-dashoffset: 0; } }
+        
+        /* Efecto de "parpadeo" ocasional para darle vida despues de abrirse */
+        .f-eye-left-open {
+            animation: openEyeLeft 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, blinkReal 5s infinite;
+            animation-delay: 1.2s, 4s;
+        }
+        @keyframes blinkReal { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(0.1); } }
         
         /* Logo Text */
-        .fidelio-text { font-size: 26px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(135deg, #4c1d95 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: slideIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity:0; transform: translateX(-10px); animation-delay: 0.8s; }
+        .fidelio-text { font-size: 32px; font-weight: 800; letter-spacing: -1.5px; font-weight: 900; letter-spacing: -1px; background: #3605a3; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: slideIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity:0; transform: translateX(-10px); animation-delay: 0.8s; }
         @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
 
         
@@ -373,17 +379,20 @@
             <div class="sidebar-brand" style="cursor: pointer;" onclick="location.reload()">
                 <div class="fidelio-svg-logo">
                     <svg class="fidelio-face" viewBox="0 0 100 100">
-                        <!-- Left Eye (Always closed) -->
-                        <path class="f-eye-left" d="M 20 45 Q 35 30 50 45" fill="none" stroke="#8b5cf6" stroke-width="8" stroke-linecap="round"/>
+                        <!-- Left Eye Container -->
+                        <g class="f-left-eye-container">
+                            <!-- Closed state (an arch like the wink) -->
+                            <path class="f-eye-left-closed" d="M 17 40 Q 25 28 33 40" fill="none" stroke="#3605a3" stroke-width="11" stroke-linecap="round"/>
+                            <!-- Open state (The real oval from the logo) -->
+                            <line class="f-eye-left-open" x1="25" y1="32" x2="25" y2="42" stroke="#3605a3" stroke-width="13" stroke-linecap="round"/>
+                        </g>
                         
-                        <!-- Right Eye -->
-                        <!-- Closed version (disappears) -->
-                        <path class="f-eye-right-closed" d="M 50 45 Q 65 30 80 45" fill="none" stroke="#8b5cf6" stroke-width="8" stroke-linecap="round"/>
-                        <!-- Open version (appears to wink) -->
-                        <circle class="f-eye-right-open" cx="65" cy="40" r="8" fill="#8b5cf6"/>
+                        <!-- Right Eye (The real wink) -->
+                        <path class="f-eye-right" d="M 52 40 Q 62 26 71 40" fill="none" stroke="#3605a3" stroke-width="11" stroke-linecap="round"/>
                         
-                        <!-- Smile -->
-                        <path class="f-smile" d="M 20 65 Q 50 95 80 65" fill="none" stroke="#8b5cf6" stroke-width="8" stroke-linecap="round"/>
+                        <!-- The real Smile -->
+                        <!-- Starts under left eye, ends under right eye -->
+                        <path class="f-smile-real" d="M 15 57 C 15 88, 70 88, 70 57" fill="none" stroke="#3605a3" stroke-width="11" stroke-linecap="round"/>
                     </svg>
                     <div class="fidelio-text">Fidelio</div>
                 </div>
