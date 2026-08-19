@@ -36,15 +36,15 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
         });
         if (res.ok) {
             console.log("Campaña guardada");
-            if (typeof showToast === 'function') showToast("Campaña guardada ☁️", "success");
+            if (typeof showToast === 'function') window.showToast("Campaña guardada ☁️", "success");
             await window.loadCampaigns();
         } else {
             console.error("Save Error:", await res.text());
-            if (typeof showToast === 'function') showToast("Error al guardar campaña", "error");
+            if (typeof showToast === 'function') window.showToast("Error al guardar campaña", "error");
         }
     } catch (ex) {
         console.error('Error de red saving campaign:', ex);
-        if (typeof showToast === 'function') showToast('Error de conexión al guardar campaña', 'error');
+        if (typeof showToast === 'function') window.showToast('Error de conexión al guardar campaña', 'error');
     }
 }
 
@@ -272,7 +272,7 @@ window.applyQuickTemplate = function(type) {
         if(modal) modal.style.display = 'none';
 
         // Lanzar celebración
-        if (typeof showToast === 'function') showToast("¡Magia lista! Tu campaña ha sido pre-configurada.", "success");
+        if (typeof showToast === 'function') window.showToast("¡Magia lista! Tu campaña ha sido pre-configurada.", "success");
         
         // Redirigir al constructor visual para que la vean y hagan ajustes mínimos
     // FUSION ROUTING
@@ -295,7 +295,7 @@ window.createNewSpecialCard = function() {
     state.colorPrimary = "#10b981";
     state.colorAccent = "#8b5cf6";
     state.activeMode = "membership"; // default
-    if (typeof showToast === 'function') showToast("Nueva tarjeta creada, edita y guarda.", "info");
+    if (typeof showToast === 'function') window.showToast("Nueva tarjeta creada, edita y guarda.", "info");
     
     const specialTabBtn = document.querySelector('.nav-tab[data-tab="tab-special-cards"]');
     if(specialTabBtn) specialTabBtn.click();
@@ -311,10 +311,10 @@ window.deleteCampaign = async function(id) {
             headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
         });
         if (!res.ok) throw new Error('Error al eliminar');
-        showToast('Campaña eliminada', 'success');
+        window.showToast('Campaña eliminada', 'success');
         window.loadCampaigns();
     } catch (e) {
-        showToast(e.message, 'error');
+        window.showToast(e.message, 'error');
     }
 };
 
@@ -393,7 +393,7 @@ window.selectCampaign = async function(id, autoInit = false) {
         }
         
         updatePassRender();
-        if (typeof showToast === 'function') showToast("Campaña cargada en el editor", "success");
+        if (typeof showToast === 'function') window.showToast("Campaña cargada en el editor", "success");
     } catch(e) {
         console.error("Error selecting campaign", e);
     }
@@ -407,12 +407,12 @@ window.saveStripeKeys = async function() {
     const campId = campSelect ? campSelect.value : '';
     
     if (!campId) {
-        if (typeof showToast === 'function') showToast("Debes seleccionar una tarjeta a monetizar", "warning");
+        if (typeof showToast === 'function') window.showToast("Debes seleccionar una tarjeta a monetizar", "warning");
         return;
     }
     
     if (!paymentLink || !paymentLink.includes('stripe.com')) {
-        if (typeof showToast === 'function') showToast("Ingresa un Payment Link válido de Stripe", "warning");
+        if (typeof showToast === 'function') window.showToast("Ingresa un Payment Link válido de Stripe", "warning");
         return;
     }
     
@@ -429,11 +429,11 @@ window.saveStripeKeys = async function() {
             
         if (error) throw error;
         
-        if (typeof showToast === 'function') showToast("Checkout de Stripe vinculado exitosamente", "success");
+        if (typeof showToast === 'function') window.showToast("Checkout de Stripe vinculado exitosamente", "success");
         linkInput.value = ''; // clear
     } catch(err) {
         console.error("Error saving Stripe Link:", err);
-        if (typeof showToast === 'function') showToast("Error al guardar enlace: " + err.message, "error");
+        if (typeof showToast === 'function') window.showToast("Error al guardar enlace: " + err.message, "error");
     } finally {
         if(btn) btn.innerHTML = originalText;
     }
@@ -510,7 +510,7 @@ let saveTimeout = null;
         await window.loadCampaigns();
     } catch (err) {
         console.error("Dashboard DB init error:", err);
-        console.error('DB Init Error:', err.stack); if(typeof showToast==='function') showToast('Error inicializando datos', 'error');
+        console.error('DB Init Error:', err.stack); if(typeof showToast==='function') window.showToast('Error inicializando datos', 'error');
     }
 
     // PRESETS DICTIONARY FOR MULTI-INDUSTRY GIROS
@@ -808,7 +808,7 @@ let saveTimeout = null;
                 
             if (insertError) {
                 console.error("No se pudo auto-crear el merchant:", insertError);
-                console.error('CRASH FATAL: No tenant profile.'); if(typeof showToast==='function') showToast('Error crítico: Cuenta sin perfil de negocio. Contacta a soporte.', 'error');
+                console.error('CRASH FATAL: No tenant profile.'); if(typeof showToast==='function') window.showToast('Error crítico: Cuenta sin perfil de negocio. Contacta a soporte.', 'error');
                 return false;
             }
             merchantData = newMerchant;
@@ -1235,7 +1235,7 @@ window.updateUnifiedDesc = function(val) {
     }
 
     // --- TOAST NOTIFICATIONS ---
-    function showToast(message, type = "info") {
+    window.showToast = function(message, type = "info") {
         let container = document.getElementById('toast-container');
         if (!container) {
             container = document.createElement('div');
@@ -1306,7 +1306,7 @@ window.updateUnifiedDesc = function(val) {
 
         updatePassRender();
 
-        showToast(`Plantilla cargada en Fidelio: ${preset.name} (${preset.label}).`, "success");
+        window.showToast(`Plantilla cargada en Fidelio: ${preset.name} (${preset.label}).`, "success");
     };
 
     // --- CATEGORY CHANGE HANDLER (DYNAMIC GIRO ADAPTATION) ---
@@ -1325,7 +1325,7 @@ window.updateUnifiedDesc = function(val) {
             sampleClient.tier = tierConfig ? tierConfig.name : (tier === 'oro' ? 'Oro VIP' : tier === 'plata' ? 'Plata VIP' : 'Bronce');
             updatePassRender();
 
-            showToast(`Vista previa del pase actualizada a: ${sampleClient.tier}`, "info");
+            window.showToast(`Vista previa del pase actualizada a: ${sampleClient.tier}`, "info");
         }
     };
 
@@ -1409,11 +1409,11 @@ window.updateUnifiedDesc = function(val) {
             const desc = document.getElementById('ticket-desc').value;
 
             if (!subject || !desc) {
-                showToast("Por favor llena el asunto y la descripción de tu correo.", "warning");
+                window.showToast("Por favor llena el asunto y la descripción de tu correo.", "warning");
                 return;
             }
 
-            showToast("Ticket enviado a soporte@fidelio.app. Te responderemos por correo a la brevedad.", "success");
+            window.showToast("Ticket enviado a soporte@fidelio.app. Te responderemos por correo a la brevedad.", "success");
             document.getElementById('ticket-subject').value = '';
             document.getElementById('ticket-desc').value = '';
         });
@@ -1433,7 +1433,7 @@ window.updateUnifiedDesc = function(val) {
             applyModeToParams(mode);
             updatePassRender();
 
-            showToast(`Formato de Lealtad actualizado: ${tile.querySelector('strong').textContent}`, "info");
+            window.showToast(`Formato de Lealtad actualizado: ${tile.querySelector('strong').textContent}`, "info");
         });
     });
 
@@ -1501,7 +1501,7 @@ window.updateUnifiedDesc = function(val) {
     };
 
     window.uploadBranchesCSV = async function(event) {
-        if (!window.merchantSession) return showToast('Inicia sesión primero', 'error');
+        if (!window.merchantSession) return window.showToast('Inicia sesión primero', 'error');
         const file = event.target.files[0];
         if (!file) return;
 
@@ -1510,7 +1510,7 @@ window.updateUnifiedDesc = function(val) {
             const text = e.target.result;
             const lines = text.split('\n').filter(line => line.trim() !== '');
             if (lines.length <= 1) {
-                showToast('El archivo está vacío o solo tiene cabeceras.', 'warning');
+                window.showToast('El archivo está vacío o solo tiene cabeceras.', 'warning');
                 return;
             }
 
@@ -1535,16 +1535,16 @@ window.updateUnifiedDesc = function(val) {
                 }
             }
 
-            if (newBranches.length === 0) return showToast('No se encontraron sucursales válidas.', 'warning');
+            if (newBranches.length === 0) return window.showToast('No se encontraron sucursales válidas.', 'warning');
 
-            showToast(`Importando ${newBranches.length} sucursales...`, 'success');
+            window.showToast(`Importando ${newBranches.length} sucursales...`, 'success');
             
             const { error } = await window.supabaseClient.from('merchant_branches').insert(newBranches);
             
             if (error) {
-                showToast('Error al importar: ' + error.message, 'error');
+                window.showToast('Error al importar: ' + error.message, 'error');
             } else {
-                showToast('¡Sucursales importadas correctamente!', 'success');
+                window.showToast('¡Sucursales importadas correctamente!', 'success');
                 // Refresh branches list
                 const { data } = await window.supabaseClient.from('merchant_branches').select('*').eq('merchant_id', window.merchantSession.user.id);
                 if (data) state.branches = data;
@@ -1585,7 +1585,7 @@ window.updateUnifiedDesc = function(val) {
                             ${app.status ? app.status.toUpperCase() : 'PENDIENTE'}
                         </span>
                         <br>
-                        <button class="btn-outline" style="padding: 6px 12px; font-size: 12px; margin-right:4px;" onclick="if(typeof showToast==='function') showToast('La funcionalidad de contacto directo llegará pronto', 'info');">Contactar</button>
+                        <button class="btn-outline" style="padding: 6px 12px; font-size: 12px; margin-right:4px;" onclick="if(typeof showToast==='function') window.showToast('La funcionalidad de contacto directo llegará pronto', 'info');">Contactar</button>
                     </div>
                 </div>
             `;
@@ -1705,7 +1705,7 @@ window.updateUnifiedDesc = function(val) {
             const addModal = document.getElementById('modal-add-branch');
             
             if (!dynName.value || !dynLat.value || !dynLng.value) {
-                showToast("El nombre y coordenadas son obligatorios", "warning");
+                window.showToast("El nombre y coordenadas son obligatorios", "warning");
                 return;
             }
             
@@ -1723,24 +1723,24 @@ window.updateUnifiedDesc = function(val) {
             if (!state.branches) state.branches = [];
             state.branches.push(newBranch);
             try {
-                if (!state.tenantId) { if(typeof showToast==='function') showToast('Error interno: No se pudo identificar tu cuenta', 'error'); } else if (window.supabaseClient && state.tenantId) {
+                if (!state.tenantId) { if(typeof showToast==='function') window.showToast('Error interno: No se pudo identificar tu cuenta', 'error'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
                         .eq('id', state.tenantId);
                     if (!error) {
-                        console.log("Sucursal guardada en la base de datos."); showToast("Sucursal guardada exitosamente", "success");
+                        console.log("Sucursal guardada en la base de datos."); window.showToast("Sucursal guardada exitosamente", "success");
                     } else {
-                        if(typeof showToast==='function') showToast('Error de conexión: ' + error.message, 'error');
+                        if(typeof showToast==='function') window.showToast('Error de conexión: ' + error.message, 'error');
                     }
                 }
             } catch (ex) {
-                if(typeof showToast==='function') showToast('Error procesando solicitud: ' + ex.message, 'error');
+                if(typeof showToast==='function') window.showToast('Error procesando solicitud: ' + ex.message, 'error');
             }
             
             if (addModal) addModal.style.display = 'none';
             renderBranches();
-            showToast(`Sucursal "${newBranch.name}" agregada con éxito a la lista local. Recuerda darle a Guardar y Actualizar Tarjetas al final.`, "success");
+            window.showToast(`Sucursal "${newBranch.name}" agregada con éxito a la lista local. Recuerda darle a Guardar y Actualizar Tarjetas al final.`, "success");
         }
     });
 
@@ -1750,21 +1750,21 @@ window.updateUnifiedDesc = function(val) {
             
             renderBranches();
             try {
-                if (!state.tenantId) { if(typeof showToast==='function') showToast('Error interno: No se pudo identificar tu cuenta', 'error'); } else if (window.supabaseClient && state.tenantId) {
+                if (!state.tenantId) { if(typeof showToast==='function') window.showToast('Error interno: No se pudo identificar tu cuenta', 'error'); } else if (window.supabaseClient && state.tenantId) {
                     const { error } = await window.supabaseClient
                         .from('merchants')
                         .update({ branches: state.branches })
                         .eq('id', state.tenantId);
                     if (!error) {
-                        console.log("Sucursal guardada en la base de datos."); showToast("Sucursal guardada exitosamente", "success");
+                        console.log("Sucursal guardada en la base de datos."); window.showToast("Sucursal guardada exitosamente", "success");
                     } else {
-                        if(typeof showToast==='function') showToast('Error de conexión: ' + error.message, 'error');
+                        if(typeof showToast==='function') window.showToast('Error de conexión: ' + error.message, 'error');
                     }
                 }
             } catch (ex) {
-                if(typeof showToast==='function') showToast('Error procesando solicitud: ' + ex.message, 'error');
+                if(typeof showToast==='function') window.showToast('Error procesando solicitud: ' + ex.message, 'error');
             }
-            showToast("Sucursal eliminada. Los clientes ya no recibirán push en esta ubicación.", "info");
+            window.showToast("Sucursal eliminada. Los clientes ya no recibirán push en esta ubicación.", "info");
         }
     };// --- CUSTOMER ONBOARDING FORM MODAL ---
     const modalOnboarding = document.getElementById('modal-onboarding');
@@ -1791,7 +1791,7 @@ window.updateUnifiedDesc = function(val) {
             const custEmail = document.getElementById('cust-email').value;
 
             if (!custName || !custPhone) {
-                if(typeof showToast==='function') showToast('Nombre y teléfono son obligatorios', 'warning');
+                if(typeof showToast==='function') window.showToast('Nombre y teléfono son obligatorios', 'warning');
                 return;
             }
 
@@ -1828,9 +1828,9 @@ window.updateUnifiedDesc = function(val) {
 renderCRMTable();
                 updateDashboardMetrics(); // update stats
                 
-                showToast(`¡Cliente registrado! Código: ${data.id}`, "success");
+                window.showToast(`¡Cliente registrado! Código: ${data.id}`, "success");
             } catch (err) {
-                if(typeof showToast==='function') showToast('Error registrando cliente: ' + err.message, 'error');
+                if(typeof showToast==='function') window.showToast('Error registrando cliente: ' + err.message, 'error');
             } finally {
                 btnSubmitRegister.textContent = 'Registrar Cliente';
                 btnSubmitRegister.disabled = false;
@@ -1876,7 +1876,7 @@ renderCRMTable();
                 window.open(data.saveUrl, '_blank');
 
             } catch (err) {
-                if(typeof showToast==='function') showToast('Error: ' + err.message, 'error');
+                if(typeof showToast==='function') window.showToast('Error: ' + err.message, 'error');
             } finally {
                 btnGw.innerHTML = originalText;
                 btnGw.disabled = false;
@@ -1917,7 +1917,7 @@ renderCRMTable();
                 window.URL.revokeObjectURL(url);
 
             } catch (err) {
-                if(typeof showToast==='function') showToast('Error: ' + err.message, 'error');
+                if(typeof showToast==='function') window.showToast('Error: ' + err.message, 'error');
             } finally {
                 btnAw.innerHTML = originalText;
                 btnAw.disabled = false;
@@ -2078,8 +2078,8 @@ function renderCRMTable() {
             }
 
             const phoneDigits = c.phone ? c.phone.replace(/\D/g, '') : '';
-            const waAction = phoneDigits ? `window.open('https://wa.me/${phoneDigits}', '_blank')` : `if(typeof showToast==='function') showToast('El cliente no tiene un teléfono registrado', 'warning')`;
-            const emailAction = c.email ? `window.open('mailto:${c.email}', '_self')` : `if(typeof showToast==='function') showToast('El cliente no tiene un correo registrado', 'warning')`;
+            const waAction = phoneDigits ? `window.open('https://wa.me/${phoneDigits}', '_blank')` : `if(typeof showToast==='function') window.showToast('El cliente no tiene un teléfono registrado', 'warning')`;
+            const emailAction = c.email ? `window.open('mailto:${c.email}', '_self')` : `if(typeof showToast==='function') window.showToast('El cliente no tiene un correo registrado', 'warning')`;
             
             const avgSpend = c.visits && c.visits > 0 ? (comp.spent / c.visits) : 0;
 
@@ -2124,7 +2124,7 @@ function renderCRMTable() {
                         <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#3b82f6; border-color:rgba(59, 130, 246, 0.2);" title="Enviar Correo Electrónico" onclick="${emailAction}">
                             <i class="fa-regular fa-envelope"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Notificación Push a Wallet" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Notificaciones Push','El envío de notificaciones directas al Apple Wallet/Google Wallet se habilitará cuando contrates un Add-on o subas de plan.','info');}else{if(typeof showToast==='function') showToast('El envío de notificaciones requiere un add-on adicional', 'info');}">
+                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Notificación Push a Wallet" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Notificaciones Push','El envío de notificaciones directas al Apple Wallet/Google Wallet se habilitará cuando contrates un Add-on o subas de plan.','info');}else{if(typeof showToast==='function') window.showToast('El envío de notificaciones requiere un add-on adicional', 'info');}">
                             <i class="fa-regular fa-bell"></i>
                         </button>
                         <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Ver Perfil Detallado" onclick="window.showCustomerProfile('${c.id}')">
@@ -2175,7 +2175,7 @@ function renderCRMTable() {
                 <td>${roleBadge}</td>
                 <td><span class="badge-status activo">Activo</span></td>
                 <td style="text-align:right;">
-                    <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="if(typeof showToast==='function') showToast('Función de revocación próxima a liberarse', 'info')">
+                    <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="if(typeof showToast==='function') window.showToast('Función de revocación próxima a liberarse', 'info')">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
@@ -2493,7 +2493,7 @@ function updatePassRender() {
         
         btnClosePush.addEventListener('click', () => {
             pushModal.style.display = 'none';
-            showToast("Diseño guardado y sincronizado con éxito", "success");
+            window.showToast("Diseño guardado y sincronizado con éxito", "success");
         });
         
         btnConfirmPush.addEventListener('click', async () => {
@@ -2553,7 +2553,7 @@ function updatePassRender() {
                     state.iconClass = evt.target.result;
                     if(btnRemoveStamp) btnRemoveStamp.style.display = 'inline-block';
                     updatePassRender();
-                    showToast("Sello personalizado cargado", "success");
+                    window.showToast("Sello personalizado cargado", "success");
                 };
                 reader.readAsDataURL(file);
             }
@@ -2567,7 +2567,7 @@ function updatePassRender() {
             if(stampFileInput) stampFileInput.value = '';
             btnRemoveStamp.style.display = 'none';
             updatePassRender();
-            showToast("Imagen del sello removida", "info");
+            window.showToast("Imagen del sello removida", "info");
         });
     }
 
@@ -2587,7 +2587,7 @@ function updatePassRender() {
                     btnRemoveLogo.style.display = 'inline-block';
                     updatePassRender();
 
-                    showToast("Logo cargado con éxito en la tarjeta digital.", "success");
+                    window.showToast("Logo cargado con éxito en la tarjeta digital.", "success");
                 };
                 reader.readAsDataURL(file);
             }
@@ -2602,7 +2602,7 @@ function updatePassRender() {
             btnRemoveLogo.style.display = 'none';
             updatePassRender();
 
-            showToast("Logo removido.", "info");
+            window.showToast("Logo removido.", "info");
         });
     }
 
@@ -2617,7 +2617,7 @@ function updatePassRender() {
                     btnRemoveBanner.style.display = 'inline-block';
                     updatePassRender();
 
-                    showToast("Imagen de portada de tarjeta aplicada.", "success");
+                    window.showToast("Imagen de portada de tarjeta aplicada.", "success");
                 };
                 reader.readAsDataURL(file);
             }
@@ -2632,7 +2632,7 @@ function updatePassRender() {
             btnRemoveBanner.style.display = 'none';
             updatePassRender();
 
-            showToast("Imagen de portada removida.", "info");
+            window.showToast("Imagen de portada removida.", "info");
         });
     }
 
@@ -2805,7 +2805,7 @@ function updatePassRender() {
     const btnExportCrm = document.getElementById('btn-export-crm');
     if (btnExportCrm) {
         btnExportCrm.addEventListener('click', () => {
-            showToast(`Exportando archivo CSV con ${state.customers.length} registros...`, "success");
+            window.showToast(`Exportando archivo CSV con ${state.customers.length} registros...`, "success");
         });
     }
 
@@ -2930,7 +2930,7 @@ function updatePassRender() {
         const roleSelect = document.getElementById('new-admin-role');
         
         const email = emailInput.value.trim().toLowerCase();
-        if(!email) return showToast('Ingresa un correo electrónico.', 'error');
+        if(!email) return window.showToast('Ingresa un correo electrónico.', 'error');
         
         const { error } = await window.supabaseClient.from('fidelio_admins').insert([{
             email: email,
@@ -2938,9 +2938,9 @@ function updatePassRender() {
         }]);
         
         if (error) {
-            showToast('Error al agregar: ' + error.message, 'error');
+            window.showToast('Error al agregar: ' + error.message, 'error');
         } else {
-            showToast('Miembro agregado correctamente', 'success');
+            window.showToast('Miembro agregado correctamente', 'success');
             emailInput.value = '';
             loadFidelioTeam();
         }
@@ -2950,8 +2950,8 @@ function updatePassRender() {
         if (window.fidelioAdminRole !== 'super_admin') return;
         if(!confirm('¿Estás seguro de revocar el acceso a este miembro del equipo?')) return;
         const { error } = await window.supabaseClient.from('fidelio_admins').delete().eq('id', id);
-        if(error) showToast('Error al revocar: ' + error.message, 'error');
-        else { showToast('Acceso revocado', 'success'); loadFidelioTeam(); }
+        if(error) window.showToast('Error al revocar: ' + error.message, 'error');
+        else { window.showToast('Acceso revocado', 'success'); loadFidelioTeam(); }
     };
 
 // 1. LEADS (PROSPECTOS)
@@ -3006,16 +3006,16 @@ function updatePassRender() {
     window.updateLeadStatus = async function(id, status) {
         if (!checkMasterAdmin()) return;
         const { error } = await window.supabaseClient.from('demo_requests').update({ status: status }).eq('id', id);
-        if(error) showToast('Error actualizando lead: ' + error.message, 'error');
-        else { showToast('Lead actualizado', 'success'); loadLeads(); }
+        if(error) window.showToast('Error actualizando lead: ' + error.message, 'error');
+        else { window.showToast('Lead actualizado', 'success'); loadLeads(); }
     };
 
     window.deleteLead = async function(id) {
         if (!checkMasterAdmin()) return;
         if(!confirm('¿Estás seguro de borrar este lead permanentemente?')) return;
         const { error } = await window.supabaseClient.from('demo_requests').delete().eq('id', id);
-        if(error) showToast('Error borrando lead: ' + error.message, 'error');
-        else { showToast('Lead borrado', 'success'); loadLeads(); }
+        if(error) window.showToast('Error borrando lead: ' + error.message, 'error');
+        else { window.showToast('Lead borrado', 'success'); loadLeads(); }
     };
 
     // 2. GLOBAL DATABASE
@@ -3191,16 +3191,16 @@ function updatePassRender() {
         if (!checkMasterAdmin()) return;
         const newStatus = currentStatus === 'paused' ? 'active' : 'paused';
         const { error } = await window.supabaseClient.from('merchants').update({ plan_status: newStatus }).eq('id', id);
-        if(error) showToast('Error: ' + error.message, 'error');
-        else { showToast('Estatus actualizado', 'success'); loadMerchantsControl(); }
+        if(error) window.showToast('Error: ' + error.message, 'error');
+        else { window.showToast('Estatus actualizado', 'success'); loadMerchantsControl(); }
     };
 
     window.grantFreeAccount = async function(id) {
         if (!checkMasterAdmin()) return;
         if(!confirm('¿Estás seguro de regalar una cuenta lifetime free a este restaurante?')) return;
         const { error } = await window.supabaseClient.from('merchants').update({ plan_status: 'lifetime_free' }).eq('id', id);
-        if(error) showToast('Error: ' + error.message, 'error');
-        else { showToast('Cuenta otorgada', 'success'); loadMerchantsControl(); }
+        if(error) window.showToast('Error: ' + error.message, 'error');
+        else { window.showToast('Cuenta otorgada', 'success'); loadMerchantsControl(); }
     };
 
     // 4. MASTER ADMIN (PROMOS)
@@ -3215,7 +3215,7 @@ function updatePassRender() {
         const customPriceInput = document.getElementById('promo-custom-price-input');
         
         const code = codeInput.value.trim().toUpperCase();
-        if(!code) return showToast('Escribe un código válido', 'error');
+        if(!code) return window.showToast('Escribe un código válido', 'error');
         
         const type = typeSelect.value;
         let discount_pct = 0;
@@ -3225,14 +3225,14 @@ function updatePassRender() {
 
         if (type === 'discount') {
             discount_pct = parseInt(discountInput.value) || 0;
-            if (discount_pct <= 0 || discount_pct > 100) return showToast('Descuento inválido', 'error');
+            if (discount_pct <= 0 || discount_pct > 100) return window.showToast('Descuento inválido', 'error');
             stripe_link = stripeLinkInput ? stripeLinkInput.value.trim() : null;
         } else if (type === 'free_branches') {
             free_branches_count = parseInt(freeBranchesInput.value) || 0;
-            if (free_branches_count <= 0) return showToast('Cantidad de sucursales inválida', 'error');
+            if (free_branches_count <= 0) return window.showToast('Cantidad de sucursales inválida', 'error');
         } else if (type === 'custom_branch_price') {
             custom_branch_price = parseFloat(customPriceInput.value);
-            if (isNaN(custom_branch_price) || custom_branch_price < 0) return showToast('Precio inválido', 'error');
+            if (isNaN(custom_branch_price) || custom_branch_price < 0) return window.showToast('Precio inválido', 'error');
         }
         
         const { error } = await window.supabaseClient.from('promo_codes').insert([{
@@ -3248,9 +3248,9 @@ function updatePassRender() {
         }]);
         
         if (error) {
-            showToast('Error al crear código: ' + error.message, 'error');
+            window.showToast('Error al crear código: ' + error.message, 'error');
         } else {
-            showToast('Código promocional activado', 'success');
+            window.showToast('Código promocional activado', 'success');
             codeInput.value = '';
             discountInput.value = '';
             freeBranchesInput.value = '';
@@ -3360,12 +3360,12 @@ function updatePassRender() {
     window.resolveTicket = async function(id) {
         if (!checkMasterAdmin()) return;
         const { error } = await window.supabaseClient.from('support_tickets').update({ status: 'resuelto' }).eq('id', id);
-        if(error) showToast('Error al resolver: ' + error.message, 'error');
-        else { showToast('Ticket resuelto', 'success'); loadInbox(); }
+        if(error) window.showToast('Error al resolver: ' + error.message, 'error');
+        else { window.showToast('Ticket resuelto', 'success'); loadInbox(); }
     };
 
     window.contactMerchant = function(merchantId) {
-        if(typeof showToast==='function') showToast('Correo automatizado llegará en la próxima versión', 'info');
+        if(typeof showToast==='function') window.showToast('Correo automatizado llegará en la próxima versión', 'info');
     };
 
     // // Initial Render Calls
@@ -3434,9 +3434,9 @@ function updatePassRender() {
                         sbAvatarIcon.style.backgroundRepeat = 'no-repeat';
                     }
                     
-                    if (typeof showToast === 'function') showToast('Foto de perfil actualizada', 'success');
+                    if (typeof showToast === 'function') window.showToast('Foto de perfil actualizada', 'success');
                 } catch (err) {
-                    if (typeof showToast === 'function') showToast(err.message, 'error');
+                    if (typeof showToast === 'function') window.showToast(err.message, 'error');
                 } finally {
                     icon.className = originalIcon;
                 }
@@ -3457,9 +3457,9 @@ function updatePassRender() {
                 
                 btnSaveAccProfile.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Perfil';
                 if (error) {
-                    if (typeof showToast === 'function') showToast('Error al actualizar el perfil', 'error');
+                    if (typeof showToast === 'function') window.showToast('Error al actualizar el perfil', 'error');
                 } else {
-                    if (typeof showToast === 'function') showToast('Perfil actualizado con éxito', 'success');
+                    if (typeof showToast === 'function') window.showToast('Perfil actualizado con éxito', 'success');
                     document.getElementById('header-restaurant-name').textContent = newName || 'Mi Cuenta';
                     document.getElementById('header-business-category').textContent = newCat || 'Profesional';
                     window.merchantData.business_name = newName;
@@ -3554,9 +3554,9 @@ function updatePassRender() {
             const { data, error } = await window.supabaseClient.auth.updateUser(updates);
             
             if (error) {
-                showToast(error.message, 'warning');
+                window.showToast(error.message, 'warning');
             } else {
-                showToast('Credenciales actualizadas correctamente.', 'success');
+                window.showToast('Credenciales actualizadas correctamente.', 'success');
                 if (newPassword) accPassword.value = '';
                 if (data.user) window.merchantSession.user = data.user;
             }
@@ -3588,7 +3588,7 @@ function updatePassRender() {
         const sbAvatar = document.getElementById('header-business-icon');
         // Debug alert to help identify why the string is not matching for the user
         if (false) {
-            console.error('Auth Mismatch', currentEmail); if(typeof showToast==='function') showToast('No autorizado como Administrador Maestro', 'error');
+            console.error('Auth Mismatch', currentEmail); if(typeof showToast==='function') window.showToast('No autorizado como Administrador Maestro', 'error');
         }
 
         if (currentEmail === 'hola@fideliorewards.com' || currentEmail === 'ro8ert@gmail.com') {
@@ -3667,13 +3667,13 @@ function updatePassRender() {
             const role = document.querySelector('input[name="staff_role"]:checked').value;
             
             if (!name || !email || !pwd) {
-                if(typeof showToast==='function') showToast('Por favor completa todos los campos', 'warning');
+                if(typeof showToast==='function') window.showToast('Por favor completa todos los campos', 'warning');
                 return;
             }
             
             // Check permissions mockup
             if (role === 'system' && window.merchantSession?.user?.email !== 'hola@fideliorewards.com') {
-                if(typeof showToast==='function') showToast('Acceso denegado: Se requieren permisos de Máster Admin', 'error');
+                if(typeof showToast==='function') window.showToast('Acceso denegado: Se requieren permisos de Máster Admin', 'error');
                 return;
             }
             
@@ -3686,7 +3686,7 @@ function updatePassRender() {
             document.getElementById('staff-name').value = '';
             document.getElementById('staff-email').value = '';
             document.getElementById('staff-password').value = '';
-            if(typeof showToast==='function') showToast('Usuario ' + role + ' registrado exitosamente', 'success');
+            if(typeof showToast==='function') window.showToast('Usuario ' + role + ' registrado exitosamente', 'success');
         });
     }
 
@@ -4003,7 +4003,7 @@ function updatePassRender() {
                     updatePassRender();
 
                     
-                    showToast('Configuración guardada exitosamente.', 'success');
+                    window.showToast('Configuración guardada exitosamente.', 'success');
                     
                     // Si veníamos de 'Nueva Campaña', avanzar al Diseñador Card
                     if (state.currentCampaignId) {
@@ -4017,12 +4017,12 @@ function updatePassRender() {
                                 const bTab = document.querySelector('.nav-tab[data-tab="tab-builder"]');
                                 if (bTab) bTab.click();
                             }
-                            showToast('Reglas guardadas. Ahora diseña tu tarjeta.', 'info');
+                            window.showToast('Reglas guardadas. Ahora diseña tu tarjeta.', 'info');
                         }, 500);
                     }
                 } catch (err) {
                     console.error("Error saving config:", err);
-                    showToast('Error al guardar: ' + err.message, 'warning');
+                    window.showToast('Error al guardar: ' + err.message, 'warning');
                 } finally {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
@@ -4038,7 +4038,7 @@ function updatePassRender() {
         const email = document.getElementById('emit-special-email').value;
         
         if (!name) {
-            if(typeof showToast === 'function') showToast('Por favor ingresa el nombre del destinatario.', 'warning');
+            if(typeof showToast === 'function') window.showToast('Por favor ingresa el nombre del destinatario.', 'warning');
             return;
         }
         
@@ -4047,27 +4047,27 @@ function updatePassRender() {
         
         if (method === 'whatsapp') {
             if (!phone) {
-                if(typeof showToast === 'function') showToast('Ingresa el teléfono para enviar por WhatsApp.', 'warning');
+                if(typeof showToast === 'function') window.showToast('Ingresa el teléfono para enviar por WhatsApp.', 'warning');
                 return;
             }
             const text = `¡Hola ${name}! Aquí tienes tu ${cardName}. Descárgala en el siguiente enlace: ${link}`;
             window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
-            if(typeof showToast === 'function') showToast('Abriendo WhatsApp Web...', 'info');
+            if(typeof showToast === 'function') window.showToast('Abriendo WhatsApp Web...', 'info');
         } else if (method === 'email') {
             if (!email) {
-                if(typeof showToast === 'function') showToast('Ingresa el correo para enviar por Email.', 'warning');
+                if(typeof showToast === 'function') window.showToast('Ingresa el correo para enviar por Email.', 'warning');
                 return;
             }
             const subject = `Tu ${cardName} está lista`;
             const body = `Hola ${name},\n\nAquí tienes tu ${cardName}.\n\nPuedes acceder y descargar tu tarjeta desde este enlace:\n${link}\n\n¡Gracias!`;
             window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            if(typeof showToast === 'function') showToast('Abriendo cliente de correo...', 'info');
+            if(typeof showToast === 'function') window.showToast('Abriendo cliente de correo...', 'info');
         } else if (method === 'link') {
             try {
                 await navigator.clipboard.writeText(link);
-                if(typeof showToast === 'function') showToast('Enlace copiado al portapapeles', 'success');
+                if(typeof showToast === 'function') window.showToast('Enlace copiado al portapapeles', 'success');
             } catch (err) {
-                if(typeof showToast === 'function') showToast('Error al copiar enlace. Enlace: ' + link, 'warning');
+                if(typeof showToast === 'function') window.showToast('Error al copiar enlace. Enlace: ' + link, 'warning');
             }
         }
         
@@ -4105,7 +4105,7 @@ function updatePassRender() {
             }
         } catch (err) {
             console.error("No se pudo guardar la emisión persistente:", err);
-            if(typeof showToast === 'function') showToast('Error de conexión al guardar el historial.', 'warning');
+            if(typeof showToast === 'function') window.showToast('Error de conexión al guardar el historial.', 'warning');
         }
     };
 
@@ -4309,7 +4309,7 @@ window.closeCustomFilterModal = function() {
 window.saveCustomFilter = function() {
     const filterName = document.getElementById('custom-filter-name').value.trim();
     if(!filterName) {
-        if(typeof showToast==='function') showToast('Por favor, ponle un nombre a tu filtro', 'warning');
+        if(typeof showToast==='function') window.showToast('Por favor, ponle un nombre a tu filtro', 'warning');
         return;
     }
     
@@ -4336,7 +4336,7 @@ window.saveCustomFilter = function() {
     
     // Show toast
     if(typeof showToast === 'function') {
-        showToast("Filtro '" + filterName + "' creado exitosamente.", "success");
+        window.showToast("Filtro '" + filterName + "' creado exitosamente.", "success");
     }
 };
 
@@ -4528,7 +4528,7 @@ window.autoReportError = async function(errMsg, btnEl) {
 };
 
 window.submitSupportTicket = async function(type) {
-    if (!window.merchantSession) return showToast('Por favor inicia sesión', 'error');
+    if (!window.merchantSession) return window.showToast('Por favor inicia sesión', 'error');
 
     let subjectEl, messageEl, successMsg;
     if (type === 'soporte') {
@@ -4545,7 +4545,7 @@ window.submitSupportTicket = async function(type) {
     const messageText = messageEl.value.trim();
 
     if (!messageText || (type === 'soporte' && !subjectEl.value.trim())) {
-        return showToast('Por favor llena los campos requeridos', 'warning');
+        return window.showToast('Por favor llena los campos requeridos', 'warning');
     }
 
     const { error } = await window.supabaseClient.from('support_tickets').insert([{
@@ -4557,9 +4557,9 @@ window.submitSupportTicket = async function(type) {
     }]);
 
     if (error) {
-        showToast('Error enviando la solicitud: ' + error.message, 'error');
+        window.showToast('Error enviando la solicitud: ' + error.message, 'error');
     } else {
-        showToast(successMsg, 'success');
+        window.showToast(successMsg, 'success');
         if (type === 'soporte') {
             subjectEl.value = '';
             messageEl.value = '';
@@ -4691,7 +4691,7 @@ window.applyGeminiSuggestion = function() {
         toggleGeminiChat();
         
         if(typeof showToast === 'function') {
-            showToast("Sugerencia de Gemini aplicada ", "success");
+            window.showToast("Sugerencia de Gemini aplicada ", "success");
         }
     }, 100);
 };
@@ -4728,15 +4728,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const data = await response.json();
                 if (data.success) {
-                    showToast('Perfil de negocio guardado exitosamente.', 'success');
+                    window.showToast('Perfil de negocio guardado exitosamente.', 'success');
                 } else {
-                    showToast('Error al guardar el perfil: ' + data.error, 'error');
+                    window.showToast('Error al guardar el perfil: ' + data.error, 'error');
                 }
             } catch (err) {
                 
         if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         console.error(err);
-                showToast('Error de red al guardar perfil.', 'error');
+                window.showToast('Error de red al guardar perfil.', 'error');
             } finally {
                 btnSaveBusiness.innerHTML = 'Guardar Cambios';
             }
@@ -4748,7 +4748,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnConnectGoogle) {
         btnConnectGoogle.addEventListener('click', () => {
             const merchantId = localStorage.getItem('merchant_id') || 'test-merchant-123';
-            showToast('Redirigiendo a la autenticación de Google...', 'info');
+            window.showToast('Redirigiendo a la autenticación de Google...', 'info');
             window.location.href = `/auth/google?merchant_id=${merchantId}`;
         });
     }
@@ -4779,15 +4779,15 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
                 if (data.success && data.url) {
                     window.location.href = data.url;
                 } else if (data.success && data.skipStripe) {
-                    showToast('Suscripción activada exitosamente con promoción', 'success');
+                    window.showToast('Suscripción activada exitosamente con promoción', 'success');
                     btnPayStripe.innerHTML = '<i class="fa-brands fa-stripe"></i> Pagar con Stripe';
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
-                    showToast('Error al conectar con Stripe: ' + (data.error || 'Desconocido'), 'error');
+                    window.showToast('Error al conectar con Stripe: ' + (data.error || 'Desconocido'), 'error');
                     btnPayStripe.innerHTML = '<i class="fa-brands fa-stripe"></i> Pagar con Stripe';
                 }
             } catch (err) {
-                showToast('Error de red conectando con la pasarela de pagos.', 'error');
+                window.showToast('Error de red conectando con la pasarela de pagos.', 'error');
                 btnPayStripe.innerHTML = '<i class="fa-brands fa-stripe"></i> Pagar con Stripe';
             }
         });
@@ -4797,7 +4797,7 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
     window.applyUpsellPromo = async function() {
         const promoInput = document.getElementById('upsell-promo-code');
         const code = promoInput.value.trim().toUpperCase();
-        if (!code) return showToast('Ingresa un código válido', 'error');
+        if (!code) return window.showToast('Ingresa un código válido', 'error');
 
         const { data, error } = await window.supabaseClient
             .from('promo_codes')
@@ -4807,40 +4807,40 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
             .single();
 
         if (error || !data) {
-            return showToast('Código inválido o expirado', 'error');
+            return window.showToast('Código inválido o expirado', 'error');
         }
 
         if (data.current_uses >= data.max_uses) {
-            return showToast('Este código ha superado su límite de usos', 'error');
+            return window.showToast('Este código ha superado su límite de usos', 'error');
         }
 
         const btnUpsell = document.getElementById('btn-upsell-stripe');
         
         if (data.reward_type === 'free_branches') {
-            showToast(`¡Código aplicado! Tienes ${data.free_branches_count} sucursales extra gratis.`, 'success');
+            window.showToast(`¡Código aplicado! Tienes ${data.free_branches_count} sucursales extra gratis.`, 'success');
             btnUpsell.innerHTML = '<i class="fa-solid fa-check"></i> Activar Sucursales Gratis';
             btnUpsell.onclick = async () => {
                 await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
-                showToast('Sucursales habilitadas', 'success');
+                window.showToast('Sucursales habilitadas', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             };
         } else if (data.reward_type === 'custom_branch_price') {
-            showToast(`¡Código aplicado! Precio preferencial de $${data.custom_branch_price} USD.`, 'success');
+            window.showToast(`¡Código aplicado! Precio preferencial de $${data.custom_branch_price} USD.`, 'success');
             btnUpsell.innerHTML = `<i class="fa-brands fa-stripe"></i> Pagar $${data.custom_branch_price} USD / mes`;
             // Si tuvieras un link específico para esto en la DB, podrías reemplazarlo aquí.
         } else if (data.reward_type === 'lifetime_free' || (data.reward_type === 'discount' && data.discount_pct === 100)) {
-            showToast('¡Felicidades! Tienes acceso ilimitado gratuito.', 'success');
+            window.showToast('¡Felicidades! Tienes acceso ilimitado gratuito.', 'success');
             btnUpsell.innerHTML = '<i class="fa-solid fa-check"></i> Activar Licencia Gratuita';
             btnUpsell.onclick = async () => {
                 await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
-                showToast('Licencia habilitada', 'success');
+                window.showToast('Licencia habilitada', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             };
         } else if (data.reward_type === 'discount' && data.discount_pct < 100) {
             if (!data.stripe_payment_link) {
-                return showToast('Error: Este código no tiene un enlace de pago asignado.', 'error');
+                return window.showToast('Error: Este código no tiene un enlace de pago asignado.', 'error');
             }
-            showToast(`¡Código aplicado! Descuento del ${data.discount_pct}%.`, 'success');
+            window.showToast(`¡Código aplicado! Descuento del ${data.discount_pct}%.`, 'success');
             btnUpsell.innerHTML = `<i class="fa-brands fa-stripe"></i> Pagar con Descuento`;
             btnUpsell.onclick = async () => {
                 // Sumamos el uso y redirigimos a la liga de Stripe que configuró el Admin
@@ -4865,7 +4865,7 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
             try {
                 const rfc = document.querySelector('input[placeholder="ABCD123456789"]').value;
                 if (!rfc) {
-                    showToast('Por favor, ingresa tu RFC y Guarda los cambios primero.', 'error');
+                    window.showToast('Por favor, ingresa tu RFC y Guarda los cambios primero.', 'error');
                     return;
                 }
                 
@@ -4882,12 +4882,12 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
                 
                 const data = await response.json();
                 if (data.success) {
-                    showToast('Factura solicitada. La recibirás en tu correo.', 'success');
+                    window.showToast('Factura solicitada. La recibirás en tu correo.', 'success');
                 } else {
-                    showToast('Error al solicitar factura.', 'error');
+                    window.showToast('Error al solicitar factura.', 'error');
                 }
             } catch (err) {
-                showToast('Error de red.', 'error');
+                window.showToast('Error de red.', 'error');
             } finally {
                 btnRequestInvoice.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Solicitar Factura';
             }
@@ -4999,7 +4999,7 @@ if (btnCloseMktPush) {
 if (btnSendMktPush) {
     btnSendMktPush.addEventListener('click', async () => {
         if (!mktTitle.value || !mktBody.value) {
-            showToast("Debes escribir un título y un mensaje", "error");
+            window.showToast("Debes escribir un título y un mensaje", "error");
             return;
         }
         
@@ -5108,10 +5108,10 @@ if(formFactura) {
             if(error) throw error;
             
             modalFactura.style.display = 'none';
-            showToast("Solicitud de factura enviada al administrador.", "success");
+            window.showToast("Solicitud de factura enviada al administrador.", "success");
             formFactura.reset();
         } catch(ex) {
-            showToast("Error al enviar solicitud: " + ex.message, "error");
+            window.showToast("Error al enviar solicitud: " + ex.message, "error");
         } finally {
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = 'Enviar Solicitud';
@@ -5143,10 +5143,10 @@ if(formTrans) {
             if(error) throw error;
             
             modalTrans.style.display = 'none';
-            showToast("Comprobante de pago enviado al administrador.", "success");
+            window.showToast("Comprobante de pago enviado al administrador.", "success");
             formTrans.reset();
         } catch(ex) {
-            showToast("Error al enviar comprobante: " + ex.message, "error");
+            window.showToast("Error al enviar comprobante: " + ex.message, "error");
         } finally {
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = 'Reportar Pago';
@@ -5158,7 +5158,7 @@ if(formTrans) {
 window.updateStripeLink = function(val) {
     if (val && val.includes('stripe')) {
         state.customBannerUrl = val;
-        showToast("Enlace de Stripe configurado como acción principal de la tarjeta.", "success");
+        window.showToast("Enlace de Stripe configurado como acción principal de la tarjeta.", "success");
     }
 };
 
@@ -5173,7 +5173,7 @@ const newSelectCamp = "        state.customBannerUrl = camp.banner_url || null;\
 
 window.openCampaignModal = function() {
     // Start the unified flow
-    showToast("Paso 1: Elige el Programa de Fidelización para tu campaña.", "success");
+    window.showToast("Paso 1: Elige el Programa de Fidelización para tu campaña.", "success");
     
     // Switch to loyalty tab
     const navTabs = document.querySelectorAll('.nav-tab');
@@ -5204,7 +5204,7 @@ window.startDesignerFlow = function(programType) {
     state.dynamicDesc = "Disfruta de este beneficio exclusivo.";
     
     // They selected a program in tab-loyalty. Move to Step 2.
-    showToast(`Paso 2: Diseñando tarjeta para ${programType}. Se ha creado un diseño independiente.`, "success");
+    window.showToast(`Paso 2: Diseñando tarjeta para ${programType}. Se ha creado un diseño independiente.`, "success");
     
     // Switch to designer tab
     const navTabs = document.querySelectorAll('.nav-tab');
@@ -5299,9 +5299,9 @@ window.loadCampaignToBuilder = function(campaignId) {
             if (btnPay) btnPay.value = rules.show_payment_btn ? 'yes' : 'no';
         }
 
-        if (typeof showToast === 'function') showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
+        if (typeof showToast === 'function') window.showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
     } else {
-        if (typeof showToast === 'function') showToast("Campaña nueva. Configura el diseño.", "info");
+        if (typeof showToast === 'function') window.showToast("Campaña nueva. Configura el diseño.", "info");
     }
     
     if(window.checkRedundancy) window.checkRedundancy();
@@ -5468,7 +5468,7 @@ window.saveComplexSchedule = function() {
             }
         }
         if (!targetState.tenantId) {
-            if(typeof showToast==='function') showToast('Error: No se pudo identificar tu cuenta. Recarga la página.', 'error');
+            if(typeof showToast==='function') window.showToast('Error: No se pudo identificar tu cuenta. Recarga la página.', 'error');
             return;
         }
         
@@ -5492,11 +5492,11 @@ window.saveComplexSchedule = function() {
                 appointment_settings: newSettings
             }).eq('id', window.merchantData.id).select().then(({data, error}) => {
                 if (error) {
-                    if(typeof showToast==='function') showToast('Error en la nube: ' + error.message, 'error');
+                    if(typeof showToast==='function') window.showToast('Error en la nube: ' + error.message, 'error');
                 } else if (!data || data.length === 0) {
-                    if(typeof showToast==='function') showToast('Error de permisos. Tu sesión pudo haber expirado.', 'error');
+                    if(typeof showToast==='function') window.showToast('Error de permisos. Tu sesión pudo haber expirado.', 'error');
                 } else {
-                    if (typeof showToast === 'function') showToast('Horarios guardados en la nube', 'success');
+                    if (typeof showToast === 'function') window.showToast('Horarios guardados en la nube', 'success');
                     const modal = document.getElementById('schedule-config-modal');
                     if (modal) modal.style.display = 'none';
                 }
@@ -5521,7 +5521,7 @@ window.saveComplexSchedule = function() {
         // Notificación silenciosa (se quitó el toast a petición del usuario)
     } catch (err) {
         console.error("CRASH in saveComplexSchedule:", err);
-        if(typeof showToast==='function') showToast('Error al guardar horarios: ' + err.message, 'error');
+        if(typeof showToast==='function') window.showToast('Error al guardar horarios: ' + err.message, 'error');
     }
 };
 
@@ -5742,7 +5742,7 @@ window.fetchCopilotIdeas = async function() {
         
     } catch (e) {
         console.error(e);
-        if (typeof window.showToast === 'function') window.showToast("Error al generar ideas con Copiloto AI", "error");
+        if (typeof window.showToast === 'function') window.window.showToast("Error al generar ideas con Copiloto AI", "error");
     } finally {
         loadingEl.style.display = 'none';
         resultsEl.style.display = 'block';
@@ -5800,7 +5800,7 @@ window.executeCopilotIdea = function(opp) {
 
         // Disparar render
         if(window.updatePassRender) window.updatePassRender();
-        if (typeof window.showToast === 'function') window.showToast("Tarjeta Especial preconfigurada. Ajusta los detalles.", "success");
+        if (typeof window.showToast === 'function') window.window.showToast("Tarjeta Especial preconfigurada. Ajusta los detalles.", "success");
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } else {
@@ -5841,7 +5841,7 @@ window.executeCopilotIdea = function(opp) {
         if(window.updatePushPreview) window.updatePushPreview();
         if(window.updateAudienceEstimate) window.updateAudienceEstimate();
         
-        showToast("Campaña Push pre-configurada por la IA. Revisa y envía.", "success");
+        window.showToast("Campaña Push pre-configurada por la IA. Revisa y envía.", "success");
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 };
@@ -6012,8 +6012,8 @@ window.saveCajaTransaction = async function() {
     const method = document.getElementById('caja-method').value;
     
     if(!concept || isNaN(amount) || amount <= 0) {
-        if(typeof showToast === 'function') showToast("Por favor ingresa un concepto y monto válido.", "error");
-        else if(typeof showToast==='function') showToast('Ingresa un concepto y monto válido', 'warning');
+        if(typeof showToast === 'function') window.showToast("Por favor ingresa un concepto y monto válido.", "error");
+        else if(typeof showToast==='function') window.showToast('Ingresa un concepto y monto válido', 'warning');
         return;
     }
     
@@ -6042,13 +6042,13 @@ window.saveCajaTransaction = async function() {
             throw error;
         }
         
-        if(typeof showToast === 'function') showToast("Pago registrado correctamente.", "success");
+        if(typeof showToast === 'function') window.showToast("Pago registrado correctamente.", "success");
         window.closeCajaModal();
         window.loadCajaTransactions(); // Reload list
         
     } catch (err) {
         console.error("Error saving transaction:", err);
-        if(typeof showToast === 'function') showToast("Error al guardar. Asegúrate de haber creado la tabla en Supabase.", "error");
+        if(typeof showToast === 'function') window.showToast("Error al guardar. Asegúrate de haber creado la tabla en Supabase.", "error");
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -6086,7 +6086,7 @@ window.fetchCopilotIdeas = function() {
     const isAdmin = window.merchantSession && window.merchantSession.user && window.merchantSession.user.email === 'hola@fideliorewards.com';
     
     if (plan !== 'business' && plan !== 'enterprise' && !isAdmin) {
-        if(typeof showToast === 'function') showToast('El Copiloto AI es exclusivo del Plan Business. Mejora tu plan para activarlo.', 'error');
+        if(typeof showToast === 'function') window.showToast('El Copiloto AI es exclusivo del Plan Business. Mejora tu plan para activarlo.', 'error');
         loading.style.display = 'none';
         results.style.display = 'block';
         container.innerHTML = `
@@ -6117,7 +6117,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Recuperar Clientes Inactivos</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tienes 45 clientes que no han vuelto en 30 días. Enviarles un cupón de 10% de Cashback extra tiene alta probabilidad de retorno.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:var(--accent-violet); color:var(--accent-violet);" onclick="if(typeof showToast === 'function') showToast('Campaña generada y lista en Marketing.', 'success')">
+                <button class="btn btn-outline" style="width:100%; border-color:var(--accent-violet); color:var(--accent-violet);" onclick="if(typeof showToast === 'function') window.showToast('Campaña generada y lista en Marketing.', 'success')">
                     Crear Campaña
                 </button>
             </div>
@@ -6131,7 +6131,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Impulso a VIP Oro</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Hay 12 clientes a solo 1 visita de subir a Oro. Envíales un SMS automático felicitándolos para asegurar su próxima visita.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#3B82F6; color:#3B82F6;" onclick="if(typeof showToast === 'function') showToast('Campaña de Upsell programada.', 'success')">
+                <button class="btn btn-outline" style="width:100%; border-color:#3B82F6; color:#3B82F6;" onclick="if(typeof showToast === 'function') window.showToast('Campaña de Upsell programada.', 'success')">
                     Programar SMS
                 </button>
             </div>
@@ -6145,7 +6145,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Promoción Martes Lento</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tus martes por la tarde tienen baja afluencia. Lanza un 2x1 en puntos solo para ese día de la semana.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#10B981; color:#10B981;" onclick="if(typeof showToast === 'function') showToast('Regla de Horas Valle activada.', 'success')">
+                <button class="btn btn-outline" style="width:100%; border-color:#10B981; color:#10B981;" onclick="if(typeof showToast === 'function') window.showToast('Regla de Horas Valle activada.', 'success')">
                     Activar Regla
                 </button>
             </div>
@@ -6173,7 +6173,7 @@ window.copyLandingLink = function() {
         const display = document.getElementById('landing-link-display');
         if (display) {
             navigator.clipboard.writeText('https://' + display.textContent.trim());
-            if (typeof showToast === 'function') showToast('Enlace copiado al portapapeles', 'success');
+            if (typeof showToast === 'function') window.showToast('Enlace copiado al portapapeles', 'success');
         }
     };
 
@@ -6254,9 +6254,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) throw error;
                 
                 window.merchantData.appointment_settings = currentApptSettings;
-                if (typeof showToast === 'function') showToast('Formulario actualizado correctamente', 'success');
+                if (typeof showToast === 'function') window.showToast('Formulario actualizado correctamente', 'success');
             } catch (e) {
-                if (typeof showToast === 'function') showToast(e.message, 'error');
+                if (typeof showToast === 'function') window.showToast(e.message, 'error');
             } finally {
                 btnSaveForm.innerHTML = originalText;
                 btnSaveForm.disabled = false;
@@ -6465,24 +6465,28 @@ window.triggerRealAIMagicDesign = async function() {
     const iphone = document.querySelector('.iphone-pro-mockup');
     if(iphone) iphone.style.animation = "spinY 1.5s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275)";
     
-    if (typeof showToast === 'function') showToast("Gemini AI está analizando tu negocio...", "info");
+    if (typeof showToast === 'function') window.showToast("Gemini AI está analizando tu negocio...", "info");
 
     const industry = document.getElementById('business-category-input') ? document.getElementById('business-category-input').value : 'General';
     const businessName = document.getElementById('rest-name') ? document.getElementById('rest-name').value : 'Mi Negocio';
 
     try {
-        // DEMO MOCK: Simulate API delay
-        await new Promise(r => setTimeout(r, 2000));
-        
-        const strategy = {
-            primaryColor: '#7C3AED',
-            accentColor: '#10B981',
-            reward: '1 Bebida Gratis o Postre',
-            instruction: 'Acumula 5 sellos para canjear.',
-            stampsTotal: 5,
-            iconClass: 'fa-solid fa-mug-hot',
-            tip: 'Para restaurantes y cafeterías, regalar un ticket bajo (bebida) en la 5ta visita incrementa la retención un 35%.'
+        const token = localStorage.getItem('merchant_token');
+        const reqOpts = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ industry, businessName })
         };
+        if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch('https://api.fideliorewards.com/api/ai/magic-builder', reqOpts).catch(() => fetch('/api/ai/magic-builder', reqOpts));
+        
+        if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error || 'Error al conectar con Gemini API');
+        }
+        
+        const strategy = await res.json();
         
         // Update DOM inputs
         if (document.getElementById('color-primary')) document.getElementById('color-primary').value = strategy.primaryColor || '#1e1b4b';
@@ -6512,7 +6516,7 @@ window.triggerRealAIMagicDesign = async function() {
         // Force UI update
         if (typeof updatePassRender === 'function') updatePassRender();
 
-        if (typeof showToast === 'function') showToast("¡Estrategia Gemini Aplicada!", "success");
+        if (typeof showToast === 'function') window.showToast("¡Estrategia Gemini Aplicada!", "success");
         
         try {
             if (window.JSConfetti) {
@@ -6522,7 +6526,7 @@ window.triggerRealAIMagicDesign = async function() {
 
     } catch (err) {
         console.error("Gemini Error:", err);
-        if (typeof showToast === 'function') showToast(err.message || "Error al generar estrategia con Gemini.", "error");
+        if (typeof showToast === 'function') window.showToast(err.message || "Error al generar estrategia con Gemini.", "error");
     } finally {
         btn.innerHTML = originalText;
         btn.style.opacity = '1';
