@@ -1667,16 +1667,17 @@ No incluyas markdown, no incluyas texto fuera del JSON.
         let availableModels = '';
         try {
             if (process.env.GEMINI_API_KEY) {
-                const fetch = require('node-fetch'); // or use native fetch in node 18+
                 const r = await globalThis.fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
                 const d = await r.json();
                 if (d && d.models) {
-                    availableModels = ' Modelos válidos en tu API Key: ' + d.models.map(m => m.name).join(', ');
+                    availableModels = ' Modelos Permitidos: ' + d.models.map(m => m.name.replace('models/', '')).join(', ');
+                } else if (d && d.error) {
+                    availableModels = ' Error de API Key: ' + d.error.message;
                 }
             }
         } catch(e) {}
         
-        res.status(500).json({ error: `Fallo de Modelo: ${error.message}.${availableModels}` });
+        res.status(500).json({ error: `[DIAGNÓSTICO] ${error.message}. ${availableModels}` });
     }
 });
 
