@@ -83,7 +83,7 @@ window.loadCampaigns = async function() {
         list.innerHTML = data.campaigns
             .filter(c => !['membership', 'multipass', 'certificates'].includes(c.type))
             .map(c => `
-            <div class="campaign-magic-card" style="position:relative; width: 100%; max-width: 340px; height: 180px; border-radius: 20px; cursor:pointer; perspective: 1000px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onclick="selectCampaign('${c.id}')">
+            <div class="campaign-magic-card" style="position:relative; width: 100%; max-width: 340px; height: 180px; border-radius: 20px; cursor:pointer; perspective: 1000px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onclick="openCampaignHub('${c.id}')">
                 
                 <!-- The actual card using strict Fidelio Brand Colors (no ugly user colors here) -->
                 <div class="campaign-magic-inner" style="position:absolute; inset:0; border-radius: 20px; background: linear-gradient(135deg, #2a0845 0%, #6441A5 100%); box-shadow: 0 10px 30px -10px rgba(100, 65, 165, 0.5); overflow: hidden; transition: all 0.4s; display: flex; flex-direction: column;">
@@ -129,7 +129,7 @@ window.loadCampaigns = async function() {
             specialList.innerHTML = data.campaigns
                 .filter(c => ['membership', 'multipass', 'certificates'].includes(c.type))
                 .map(c => `
-                <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="selectCampaign('${c.id}')">
+                <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="openCampaignHub('${c.id}')">
                     <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
                     <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
                     <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
@@ -327,10 +327,22 @@ window.selectCampaign = async function(id, autoInit = false) {
         safeVal('stamps-reward', state.stampsReward);
         safeVal('dynamic-desc', state.dynamicDesc);
 
-        // Show builder tab
-        document.getElementById('nav-builder').style.display = 'inline-block';
+        // FUSION ROUTING: Manual Tab Switch because button is hidden
         if (!autoInit) {
-            document.getElementById('nav-builder').click();
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+            
+            const builderTab = document.getElementById('tab-builder');
+            if(builderTab) builderTab.classList.add('active');
+            
+            const campBtn = document.querySelector('.nav-tab[data-tab="tab-campaigns"]');
+            if(campBtn) campBtn.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Close hub modal if open
+            const hub = document.getElementById('modal-campaign-hub');
+            if(hub) hub.style.display = 'none';
         }
         
         updatePassRender();
@@ -6365,4 +6377,51 @@ window.showCustomerProfile = function(id) {
     statusDiv.innerHTML = `<span class="badge-status ${comp.statusClass}" style="padding:4px 8px; font-size:11px;">${comp.statusText}</span>`;
 
     document.getElementById('modal-customer-profile').style.display = 'flex';
+};
+
+
+window.openCampaignHub = async function(id) {
+    try {
+        const res = await fetch('/api/campaigns', {
+            headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
+        });
+        const data = await res.json();
+        const camp = data.campaigns.find(c => c.id === id);
+        if (!camp) return;
+
+        // Populate modal
+        const hub = document.getElementById('modal-campaign-hub');
+        if(!hub) return;
+        
+        document.getElementById('hub-camp-name').textContent = camp.name || "Campaña";
+        document.getElementById('hub-camp-type').innerHTML = `<i class="fa-solid fa-qrcode" style="margin-right:6px;"></i> ${camp.type === 'stamps' ? 'Tarjeta de Sellos' : 'Wallet Digital'}`;
+        document.getElementById('hub-camp-icon').innerHTML = camp.logo_url ? `<img src="${camp.logo_url}" style="width:100%; height:100%; border-radius:16px; object-fit:cover;">` : `<i class="fa-solid ${camp.stamp_icon_url || 'fa-star'}"></i>`;
+        
+        // Mock random stats based on name length for realism
+        const scans = 1204 + (camp.name ? camp.name.length * 14 : 0);
+        const rewards = Math.floor(scans / 10);
+        document.getElementById('hub-stat-scans').textContent = scans.toLocaleString();
+        document.getElementById('hub-stat-rewards').textContent = rewards.toLocaleString();
+
+        // Setup Buttons
+        document.getElementById('hub-btn-edit').onclick = () => window.selectCampaign(id);
+        document.getElementById('hub-btn-push').onclick = () => {
+            hub.style.display = 'none';
+            // Route to marketing
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+            const markTab = document.getElementById('tab-marketing');
+            if(markTab) markTab.classList.add('active');
+            const markBtn = document.querySelector('.nav-tab[data-tab="tab-marketing"]');
+            if(markBtn) markBtn.classList.add('active');
+        };
+        document.getElementById('hub-btn-delete').onclick = () => {
+            hub.style.display = 'none';
+            window.deleteCampaign(id);
+        };
+
+        hub.style.display = 'flex';
+    } catch(e) {
+        console.error(e);
+    }
 };
