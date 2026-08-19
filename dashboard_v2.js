@@ -88,7 +88,7 @@ window.loadCampaigns = async function() {
             <div class="campaign-magic-card" style="position:relative; width: 100%; max-width: 340px; height: 180px; border-radius: 20px; cursor:pointer; perspective: 1000px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onclick="openCampaignHub('${c.id}')">
                 
                 <!-- The actual card using strict Fidelio Brand Colors (no ugly user colors here) -->
-                <div class="campaign-magic-inner" >
+                <div class="campaign-magic-inner" style="background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%); height: 100%; border-radius: 20px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.2);">
                     
                     <!-- Top section with Wallet shape notch -->
                     <div style="padding: 20px 24px; flex: 1; display:flex; flex-direction:column; justify-content:space-between; position:relative; z-index:2;">
@@ -132,7 +132,7 @@ window.loadCampaigns = async function() {
                 .filter(c => ['membership', 'multipass', 'certificates'].includes(c.type))
                 .map(c => `
                 <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="openCampaignHub('${c.id}')">
-                    <div ></div>
+                    <div style="height: 6px; background: linear-gradient(90deg, #7C3AED, #4C1D95); margin: -24px -24px 16px -24px; border-radius: 24px 24px 0 0;"></div>
                     <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
                     <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
                 </div>
