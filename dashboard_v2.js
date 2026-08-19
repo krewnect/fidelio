@@ -842,8 +842,8 @@ let saveTimeout = null;
             const isAdmin = window.merchantSession && window.merchantSession.user && window.merchantSession.user.email === 'hola@fideliorewards.com';
             
             // Professional is the most limited, Business has almost everything
-            const isBusiness = plan === 'business' || plan === 'enterprise' || isAdmin;
-            const isPro = plan === 'business' || plan === 'enterprise' || isAdmin;
+            const isBusiness = plan === 'business' || plan === 'enterprise' || plan === 'restaurant' || isAdmin;
+            const isPro = plan === 'business' || plan === 'enterprise' || plan === 'restaurant' || isAdmin;
             
             // Toggle Business-only tabs
             document.querySelectorAll('.plan-business-only').forEach(el => {
