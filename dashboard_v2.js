@@ -185,6 +185,7 @@ window.applyQuickTemplate = function(type) {
             state.iconClass = "fa-star";
             state.stampsReward = "Felicidades, ganaste un premio.";
             state.dynamicDesc = "Acumula sellos para ganar.";
+            state.activeMode = 'stamps';
         }
 
         // Aplicar a los inputs visuales si existen
