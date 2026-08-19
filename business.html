@@ -822,7 +822,7 @@
                             btn.textContent = 'Continuar al Pago';
                         }
                     } catch (error) {
-                        alert('Error de conexión.');
+                        alert('Error de conexión: ' + error.message);
                         btn.textContent = 'Continuar al Pago';
                     }
                 });
