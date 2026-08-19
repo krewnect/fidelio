@@ -932,7 +932,7 @@ aside {
                                 <label style="display: block; margin-bottom: 8px; font-weight: 700; font-size: 13px; color:#4B5563; text-transform:uppercase; letter-spacing:0.5px;">Enlace de Pago (Stripe Link)</label>
                                 <div style="position:relative;">
                                     <i class="fa-solid fa-link" style="position:absolute; left:16px; top:16px; color:#9CA3AF;"></i>
-                                    <input type="url" id="stripe-payment-link" placeholder="https://buy.stripe.com/..." style="width: 100%; padding:14px 16px 14px 45px; background:#F9FAFB; border:1px solid #D1D5DB; border-radius:12px; font-size:15px; font-family:monospace; outline:none; color:#111827;">
+                                    <input class="fidelio-input" type="url" id="stripe-payment-link" placeholder="https://buy.stripe.com/..." style="width: 100%; padding:14px 16px 14px 45px; background:#F9FAFB; border:1px solid #D1D5DB; border-radius:12px; font-size:15px; font-family:monospace; outline:none; color:#111827;">
                                 </div>
                                 <div style="font-size:13px; color:#6B7280; margin-top:8px;"><i class="fa-solid fa-shield-halved" style="color:#10B981;"></i> Redirección segura para el cliente final.</div>
                             </div>
@@ -1588,17 +1588,17 @@ aside {
                             
                             <div class="apple-input-group">
                                 <label class="apple-label">Nombre del Negocio / Especialista</label>
-                                <input type="text" id="rest-name" class="apple-input" value="Mi Negocio" oninput="if(window.updatePassRender) window.updatePassRender()">
+                                <input type="text" id="rest-name" class="apple-input fidelio-input" value="Mi Negocio" oninput="if(window.updatePassRender) window.updatePassRender()">
                             </div>
                             
                             <div style="display:flex; gap:16px;">
                                 <div class="apple-input-group" style="flex:1;">
                                     <label class="apple-label">Categoría o Industria</label>
-                                    <input type="text" id="business-category-input" class="apple-input" value="Cafetería" placeholder="Ej. Veterinaria, Spa...">
+                                    <input type="text" id="business-category-input" class="apple-input fidelio-input" value="Cafetería" placeholder="Ej. Veterinaria, Spa...">
                                 </div>
                                 <div class="apple-input-group" style="flex:1;">
                                     <label class="apple-label">Ícono Decorativo</label>
-                                    <select id="rest-icon" class="apple-input" onchange="if(window.updatePassRender) window.updatePassRender()">
+                                    <select id="rest-icon" class="apple-input fidelio-input" onchange="if(window.updatePassRender) window.updatePassRender()">
                                         <option value="fa-star">Estrella (Clásico)</option>
                                         <option value="fa-mug-hot">Taza (Cafetería)</option>
                                         <option value="fa-scissors">Tijeras (Peluquería)</option>
@@ -1619,17 +1619,17 @@ aside {
                             <div style="display:flex; gap:16px;">
                                 <div class="apple-input-group" style="flex:1;">
                                     <label class="apple-label">Meta de Sellos</label>
-                                    <input type="number" id="stamps-total" class="apple-input" value="10" min="1" max="20" onchange="if(window.updatePassRender) window.updatePassRender()">
+                                    <input type="number" id="stamps-total" class="apple-input fidelio-input" value="10" min="1" max="20" onchange="if(window.updatePassRender) window.updatePassRender()">
                                 </div>
                                 <div class="apple-input-group" style="flex:2;">
                                     <label class="apple-label">Instrucción al Cliente</label>
-                                    <input type="text" id="unified-desc" class="apple-input" value="Acumula visitas para ganar." oninput="if(window.updateUnifiedDesc) window.updateUnifiedDesc(this.value)">
+                                    <input type="text" id="unified-desc" class="apple-input fidelio-input" value="Acumula visitas para ganar." oninput="if(window.updateUnifiedDesc) window.updateUnifiedDesc(this.value)">
                                 </div>
                             </div>
                             
                             <div class="apple-input-group">
                                 <label class="apple-label">¿Qué premio van a ganar al llenar la tarjeta?</label>
-                                <input type="text" id="unified-reward" class="apple-input" value="Felicidades, ganaste un premio" oninput="if(window.updateUnifiedReward) window.updateUnifiedReward(this.value)">
+                                <input type="text" id="unified-reward" class="apple-input fidelio-input" value="Felicidades, ganaste un premio" oninput="if(window.updateUnifiedReward) window.updateUnifiedReward(this.value)">
                             </div>
                         </div>
 
@@ -1640,11 +1640,11 @@ aside {
                             <div style="display:flex; gap:24px; margin-bottom:20px;">
                                 <div class="apple-input-group">
                                     <label class="apple-label">Color Principal</label>
-                                    <input type="color" id="color-primary" style="-webkit-appearance:none; border:none; width:50px; height:50px; border-radius:12px; cursor:pointer; padding:0; background:transparent;" value="#1e1b4b">
+                                    <input class="fidelio-input" type="color" id="color-primary" style="-webkit-appearance:none; border:none; width:50px; height:50px; border-radius:12px; cursor:pointer; padding:0; background:transparent;" value="#1e1b4b">
                                 </div>
                                 <div class="apple-input-group">
                                     <label class="apple-label">Color Acento</label>
-                                    <input type="color" id="color-accent" style="-webkit-appearance:none; border:none; width:50px; height:50px; border-radius:12px; cursor:pointer; padding:0; background:transparent;" value="#8b5cf6">
+                                    <input class="fidelio-input" type="color" id="color-accent" style="-webkit-appearance:none; border:none; width:50px; height:50px; border-radius:12px; cursor:pointer; padding:0; background:transparent;" value="#8b5cf6">
                                 </div>
                             </div>
                             
@@ -1682,12 +1682,12 @@ aside {
                             <div style="display:flex; gap:16px;">
                                 <div class="apple-input-group" style="flex:1;">
                                     <label class="apple-label">Vigencia de la Campaña (Opcional)</label>
-                                    <input type="date" id="camp-valid-until" class="apple-input">
+                                    <input type="date" id="camp-valid-until" class="apple-input fidelio-input">
                                     <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Dejar vacío para que no caduque nunca.</div>
                                 </div>
                                 <div class="apple-input-group" style="flex:1;">
                                     <label class="apple-label">Tiempo para redimir premio (Días)</label>
-                                    <input type="number" id="camp-grace-period" class="apple-input" value="" min="1" placeholder="Ej. 15">
+                                    <input type="number" id="camp-grace-period" class="apple-input fidelio-input" value="" min="1" placeholder="Ej. 15">
                                     <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Días de tolerancia si termina la campaña.</div>
                                 </div>
                             </div>
@@ -1701,7 +1701,7 @@ aside {
                             <div style="display:flex; flex-direction:column; gap:12px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:16px 20px; border-radius:12px; border:1px solid #e2e8f0;">
                                     <label class="apple-label" style="margin-bottom:0; font-size:13px;"><i class="fa-regular fa-calendar-plus" style="margin-right:8px; color:#8b5cf6;"></i> Botón 'Agendar Cita'</label>
-                                    <select id="builder-btn-appointment" class="apple-input" style="width:180px; padding:10px 14px; margin:0; background:white;">
+                                    <select id="builder-btn-appointment" class="apple-input fidelio-input" style="width:180px; padding:10px 14px; margin:0; background:white;">
                                         <option value="no">OFF (Oculto)</option>
                                         <option value="yes">ON (Visible)</option>
                                     </select>
@@ -1709,7 +1709,7 @@ aside {
                                 
                                 <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:16px 20px; border-radius:12px; border:1px solid #e2e8f0;">
                                     <label class="apple-label" style="margin-bottom:0; font-size:13px;"><i class="fa-solid fa-credit-card" style="margin-right:8px; color:#10b981;"></i> Botón 'Pagar Cita'</label>
-                                    <select id="builder-btn-payment" class="apple-input" style="width:180px; padding:10px 14px; margin:0; background:white;">
+                                    <select id="builder-btn-payment" class="apple-input fidelio-input" style="width:180px; padding:10px 14px; margin:0; background:white;">
                                         <option value="no">OFF (Oculto)</option>
                                         <option value="yes">ON (Visible)</option>
                                     </select>
@@ -1721,19 +1721,19 @@ aside {
                         <div class="apple-section" style="margin-bottom:20px;">
                             <div class="apple-input-group">
                                 <label class="apple-label">Términos Legales (Reverso)</label>
-                                <textarea id="rest-terms" class="apple-input" style="height:80px; resize:vertical;">Las recompensas no son transferibles ni canjeables por efectivo.</textarea>
+                                <textarea id="rest-terms" class="apple-input fidelio-input" style="height:80px; resize:vertical;">Las recompensas no son transferibles ni canjeables por efectivo.</textarea>
                             </div>
                             <!-- Hidden inputs required by JS bindings -->
                             <div style="display:none;">
-                                <input type="text" id="stamps-reward" value="">
+                                <input class="fidelio-input" type="text" id="stamps-reward" value="">
                                 <textarea id="pass-policies"></textarea>
                                 <select id="program-type-select"><option value="cashback"></option><option value="stamps" selected></option></select>
-                                <input type="text" id="rest-desc" value="">
+                                <input class="fidelio-input" type="text" id="rest-desc" value="">
                             </div>
                         </div>
                         
                         <div style="margin-top:auto; padding-top:16px;">
-                            <button id="btn-save-design-push" class="apple-btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar y Publicar Diseño</button>
+                            <button id="btn-save-design-push" class="fidelio-btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar y Publicar Diseño</button>
                         </div>
                     </div>
                     
@@ -1945,22 +1945,22 @@ aside {
                     <div class="card-title-bar" style="margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                         <div class="input-group" style="flex: 1; min-width: 250px;">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="crm-search-input" placeholder="Buscar por nombre, teléfono, email, o ID..." class="form-input">
+                            <input type="text" id="crm-search-input" placeholder="Buscar por nombre, teléfono, email, o ID..." class="form-input fidelio-input">
                         </div>
                         <div style="display:flex; gap: 10px; align-items:center;">
-                            <select id="crm-filter-tier" class="form-input" style="padding-left: 10px; width: auto;">
+                            <select id="crm-filter-tier" class="form-input fidelio-input" style="padding-left: 10px; width: auto;">
                                 <option value="all">Todos los Niveles</option>
                                 <option value="Oro VIP">Oro VIP</option>
                                 <option value="Plata VIP">Plata VIP</option>
                                 <option value="Bronce VIP">Bronce VIP</option>
                             </select>
-                            <select id="crm-filter-status" class="form-input" style="padding-left: 10px; width: auto;">
+                            <select id="crm-filter-status" class="form-input fidelio-input" style="padding-left: 10px; width: auto;">
                                 <option value="all">Todos los Estados</option>
                                 <option value="activo">Activo</option>
                                 <option value="riesgo">En Riesgo</option>
                                 <option value="nuevo">Nuevo</option>
                             </select>
-                            <select id="crm-filter-month" class="form-input" style="padding-left: 10px; width: auto;">
+                            <select id="crm-filter-month" class="form-input fidelio-input" style="padding-left: 10px; width: auto;">
                                 <option value="all">Cualquier Mes</option>
                                 <option value="01">Enero</option>
                                 <option value="02">Febrero</option>
@@ -2261,7 +2261,7 @@ aside {
                             <div style="flex: 1; display: flex; flex-direction: column;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
                                     <h4 style="font-size:14px; margin:0; color:var(--text-main);">Mensaje Push</h4>
-                                    <button class="btn" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding: 4px 8px; font-size:11px; font-weight:700;" onclick="window.generateAIPush()"><i class="fa-solid fa-wand-magic-sparkles"></i> Optimizar Texto</button>
+                                    <button class="fidelio-btn-secondary" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding: 4px 8px; font-size:11px; font-weight:700;" onclick="window.generateAIPush()"><i class="fa-solid fa-wand-magic-sparkles"></i> Optimizar Texto</button>
                                 </div>
                                 <div class="form-group" style="position:relative; overflow: hidden; border-radius:12px; flex: 1;">
                                     <textarea id="camp-push-message" class="fidelio-input" style="height: 100%; min-height: 120px; resize: none; font-size: 1rem; padding: 16px;" placeholder="Escribe el mensaje de tu Notificación Push..." oninput="window.updatePushPreview()"></textarea>
@@ -2331,7 +2331,7 @@ aside {
                         
                         <!-- Input Area -->
                         <div style="padding:16px 20px; background:#11111A; border-top:1px solid rgba(255,255,255,0.05); display:flex; gap:12px; align-items:center;">
-                            <input type="text" id="gemini-chat-input" placeholder="Ej. Inventario extra de cerveza..." style="flex:1; background:var(--bg-input); border:1px solid var(--border-glass); border-radius:24px; padding:12px 20px; color:white; font-size:14px; outline:none;" onkeypress="if(event.key === 'Enter') sendGeminiMessage()" />
+                            <input class="fidelio-input" type="text" id="gemini-chat-input" placeholder="Ej. Inventario extra de cerveza..." style="flex:1; background:var(--bg-input); border:1px solid var(--border-glass); border-radius:24px; padding:12px 20px; color:white; font-size:14px; outline:none;" onkeypress="if(event.key === 'Enter') sendGeminiMessage()" />
                             <button onclick="sendGeminiMessage()" style="width:44px; height:44px; border-radius:50%; background: rgba(255, 255, 255, 0.1); color:white; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; font-size:16px;"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
@@ -2496,7 +2496,7 @@ aside {
                             <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
                         </div>
                         <div style="padding: 12px;">
-                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                            <input class="fidelio-input" type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
                         </div>
                         <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
                             <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
@@ -2551,7 +2551,7 @@ aside {
                         <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
                             <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
                             <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
-                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <input class="fidelio-input" type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
                             <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
                                 <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
                             </button>
@@ -2775,7 +2775,7 @@ aside {
                         <div class="form-group">
                             <label>Porcentaje Base de Retorno (%)</label>
                             <div style="display:flex; align-items:center; gap: 12px;">
-                                <input type="range" id="cashback-slider" min="1" max="25" value="10" style="flex:1; accent-color: var(--accent-violet);">
+                                <input class="fidelio-input" type="range" id="cashback-slider" min="1" max="25" value="10" style="flex:1; accent-color: var(--accent-violet);">
                                 <span id="cashback-percent-display" style="font-size:18px; font-weight:700; color:var(--accent-violet); min-width:50px;">10%</span>
                             </div>
                             <p id="wallet-example-text" style="font-size:12px; color:var(--text-muted); margin-top:8px;">Por cada $100 gastados, el cliente recibe $<span id="cashback-example">10</span> en su saldo.</p>
@@ -2832,7 +2832,7 @@ aside {
                             <div style="margin-top:16px;">
                                 <label style="font-size:12px; font-weight:600; display:block; margin-bottom:8px;">Beneficios del Nivel</label>
                                 <div id="vip-bronce-benefits" class="vip-benefits-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-                                <button type="button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('bronce')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
+                                <button type="button" class="fidelio-btn-secondary btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('bronce')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
                             </div>
                         </div>
 
@@ -2848,7 +2848,7 @@ aside {
                             <div style="margin-top:16px;">
                                 <label style="font-size:12px; font-weight:600; display:block; margin-bottom:8px;">Beneficios del Nivel</label>
                                 <div id="vip-plata-benefits" class="vip-benefits-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-                                <button type="button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('plata')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
+                                <button type="button" class="fidelio-btn-secondary btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('plata')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
                             </div>
                         </div>
 
@@ -2864,7 +2864,7 @@ aside {
                             <div style="margin-top:16px;">
                                 <label style="font-size:12px; font-weight:600; display:block; margin-bottom:8px;">Beneficios del Nivel</label>
                                 <div id="vip-oro-benefits" class="vip-benefits-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-                                <button type="button" class="btn btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('oro')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
+                                <button type="button" class="fidelio-btn-secondary btn-secondary btn-sm" style="width:100%; margin-top:8px; font-size:12px; background:var(--bg-input); border:1px dashed var(--border-color); color:var(--text-main);" onclick="addVipBenefit('oro')"><i class="fa-solid fa-plus"></i> Agregar Beneficio</button>
                             </div>
                         </div>
                     </div>
@@ -3029,8 +3029,8 @@ aside {
                             <option value="expired">Vencidos</option>
                         </select>
                         <input type="date" id="hist-filter-date" class="fidelio-input" style="flex: 1; min-width: 150px;">
-                        <button class="btn btn-outline" id="hist-btn-filter" style="padding: 0 16px;"><i class="fa-solid fa-filter"></i> Filtrar</button>
-                        <button class="btn btn-outline" id="hist-btn-clear" style="padding: 0 16px;"><i class="fa-solid fa-xmark"></i></button>
+                        <button class="fidelio-btn-secondary" id="hist-btn-filter" style="padding: 0 16px;"><i class="fa-solid fa-filter"></i> Filtrar</button>
+                        <button class="fidelio-btn-secondary" id="hist-btn-clear" style="padding: 0 16px;"><i class="fa-solid fa-xmark"></i></button>
                     </div>
 
                     <div style="overflow-x: auto;">
@@ -3160,13 +3160,13 @@ aside {
                     </div>
 
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                        <button class="btn btn-outline" style="color:#25D366; border-color:#25D366;" onclick="window.emitirEspecial('whatsapp')">
+                        <button class="fidelio-btn-secondary" style="color:#25D366; border-color:#25D366;" onclick="window.emitirEspecial('whatsapp')">
                             <i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp
                         </button>
-                        <button class="btn btn-outline" style="color:var(--accent-violet); border-color:var(--accent-violet);" onclick="window.emitirEspecial('email')">
+                        <button class="fidelio-btn-secondary" style="color:var(--accent-violet); border-color:var(--accent-violet);" onclick="window.emitirEspecial('email')">
                             <i class="fa-solid fa-envelope"></i> Enviar por Email
                         </button>
-                        <button class="btn btn-outline" style="color:var(--text-main); border-color:var(--border-glass);" onclick="window.emitirEspecial('link')">
+                        <button class="fidelio-btn-secondary" style="color:var(--text-main); border-color:var(--border-glass);" onclick="window.emitirEspecial('link')">
                             <i class="fa-solid fa-link"></i> Generar Enlace Único
                         </button>
                     </div>
@@ -3196,7 +3196,7 @@ aside {
                         <p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Conecta tu tienda en línea (Shopify, WooCommerce, Tiendanube) para que las compras web acumulen puntos en Fidelio automáticamente.</p>
                         
                         <div style="margin-top:auto; width:100%;">
-                            <button class="btn" style="width:100%; background:transparent; border:1px dashed var(--border-glass); color:var(--text-muted); cursor:not-allowed;" disabled>Documentación (En desarrollo)</button>
+                            <button class="fidelio-btn-secondary" style="width:100%; background:transparent; border:1px dashed var(--border-glass); color:var(--text-muted); cursor:not-allowed;" disabled>Documentación (En desarrollo)</button>
                         </div>
                     </div>
 
@@ -3212,7 +3212,7 @@ aside {
                         <p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Integra Fidelio con tu sistema de caja (Lightspeed, Square, SoftRestaurant) para escaneo nativo e impresión de saldos en tickets.</p>
                         
                         <div style="margin-top:auto; width:100%;">
-                            <button class="btn" style="width:100%; background:transparent; border:1px dashed var(--border-glass); color:var(--text-muted); cursor:not-allowed;" disabled>Documentación (En desarrollo)</button>
+                            <button class="fidelio-btn-secondary" style="width:100%; background:transparent; border:1px dashed var(--border-glass); color:var(--text-muted); cursor:not-allowed;" disabled>Documentación (En desarrollo)</button>
                         </div>
                     </div>
                 </div>
@@ -3247,8 +3247,8 @@ aside {
                                 </div>
                             </div>
                             <div style="display:flex; gap:12px; align-items: center; flex-wrap: wrap;">
-                                <button id="btn-request-invoice" class="btn" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-main); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'"><i class="fa-solid fa-file-invoice" style="color: var(--text-muted);"></i> Solicitar Factura</button>
-                                <button id="btn-bank-transfer" class="btn" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-main); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'"><i class="fa-solid fa-building-columns" style="color: var(--text-muted);"></i> Datos Bancarios</button>
+                                <button id="btn-request-invoice" class="fidelio-btn-secondary" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-main); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'"><i class="fa-solid fa-file-invoice" style="color: var(--text-muted);"></i> Solicitar Factura</button>
+                                <button id="btn-bank-transfer" class="fidelio-btn-secondary" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-main); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'"><i class="fa-solid fa-building-columns" style="color: var(--text-muted);"></i> Datos Bancarios</button>
                             </div>
                         </div>
 
@@ -4048,7 +4048,7 @@ aside {
                             <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
                         </div>
                         <div style="padding: 12px;">
-                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                            <input class="fidelio-input" type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
                         </div>
                         <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
                             <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
@@ -4103,7 +4103,7 @@ aside {
                         <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
                             <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
                             <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
-                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <input class="fidelio-input" type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
                             <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
                                 <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
                             </button>
@@ -4135,7 +4135,7 @@ aside {
                             <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
                         </div>
                         <div style="padding: 12px;">
-                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                            <input class="fidelio-input" type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
                         </div>
                         <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
                             <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
@@ -4190,7 +4190,7 @@ aside {
                         <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
                             <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
                             <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
-                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <input class="fidelio-input" type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
                             <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
                                 <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
                             </button>
@@ -4222,7 +4222,7 @@ aside {
                             <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
                         </div>
                         <div style="padding: 12px;">
-                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                            <input class="fidelio-input" type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
                         </div>
                         <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
                             <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
@@ -4277,7 +4277,7 @@ aside {
                         <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
                             <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
                             <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
-                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <input class="fidelio-input" type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
                             <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
                                 <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
                             </button>
@@ -4396,7 +4396,7 @@ aside {
                             <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
                         </div>
                         <div style="padding: 12px;">
-                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                            <input class="fidelio-input" type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
                         </div>
                         <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
                             <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
@@ -4451,7 +4451,7 @@ aside {
                         <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
                             <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
                             <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
-                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <input class="fidelio-input" type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
                             <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
                                 <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
                             </button>
@@ -4469,7 +4469,7 @@ aside {
                             <h3 style="margin:0; font-size:18px; color:var(--text-main);" id="ticket-modal-subject">Asunto del Ticket</h3>
                             <div style="font-size:12px; color:var(--text-muted); margin-top:4px;" id="ticket-modal-id">#ID</div>
                         </div>
-                        <button class="btn-icon" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('modal-ticket-detail').style.display='none'"><i class="fa-solid fa-times"></i></button>
+                        <button class="fidelio-btn-secondary-icon" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('modal-ticket-detail').style.display='none'"><i class="fa-solid fa-times"></i></button>
                     </div>
                     
                     <div style="display:flex; gap:16px; margin-bottom:20px;">
@@ -4646,14 +4646,14 @@ body {
                     <div style="display:flex; gap:8px; align-items:center; flex-wrap:nowrap;">
                         <div class="metric-card-hover" style="display:flex; align-items:center; background:white; border:1px solid var(--border-glass); border-radius:var(--radius-sm); padding:4px 12px; box-shadow:var(--shadow-sm);">
                             <span style="font-size:12px; color:var(--text-muted); margin-right:8px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Desde</span>
-                            <input type="date" style="border:none; outline:none; background:transparent; padding:4px; font-family:var(--font-main); font-size:13px; font-weight:700; color:var(--accent-violet); cursor:pointer;" value="2026-07-13">
+                            <input class="fidelio-input" type="date" style="border:none; outline:none; background:transparent; padding:4px; font-family:var(--font-main); font-size:13px; font-weight:700; color:var(--accent-violet); cursor:pointer;" value="2026-07-13">
                         </div>
                         <div class="metric-card-hover" style="display:flex; align-items:center; background:white; border:1px solid var(--border-glass); border-radius:var(--radius-sm); padding:4px 12px; box-shadow:var(--shadow-sm);">
                             <span style="font-size:12px; color:var(--text-muted); margin-right:8px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Hasta</span>
-                            <input type="date" style="border:none; outline:none; background:transparent; padding:4px; font-family:var(--font-main); font-size:13px; font-weight:700; color:var(--accent-violet); cursor:pointer;" value="2026-08-13">
+                            <input class="fidelio-input" type="date" style="border:none; outline:none; background:transparent; padding:4px; font-family:var(--font-main); font-size:13px; font-weight:700; color:var(--accent-violet); cursor:pointer;" value="2026-08-13">
                         </div>
-                        <button class="btn btn-outline metric-card-hover" style="border-color:var(--accent-violet); color:var(--accent-violet); padding: 8px 14px !important; font-size: 13px !important; white-space: nowrap;"><i class="fa-solid fa-filter"></i> Aplicar</button>
-                        <button class="btn btn-outline metric-card-hover" style="padding: 8px 14px !important; font-size: 13px !important; white-space: nowrap;"><i class="fa-solid fa-cloud-arrow-down"></i> Exportar</button>
+                        <button class="fidelio-btn-secondary metric-card-hover" style="border-color:var(--accent-violet); color:var(--accent-violet); padding: 8px 14px !important; font-size: 13px !important; white-space: nowrap;"><i class="fa-solid fa-filter"></i> Aplicar</button>
+                        <button class="fidelio-btn-secondary metric-card-hover" style="padding: 8px 14px !important; font-size: 13px !important; white-space: nowrap;"><i class="fa-solid fa-cloud-arrow-down"></i> Exportar</button>
                     </div>
                 </div>
 
@@ -4793,7 +4793,7 @@ body {
                         <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 18px;"><i class="fa-solid fa-ranking-star" style="color:var(--accent-amber); margin-right:8px;"></i>Top Clientes (Mes)</h3>
                         
                         <div id="leaderboard-container" style="flex:1; display:flex; flex-direction:column; gap:12px; justify-content:flex-start; align-items:stretch; color:var(--text-muted); font-size:14px;"><p style="text-align:center; padding:20px 0;">Analizando clientes top...</p></div>
-<button class="btn btn-primary hover-glow" style="width:100%; margin-top:16px; font-size:13px;">Ver CRM Completo</button>
+<button class="fidelio-btn-primary hover-glow" style="width:100%; margin-top:16px; font-size:13px;">Ver CRM Completo</button>
                     </div>
                 </div>
 
@@ -4968,7 +4968,7 @@ body {
                             <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
                         </div>
                         <div style="padding: 12px;">
-                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                            <input class="fidelio-input" type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
                         </div>
                         <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
                             <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
@@ -5023,7 +5023,7 @@ body {
                         <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
                             <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
                             <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
-                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <input class="fidelio-input" type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
                             <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
                                 <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
                             </button>
@@ -5050,40 +5050,40 @@ body {
             
             <div class="form-group">
                 <label>Nombre de la Sucursal</label>
-                <input type="text" id="branch-name" class="premium-input" placeholder="Ej. Centro Histórico">
+                <input type="text" id="branch-name" class="premium-input fidelio-input" placeholder="Ej. Centro Histórico">
             </div>
             
             <div class="form-group">
                 <label>Gerente o Encargado</label>
-                <input type="text" id="branch-manager" class="premium-input" placeholder="Ej. Roberto Ordóñez">
+                <input type="text" id="branch-manager" class="premium-input fidelio-input" placeholder="Ej. Roberto Ordóñez">
             </div>
             
             <div class="form-row-2">
                 <div class="form-group">
                     <label>Teléfono</label>
-                    <input type="text" id="branch-phone" class="premium-input" placeholder="Ej. 55 1234 5678">
+                    <input type="text" id="branch-phone" class="premium-input fidelio-input" placeholder="Ej. 55 1234 5678">
                 </div>
                 <div class="form-group">
                     <label>Enlace Google Maps</label>
-                    <input type="url" id="branch-maps-url" class="premium-input" placeholder="https://g.page/r/...">
+                    <input type="url" id="branch-maps-url" class="premium-input fidelio-input" placeholder="https://g.page/r/...">
                 </div>
             </div>
             
             <div class="form-row-2" style="margin-bottom:8px;">
                 <div class="form-group">
                     <label>Latitud (GPS)</label>
-                    <input type="text" id="branch-lat" class="premium-input" placeholder="Ej. 19.4326">
+                    <input type="text" id="branch-lat" class="premium-input fidelio-input" placeholder="Ej. 19.4326">
                 </div>
                 <div class="form-group">
                     <label>Longitud (GPS)</label>
-                    <input type="text" id="branch-lng" class="premium-input" placeholder="Ej. -99.1332">
+                    <input type="text" id="branch-lng" class="premium-input fidelio-input" placeholder="Ej. -99.1332">
                 </div>
             </div>
             <p style="font-size:11px; color:#9ca3af; margin-bottom:20px; margin-top:-16px;">* Apple Wallet usará estas coordenadas para enviar una notificación cuando el cliente pase cerca.</p>
             
             <div class="form-group">
                 <label>Notas de Uso Interno</label>
-                <textarea id="branch-notes" class="premium-input" rows="2" placeholder="Información interna para el corporativo..."></textarea>
+                <textarea id="branch-notes" class="premium-input fidelio-input" rows="2" placeholder="Información interna para el corporativo..."></textarea>
             </div>
             
             <button id="btn-submit-branch" class="fidelio-btn-primary"><i class="fa-solid fa-check"></i> Guardar Sucursal</button>
@@ -5225,7 +5225,7 @@ body {
                 <input type="tel" id="cust-phone" class="fidelio-input" placeholder="5512345678">
             </div>
             
-            <button id="btn-submit-customer-register" class="btn-primary" style="width:100%; margin-top:16px;">Registrar Cliente</button>
+            <button id="btn-submit-customer-register" class="fidelio-btn-primary" style="width:100%; margin-top:16px;">Registrar Cliente</button>
         </div>
     </div>
 
@@ -5246,7 +5246,7 @@ body {
                 <button id="btn-generate-gw" class="fidelio-btn-primary">
                     <i class="fa-brands fa-google"></i> Guardar en Google Wallet
                 </button>
-                <button id="btn-generate-aw" class="btn" style="width:100%; padding:14px; border-radius:12px; font-weight:600; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:8px; background-color: #000; color: #fff; margin-top: 10px; border: 1px solid #333;">
+                <button id="btn-generate-aw" class="fidelio-btn-secondary" style="width:100%; padding:14px; border-radius:12px; font-weight:600; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:8px; background-color: #000; color: #fff; margin-top: 10px; border: 1px solid #333;">
                     <i class="fa-brands fa-apple"></i> Guardar en Apple Wallet
                 </button>
             </div>
@@ -5345,7 +5345,7 @@ body {
         <div style="background:white; border-radius:16px; width:90%; max-width:500px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:16px; margin-bottom:20px;">
                 <h3 style="margin:0; font-size:18px; color:var(--text-main);"><i class="fa-solid fa-filter" style="color:var(--accent-violet);"></i> Constructor de Filtros</h3>
-                <button class="btn-icon" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('modal-custom-filter').style.display='none'"><i class="fa-solid fa-times"></i></button>
+                <button class="fidelio-btn-secondary-icon" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('modal-custom-filter').style.display='none'"><i class="fa-solid fa-times"></i></button>
             </div>
             
             <div style="display:flex; flex-direction:column; gap:16px;">
@@ -5371,13 +5371,13 @@ body {
                         <input type="number" class="fidelio-input" style="flex:1;" placeholder="Valor" id="custom-filter-val-1"/>
                     </div>
                     
-                    <button class="btn" style="background:transparent; color:var(--text-muted); font-size:12px; padding:0;" onclick="if(typeof showToast==='function') showToast('Las reglas compuestas llegarán pronto', 'info');">+ Agregar condición</button>
+                    <button class="fidelio-btn-secondary" style="background:transparent; color:var(--text-muted); font-size:12px; padding:0;" onclick="if(typeof showToast==='function') showToast('Las reglas compuestas llegarán pronto', 'info');">+ Agregar condición</button>
                 </div>
             </div>
             
             <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
                 <button class="fidelio-btn-primary">Cancelar</button>
-                <button class="btn" style="background: rgba(255, 255, 255, 0.1); color:white;" onclick="if(typeof showToast==='function') showToast('Cambios guardados', 'success');">Guardar y Aplicar</button>
+                <button class="fidelio-btn-secondary" style="background: rgba(255, 255, 255, 0.1); color:white;" onclick="if(typeof showToast==='function') showToast('Cambios guardados', 'success');">Guardar y Aplicar</button>
             </div>
         </div>
     </div>
