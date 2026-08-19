@@ -1658,7 +1658,7 @@ No incluyas markdown, no incluyas texto fuera del JSON.
 
     } catch (error) {
         console.error('Error en Gemini Magic Builder:', error);
-        res.status(500).json({ error: 'Error al generar estrategia con IA.' });
+        res.status(500).json({ error: `Fallo interno de IA: ${error.message}` });
     }
 });
 
