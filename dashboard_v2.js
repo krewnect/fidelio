@@ -36,7 +36,7 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
         });
         if (res.ok) {
             console.log("Campaña guardada");
-            if (typeof window.showToast === 'function') window.showToast("Campaña guardada ☁️", "success");
+            
             await window.loadCampaigns();
         } else {
             console.error("Save Error:", await res.text());
@@ -6269,7 +6269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) throw error;
                 
                 window.merchantData.appointment_settings = currentApptSettings;
-                if (typeof window.showToast === 'function') window.showToast('Formulario actualizado correctamente', 'success');
+                
             } catch (e) {
                 if (typeof window.showToast === 'function') window.showToast(e.message, 'error');
             } finally {
@@ -6480,7 +6480,7 @@ window.triggerRealAIMagicDesign = async function() {
     const iphone = document.querySelector('.iphone-pro-mockup');
     if(iphone) iphone.style.animation = "spinY 1.5s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275)";
     
-    if (typeof window.showToast === 'function') window.showToast("Gemini AI está analizando tu negocio...", "info");
+    
 
     const industry = document.getElementById('business-category-input') ? document.getElementById('business-category-input').value : 'General';
     const businessName = document.getElementById('rest-name') ? document.getElementById('rest-name').value : 'Mi Negocio';
