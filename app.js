@@ -1224,15 +1224,29 @@ app.post('/api/ai/dashboard-insights', apiLimiter, requireMerchantAuth, async (r
         
         const result = await model.generateContent(systemPrompt);
         let text = await result.response.text();
-        
-        text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        
-        const strategy = JSON.parse(text);
-        res.json(strategy);
-
+        res.json({ insight: text });
     } catch (error) {
-        console.error('Error en Gemini Magic Builder:', error);
-        res.status(500).json({ error: 'Error al generar estrategia con IA.' });
+        console.error('Error en Gemini Dashboard Insights:', error);
+        res.status(500).json({ error: 'Error al generar insight con IA.' });
+    }
+});
+
+// ==========================================
+// GEMINI CRM INSIGHTS
+// ==========================================
+app.post('/api/ai/crm-insights', apiLimiter, requireMerchantAuth, async (req, res) => {
+    if (!genAI) return res.status(503).json({ error: 'La IA no está configurada.' });
+    try {
+        const { customersCount } = req.body;
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const systemPrompt = `Eres un analista de CRM AI. El negocio tiene actualmente ${customersCount} clientes en su base de datos privada. Dame 1 sola sugerencia audaz y altamente efectiva para monetizar esta base de datos esta semana. Solo responde con la sugerencia, sin saludos ni despedidas, directo al punto.`;
+        
+        const result = await model.generateContent(systemPrompt);
+        let text = await result.response.text();
+        res.json({ insight: text });
+    } catch (error) {
+        console.error('Error en Gemini CRM Insights:', error);
+        res.status(500).json({ error: 'Error al generar insight con IA.' });
     }
 });
 
