@@ -4406,7 +4406,7 @@ window.sendSupportGeminiMessage = async function() {
         } else if (text.includes('stripe') || text.includes('cobro') || text.includes('cita')) {
             reply = "¡Claro! Configurar los cobros y la agenda es de lo mejor que puedes hacer para que no te dejen plantado (a nadie le gusta eso 💔).<br><br>Aquí tienes los pasos, súper sencillos:<br>1️⃣ Ve a la pestaña <strong>'Citas/Servicios'</strong> para armar tus horarios disponibles y guardar.<br>2️⃣ Para cobrar por adelantado o apartar lugar, entra a <strong>'Monetización'</strong> y pega ahí tu Enlace de Pago de Stripe.<br><br>¡Así de fácil! Tus clientes reservan solos desde su teléfono mientras tú te tomas un cafecito ☕.";
         } else if (text.includes('hola') || text.includes('ayuda') || text.includes('buenas') || text.includes('buenos')) {
-            reply = "¡Hola, hola! 👋 Qué gusto saludarte. Soy tu asistente de Fidelio (aunque a veces trabajo tanto que creo que soy un humano atrapado en el código 🤖). <br><br>Estoy aquí para ayudarte a sacarle el máximo provecho a la plataforma. ¿En qué te puedo echar la mano hoy? Pregúntame sobre el escáner, las citas o tu cuenta de Stripe.";
+            reply = "¡Hola, hola! 👋 Qué gusto saludarte. Soy tu asistente de Fidelio (aunque a veces trabajo tanto que creo que soy un humano atrapado en el código ). <br><br>Estoy aquí para ayudarte a sacarle el máximo provecho a la plataforma. ¿En qué te puedo echar la mano hoy? Pregúntame sobre el escáner, las citas o tu cuenta de Stripe.";
         } else {
             reply = "¡Ay caramba! 😅 Me agarraste un poquito en curva con esa pregunta. Mi cerebro digital todavía está procesando algunas cosas y no encontré la respuesta exacta a eso.<br><br>Pero no te preocupes, no te voy a dejar solo. Justo a tu derecha tienes el formulario para <strong>Levantar un Ticket de Soporte</strong>. Envía el reporte y mis amigos los ingenieros (ellos sí toman café de verdad ☕) te resolverán este tema de volada.";
         }
@@ -4691,7 +4691,7 @@ window.applyGeminiSuggestion = function() {
         toggleGeminiChat();
         
         if(typeof showToast === 'function') {
-            showToast("Sugerencia de Gemini aplicada ✨", "success");
+            showToast("Sugerencia de Gemini aplicada ", "success");
         }
     }, 100);
 };
@@ -6511,7 +6511,7 @@ window.triggerRealAIMagicDesign = async function() {
                 btn.parentElement.parentElement.appendChild(tipBox);
             }
         }
-        tipBox.innerHTML = `🤖 <b>Gemini AI:</b> ${strategy.tip}`;
+        tipBox.innerHTML = ` <b>Gemini AI:</b> ${strategy.tip}`;
 
         // Force UI update
         if (typeof updatePassRender === 'function') updatePassRender();
