@@ -88,7 +88,7 @@ window.loadCampaigns = async function() {
             <div class="campaign-magic-card" style="position:relative; width: 100%; max-width: 340px; height: 180px; border-radius: 20px; cursor:pointer; perspective: 1000px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onclick="openCampaignHub('${c.id}')">
                 
                 <!-- The actual card using strict Fidelio Brand Colors (no ugly user colors here) -->
-                <div class="campaign-magic-inner" style="position:absolute; inset:0; border-radius: 20px; background: linear-gradient(135deg, #2a0845 0%, #6441A5 100%); box-shadow: 0 10px 30px -10px rgba(100, 65, 165, 0.5); overflow: hidden; transition: all 0.4s; display: flex; flex-direction: column;">
+                <div class="campaign-magic-inner" >
                     
                     <!-- Top section with Wallet shape notch -->
                     <div style="padding: 20px 24px; flex: 1; display:flex; flex-direction:column; justify-content:space-between; position:relative; z-index:2;">
@@ -132,7 +132,7 @@ window.loadCampaigns = async function() {
                 .filter(c => ['membership', 'multipass', 'certificates'].includes(c.type))
                 .map(c => `
                 <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="openCampaignHub('${c.id}')">
-                    <div style="width: 100%; height: 100px; background: linear-gradient(135deg, ${c.color_primary||'#333'}, ${c.color_accent||'#666'}); border-radius: 8px 8px 0 0; margin-top:-20px; margin-left:-20px; margin-right:-20px; margin-bottom:15px; width:calc(100% + 40px);"></div>
+                    <div ></div>
                     <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
                     <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
                 </div>
@@ -3351,7 +3351,7 @@ function updatePassRender() {
         }
         
         if(t.status === 'abierto') {
-            actionsDiv.innerHTML += `<button class="btn btn-primary" onclick="resolveTicket('${t.id}'); document.getElementById('modal-ticket-detail').style.display='none';" style="padding:10px 16px; background:var(--success); border:none;"><i class="fa-solid fa-check"></i> Marcar Resuelto</button>`;
+            actionsDiv.innerHTML += `<button class="fidelio-btn-primary" style="width:100%;"><i class="fa-solid fa-check"></i> Marcar Resuelto</button>`;
         }
         
         document.getElementById('modal-ticket-detail').style.display = 'flex';
@@ -4634,7 +4634,7 @@ window.sendGeminiMessage = function() {
     const typingId = 'typing-' + Date.now();
     const typingHTML = `
         <div id="${typingId}" style="display:flex; gap:8px; opacity:0.7;">
-            <div style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; flex-shrink:0;">
+            <div >
                 <i class="fa-solid fa-sparkles fa-beat"></i>
             </div>
             <div style="background:#1A1A2E; border:1px solid rgba(139,92,246,0.2); border-radius:12px 12px 12px 0; padding:12px; color:#e2e8f0; font-size:13px;">
@@ -4652,7 +4652,7 @@ window.sendGeminiMessage = function() {
         // Mock intelligent response
         const aiHTML = `
             <div style="display:flex; gap:8px;">
-                <div style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; flex-shrink:0;">
+                <div >
                     <i class="fa-solid fa-sparkles"></i>
                 </div>
                 <div style="background:#1A1A2E; border:1px solid rgba(139,92,246,0.2); border-radius:12px 12px 12px 0; padding:12px; color:#e2e8f0; font-size:13px; line-height:1.5;">
@@ -4661,7 +4661,7 @@ window.sendGeminiMessage = function() {
                     <div style="background:#11111A; padding:10px; border-radius:8px; border-left:3px solid #8B5CF6; margin-bottom:12px; font-style:italic; color:#a78bfa;">
                         "¡Arranca tu fin de semana! Hoy viernes tu ticket tiene 2x1 en cervezas mostrando este mensaje. Válido hasta las 8 PM."
                     </div>
-                    <button class="btn btn-primary" onclick="applyGeminiSuggestion()" style="width:100%; padding:8px; font-size:12px; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); border:none; cursor:pointer; color:white; border-radius:8px;"><i class="fa-solid fa-magic"></i> Aplicar esta Sugerencia</button>
+                    <button class="fidelio-btn-primary" style="width:100%;"><i class="fa-solid fa-magic"></i> Aplicar esta Sugerencia</button>
                 </div>
             </div>
         `;
@@ -4957,7 +4957,7 @@ async function calculateRealMetrics() {
             html += `
             <div style="flex:1; display:flex; align-items:flex-end; gap:4px; position:relative; height:100%;">
                 <div class="bento-chart-bar" style="width:40%; background: var(--bg-input); border-radius: 6px 6px 0 0; height: ${baseH}%; animation-delay:0.${5-i}s;"></div>
-                <div class="bento-chart-bar" style="width:60%; background: linear-gradient(to top, var(--accent-violet), #7e22ce); border-radius: 6px 6px 0 0; height: ${retainH}%; animation-delay:0.${5-i}s;"></div>
+                <div class="bento-chart-bar" ></div>
                 <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:11px; font-weight:600; color:var(--text-muted);">${mName}</div>
             </div>`;
         }
@@ -5733,7 +5733,7 @@ window.fetchCopilotIdeas = async function() {
                     <div><span style="color: var(--text-muted);">Audiencia:</span> <span style="color: #34d399; font-weight: 600;">${opp.estimatedReach}</span></div>
                 </div>
 
-                <button class="btn btn-primary" onclick='window.executeCopilotIdea(${JSON.stringify(opp).replace(/'/g, "&apos;")})' style="width: 100%; background: linear-gradient(135deg, rgba(139,92,246,0.8) 0%, rgba(59,130,246,0.8) 100%);">
+                <button class="fidelio-btn-primary" style="width:100%;">
                     Ejecutar con 1 Clic <i class="fa-solid fa-arrow-right"></i>
                 </button>
             `;
@@ -6094,7 +6094,7 @@ window.fetchCopilotIdeas = function() {
                 <i class="fa-solid fa-lock" style="font-size: 24px; margin-bottom: 10px;"></i>
                 <h4>Función Bloqueada</h4>
                 <p style="font-size: 14px; margin-top: 5px;">Actualiza a Plan Profesional para desbloquear el análisis inteligente de Gemini.</p>
-                <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.switchTab('tab-stripe')">Mejorar Plan</button>
+                <button class="fidelio-btn-primary" style="width:100%;">Mejorar Plan</button>
             </div>
         `;
         return;
