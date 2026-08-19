@@ -1674,7 +1674,26 @@ aside {
                             </div>
                         </div>
 
-                        <!-- 4. CITAS Y PAGOS -->
+                        <!-- 4. VIGENCIA Y CADUCIDAD -->
+                        <div class="apple-section">
+                            <div class="apple-section-header"><i class="fa-solid fa-hourglass-half"></i> Vigencia del Programa</div>
+                            <p style="font-size:13px; color:#64748b; margin-bottom:20px; line-height:1.5;">Configura si este programa tiene una fecha de cierre o si el premio caduca después de un tiempo.</p>
+                            
+                            <div style="display:flex; gap:16px;">
+                                <div class="apple-input-group" style="flex:1;">
+                                    <label class="apple-label">Vigencia de la Campaña (Opcional)</label>
+                                    <input type="date" id="camp-valid-until" class="apple-input">
+                                    <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Dejar vacío para que no caduque nunca.</div>
+                                </div>
+                                <div class="apple-input-group" style="flex:1;">
+                                    <label class="apple-label">Tiempo para redimir premio (Días)</label>
+                                    <input type="number" id="camp-grace-period" class="apple-input" value="" min="1" placeholder="Ej. 15">
+                                    <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Días de tolerancia si termina la campaña.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. CITAS Y PAGOS -->
                         <div class="apple-section plan-professional-only" style="background: #ffffff; padding: 0;">
                             <div class="apple-section-header"><i class="fa-solid fa-calendar-check"></i> Integración Wallet</div>
                             <p style="font-size:13px; color:#64748b; margin-bottom:20px; line-height:1.5;">Agrega botones interactivos al reverso de tu tarjeta para que tus clientes agenden o paguen con un toque.</p>
@@ -1921,7 +1940,7 @@ aside {
                 
 
 
-                <div class="accordion-card">
+                <div class="content-panel">
                     <!-- Filtros -->
                     <div class="card-title-bar" style="margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                         <div class="input-group" style="flex: 1; min-width: 250px;">
@@ -2017,7 +2036,7 @@ aside {
                     </div>
                 </div>
                 
-                <div class="accordion-card" style="max-width: 800px;">
+                <div class="content-panel" style="max-width: 800px;">
                     <div class="card-title-bar" style="margin-bottom:16px; justify-content:space-between;">
                         <div style="display:flex; align-items:center; gap:16px;">
                             <div style="width:48px; height:48px; border-radius:12px; background: rgba(255, 255, 255, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px;">
@@ -2551,7 +2570,7 @@ aside {
                     </div>
                 </div>
                 
-                <div class="accordion-card" style="margin-bottom: 24px;">
+                <div class="content-panel" style="margin-bottom: 24px;">
                     <h3 style="margin-bottom:20px; font-size: 16px;"><i class="fa-solid fa-user-plus" style="color:var(--accent-violet); margin-right:8px;"></i> Invitar Nuevo Miembro</h3>
                     
                     <div style="display:flex; gap: 20px; flex-wrap: wrap;">
@@ -2607,7 +2626,7 @@ aside {
                 </div>
 
                 <!-- Staff Table -->
-                <div class="accordion-card">
+                <div class="content-panel">
                     <div class="card-title-bar" style="margin-bottom: 20px;">
                         <h3 style="font-size: 16px;"><i class="fa-solid fa-users-gear" style="color:var(--text-muted); margin-right:8px;"></i> Directorio de Equipo</h3>
                     </div>
@@ -2647,7 +2666,7 @@ aside {
                     </div>
                 </div>
 
-                <div class="accordion-card" style="margin-bottom: 24px; display:flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                <div class="content-panel" style="margin-bottom: 24px; display:flex; gap: 16px; flex-wrap: wrap; align-items: center;">
                     <div class="form-group" style="flex:1; margin-bottom: 0;">
                         <label>Seleccionar Campaña Existente (o Crear Nueva)</label>
                         <select id="campaign-select-config" class="fidelio-input" style="width:100%;">
@@ -2660,7 +2679,7 @@ aside {
                     </div>
                 </div>
 
-                <div class="accordion-card" style="margin-bottom: 24px;">
+                <div class="content-panel" style="margin-bottom: 24px;">
                     <h3 style="margin-bottom:20px; font-size: 16px;"><i class="fa-solid fa-gears" style="color:var(--accent-violet); margin-right:8px;"></i> Motor Principal de Recompensas</h3>
                     
                     <div class="role-selector" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
@@ -2764,7 +2783,7 @@ aside {
                     </div>
 
                     <!-- STAMPS SETTINGS -->
-                    <div class="accordion-card" style="flex: 1; min-width: 300px;">
+                    <div class="content-panel" style="flex: 1; min-width: 300px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-stamp" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración de Sellos</h3>
                             <label class="toggle-switch">
