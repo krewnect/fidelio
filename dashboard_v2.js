@@ -2666,6 +2666,14 @@ function updatePassRender() {
 
     navTabs.forEach(tab => {
         tab.addEventListener('click', () => {
+            // SECURITY: Prevent localStorage from auto-clicking hidden protected tabs
+            if (window.getComputedStyle(tab).display === 'none') {
+                localStorage.removeItem('activeFidelioTab');
+                const homeTab = document.querySelector('.nav-tab[data-tab="tab-home"]');
+                if (homeTab && homeTab !== tab) homeTab.click();
+                return;
+            }
+            
             // Cerrar sidebar en móviles
             const sidebar = document.querySelector('.app-sidebar');
             if(sidebar) sidebar.classList.remove('mobile-open');
