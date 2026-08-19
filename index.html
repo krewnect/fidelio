@@ -820,56 +820,7 @@
                             <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -1.5px; color: #111827; margin: 0;">Diseñador Mágico</h1>
                             <p style="font-size: 15px; color: #64748b; margin-top: 8px; line-height: 1.5;">Configura la tarjeta digital Wallet de tu negocio. Todos los cambios se reflejan al instante en la vista previa derecha.</p>
                             
-                            <div style="margin-top:24px; background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(59,130,246,0.1) 100%); padding:20px 24px; border-radius:16px; display:flex; align-items:center; gap:20px; border:1px solid rgba(139,92,246,0.2);">
-                                <div style="font-size:32px; filter:drop-shadow(0 4px 6px rgba(139,92,246,0.3)); animation: float 3s ease-in-out infinite;">🤖</div>
-                                <div style="flex:1;">
-                                    <h4 style="margin:0 0 4px; font-size:16px; font-weight:800; color:#1e1b4b;">Copiloto de Marketing IA</h4>
-                                    <p style="margin:0; font-size:13px; color:#475569; line-height:1.4;">Deja que la IA analice tu industria y configure la estrategia perfecta por ti.</p>
-                                </div>
-                                <button onclick="triggerAIMagicDesign()" style="background:linear-gradient(135deg, #8b5cf6, #3b82f6); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; transition:transform 0.2s; box-shadow:0 4px 15px rgba(139,92,246,0.3);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                    ¡Haz Magia! ✨
-                                </button>
                             </div>
-                        </div>
-
-                        <!-- 1. IDENTIDAD -->
-                        <div class="apple-section">
-                            <div class="apple-section-header"><i class="fa-solid fa-store"></i> Identidad de Marca</div>
-                            
-                            <div class="apple-input-group">
-                                <label class="apple-label">Nombre del Negocio / Especialista</label>
-                                <input type="text" id="rest-name" class="apple-input" value="Mi Negocio">
-                            </div>
-                            
-                            <div style="display:flex; gap:16px;">
-                                <div class="apple-input-group" style="flex:1;">
-                                    <label class="apple-label">Categoría</label>
-                                    <input type="text" id="business-category-input" class="apple-input" value="Mi Negocio / Especialidad">
-                                </div>
-                                <div class="apple-input-group" style="flex:1;">
-                                    <label class="apple-label">Ícono Decorativo</label>
-                                    <select id="rest-icon" class="apple-input">
-                                        <option value="fa-crown" selected>Corona (VIP)</option>
-                                        <option value="fa-stethoscope">Salud / Médico</option>
-                                        <option value="fa-scissors">Estética / Spa</option>
-                                        <option value="fa-dumbbell">Gym / Fitness</option>
-                                        <option value="fa-burger">Gastronomía</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="apple-input-group">
-                                <label class="apple-label">Logo del Negocio</label>
-                                <div style="display:flex; align-items:center; gap:16px;">
-                                    <div style="flex:1; border: 2px dashed #cbd5e1; background:#f8fafc; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#8b5cf6'" onmouseout="this.style.borderColor='#cbd5e1'" onclick="document.getElementById('logo-file-input').click()">
-                                        <input type="file" id="logo-file-input" accept="image/png, image/jpeg" style="display:none;">
-                                        <i class="fa-solid fa-cloud-arrow-up" style="color:#94a3b8; font-size:20px; margin-bottom:8px;"></i>
-                                        <div style="font-size:13px; color:#64748b; font-weight:600;">Haz clic para subir imagen</div>
-                                    </div>
-                                    <button id="btn-remove-logo" style="display:none; background:#fee2e2; color:#ef4444; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer;">Quitar</button>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- 2. RECOMPENSAS -->
                         <div class="apple-section">
