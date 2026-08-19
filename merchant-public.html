@@ -282,12 +282,8 @@
                 // Sort campaigns so the most recently created/edited one is first
                 visibleCampaigns.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 
-                const isProfessional = merch.business_type === 'professional' || (merch.industry && merch.industry.toLowerCase().includes('professional'));
-                
-                if (isProfessional && visibleCampaigns.length > 0) {
-                    // Force professionals to only use their newest campaign to avoid dropdowns
-                    visibleCampaigns = [ visibleCampaigns[0] ];
-                }
+                // const isProfessional = merch.business_type === 'professional';
+                // Remove the forced 1-campaign restriction so dropdown works for everyone.
                 
                 if (visibleCampaigns.length === 0) {
                     throw new Error('Este negocio no tiene programas activos en este momento.');
@@ -316,6 +312,11 @@
                 document.getElementById('business-name').textContent = merch.business_name;
                 document.title = `${merch.business_name} - Tarjeta Digital`;
                 document.getElementById('merchant-id').value = merch.id;
+
+                // DEBUG: Show exactly what was fetched
+                console.log("FETCHED CAMPAIGNS:", visibleCampaigns);
+                const subtitle = document.getElementById('business-subtitle');
+                if (subtitle) subtitle.innerHTML += `<br><span style="font-size:10px; color:red;">DEBUG: Campaigns found: ${visibleCampaigns.length}</span>`;
 
                 // If multiple campaigns, show dropdown
                 if (visibleCampaigns.length > 1) {
