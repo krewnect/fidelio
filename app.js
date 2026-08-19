@@ -1223,61 +1223,9 @@ app.post('/api/ai/dashboard-insights', apiLimiter, requireMerchantAuth, async (r
         const systemPrompt = `Eres un Director Financiero AI. Analiza estas métricas en tiempo real del negocio y dame un resumen ejecutivo de máximo 3 oraciones con un tono profesional, alentador y estratégico. Destaca qué métrica es la mejor y da una sugerencia táctica rápida. Métricas: ${JSON.stringify(metrics)}`;
         
         const result = await model.generateContent(systemPrompt);
-        const text = await result.response.text();
-        res.json({ insight: text.trim() });
-    } catch (error) {
-        res.status(500).json({ error: 'Error al generar insights del dashboard.' });
-    }
-});
-
-// --- AI (GEMINI) CRM ANALYZER ---
-app.post('/api/ai/crm-insights', apiLimiter, requireMerchantAuth, async (req, res) => {
-    if (!genAI) return res.status(503).json({ error: 'La IA no está configurada.' });
-    try {
-        const { customersCount } = req.body;
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const systemPrompt = `Eres un experto en CRM. El negocio tiene actualmente ${customersCount} clientes registrados en su base de datos. Dame un consejo de 2 oraciones sobre cómo segmentar esta base de datos o qué tipo de campaña (ej. Winback, VIP) ejecutar para maximizar el retorno. Se directo y accionable.`;
-        
-        const result = await model.generateContent(systemPrompt);
-        const text = await result.response.text();
-        res.json({ insight: text.trim() });
-    } catch (error) {
-        res.status(500).json({ error: 'Error al generar insights del CRM.' });
-    }
-});
-
-app.post('/api/ai/magic-builder', apiLimiter, requireMerchantAuth, async (req, res) => {
-    if (!genAI) {
-        return res.status(503).json({ error: 'La IA no está configurada actualmente (GEMINI_API_KEY).' });
-    }
-
-    try {
-        const { industry, businessName } = req.body;
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        
-        const systemPrompt = `
-Eres un experto consultor de marketing especializado en retención de clientes. 
-Un negocio llamado "${businessName}" en la industria/categoría "${industry}" quiere crear una tarjeta de lealtad digital (Apple Wallet).
-
-Debes diseñar la mecánica de lealtad perfecta para su industria.
-Devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta:
-{
-  "primaryColor": "#CódigoHexadecimal",
-  "accentColor": "#CódigoHexadecimal",
-  "stampsTotal": un número entero entre 4 y 12 (lo más estratégico para su industria),
-  "reward": "El premio final (ej. Masaje Capilar Gratis, Consulta de Seguimiento, etc)",
-  "instruction": "Instrucción breve (ej. Acumula 5 visitas para ganar)",
-  "tip": "Tu consejo como IA experta explicando por qué elegiste esa cantidad de sellos y ese premio específicamente para su industria."
-}
-No incluyas markdown, no incluyas texto fuera del JSON.
-`;
-
-        const result = await model.generateContent(systemPrompt);
         let text = await result.response.text();
         
-        text = text.replace(/```json
-?/g, '').replace(/```
-?/g, '').trim();
+        text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         
         const strategy = JSON.parse(text);
         res.json(strategy);
