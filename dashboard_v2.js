@@ -2105,7 +2105,7 @@ function renderCRMTable() {
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div style="width:34px; height:34px; border-radius:50%; background:var(--fidelio-violet); color:white; display:flex; align-items:center; justify-content:center; font-weight:800;">${(c.full_name || c.name || '?').charAt(0).toUpperCase()}</div>
                         <div>
-                            <strong>${c.full_name || c.name || 'Cliente sin nombre'}</strong>
+                            <strong>${c.full_name || c.name || 'Cliente sin nombre'} <i class='fa-solid fa-lock' style='font-size:9px; color:#10B981; margin-left:4px;' title='Datos Encriptados (AES-256)'></i></strong>
                             <small style="display:block; color:var(--text-muted);">${c.id.substring(0,8)}...</small>
                         </div>
                     </div>
