@@ -150,7 +150,13 @@ function generateUUID() {
 
 window.createNewCampaign = function() {
     // Go directly to the magical designer so they can use Gemini AI
-    document.querySelector('.nav-tab[data-tab="tab-builder"]').click();
+    
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    const builderTab = document.getElementById('tab-builder');
+    if (builderTab) builderTab.classList.add('active');
+    else console.error("tab-builder not found");
+
 };
 
 window.applyQuickTemplate = function(type) {
