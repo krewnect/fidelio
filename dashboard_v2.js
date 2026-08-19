@@ -2228,7 +2228,7 @@ function updatePassRender() {
         
         const pName = document.getElementById('rest-name')?.value || state.restaurantName || "Mi Negocio";
         const catInput = document.getElementById('business-category-input');
-        let pCat = "Restaurante & Gastronomía";
+        let pCat = "Mi Negocio / Especialidad";
         if (catInput) {
             pCat = catInput.value;
         } else {

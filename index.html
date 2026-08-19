@@ -41,6 +41,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
+            background-color: #f9fafb !important;
             background-color: var(--bg-deep);
             color: var(--text-main);
             font-family: var(--font-main);
@@ -296,6 +297,7 @@
     <style>
         /* Disable text selection globally */
         body {
+            background-color: #f9fafb !important;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -849,7 +851,7 @@
                                 </div>
                                 <div>
                                     <label class="premium-label"><i class="fa-solid fa-briefcase text-muted"></i> Categoría del Negocio</label>
-                                    <input type="text" id="business-category-input" class="premium-input" value="Restaurante & Gastronomía" placeholder="Ej: Barbería, Spa...">
+                                    <input type="text" id="business-category-input" class="premium-input" value="Mi Negocio / Especialidad" placeholder="Ej: Barbería, Spa...">
                                 </div>
                                 <div>
                                     <label class="premium-label">Logo del Negocio</label>
@@ -919,7 +921,7 @@
                             <div class="premium-section-title">Integración de Citas y Pagos <span style="background:#8b5cf6; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:8px;">PRO</span></div>
                             <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Añade botones interactivos a la tarjeta para que tus clientes puedan agendar o pagar sus citas directamente desde su Wallet.</p>
                             
-                            <div style="display:grid; gap:16px; margin-bottom:24px;">
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; margin-bottom:24px;">
                                 <div>
                                     <label class="premium-label"><i class="fa-solid fa-calendar-check" style="color:var(--accent-violet);"></i> Mostrar botón de 'Agendar Cita'</label>
                                     <select id="builder-btn-appointment" class="premium-input">
