@@ -396,8 +396,6 @@ app.post('/api/auth/register', async (req, res) => {
                     
                     if (promo.target_plan) {
                         businessType = promo.target_plan;
-                        // Map internal 'business' to 'restaurant' to satisfy Postgres constraints
-                        if (businessType === 'business') businessType = 'restaurant';
                     }
                     if (promo.reward_type === 'lifetime_free' || (promo.reward_type === 'discount' && promo.discount_pct >= 100)) {
                         planStatus = 'active_lifetime';
@@ -436,7 +434,7 @@ app.post('/api/auth/register', async (req, res) => {
         const { error: dbError } = await supabase
             .from('merchants')
             .insert([
-                { id: authData.user.id, business_name: businessName, plan_status: planStatus, business_type: (businessType === 'business' ? 'restaurant' : businessType) || 'restaurant' }
+                { id: authData.user.id, business_name: businessName, plan_status: planStatus, business_type: businessType || 'restaurant' }
             ]);
         
         if (dbError) console.error("Error al crear merchant:", dbError);
