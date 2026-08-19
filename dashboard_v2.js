@@ -149,15 +149,9 @@ function generateUUID() {
 }
 
 window.createNewCampaign = function() {
-    // En lugar de tirarlos directo a los settings, abrimos el Asistente Mágico
-    const modal = document.getElementById('modal-quick-campaign');
-    if(modal) {
-        modal.style.display = 'flex';
-        document.getElementById('quick-wizard-loading').style.display = 'none';
-        
-        // Asignar un ID nuevo temporalmente por si deciden avanzar
-        state.currentCampaignId = generateUUID();
-    }
+    // Go directly to the magical designer so they can use Gemini AI
+    document.querySelector('.nav-tab[data-tab="tab-builder"]').click();
+}
 };
 
 window.applyQuickTemplate = function(type) {
