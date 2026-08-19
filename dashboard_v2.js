@@ -1242,10 +1242,23 @@ window.updateUnifiedDesc = function(val) {
             container.id = 'toast-container';
             container.className = 'toast-container';
             document.body.appendChild(container);
+            
+            // INJECT TOAST CSS DYNAMICALLY BECAUSE IT WAS MISSING
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 999999; }
+                .toast-msg { background: #ffffff; color: #111827; border-left: 4px solid #3b82f6; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-radius: 8px; padding: 16px 20px; min-width: 300px; display: flex; align-items: center; justify-content: space-between; font-family: sans-serif; font-size: 14px; font-weight: 600; animation: slideInUp 0.3s ease-out forwards; }
+                .toast-msg i { font-size: 18px; margin-right: 12px; }
+                .toast-msg.success { border-left-color: #10B981; }
+                .toast-msg.error { border-left-color: #EF4444; }
+                .toast-msg.warning { border-left-color: #F59E0B; }
+                @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            `;
+            document.head.appendChild(style);
         }
 
         const toast = document.createElement('div');
-        toast.className = 'toast-msg';
+        toast.className = 'toast-msg ' + type;
         
         let iconClass = 'fa-circle-info';
         if (type === 'success') iconClass = 'fa-circle-check text-emerald';
