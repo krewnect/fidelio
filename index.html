@@ -372,6 +372,33 @@
     background: #E5E7EB !important;
 }
 
+
+/* CRITICAL BUTTON FIX */
+.fidelio-btn-primary, button.fidelio-btn-primary {
+    background: #7C3AED !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 14px 28px !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    box-shadow: 0 2px 4px rgba(124, 58, 237, 0.15) !important;
+    transition: all 0.2s ease !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    cursor: pointer !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif !important;
+}
+.fidelio-btn-primary:hover {
+    background: #6D28D9 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25) !important;
+}
+
 </style>
 
     <!-- SECURITY: Anti-Copy & Anti-DevTools Protection -->
@@ -751,7 +778,7 @@ aside {
     <div class="app-shell">
         <!-- SIDEBAR -->
         <aside class="app-sidebar">
-            <div class="sidebar-brand" style="cursor: pointer;" onclick="document.querySelector('.nav-tab[data-tab=\'tab-home\']').click()">
+            <div class="sidebar-brand" style="cursor: pointer;" onclick="if(typeof switchTab === 'function'){switchTab('home')}else{location.reload()}">
                 <img src="./fidelio_logo_purple.png?v=5" alt="Fidelio Logo" style="height: 44px; width: auto; object-fit: contain;" />
             </div>
 
@@ -942,13 +969,13 @@ aside {
             <section id="tab-home" class="tab-content active">
                 
                 <!-- PORTAL PUBLICO -->
-                <div class="content-panel" style="background: #111827 !important; border: none !important; color: white !important; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;">
+                <div class="content-panel" style="background: #FFFFFF !important; border: 1px solid #C4B5FD !important; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; box-shadow: 0 4px 20px rgba(139,92,246,0.08) !important;">
                     <div style="flex: 1; min-width: 280px;">
-                        <h2 style="font-size: 18px; margin-bottom: 8px; font-weight: 700; color: #FFFFFF; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-earth-americas" style="color: #8B5CF6;"></i> Tu Portal Público</h2>
-                        <p style="color: #9CA3AF; font-size: 14px; margin: 0; max-width: 500px; line-height:1.6;">Comparte este enlace con tus clientes para que se registren y descarguen su tarjeta en Apple o Google Wallet.</p>
+                        <h2 style="font-size: 18px; margin-bottom: 8px; font-weight: 700; color: #4C1D95; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-earth-americas" style="color: #8B5CF6;"></i> Tu Portal Público</h2>
+                        <p style="color: #6B7280; font-size: 14px; margin: 0; max-width: 500px; line-height:1.6;">Comparte este enlace con tus clientes para que se registren y descarguen su tarjeta en Apple o Google Wallet.</p>
                     </div>
-                    <div style="display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                        <div style="padding: 0 12px; font-family: monospace; font-size: 14px; color: #E5E7EB;" id="landing-link-display">
+                    <div style="display: flex; gap: 12px; align-items: center; background: #F9FAFB; padding: 8px; border-radius: 12px; border: 1px solid #E5E7EB;">
+                        <div style="padding: 0 12px; font-family: monospace; font-size: 14px; color: #6D28D9; font-weight: 600;" id="landing-link-display">
                             fideliorewards.com/tu-negocio
                         </div>
                         <button class="fidelio-btn-primary" style="padding: 8px 16px; font-size:13px;" onclick="copyLandingLink()">
@@ -963,7 +990,7 @@ aside {
                         <h1>Rendimiento en Vivo</h1>
                         <p>Métricas financieras y comportamiento de tus clientes en tiempo real.</p>
                     </div>
-                    <button class="fidelio-btn-primary" style="background: #F3F4F6 !important; color: #111827 !important;" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Actualizar</button>
+                    <button class="fidelio-btn-secondary" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Actualizar</button>
                 </div>
 
                 <!-- GEMINI DASHBOARD INSIGHTS -->
@@ -1017,7 +1044,7 @@ aside {
                     <div class="content-panel">
                         <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 24px 0; display:flex; justify-content:space-between; align-items:center;">
                             <span>Actividad Reciente</span>
-                            <button class="fidelio-btn-primary" style="background:#F3F4F6 !important; color:#111827 !important; padding:6px 12px; font-size:12px; border-radius:8px;">Ver todo</button>
+                            <button class="fidelio-btn-secondary" style="padding:6px 12px; font-size:12px;">Ver todo</button>
                         </h3>
                         <div id="activity-feed" style="display: flex; flex-direction: column; gap: 16px;">
                             <div style="text-align: center; color: #9CA3AF; padding: 40px 0; font-size: 14px;">Aún no hay actividad registrada hoy.</div>
