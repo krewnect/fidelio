@@ -434,7 +434,7 @@ app.post('/api/auth/register', async (req, res) => {
         const { error: dbError } = await supabase
             .from('merchants')
             .insert([
-                { id: authData.user.id, business_name: businessName, plan_status: planStatus, business_type: businessType || 'restaurant' }
+                { id: authData.user.id, business_name: businessName, plan_status: planStatus, business_type: businessType || 'business' }
             ]);
         
         if (dbError) console.error("Error al crear merchant:", dbError);
