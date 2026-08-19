@@ -2186,93 +2186,81 @@ window.triggerAIMagicDesign = function() {
     if(iphone) iphone.style.animation = "spinY 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
     
     setTimeout(() => {
-        let aiTip = "";
-        let newStamps = 10;
-        
         // Smart AI detection
         const catInputVal = document.getElementById('business-category-input') ? document.getElementById('business-category-input').value.toLowerCase() : '';
         const iconVal = document.getElementById('rest-icon') ? document.getElementById('rest-icon').value : '';
         
-        let detectedCategory = state.category || 'general';
+        let cat = 'general';
         if (iconVal === 'fa-stethoscope' || catInputVal.includes('salud') || catInputVal.includes('medico') || catInputVal.includes('doctor') || catInputVal.includes('dentista') || catInputVal.includes('clinica')) {
-            detectedCategory = 'medico';
+            cat = 'medico';
         } else if (iconVal === 'fa-scissors' || catInputVal.includes('belleza') || catInputVal.includes('spa') || catInputVal.includes('barber') || catInputVal.includes('salon')) {
-            detectedCategory = 'belleza';
+            cat = 'belleza';
         } else if (iconVal === 'fa-dumbbell' || catInputVal.includes('gym') || catInputVal.includes('crossfit') || catInputVal.includes('fitness')) {
-            detectedCategory = 'clases';
+            cat = 'clases';
         }
+
+        const strategies = {
+            medico: [
+                { pri: '#064e3b', acc: '#10b981', reward: 'Consulta de Seguimiento Sin Costo', desc: 'Prioriza tu bienestar. Premia tu constancia.', stamps: 5, tip: "💡 Tip MKT IA: Metas cortas (5) en salud evitan que el paciente abandone el tratamiento. Aumenta el retorno un 42%." },
+                { pri: '#1e3a8a', acc: '#3b82f6', reward: 'Limpieza Dental o Chequeo Básico Gratis', desc: 'La prevención es tu mejor recompensa.', stamps: 8, tip: "💡 Tip MKT IA: Ofrecer un servicio preventivo gratis asegura que el paciente vuelva para tratamientos más complejos." },
+                { pri: '#4c1d95', acc: '#8b5cf6', reward: 'Descuento de $500 MXN en Especialidad', desc: 'Acumula tus visitas y obtén acceso VIP.', stamps: 10, tip: "💡 Tip MKT IA: Recompensas de alto valor monetario justifican metas largas (10 sellos) en clínicas de especialidad." }
+            ],
+            belleza: [
+                { pri: '#be185d', acc: '#f472b6', reward: 'Masaje Capilar y Tratamiento VIP', desc: 'Tu lealtad merece ser consentida.', stamps: 6, tip: "💡 Tip MKT IA: En salones, regalar servicios que toman poco tiempo (masaje) no te cuesta pero se percibe carísimo." },
+                { pri: '#0f172a', acc: '#fbbf24', reward: 'Corte Premium Gratis', desc: 'Mantén tu estilo impecable.', stamps: 8, tip: "💡 Tip MKT IA: El 'Corte Gratis' es el estándar de barberías. Pide 8 visitas para garantizar rentabilidad anual." },
+                { pri: '#4c1d95', acc: '#d946ef', reward: 'Kit de Productos de Mantenimiento', desc: 'Lleva la experiencia del salón a tu casa.', stamps: 10, tip: "💡 Tip MKT IA: Regalar productos físicos como premio obliga al cliente a probar tu marca y luego comprarla." }
+            ],
+            clases: [
+                { pri: '#ea580c', acc: '#f97316', reward: 'Sesión de Entrenamiento Personalizado', desc: 'Supera tus límites en cada visita.', stamps: 10, tip: "💡 Tip MKT IA: En fitness, regalar una sesión 1-a-1 genera un 'upsell' natural para vender planes privados." },
+                { pri: '#111827', acc: '#10b981', reward: 'Análisis de Composición Corporal Gratis', desc: 'Mide tu progreso. Alcanza tu meta.', stamps: 5, tip: "💡 Tip MKT IA: Premiar con mediciones (InBody) a corto plazo motiva al usuario a renovar su mensualidad." },
+                { pri: '#0f172a', acc: '#3b82f6', reward: 'Semana de Invitado VIP', desc: 'Entrena acompañado. Invita a un amigo.', stamps: 8, tip: "💡 Tip MKT IA: Regalar pases de invitado es marketing viral. Tu cliente te trae a un prospecto nuevo." }
+            ],
+            general: [
+                { pri: '#1e1b4b', acc: '#8b5cf6', reward: 'Descuento del 20% en tu Ticket', desc: 'Gracias por preferirnos. Disfruta tu premio.', stamps: 8, tip: "💡 Tip MKT IA: Un descuento porcentual protege tus márgenes mientras el cliente siente un gran ahorro." },
+                { pri: '#7f1d1d', acc: '#ef4444', reward: 'Producto Estrella o Postre Gratis', desc: 'Acumula compras y date un gusto.', stamps: 6, tip: "💡 Tip MKT IA: Regalar comida/producto en lugar de dinero reduce el costo real del premio a un tercio." },
+                { pri: '#064e3b', acc: '#10b981', reward: 'Upgrade de Tamaño o Servicio Sin Costo', desc: 'Sube de nivel. Eres cliente VIP.', stamps: 5, tip: "💡 Tip MKT IA: El 'Upsize' gratis tiene el mayor retorno psicológico con el menor costo operativo." }
+            ]
+        };
+
+        const options = strategies[cat] || strategies.general;
+        const choice = options[Math.floor(Math.random() * options.length)];
+
+        // Update Global State
+        state.colorPrimary = choice.pri;
+        state.colorAccent = choice.acc;
+        state.stampsReward = choice.reward;
+        state.dynamicDesc = choice.desc;
         
-        if (detectedCategory === 'medico') {
-            state.colorPrimary = '#064e3b'; // Medical Green
-            state.colorAccent = '#10b981';
-            state.stampsReward = 'Consulta de Seguimiento Gratis';
-            state.dynamicDesc = 'Tu salud es lo más importante. Premia tu constancia.';
-            newStamps = 5;
-            aiTip = "💡 Tip MKT IA: En el sector médico, las metas largas frustran al paciente. Reduje la meta a 5 consultas. ¡Esto aumenta el retorno un 42%!";
-        } else if (state.category === 'belleza') {
-            state.colorPrimary = '#4c1d95'; // Purple
-            state.colorAccent = '#d946ef'; // Pink
-            state.stampsReward = 'Masaje Capilar o Tratamiento VIP';
-            state.dynamicDesc = 'Mantén tu estilo perfecto y obtén recompensas exclusivas.';
-            newStamps = 8;
-            aiTip = "💡 Tip MKT IA: En estética, es mejor regalar servicios complementarios (como un masaje) en lugar de descuentos. Aumenta el ticket promedio.";
-        } else if (state.category === 'clases') {
-            state.colorPrimary = '#1e3a8a'; // Sport Blue
-            state.colorAccent = '#ef4444'; // Red
-            state.stampsReward = 'Sesión Personalizada Extra';
-            state.dynamicDesc = 'No te rindas. Cada clase te acerca a tu meta.';
-            newStamps = 10;
-            aiTip = "💡 Tip MKT IA: En deportes, la constancia se premia con más valor. Regalar una sesión personalizada fortalece la retención a largo plazo.";
-        } else {
-            state.colorPrimary = '#0f172a';
-            state.colorAccent = '#8b5cf6';
-            state.stampsReward = 'Cupón de $500 MXN';
-            state.dynamicDesc = 'Acumula compras y desbloquea nivel VIP.';
-            newStamps = 10;
-            aiTip = "💡 Tip MKT IA: Para retail/general, el cashback directo en cupones genera compras impulsivas un 25% más rápido.";
-        }
-        
-        if (document.getElementById('color-primary')) document.getElementById('color-primary').value = state.colorPrimary;
-        if (document.getElementById('color-accent')) document.getElementById('color-accent').value = state.colorAccent;
-        if (document.getElementById('unified-reward')) document.getElementById('unified-reward').value = state.stampsReward;
-        if (document.getElementById('unified-desc')) document.getElementById('unified-desc').value = state.dynamicDesc;
-        if (document.getElementById('stamps-total')) document.getElementById('stamps-total').value = newStamps;
-        
-        if (typeof updatePassRender === 'function') updatePassRender();
-        
-        // Show AI Tip in a beautiful alert or toast
-        if (typeof showToast === 'function') {
-            showToast("✨ Estrategia de Marketing Aplicada", "success");
-        }
-        
-        // Inject Tip into UI
+        // Force update the actual inputs so they render in the DOM!
+        if (document.getElementById('color-primary')) document.getElementById('color-primary').value = choice.pri;
+        if (document.getElementById('color-accent')) document.getElementById('color-accent').value = choice.acc;
+        if (document.getElementById('unified-reward')) document.getElementById('unified-reward').value = choice.reward;
+        if (document.getElementById('stamps-reward')) document.getElementById('stamps-reward').value = choice.reward; // Fallback
+        if (document.getElementById('unified-desc')) document.getElementById('unified-desc').value = choice.desc;
+        if (document.getElementById('stamps-total')) document.getElementById('stamps-total').value = choice.stamps;
+
+        // Ensure program type is stamps
+        if (document.getElementById('program-type-select')) document.getElementById('program-type-select').value = 'stamps';
+
         let tipBox = document.getElementById('ai-mkt-tip');
         if (!tipBox) {
             tipBox = document.createElement('div');
             tipBox.id = 'ai-mkt-tip';
-            tipBox.style.marginTop = '16px';
-            tipBox.style.padding = '16px';
-            tipBox.style.background = 'rgba(139, 92, 246, 0.1)';
-            tipBox.style.border = '1px solid rgba(139, 92, 246, 0.3)';
-            tipBox.style.borderRadius = '12px';
-            tipBox.style.color = '#4c1d95';
-            tipBox.style.fontSize = '13px';
-            tipBox.style.fontWeight = '600';
-            tipBox.style.lineHeight = '1.5';
-            tipBox.style.animation = 'fadeInUp 0.5s';
-            
-            // Find the copilot card and append it
+            tipBox.style = 'margin-top:20px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:16px; color:#4c1d95; font-size:13px; font-weight:600; line-height:1.5; animation:fadeIn 0.5s;';
             const magicButton = document.querySelector('button[onclick="triggerAIMagicDesign()"]');
             if (magicButton && magicButton.parentElement && magicButton.parentElement.parentElement) {
                 magicButton.parentElement.parentElement.appendChild(tipBox);
             }
         }
-        tipBox.innerHTML = aiTip;
+        tipBox.innerHTML = choice.tip;
+        
+        // Force the UI refresh
+        if (typeof updatePassRender === 'function') updatePassRender();
         
         try {
             if (window.JSConfetti) {
                 const jsConfetti = new window.JSConfetti();
-                jsConfetti.addConfetti({ emojis: ['📈', '💡', '🧠'], confettiNumber: 30 });
+                jsConfetti.addConfetti({ emojis: ['📈', '💡', '🧠', '✨'], confettiNumber: 40 });
             }
         } catch(e) {}
         
