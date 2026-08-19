@@ -1234,6 +1234,37 @@ app.post('/api/ai/dashboard-insights', apiLimiter, requireMerchantAuth, async (r
 // ==========================================
 // GEMINI CRM INSIGHTS
 // ==========================================
+
+// ==========================================
+// GEMINI METRICS INSIGHTS
+// ==========================================
+app.post('/api/ai/metrics-insights', apiLimiter, requireMerchantAuth, async (req, res) => {
+    if (!genAI) return res.status(503).json({ insight: 'La IA no está configurada.' });
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = "Eres un estratega de negocios. Analiza estas métricas generales: Tasa de Retorno, Crecimiento mensual, CAC, LTV. Dame un consejo de 2 líneas sobre cómo optimizarlas y retener más clientes.";
+        const result = await model.generateContent(prompt);
+        res.json({ success: true, insight: result.response.text().replace(/\*/g, '') });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
+// ==========================================
+// GEMINI APPOINTMENTS INSIGHTS
+// ==========================================
+app.post('/api/ai/appointments-insights', apiLimiter, requireMerchantAuth, async (req, res) => {
+    if (!genAI) return res.status(503).json({ insight: 'La IA no está configurada.' });
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = "Eres un experto en optimización de agendas. Dame un consejo corto (2 líneas) sobre cómo reducir el ausentismo (no-shows) y aumentar la tasa de reservas (upselling de servicios adicionales).";
+        const result = await model.generateContent(prompt);
+        res.json({ success: true, insight: result.response.text().replace(/\*/g, '') });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
 app.post('/api/ai/crm-insights', apiLimiter, requireMerchantAuth, async (req, res) => {
     if (!genAI) return res.status(503).json({ error: 'La IA no está configurada.' });
     try {

@@ -6623,3 +6623,38 @@ window.switchTab = function(tabId) {
         setTimeout(fetchGeminiCRMInsights, 500);
     }
 };
+
+
+window.fetchGeminiMetricsInsights = async function() {
+    const textEl = document.getElementById('gemini-metrics-text');
+    if (!textEl) return;
+    textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color:#7C3AED;"></i> Evaluando retornos de inversión y ticket promedio...';
+    try {
+        const token = localStorage.getItem('merchant_token');
+        const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
+        if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
+        const res = await fetch('/api/ai/metrics-insights', reqOpts);
+        if (!res.ok) throw new Error('Error al conectar con Gemini');
+        const data = await res.json();
+        textEl.innerHTML = `<b>Reporte de Optimización:</b> ${data.insight}`;
+    } catch (err) {
+        textEl.innerHTML = '<i style="color:#ef4444;">No se pudo conectar con Gemini. Reintenta más tarde.</i>';
+    }
+};
+
+window.fetchGeminiAppointmentsInsights = async function() {
+    const textEl = document.getElementById('gemini-appointments-text');
+    if (!textEl) return;
+    textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color:#7C3AED;"></i> Diseñando tácticas para reducir el ausentismo...';
+    try {
+        const token = localStorage.getItem('merchant_token');
+        const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
+        if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
+        const res = await fetch('/api/ai/appointments-insights', reqOpts);
+        if (!res.ok) throw new Error('Error al conectar con Gemini');
+        const data = await res.json();
+        textEl.innerHTML = `<b>Táctica Sugerida:</b> ${data.insight}`;
+    } catch (err) {
+        textEl.innerHTML = '<i style="color:#ef4444;">No se pudo conectar con Gemini. Reintenta más tarde.</i>';
+    }
+};
