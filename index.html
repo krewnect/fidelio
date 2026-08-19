@@ -110,7 +110,7 @@
         .nav-tab i { font-size: 15px; color: var(--text-muted); width: 20px; text-align: center; transition: var(--transition); }
         .nav-tab:hover { color: var(--text-main); background: rgba(0,0,0,0.03); }
         .nav-tab.active {
-            background: var(--bg-input); color: var(--accent-violet); border: 1px solid var(--border-accent);
+            background: rgba(255, 255, 255, 0.1); color: var(--accent-violet); border: 1px solid var(--border-accent);
         }
         .nav-tab.active i { color: var(--accent-violet); }
 
@@ -150,13 +150,13 @@
         .accordion-card:hover::before { opacity:1; }
 
         .card-title-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
-        .card-step-badge { font-size: 13px; font-weight: 800; background: var(--bg-input); color: var(--accent-violet); padding: 6px 14px; border-radius: var(--radius-pill); font-family: var(--font-main); letter-spacing: 0.5px; }
+        .card-step-badge { font-size: 13px; font-weight: 800; background: rgba(255, 255, 255, 0.1); color: var(--accent-violet); padding: 6px 14px; border-radius: var(--radius-pill); font-family: var(--font-main); letter-spacing: 0.5px; }
         .card-title-bar h2 { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; }
 
                 
         /* FILE DROPZONE */
-        .file-dropzone { border: 2px dashed #d1d5db; border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; background: var(--bg-input); }
-        .file-dropzone:hover { border-color: var(--accent-violet); background: var(--bg-input); }
+        .file-dropzone { border: 2px dashed #d1d5db; border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; background: rgba(255, 255, 255, 0.1); }
+        .file-dropzone:hover { border-color: var(--accent-violet); background: rgba(255, 255, 255, 0.1); }
         .file-dropzone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         .file-dropzone i { font-size: 28px; color: #9ca3af; margin-bottom: 12px; display: block; transition: var(--transition); }
         .file-dropzone:hover i { color: var(--accent-violet); transform: scale(1.1); }
@@ -166,7 +166,7 @@
         .form-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
         .form-group label { font-size: 13px; font-weight: 600; color: #374151; letter-spacing: -0.2px; }
         input[type="text"], input[type="number"], input[type="date"], select, textarea {
-            background: var(--bg-input); border: 1px solid #e5e7eb; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid #e5e7eb; border-radius: 12px;
             padding: 14px 18px; color: var(--text-main); font-family: var(--font-main); font-size: 15px; 
             transition: var(--transition); width: 100%; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
             box-sizing: border-box;
@@ -190,12 +190,12 @@
         .btn-secondary:hover { border-color: var(--text-main); background: #f9fafb; transform: translateY(-1px); }
 
         .btn-outline { background: transparent; color: var(--accent-violet); border: 1px solid var(--accent-violet); }
-        .btn-outline:hover { background: var(--bg-input); }
+        .btn-outline:hover { background: rgba(255, 255, 255, 0.1); }
         .btn-outline:active { transform: translateY(0); }
         .btn-block { width: 100%; }
 
         .fidelio-input {
-            width: 100%; background: var(--bg-input); border: 1px solid transparent;
+            width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid transparent;
             color: var(--text-main); padding: 12px 16px; border-radius: var(--radius-sm);
             font-size: 14px; transition: var(--transition); font-family: var(--font-main);
         }
@@ -1852,14 +1852,14 @@ aside {
                 <!-- KPI Dashboard -->
                 <div class="stats-grid" style="margin-bottom: 24px;">
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: var(--bg-input); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
                         <div class="stat-info">
                             <span class="stat-label">Total Clientes</span>
                             <span class="stat-value" id="kpi-total-customers">0</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: var(--bg-input); color: var(--accent-violet);"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-sack-dollar"></i></div>
                         <div class="stat-info">
                             <span class="stat-label">Gasto Promedio (LTV)</span>
                             <span class="stat-value" id="kpi-avg-spent">$0</span>
@@ -1983,7 +1983,7 @@ aside {
                 <div class="accordion-card" style="max-width: 800px;">
                     <div class="card-title-bar" style="margin-bottom:16px; justify-content:space-between;">
                         <div style="display:flex; align-items:center; gap:16px;">
-                            <div style="width:48px; height:48px; border-radius:12px; background: var(--bg-input); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px;">
+                            <div style="width:48px; height:48px; border-radius:12px; background: rgba(255, 255, 255, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px;">
                                 <i class="fa-solid fa-map-location-dot"></i>
                             </div>
                             <div>
@@ -2024,7 +2024,7 @@ aside {
                     <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
                         
                         <div class="accordion-card campaign-module active" onclick="selectAICampaign('recuperacion', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-heart-crack"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-heart-crack"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Recuperar Perdidos</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Clientes sin visitas en >30 días</p>
@@ -2032,7 +2032,7 @@ aside {
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('cumpleanos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-cake-candles"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-cake-candles"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Cumpleañeros del Mes</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Envía regalo en su mes de cumpleaños</p>
@@ -2040,7 +2040,7 @@ aside {
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('dias_lentos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-clock"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-clock"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Inyección Días Lentos</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Aumenta tráfico en horas valle</p>
@@ -2048,7 +2048,7 @@ aside {
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('vip_exclusivo', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-crown"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-crown"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Recompensa VIP</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Trato preferencial solo para Nivel Oro</p>
@@ -2056,7 +2056,7 @@ aside {
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('geofencing', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-location-dot"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Cerca de Ti (Geocerca)</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Notifica cuando pasen cerca del local</p>
@@ -2064,7 +2064,7 @@ aside {
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('aniversario', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gift"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gift"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Aniversario</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">A clientes que cumplen un año en Fidelio</p>
@@ -2072,7 +2072,7 @@ aside {
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('winback', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gem"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gem"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Win-back Premium</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Rescata a los clientes que más gastaban</p>
@@ -2080,7 +2080,7 @@ aside {
                         </div>
 
                         <div class="accordion-card campaign-module" onclick="selectAICampaign('manual', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: var(--bg-input); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-pen-nib"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-pen-nib"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Campaña Libre</h4>
                                 <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Segmentación y mensaje manual</p>
@@ -2094,7 +2094,7 @@ aside {
                     <div class="content-panel" style="display:flex; flex-direction:column; position: sticky; top: 0; max-height: calc(100vh - 150px); overflow-y: auto;">
                         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-glass); padding-bottom:16px; margin-bottom:20px;">
                             <h3 id="config-camp-title" style="margin:0;"><i class="fa-solid fa-heart-crack" style="color:var(--accent-violet); margin-right:8px;"></i> Recuperar Perdidos</h3>
-                            <span class="live-badge" style="background: var(--bg-input); color: var(--accent-violet); border: 1px solid rgba(139, 92, 246, 0.2);"><div class="live-dot" style="background: var(--bg-input);"></div> Listo para configurar</span>
+                            <span class="live-badge" style="background: rgba(255, 255, 255, 0.1); color: var(--accent-violet); border: 1px solid rgba(139, 92, 246, 0.2);"><div class="live-dot" style="background: rgba(255, 255, 255, 0.1);"></div> Listo para configurar</span>
                         </div>
 
                         <!-- CHANNELS -->
@@ -2205,7 +2205,7 @@ aside {
                             <div style="flex: 1; display: flex; flex-direction: column;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
                                     <h4 style="font-size:14px; margin:0; color:var(--text-main);">Mensaje Push</h4>
-                                    <button class="btn" style="background: var(--bg-input); color:var(--accent-violet); padding: 4px 8px; font-size:11px; font-weight:700;" onclick="window.generateAIPush()"><i class="fa-solid fa-wand-magic-sparkles"></i> Optimizar Texto</button>
+                                    <button class="btn" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding: 4px 8px; font-size:11px; font-weight:700;" onclick="window.generateAIPush()"><i class="fa-solid fa-wand-magic-sparkles"></i> Optimizar Texto</button>
                                 </div>
                                 <div class="form-group" style="position:relative; overflow: hidden; border-radius:12px; flex: 1;">
                                     <textarea id="camp-push-message" class="fidelio-input" style="height: 100%; min-height: 120px; resize: none; font-size: 1rem; padding: 16px;" placeholder="Escribe el mensaje de tu Notificación Push..." oninput="window.updatePushPreview()"></textarea>
@@ -2276,7 +2276,7 @@ aside {
                         <!-- Input Area -->
                         <div style="padding:16px 20px; background:#11111A; border-top:1px solid rgba(255,255,255,0.05); display:flex; gap:12px; align-items:center;">
                             <input type="text" id="gemini-chat-input" placeholder="Ej. Inventario extra de cerveza..." style="flex:1; background:var(--bg-input); border:1px solid var(--border-glass); border-radius:24px; padding:12px 20px; color:white; font-size:14px; outline:none;" onkeypress="if(event.key === 'Enter') sendGeminiMessage()" />
-                            <button onclick="sendGeminiMessage()" style="width:44px; height:44px; border-radius:50%; background: var(--bg-input); color:white; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; font-size:16px;"><i class="fa-solid fa-paper-plane"></i></button>
+                            <button onclick="sendGeminiMessage()" style="width:44px; height:44px; border-radius:50%; background: rgba(255, 255, 255, 0.1); color:white; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; font-size:16px;"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -2524,7 +2524,7 @@ aside {
                             <div class="role-selector">
                                 <label class="role-card active" id="role-scanner-card">
                                     <input type="radio" name="staff_role" value="scanner" checked style="display:none;">
-                                    <div class="role-icon" style="color:#059669; background: var(--bg-input);"><i class="fa-solid fa-mobile-screen"></i></div>
+                                    <div class="role-icon" style="color:#059669; background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-mobile-screen"></i></div>
                                     <div class="role-info">
                                         <h4>Usuario Escáner</h4>
                                         <p>Solo pueden abrir el lector QR para cobrar y dar puntos. No ven el panel.</p>
@@ -2534,7 +2534,7 @@ aside {
 
                                 <label class="role-card" id="role-system-card">
                                     <input type="radio" name="staff_role" value="system" style="display:none;">
-                                    <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-laptop-code"></i></div>
+                                    <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-laptop-code"></i></div>
                                     <div class="role-info">
                                         <h4>Acceso Sistema</h4>
                                         <p>Acceso al dashboard y métricas. Pueden añadir escáneres, pero no otros admins.</p>
@@ -2628,7 +2628,7 @@ aside {
                     <div class="role-selector" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                         <label class="role-card plan-business-only" id="loyalty-mode-hybrid">
                             <input type="radio" name="loyalty_mode" value="hybrid" checked style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-layer-group"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-layer-group"></i></div>
                             <div class="role-info">
                                 <h4>Modalidad Híbrida (Recomendado)</h4>
                                 <p>Activa Cashback, Sellos y Niveles VIP simultáneamente.</p>
@@ -2638,7 +2638,7 @@ aside {
 
                         <label class="role-card plan-business-only" id="loyalty-mode-cashback">
                             <input type="radio" name="loyalty_mode" value="cashback" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-wallet"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-wallet"></i></div>
                             <div class="role-info">
                                 <h4>Saldo Digital</h4>
                                 <p>Clientes acumulan dinero (Cashback) o Puntos.</p>
@@ -2648,7 +2648,7 @@ aside {
                         
                         <label class="role-card" id="loyalty-mode-stamps">
                             <input type="radio" name="loyalty_mode" value="stamps" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-stamp"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-stamp"></i></div>
                             <div class="role-info">
                                 <h4>Solo Sellos</h4>
                                 <p>Clientes acumulan visitas por un premio.</p>
@@ -2659,7 +2659,7 @@ aside {
 
                         <label class="role-card plan-business-only" id="loyalty-mode-discount">
                             <input type="radio" name="loyalty_mode" value="discount" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-tag"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-tag"></i></div>
                             <div class="role-info">
                                 <h4>Descuentos</h4>
                                 <p>Porcentaje de descuento fijo para clientes recurrentes.</p>
@@ -2669,7 +2669,7 @@ aside {
 
                         <label class="role-card plan-business-only" id="loyalty-mode-coupons">
                             <input type="radio" name="loyalty_mode" value="coupons" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-ticket"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-ticket"></i></div>
                             <div class="role-info">
                                 <h4>Cupones Promocionales</h4>
                                 <p>Cupones de un solo uso para adquirir clientes nuevos.</p>
@@ -2680,7 +2680,7 @@ aside {
 
                         <label class="role-card plan-business-only" id="loyalty-mode-custom">
                             <input type="radio" name="loyalty_mode" value="custom" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                             <div class="role-info">
                                 <h4>Personalizado</h4>
                                 <p>Diseña tu propia mecánica, métricas y recompensas 100% a tu gusto.</p>
@@ -2999,7 +2999,7 @@ aside {
                     <div class="grid-roles" style="margin-bottom: 32px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                         <label class="role-card" id="loyalty-mode-membership">
                             <input type="radio" name="loyalty_mode" value="membership" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-id-card"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-id-card"></i></div>
                             <div class="role-info">
                                 <h4>Membresías</h4>
                                 <p>Acceso exclusivo a gimnasios/clubes con validez temporal.</p>
@@ -3009,7 +3009,7 @@ aside {
 
                         <label class="role-card" id="loyalty-mode-multipass">
                             <input type="radio" name="loyalty_mode" value="multipass" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-layer-group"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-layer-group"></i></div>
                             <div class="role-info">
                                 <h4>Multipass (Paquetes)</h4>
                                 <p>Venta por volumen (ej. paquete de 10 clases o cafés).</p>
@@ -3019,7 +3019,7 @@ aside {
 
                         <label class="role-card" id="loyalty-mode-certificates">
                             <input type="radio" name="loyalty_mode" value="certificates" style="display:none;">
-                            <div class="role-icon" style="color:var(--accent-violet); background: var(--bg-input);"><i class="fa-solid fa-gift"></i></div>
+                            <div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-gift"></i></div>
                             <div class="role-info">
                                 <h4>Certificados / Gift Cards</h4>
                                 <p>Tarjetas de regalo o saldo prepagado por un monto.</p>
@@ -3129,10 +3129,10 @@ aside {
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
                     <!-- E-Commerce -->
                     <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start; position:relative; overflow:hidden;">
-                        <div style="position:absolute; top:24px; right:24px; background: var(--bg-input); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
+                        <div style="position:absolute; top:24px; right:24px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
                             PRÓXIMAMENTE
                         </div>
-                        <div style="width:48px; height:48px; border-radius:12px; background: var(--bg-input); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
+                        <div style="width:48px; height:48px; border-radius:12px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
                             <i class="fa-solid fa-cart-shopping"></i>
                         </div>
                         <h3 style="margin:0 0 8px 0; font-size:18px;">E-Commerce</h3>
@@ -3145,10 +3145,10 @@ aside {
 
                     <!-- Punto de Venta (POS) -->
                     <div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start; position:relative; overflow:hidden;">
-                        <div style="position:absolute; top:24px; right:24px; background: var(--bg-input); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
+                        <div style="position:absolute; top:24px; right:24px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
                             PRÓXIMAMENTE
                         </div>
-                        <div style="width:48px; height:48px; border-radius:12px; background: var(--bg-input); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
+                        <div style="width:48px; height:48px; border-radius:12px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
                             <i class="fa-solid fa-cash-register"></i>
                         </div>
                         <h3 style="margin:0 0 8px 0; font-size:18px;">Punto de Venta (POS)</h3>
@@ -4450,13 +4450,13 @@ aside {
                     .metric-card-hover { transition: all 0.3s ease; }
                     .metric-card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(76, 29, 149, 0.12); border-color: rgba(76, 29, 149, 0.3); }
                     
-                    .live-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-input); color: var(--accent-violet); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid rgba(139, 92, 246, 0.2); }
+                    .live-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.1); color: var(--accent-violet); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid rgba(139, 92, 246, 0.2); }
                     .live-dot { width: 8px; height: 8px; background: #8b5cf6 !important; border-radius: 50%; animation: pulseGlow 2s infinite; }
                     
                     .bento-chart-bar { animation: chartBarGrow 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: bottom; }
                     
                     .table-row-hover { transition: background 0.2s; }
-                    .table-row-hover:hover { background: var(--bg-input); cursor: pointer; }
+                    .table-row-hover:hover { background: rgba(255, 255, 255, 0.1); cursor: pointer; }
                     
                     .heatmap-cell { border-radius: 4px; transition: transform 0.2s; cursor: pointer; }
                     .heatmap-cell:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 10; position: relative; }
@@ -4600,9 +4600,9 @@ body {
 
                 <!-- 1. ROI HIGHLIGHT & LIVE FEED -->
                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;" class="stagger-1">
-                    <div class="metric-card-hover" style="background: linear-gradient(135deg, var(--accent-violet) 0%, #1e0542 100%); border-radius: var(--radius-md); padding: 40px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
+                    <div class="metric-card-hover" style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); border-radius: var(--radius-md); padding: 40px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
                         <!-- Background glow effect -->
-                        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: var(--bg-input); border-radius: 50%; filter: blur(40px);"></div>
+                        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(40px);"></div>
                         
                         <div style="position: relative; z-index: 2;">
                             <span style="text-transform: uppercase; letter-spacing: 2px; font-size: 12px; opacity: 0.8; font-weight: 700; display:flex; align-items:center; gap:8px;">
@@ -4649,7 +4649,7 @@ body {
                             </div>
                             <div class="stat-icon" style="background: rgba(76, 29, 149, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> Calculando...</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: rgba(255, 255, 255, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-arrow-up"></i> Calculando...</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -4657,9 +4657,9 @@ body {
                                 <div class="stat-label" style="font-weight:600; text-transform:uppercase; letter-spacing:0.5px; font-size:11px;">Ticket Promedio (VIP)</div>
                                 <div id="metric-adv-ticket" class="stat-value" style="font-size:32px; font-weight:800; margin-top:8px;">$0.00</div>
                             </div>
-                            <div class="stat-icon" style="background: var(--bg-input); color: var(--accent-violet);"><i class="fa-solid fa-receipt"></i></div>
+                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-receipt"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;">Basado en historial</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: rgba(255, 255, 255, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;">Basado en historial</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -4669,7 +4669,7 @@ body {
                             </div>
                             <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B;"><i class="fa-solid fa-fire"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;">Basado en premios</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: rgba(255, 255, 255, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;">Basado en premios</div>
                     </div>
                     <div class="stat-card metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); box-shadow: var(--shadow-sm);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -4679,7 +4679,7 @@ body {
                             </div>
                             <div class="stat-icon" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4;"><i class="fa-solid fa-rotate-right"></i></div>
                         </div>
-                        <div class="stat-trend trend-up" style="margin-top:12px; background: var(--bg-input); padding:4px 8px; border-radius:4px; display:inline-block;">Últimos 30 días</div>
+                        <div class="stat-trend trend-up" style="margin-top:12px; background: rgba(255, 255, 255, 0.1); padding:4px 8px; border-radius:4px; display:inline-block;">Últimos 30 días</div>
                     </div>
                 </div>
 
@@ -4722,7 +4722,7 @@ body {
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
                         <h3 style="color: var(--text-main); font-size: 18px; margin:0;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-violet); margin-right:8px;"></i>Rendimiento de Campañas (Motor IA)</h3>
                         <div style="display:flex; gap:8px;">
-                            <span style="background: var(--bg-input); color:var(--accent-violet); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">+24% Eficiencia vs Correos Tradicionales</span>
+                            <span style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">+24% Eficiencia vs Correos Tradicionales</span>
                         </div>
                     </div>
                     
@@ -5262,7 +5262,7 @@ body {
             
             <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
                 <button class="fidelio-btn-primary">Cancelar</button>
-                <button class="btn" style="background: var(--bg-input); color:white;" onclick="if(typeof showToast==='function') showToast('Cambios guardados', 'success');">Guardar y Aplicar</button>
+                <button class="btn" style="background: rgba(255, 255, 255, 0.1); color:white;" onclick="if(typeof showToast==='function') showToast('Cambios guardados', 'success');">Guardar y Aplicar</button>
             </div>
         </div>
     </div>
@@ -5316,7 +5316,7 @@ body {
         <div style="background:white; width:480px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
             
             <div id="push-modal-step-1">
-                <div style="width:50px; height:50px; border-radius:50%; background: var(--bg-input); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
+                <div style="width:50px; height:50px; border-radius:50%; background: rgba(255, 255, 255, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
                     <i class="fa-solid fa-tower-broadcast"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Actualización Over-the-Air</h2>
@@ -5353,13 +5353,13 @@ body {
                 <h2 style="font-size:20px; font-weight:700; color:#111827; margin-bottom:8px;">Contactando a APNs y Google...</h2>
                 <p style="font-size:13px; color:#6b7280; margin-bottom:16px;">Sincronizando diseño con los teléfonos de los clientes.</p>
                 <div style="width:100%; height:6px; background:#f3f4f6; border-radius:3px; overflow:hidden;">
-                    <div id="push-progress-bar" style="width:0%; height:100%; background: var(--bg-input); transition:width 0.2s;"></div>
+                    <div id="push-progress-bar" style="width:0%; height:100%; background: rgba(255, 255, 255, 0.1); transition:width 0.2s;"></div>
                 </div>
                 <div id="push-progress-text" style="font-size:11px; font-weight:700; color:#9ca3af; margin-top:8px; text-transform:uppercase; letter-spacing:1px;">0 / 1,428</div>
             </div>
             
             <div id="push-modal-step-3" style="display:none; text-align:center; padding:20px 0;">
-                <div style="width:64px; height:64px; border-radius:50%; background: var(--bg-input); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
+                <div style="width:64px; height:64px; border-radius:50%; background: rgba(255, 255, 255, 0.1); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
                     <i class="fa-solid fa-check"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">¡Tarjetas Actualizadas!</h2>
@@ -5369,7 +5369,7 @@ body {
             
             <style>
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-                .hover-border-violet:hover { border-color:var(--accent-violet) !important; background: var(--bg-input); }
+                .hover-border-violet:hover { border-color:var(--accent-violet) !important; background: rgba(255, 255, 255, 0.1); }
             
         /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
         #pass-render, .pass-preview-card {
@@ -5447,7 +5447,7 @@ body {
         <div style="background:white; width:480px; border-radius:24px; padding:32px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
             
             <div id="mkt-push-step-1">
-                <div style="width:50px; height:50px; border-radius:50%; background: var(--bg-input); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
+                <div style="width:50px; height:50px; border-radius:50%; background: rgba(255, 255, 255, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px; margin-bottom:20px;">
                     <i class="fa-solid fa-bullhorn"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">Campaña Promocional Push</h2>
@@ -5476,12 +5476,12 @@ body {
                 <h2 style="font-size:20px; font-weight:700; color:#111827; margin-bottom:8px;">Contactando a APNs...</h2>
                 <p style="font-size:13px; color:#6b7280; margin-bottom:16px;">Transmitiendo campaña masiva a los teléfonos.</p>
                 <div style="width:100%; height:6px; background:#f3f4f6; border-radius:3px; overflow:hidden;">
-                    <div id="mkt-progress-bar" style="width:0%; height:100%; background: var(--bg-input); transition:width 0.2s;"></div>
+                    <div id="mkt-progress-bar" style="width:0%; height:100%; background: rgba(255, 255, 255, 0.1); transition:width 0.2s;"></div>
                 </div>
             </div>
             
             <div id="mkt-push-step-3" style="display:none; text-align:center; padding:20px 0;">
-                <div style="width:64px; height:64px; border-radius:50%; background: var(--bg-input); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
+                <div style="width:64px; height:64px; border-radius:50%; background: rgba(255, 255, 255, 0.1); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px auto;">
                     <i class="fa-solid fa-check"></i>
                 </div>
                 <h2 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.5px;">¡Campaña Enviada!</h2>
