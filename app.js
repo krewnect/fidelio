@@ -1493,7 +1493,7 @@ app.post('/api/campaigns', requireMerchantAuth, async (req, res) => {
     }
 });
 
-app.post('/api/stripe/keys', async (req, res) => {
+app.post('/api/stripe/keys', requireMerchantAuth, async (req, res) => {
     try {
         const { merchantId } = req;
         const { stripe_pub_key, stripe_secret_key } = req.body;
