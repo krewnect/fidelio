@@ -153,29 +153,29 @@ window.applyQuickTemplate = function(type) {
 
     setTimeout(() => {
         // Configuraciones mágicas pre-armadas basadas en la selección
-        if(type === 'cafeteria') {
-            state.restaurantName = "Cafetería / Restaurante";
-            state.colorPrimary = "#451a03";
-            state.colorAccent = "#d97706";
-            state.iconClass = "fa-mug-hot";
-            state.stampsReward = "¡Felicidades! Disfruta de un Café Gratis en esta visita.";
-            state.dynamicDesc = "Acumula 10 visitas y llévate tu bebida favorita.";
-            state.activeMode = 'stamps';
-        } else if(type === 'salon') {
-            state.restaurantName = "Salón de Belleza VIP";
-            state.colorPrimary = "#831843";
-            state.colorAccent = "#ec4899";
-            state.iconClass = "fa-scissors";
-            state.stampsReward = "¡Wow! Llegaste a la meta. Tienes un corte o secado gratis hoy.";
-            state.dynamicDesc = "Cada visita cuenta. Premia tu belleza.";
-            state.activeMode = 'stamps';
-        } else if(type === 'clinica') {
-            state.restaurantName = "Clínica Especializada";
-            state.colorPrimary = "#064e3b";
-            state.colorAccent = "#10b981";
+        if(type === 'medico') {
+            state.restaurantName = "Dr(a). Nombre / Especialidad";
+            state.colorPrimary = "#134e4a";
+            state.colorAccent = "#0d9488";
             state.iconClass = "fa-stethoscope";
-            state.stampsReward = "¡Gracias por tu lealtad! Tienes 50% de descuento en tu consulta de hoy.";
-            state.dynamicDesc = "Cuidando de ti en cada visita.";
+            state.stampsReward = "¡Felicidades! Tienes 50% de Descuento en tu próxima consulta.";
+            state.dynamicDesc = "Acumula tus visitas y cuida de tu salud.";
+            state.activeMode = 'stamps';
+        } else if(type === 'belleza') {
+            state.restaurantName = "Nombre - Estilista/Barbero";
+            state.colorPrimary = "#312e81";
+            state.colorAccent = "#d946ef";
+            state.iconClass = "fa-scissors";
+            state.stampsReward = "¡Llegaste a la meta! Tienes un servicio de cortesía o Masaje Capilar.";
+            state.dynamicDesc = "Cada visita cuenta. Premia tu estilo.";
+            state.activeMode = 'stamps';
+        } else if(type === 'clases') {
+            state.restaurantName = "Coach / Instructor";
+            state.colorPrimary = "#1e3a8a";
+            state.colorAccent = "#3b82f6";
+            state.iconClass = "fa-dumbbell";
+            state.stampsReward = "¡Logrado! Te has ganado 1 Sesión de Entrenamiento Gratis.";
+            state.dynamicDesc = "Acumula tus sesiones y alcanza tus metas.";
             state.activeMode = 'stamps';
         } else {
             // Desde Cero
