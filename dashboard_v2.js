@@ -2189,7 +2189,20 @@ window.triggerAIMagicDesign = function() {
         let aiTip = "";
         let newStamps = 10;
         
-        if (state.category === 'medico') {
+        // Smart AI detection
+        const catInputVal = document.getElementById('business-category-input') ? document.getElementById('business-category-input').value.toLowerCase() : '';
+        const iconVal = document.getElementById('rest-icon') ? document.getElementById('rest-icon').value : '';
+        
+        let detectedCategory = state.category || 'general';
+        if (iconVal === 'fa-stethoscope' || catInputVal.includes('salud') || catInputVal.includes('medico') || catInputVal.includes('doctor') || catInputVal.includes('dentista') || catInputVal.includes('clinica')) {
+            detectedCategory = 'medico';
+        } else if (iconVal === 'fa-scissors' || catInputVal.includes('belleza') || catInputVal.includes('spa') || catInputVal.includes('barber') || catInputVal.includes('salon')) {
+            detectedCategory = 'belleza';
+        } else if (iconVal === 'fa-dumbbell' || catInputVal.includes('gym') || catInputVal.includes('crossfit') || catInputVal.includes('fitness')) {
+            detectedCategory = 'clases';
+        }
+        
+        if (detectedCategory === 'medico') {
             state.colorPrimary = '#064e3b'; // Medical Green
             state.colorAccent = '#10b981';
             state.stampsReward = 'Consulta de Seguimiento Gratis';
