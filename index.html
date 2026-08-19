@@ -137,7 +137,7 @@
         /* BUILDER GRID */
         .builder-split-grid { display: grid; grid-template-columns: 1fr 400px; gap: 32px; align-items: start; }
 
-                .accordion-card {
+                .content-panel {
             background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(0,0,0,0.04);
             border-radius: var(--radius-lg); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             margin-bottom: 32px; transition: var(--transition); position: relative; overflow: hidden;
@@ -541,7 +541,7 @@ body {
 .settings-card,
 .apple-section,
 .stats-grid > div,
-.accordion-card {
+.content-panel {
     background: #FFFFFF !important;
     border: 1px solid #E5E7EB !important;
     border-radius: 24px !important;
@@ -2079,7 +2079,7 @@ aside {
                     <!-- LEFT COLUMN: AI MODULES LIST -->
                     <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
                         
-                        <div class="accordion-card campaign-module active" onclick="selectAICampaign('recuperacion', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module active" onclick="selectAICampaign('recuperacion', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-heart-crack"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Recuperar Perdidos</h4>
@@ -2087,7 +2087,7 @@ aside {
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('cumpleanos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module" onclick="selectAICampaign('cumpleanos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-cake-candles"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Cumpleañeros del Mes</h4>
@@ -2095,7 +2095,7 @@ aside {
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('dias_lentos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module" onclick="selectAICampaign('dias_lentos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-clock"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Inyección Días Lentos</h4>
@@ -2103,7 +2103,7 @@ aside {
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('vip_exclusivo', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module" onclick="selectAICampaign('vip_exclusivo', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-crown"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Recompensa VIP</h4>
@@ -2111,7 +2111,7 @@ aside {
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('geofencing', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module" onclick="selectAICampaign('geofencing', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-location-dot"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Cerca de Ti (Geocerca)</h4>
@@ -2119,7 +2119,7 @@ aside {
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('aniversario', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module" onclick="selectAICampaign('aniversario', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gift"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Aniversario</h4>
@@ -2127,7 +2127,7 @@ aside {
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('winback', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module" onclick="selectAICampaign('winback', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gem"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Win-back Premium</h4>
@@ -2135,7 +2135,7 @@ aside {
                             </div>
                         </div>
 
-                        <div class="accordion-card campaign-module" onclick="selectAICampaign('manual', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
+                        <div class="content-panel campaign-module" onclick="selectAICampaign('manual', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
                             <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-pen-nib"></i></div>
                             <div>
                                 <h4 style="margin:0; font-size:14px; line-height:1.2;">Campaña Libre</h4>
@@ -2687,7 +2687,7 @@ aside {
                 <div id="panel-loyalty-standard">
                 <div style="display:flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
                     <!-- CASHBACK SETTINGS -->
-                    <div class="accordion-card plan-business-only" style="flex: 1; min-width: 300px;">
+                    <div class="content-panel plan-business-only" style="flex: 1; min-width: 300px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración de Saldo Digital</h3>
                             <label class="toggle-switch">
@@ -2744,7 +2744,7 @@ aside {
 
 
                 <!-- VIP TIERS SETTINGS -->
-                <div class="accordion-card plan-business-only">
+                <div class="content-panel plan-business-only">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <h3 style="font-size: 16px; margin:0;"><i class="fa-solid fa-crown" style="color:var(--accent-violet); margin-right:8px;"></i> Niveles VIP Automáticos</h3>
@@ -2809,7 +2809,7 @@ aside {
                 </div>
 
                 <!-- PREPAID WALLET MODULE (ADD-ON) -->
-                <div class="accordion-card plan-business-only" style="margin-top: 24px; border: 2px solid rgba(139, 92, 246, 0.2);">
+                <div class="content-panel plan-business-only" style="margin-top: 24px; border: 2px solid rgba(139, 92, 246, 0.2);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <span style="background: #8b5cf6 !important; color:white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight:700; margin-bottom:8px; display:inline-block;">MÓDULO ADICIONAL</span>
@@ -2838,7 +2838,7 @@ aside {
                 </div>
 
                 <!-- CUSTOM / MEMBERSHIP SETTINGS (DYNAMIC) -->
-                <div id="panel-loyalty-custom" class="accordion-card" style="display:none; margin-bottom: 24px; border-left: 4px solid var(--accent-violet);">
+                <div id="panel-loyalty-custom" class="content-panel" style="display:none; margin-bottom: 24px; border-left: 4px solid var(--accent-violet);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <h3 style="font-size: 16px; margin:0;" id="custom-panel-title"><i class="fa-solid fa-sliders" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración del Programa</h3>
