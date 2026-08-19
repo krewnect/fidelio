@@ -142,7 +142,7 @@
             border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-md);
             margin-bottom: 32px; transition: var(--transition); position: relative; overflow: hidden;
         }
-        .accordion-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background: linear-gradient(90deg, var(--accent-violet) 0%, transparent 100%); opacity:0; transition: opacity 0.3s; }
+        .accordion-card::before { display: none !important; }
         .accordion-card:hover {
             box-shadow: var(--shadow-float);
             transform: translateY(-4px);
@@ -300,7 +300,8 @@
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -437,7 +438,8 @@
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -539,7 +541,8 @@ body {
 .settings-card,
 .apple-section,
 .stats-grid > div,
-.gemini-insight-panel {
+.gemini-insight-panel,
+.accordion-card {
     background: #FFFFFF !important;
     border: 1px solid #E5E7EB !important;
     border-radius: 24px !important;
@@ -700,7 +703,8 @@ aside {
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -1483,7 +1487,8 @@ aside {
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -1851,33 +1856,49 @@ aside {
                 </div>
 
                 <!-- KPI Dashboard -->
-                <div class="stats-grid" style="margin-bottom: 24px;">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-users"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Total Clientes</span>
-                            <span class="stat-value" id="kpi-total-customers">0</span>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;" class="stagger-2">
+                    
+                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
+                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
+                            <span style="white-space: nowrap !important;">Total Clientes</span>
+                            <i class="fa-solid fa-users" style="color: #7C3AED;"></i>
+                        </div>
+                        <div id="kpi-total-customers" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0</div>
+                        <div style="font-size: 12px !important; color: #10B981 !important; font-weight: 600 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; gap: 4px !important; width: 100% !important;">
+                            <i class="fa-solid fa-arrow-trend-up"></i> Calculando...
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color: var(--accent-violet);"><i class="fa-solid fa-sack-dollar"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Gasto Promedio (LTV)</span>
-                            <span class="stat-value" id="kpi-avg-spent">$0</span>
+
+                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
+                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
+                            <span style="white-space: nowrap !important;">Gasto Promedio (LTV)</span>
+                            <i class="fa-solid fa-sack-dollar" style="color: #7C3AED;"></i>
+                        </div>
+                        <div id="kpi-avg-spent" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">$0.00</div>
+                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
+                            Basado en historial
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;"><i class="fa-solid fa-calendar-check"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">Frecuencia Promedio</span>
-                            <span class="stat-value" id="kpi-avg-freq">0 días</span>
+
+                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
+                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
+                            <span style="white-space: nowrap !important;">Frecuencia Promedio</span>
+                            <i class="fa-solid fa-calendar-check" style="color: #06B6D4;"></i>
+                        </div>
+                        <div id="kpi-avg-freq" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0<span style="font-size:16px; color:#6B7280; font-weight:500;"> días</span></div>
+                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
+                            Últimos 30 días
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-heart-crack"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-label">En Riesgo (Churn)</span>
-                            <span class="stat-value" id="kpi-churn-risk">0</span>
+
+                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
+                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
+                            <span style="white-space: nowrap !important;">En Riesgo (Churn)</span>
+                            <i class="fa-solid fa-heart-crack" style="color: #EF4444;"></i>
+                        </div>
+                        <div id="kpi-churn-risk" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0</div>
+                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
+                            Requiere atención
                         </div>
                     </div>
                 </div>
@@ -2313,7 +2334,8 @@ aside {
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -3523,7 +3545,8 @@ aside {
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -4568,7 +4591,8 @@ body {
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -5194,7 +5218,8 @@ body {
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
@@ -5410,7 +5435,8 @@ body {
 .stat-card:hover, 
 .content-panel:hover, 
 .settings-card:hover,
-.gemini-insight-panel:hover {
+.gemini-insight-panel:hover,
+.accordion-card:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
     border-color: #E5E7EB !important; /* Force keep grey border */
