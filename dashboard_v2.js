@@ -6471,7 +6471,7 @@ window.triggerRealAIMagicDesign = async function() {
     const businessName = document.getElementById('rest-name') ? document.getElementById('rest-name').value : 'Mi Negocio';
 
     try {
-        const token = localStorage.getItem('merchant_token');
+        const token = window.merchantSession?.access_token || '';
         const reqOpts = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -6479,7 +6479,7 @@ window.triggerRealAIMagicDesign = async function() {
         };
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch('https://api.fideliorewards.com/api/ai/magic-builder', reqOpts).catch(() => fetch('/api/ai/magic-builder', reqOpts));
+        const res = await fetch('/api/ai/magic-builder', reqOpts);
         
         if (!res.ok) {
             const errData = await res.json();
