@@ -1611,7 +1611,8 @@ Devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta:
   "stampsTotal": un número entero entre 4 y 12 (lo más estratégico para su industria),
   "reward": "El premio final (ej. Masaje Capilar Gratis, Consulta de Seguimiento, etc)",
   "instruction": "Instrucción breve (ej. Acumula 5 visitas para ganar)",
-  "tip": "Tu consejo como IA experta explicando por qué elegiste esa cantidad de sellos y ese premio específicamente para su industria."
+  "tip": "Tu consejo como IA experta explicando por qué elegiste esa cantidad de sellos y ese premio.",
+  "iconClass": "fa-star o fa-mug-hot o fa-scissors o fa-dumbbell o fa-paw o fa-heart o fa-tooth"
 }
 No incluyas markdown, no incluyas texto fuera del JSON.
 `;

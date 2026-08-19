@@ -6484,6 +6484,10 @@ window.triggerRealAIMagicDesign = async function() {
         if (document.getElementById('unified-desc')) document.getElementById('unified-desc').value = strategy.instruction || 'Acumula visitas para ganar.';
         if (document.getElementById('stamps-total')) document.getElementById('stamps-total').value = strategy.stampsTotal || 5;
         if (document.getElementById('program-type-select')) document.getElementById('program-type-select').value = 'stamps';
+        if (document.getElementById('icon-class') && strategy.iconClass) {
+            document.getElementById('icon-class').value = strategy.iconClass;
+            if (typeof state !== 'undefined') state.iconClass = strategy.iconClass;
+        }
 
         // Show Tip
         let tipBox = document.getElementById('ai-mkt-tip');
