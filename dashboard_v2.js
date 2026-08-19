@@ -393,7 +393,7 @@ window.selectCampaign = async function(id, autoInit = false) {
         }
         
         updatePassRender();
-        if (typeof window.showToast === 'function') window.showToast("Campaña cargada en el editor", "success");
+        
     } catch(e) {
         console.error("Error selecting campaign", e);
     }
