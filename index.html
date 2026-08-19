@@ -642,6 +642,71 @@
                         box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
                     }
                     
+                    
+                    /* MAGICAL ANIMATIONS & MICRO-INTERACTIONS */
+                    @keyframes floatPhone {
+                        0% { transform: scale(0.65) translateY(0); }
+                        50% { transform: scale(0.65) translateY(-12px); }
+                        100% { transform: scale(0.65) translateY(0); }
+                    }
+                    @keyframes pulseGlow {
+                        0% { box-shadow: 0 0 0 0 rgba(139,92,246, 0.4); }
+                        70% { box-shadow: 0 0 0 15px rgba(139,92,246, 0); }
+                        100% { box-shadow: 0 0 0 0 rgba(139,92,246, 0); }
+                    }
+                    @keyframes staggerFadeIn {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes meshGlow {
+                        0% { background-position: 0% 50%; }
+                        50% { background-position: 100% 50%; }
+                        100% { background-position: 0% 50%; }
+                    }
+
+                    .builder-preview-area {
+                        background: linear-gradient(-45deg, #f8fafc, #f1f5f9, #e2e8f0, #f8fafc) !important;
+                        background-size: 400% 400% !important;
+                        animation: meshGlow 15s ease infinite !important;
+                        position: relative;
+                    }
+                    
+                    /* Apple-level input focus magic */
+                    .apple-input {
+                        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+                    }
+                    .apple-input:focus {
+                        transform: scale(1.02);
+                        border-color: #8b5cf6 !important;
+                        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15) !important;
+                        background: #ffffff !important;
+                    }
+
+                    /* Staggered entrance for sidebar sections */
+                    .apple-section {
+                        animation: staggerFadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+                    }
+                    .apple-section:nth-child(1) { animation-delay: 0.1s; }
+                    .apple-section:nth-child(2) { animation-delay: 0.2s; }
+                    .apple-section:nth-child(3) { animation-delay: 0.3s; }
+                    .apple-section:nth-child(4) { animation-delay: 0.4s; }
+                    .apple-section:nth-child(5) { animation-delay: 0.5s; }
+
+                    /* The ambient orb behind the phone */
+                    .ambient-orb {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 600px;
+                        height: 600px;
+                        background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(59, 130, 246, 0.15) 30%, rgba(139, 92, 246, 0) 70%);
+                        filter: blur(40px);
+                        pointer-events: none;
+                        animation: pulseGlow 4s infinite alternate;
+                        mix-blend-mode: multiply;
+                    }
+
                     /* Clean Premium Buttons */
                     .apple-btn-primary {
                         background: linear-gradient(135deg, #8b5cf6, #7c3aed);
@@ -918,7 +983,7 @@
                     <!-- RIGHT AREA: PHOTOREALISTIC IPHONE -->
                     <div class="builder-preview-area">
                         <!-- Ambient Blur Background -->
-                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:600px; height:600px; background:radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%); filter:blur(40px); pointer-events:none;"></div>
+                        <div class="ambient-orb"></div>
                         
                         <!-- REALISTIC PHONE MOCKUP -->
                         <div class="iphone-pro-mockup">
