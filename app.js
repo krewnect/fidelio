@@ -1651,9 +1651,13 @@ No incluyas markdown, no incluyas texto fuera del JSON.
         const result = await model.generateContent(systemPrompt);
         let text = await result.response.text();
         
-        text = text.replace(/\`\`\`json\n?/g, '').replace(/\`\`\`\n?/g, '').trim();
+        // Extract JSON reliably even if Gemini adds conversational text
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            throw new Error('El modelo no devolvió un JSON válido: ' + text);
+        }
         
-        const strategy = JSON.parse(text);
+        const strategy = JSON.parse(jsonMatch[0]);
         res.json(strategy);
 
     } catch (error) {
