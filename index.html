@@ -281,7 +281,16 @@
             #tab-support > div:nth-child(2) { grid-template-columns: 1fr; }
         }
 
-    </style>
+    
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
 
     <!-- SECURITY: Anti-Copy & Anti-DevTools Protection -->
     <style>
@@ -299,7 +308,16 @@
             -ms-user-select: text;
             user-select: text;
         }
-    </style>
+    
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
     <script>
         // Disable Right Click
         document.addEventListener('contextmenu', event => event.preventDefault());
@@ -574,15 +592,51 @@
                     
                     /* The magical card groups */
                     .builder-card {
-                        background: #ffffff;
+                        background: linear-gradient(145deg, #1f1140 0%, #3a1c71 100%);
                         border-radius: 24px;
                         padding: 32px;
-                        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
-                        border: 1px solid rgba(0,0,0,0.02);
-                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                        box-shadow: 0 20px 50px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.1);
+                        color: #ffffff;
+                        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
                     }
                     .builder-card:hover {
-                        box-shadow: 0 15px 50px -10px rgba(0,0,0,0.08);
+                        transform: translateY(-4px);
+                        box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(139, 92, 246, 0.4);
+                    }
+                    
+                    /* Override text colors inside the new dark cards */
+                    .builder-card h2, .builder-card h3 { color: #ffffff !important; }
+                    .builder-card .premium-label { color: rgba(255,255,255,0.7) !important; }
+                    .builder-card p { color: rgba(255,255,255,0.6) !important; }
+                    
+                    /* Make inputs glassmorphic */
+                    .builder-card .premium-input, .builder-card .premium-textarea {
+                        background: rgba(0,0,0,0.2) !important;
+                        border: 1px solid rgba(255,255,255,0.1) !important;
+                        color: #ffffff !important;
+                    }
+                    .builder-card .premium-input:focus {
+                        border-color: #8b5cf6 !important;
+                        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3) !important;
+                    }
+                    
+                    /* Drag area glassmorphic */
+                    .builder-card .drag-area {
+                        background: rgba(255,255,255,0.05) !important;
+                        border: 2px dashed rgba(255,255,255,0.2) !important;
+                    }
+                    .builder-card .drag-area .icon { color: rgba(255,255,255,0.5) !important; }
+                    .builder-card .drag-area header { color: #ffffff !important; }
+                    
+                    /* Fix the background of the whole builder scroll area so it matches */
+                    #builder-scroll-area {
+                        background: #0f0a1f !important; /* Deep space dark */
+                    }
+                    
+                    /* Make the step numbers pop */
+                    .builder-card h3 i, .builder-card h2 i {
+                        color: #a78bfa !important;
+                        text-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
                     }
                     
                     .premium-label { 
@@ -751,7 +805,16 @@
                     .premium-color-input { -webkit-appearance: none; border: none; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; padding: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
                     .premium-color-input::-webkit-color-swatch-wrapper { padding: 0; }
                     .premium-color-input::-webkit-color-swatch { border: none; border-radius: 8px; border: 2px solid white; box-shadow: 0 0 0 1px #e5e7eb; }
-                </style>
+                
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
 
                 <div class="tab-builder-container">
                     <!-- LEFT SIDEBAR: CONTROLS -->
@@ -963,15 +1026,20 @@
                                     <div class="card-3d-object" id="pass-render" style="width: 100%; max-width: 360px; position: relative; transition: transform 0.6s; transform-style: preserve-3d;">
                                         
                                         <!-- FRONT OF CARD -->
-                                        <div class="card-face card-front pass-preview-card premium-white-card" style="background: #ffffff; border-radius: 20px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; min-height: 250px; backface-visibility: hidden; border: 1px solid var(--pass-primary, #8b5cf6);">
+                                        <div class="card-face card-front pass-preview-card premium-white-card" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; min-height: 250px; backface-visibility: hidden; border: 1px solid var(--pass-primary, #8b5cf6);">
                                             
+                                            
+                                        <!-- Vibrant Background Shapes for the Pass -->
+                                        <div style="position:absolute; top:-50px; right:-50px; width:200px; height:200px; background:radial-gradient(circle, var(--pass-primary) 0%, transparent 70%); opacity:0.15; border-radius:50%; z-index:0; pointer-events:none;"></div>
+                                        <div style="position:absolute; bottom:-100px; left:-50px; width:250px; height:250px; background:radial-gradient(circle, var(--pass-primary) 0%, transparent 70%); opacity:0.1; border-radius:50%; z-index:0; pointer-events:none;"></div>
+
                                             <!-- Top row: Logo and "10 SELLOS" -->
                                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                                                 <div class="pass-logo-container" style="flex: 1; max-width: 160px; display: flex; align-items: center;">
                                                     <img id="render-custom-logo" src="" style="width: 100%; max-height: 45px; object-fit: contain; display: none; object-position: left center;" />
                                                     <div id="render-default-logo" style="display: flex; align-items: center; gap: 8px;">
                                                         <i class="fa-solid fa-crown" id="render-icon" style="color: var(--pass-primary, #8b5cf6); font-size: 24px;"></i>
-                                                        <span id="render-name" style="font-weight: 800; font-size: 20px; color: #111827; letter-spacing: -0.5px;">Fidelio</span>
+                                                        <span id="render-name" style="font-weight: 800; font-size: 20px; color: var(--text-main); letter-spacing: -0.5px; z-index:1; position:relative;">Fidelio</span>
                                                     </div>
                                                 </div>
                                                 <div id="render-top-right" style="text-align: right; display: flex; align-items: center; gap: 8px;">
@@ -987,7 +1055,7 @@
 
                                             <!-- Middle Body (Dynamic: Stamps vs Cashback) -->
                                             <div id="render-body-stamps" style="display: flex; flex-direction: column; flex-grow: 1;">
-                                                <div style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; line-height: 1.4;">ACUMULA <span id="render-stamps-total-text">10</span> SELLOS<br>Y OBTÉN TU RECOMPENSA</div>
+                                                <div style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; line-height: 1.4;">ACUMULA <span id="render-stamps-total-text">10</span><br>Y OBTÉN TU RECOMPENSA</div>
                                                 
                                                 <!-- Stamps Grid -->
                                                 <div id="render-stamps-grid" style="display: flex; flex-wrap: wrap; gap: 14px; position: relative; margin-bottom: 20px;">
@@ -1030,7 +1098,7 @@
                                         </div>
 
                                         <!-- BACK OF CARD -->
-                                        <div class="card-face card-back pass-preview-card premium-white-card" style="background: #ffffff; border-radius: 20px; padding: 24px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; transform: rotateY(180deg); backface-visibility: hidden; border: 1px solid var(--pass-primary, #8b5cf6);">
+                                        <div class="card-face card-back pass-preview-card premium-white-card" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-radius: 20px; padding: 24px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; transform: rotateY(180deg); backface-visibility: hidden; border: 1px solid var(--pass-primary, #8b5cf6);">
                                             <div style="font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">Términos y Políticas</div>
                                             <div id="render-policies-text" style="font-size: 11px; color: #4b5563; line-height: 1.6; overflow-y: auto; flex-grow: 1;">Las recompensas no son transferibles ni canjeables por efectivo.</div>
                                             
@@ -1516,7 +1584,16 @@
                 .segment-card { display:flex; justify-content:space-between; align-items:center; padding:16px; background:rgba(0,0,0,0.01); border:1px solid var(--border-glass); border-radius:12px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; }
                 .segment-card:hover { background:rgba(0,0,0,0.03); border-color:rgba(76, 29, 149, 0.2); }
                 .segment-card.selected { background:rgba(139,92,246,0.15); border-color:var(--accent-violet); box-shadow:0 0 15px rgba(139,92,246,0.2); }
-            </style>
+            
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
             <!-- ========================================== -->
             <!-- AI COPILOT TAB                             -->
             <!-- ========================================== -->
@@ -2599,7 +2676,16 @@
                     </div>
                     <style>
                         .tutorial-trigger-banner:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4) !important; }
-                    </style>
+                    
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
                 </div>
 
 
@@ -3284,7 +3370,16 @@
                     .stagger-3 { animation: floatUp 0.6s ease forwards 0.3s; opacity: 0; }
                     .stagger-4 { animation: floatUp 0.6s ease forwards 0.4s; opacity: 0; }
                     .stagger-5 { animation: floatUp 0.6s ease forwards 0.5s; opacity: 0; }
-                </style>
+                
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
 
                 <div class="workspace-header stagger-1">
                     <div>
@@ -3806,7 +3901,16 @@
             animation: slideIn 0.3s ease-out;
         }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    </style>
+    
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
 
     <!-- MODAL CUSTOM FILTER -->
     <div id="modal-custom-filter" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; backdrop-filter:blur(5px); align-items:center; justify-content:center;">
@@ -3953,7 +4057,16 @@
             <style>
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 .hover-border-violet:hover { border-color:var(--accent-violet) !important; background: var(--bg-input); }
-            </style>
+            
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
         </div>
     </div>
     <!-- MARKETING AUTO-PUSH MODAL -->
