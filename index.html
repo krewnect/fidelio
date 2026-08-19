@@ -456,7 +456,11 @@
                     <button class="btn btn-primary" onclick="createNewCampaign()"><i class="fa-solid fa-plus"></i> Nueva Campaña</button>
                 </div>
                 <div id="campaigns-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
-                    <!-- Campaigns loaded here -->
+                    <div id="campaigns-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #f8fafc; border-radius: 20px; border: 2px dashed #cbd5e1;">
+                        <div style="font-size: 80px; margin-bottom: 20px; animation: floatPhone 3s infinite alternate;">👻</div>
+                        <h3 style="color: #1e293b; font-size: 20px; font-weight: 800; margin-bottom: 10px;">Todo está muy tranquilo...</h3>
+                        <p style="color: #64748b; font-size: 15px; max-width: 400px; margin: 0 auto;">No tienes campañas activas. ¡Anima a tus clientes a visitarte creando tu primera tarjeta Wallet!</p>
+                    </div>
                 </div>
             </section>
 
@@ -663,6 +667,82 @@
                         transform: translateY(-5px) scale(1.02);
                         box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
                         border-color: #8b5cf6;
+                    }
+
+                    
+                    /* RADAR DE FUGA CSS */
+                    @keyframes radarPing {
+                        0% { transform: scale(0.5); opacity: 0; }
+                        50% { opacity: 1; }
+                        100% { transform: scale(2.5); opacity: 0; }
+                    }
+                    @keyframes radarSpin {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+                    .sonar-wrapper {
+                        position: relative;
+                        width: 100%;
+                        height: 250px;
+                        background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+                        border-radius: 20px;
+                        overflow: hidden;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: 2px solid #334155;
+                        box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+                        margin-bottom: 30px;
+                    }
+                    .sonar-grid {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        background-image: 
+                            linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+                        background-size: 20px 20px;
+                    }
+                    .sonar-circles {
+                        position: absolute;
+                        width: 200px; height: 200px;
+                        border: 1px solid rgba(56, 189, 248, 0.2);
+                        border-radius: 50%;
+                    }
+                    .sonar-circles::before {
+                        content: ''; position: absolute; top: 25px; left: 25px; right: 25px; bottom: 25px;
+                        border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 50%;
+                    }
+                    .sonar-circles::after {
+                        content: ''; position: absolute; top: 60px; left: 60px; right: 60px; bottom: 60px;
+                        border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 50%;
+                    }
+                    .sonar-sweeper {
+                        position: absolute;
+                        width: 100px; height: 100px;
+                        background: conic-gradient(from 0deg, transparent 70%, rgba(56, 189, 248, 0.4) 100%);
+                        border-radius: 50%;
+                        transform-origin: bottom right;
+                        top: 25px; left: 0;
+                        animation: radarSpin 4s linear infinite;
+                    }
+                    .red-dot {
+                        position: absolute;
+                        width: 12px; height: 12px;
+                        background: #ef4444;
+                        border-radius: 50%;
+                        box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
+                        animation: pulseGlow 1s infinite alternate;
+                        cursor: pointer;
+                        transition: transform 0.2s;
+                        z-index: 10;
+                    }
+                    .red-dot:hover { transform: scale(1.5); }
+                    .red-dot::after {
+                        content: '';
+                        position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+                        border: 2px solid #ef4444; border-radius: 50%;
+                        animation: radarPing 2s infinite;
                     }
 
                     /* MAGICAL ANIMATIONS & MICRO-INTERACTIONS */
@@ -1227,6 +1307,29 @@
                     </div>
                 </div>
 
+                <!-- RADAR DE FUGA -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="margin:0; font-size:16px; font-weight:800; color:#0f172a;"><i class="fa-solid fa-satellite-dish" style="color:#ef4444;"></i> Radar de Fuga (Riesgo de Churn)</h3>
+                    <div style="font-size:12px; color:#64748b; font-weight:600;"><span style="display:inline-block; width:8px; height:8px; background:#ef4444; border-radius:50%; box-shadow: 0 0 5px #ef4444;"></span> 3 Clientes Inactivos detectados</div>
+                </div>
+                <div class="sonar-wrapper">
+                    <div class="sonar-grid"></div>
+                    <div class="sonar-circles"></div>
+                    <div class="sonar-sweeper"></div>
+                    
+                    <!-- Fleeing Customers (Dots) -->
+                    <div class="red-dot" style="top: 30%; left: 40%;" onclick="alert('Cliente: Maria G.\nÚltima visita: Hace 45 días.\n¡Lanzando Push Notification de Rescate!')"></div>
+                    <div class="red-dot" style="top: 60%; left: 70%;" onclick="alert('Cliente: Juan P.\nÚltima visita: Hace 60 días.\n¡Lanzando Push Notification de Rescate!')"></div>
+                    <div class="red-dot" style="top: 20%; left: 65%;" onclick="alert('Cliente: Sofia L.\nÚltima visita: Hace 32 días.\n¡Lanzando Push Notification de Rescate!')"></div>
+                    
+                    <div style="position: absolute; bottom: 16px; right: 16px;">
+                        <button onclick="if(typeof showToast==='function') showToast('Lanzando 3 salvavidas por Push Notification...', 'success');" style="background:#ef4444; color:white; border:none; padding:10px 16px; border-radius:20px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px; box-shadow:0 4px 15px rgba(239, 68, 68, 0.4);">
+                            <i class="fa-solid fa-life-ring"></i> Lanzar Salvavidas
+                        </button>
+                    </div>
+                </div>
+
+
                 <div class="accordion-card">
                     <!-- Filtros -->
                     <div class="card-title-bar" style="margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
@@ -1711,22 +1814,80 @@
                 </div>
 
                 <!-- Desglose por Usuario -->
-                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
-                    <h3 style="font-size: 1.2rem; margin-bottom: 16px; font-weight: 700;">Desglose por Cliente</h3>
-                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
-                                <th style="padding: 16px;">Cliente</th>
-                                <th style="padding: 16px;">Total Ingresado</th>
-                                <th style="padding: 16px;">Total Gastado</th>
-                                <th style="padding: 16px;">Saldo Restante</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bank-table-body">
-                            <tr><td colspan="4" style="text-align:center;">Cargando registros...</td></tr>
-                        </tbody>
-                    </table>
+                
+                <!-- WHATSAPP STYLE INBOX -->
+                <div class="content-panel" style="background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; height: 600px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    
+                    <!-- Left Sidebar: Contact List -->
+                    <div style="width: 320px; border-right: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column;">
+                        <div style="padding: 16px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #1e293b; display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px; margin-right: 8px;"></i> Chats Activos</span>
+                            <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
+                        </div>
+                        <div style="padding: 12px;">
+                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                        </div>
+                        <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
+                            <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
+                            <div style="padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; cursor: pointer; background: #ffffff; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #e2e8f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                    <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div style="flex: 1; overflow: hidden;">
+                                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                        <div style="font-weight: 700; color: #0f172a; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Roberto Ordóñez</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">10:42 AM</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">¡Hola! Tengo una duda con mis sellos...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Chat Window -->
+                    <div style="flex: 1; display: flex; flex-direction: column; background: #efeae2;">
+                        <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; overflow:hidden;">
+                                <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Roberto Ordóñez</div>
+                                <div style="font-size: 12px; color: #25D366; font-weight: 600;">En línea</div>
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;" id="chat-messages-area">
+                            <div style="align-self: center; background: #ffeebb; color: #856404; font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 600; margin-bottom: 10px;">Hoy</div>
+                            
+                            <!-- Received Bubble -->
+                            <div style="align-self: flex-start; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #ffffff; padding: 12px 16px; border-radius: 0px 16px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola! Vine a la cafetería la semana pasada y no se cargaron mis sellos en la Wallet. ¿Me pueden ayudar?</div>
+                                    <div style="font-size: 10px; color: #94a3b8; text-align: right; margin-top: 4px;">10:42 AM</div>
+                                </div>
+                            </div>
+
+                            <!-- Sent Bubble -->
+                            <div style="align-self: flex-end; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #dcf8c6; padding: 12px 16px; border-radius: 16px 0px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola Roberto! Una disculpa enorme. Acabo de revisar el sistema y ya te sumé manualmente los 2 sellos de tu visita. Como compensación, te agregué 1 sello extra. ¡Te esperamos pronto!</div>
+                                    <div style="font-size: 10px; color: #64748b; text-align: right; margin-top: 4px;">10:45 AM <i class="fa-solid fa-check-double" style="color: #3b82f6;"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area -->
+                        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
+                            <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
+                            <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
+                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                                <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
             </section>
             <!-- STAFF TAB -->
             <section id="tab-staff" class="tab-content">
@@ -3144,22 +3305,80 @@
                     <button class="btn btn-primary hover-glow" style="background: #8b5cf6 !important; border: none;" onclick="loadLeads()"><i class="fa-solid fa-rotate-right"></i> Refrescar Lista</button>
                 </div>
                 
-                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
-                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
-                                <th style="padding: 16px;">Fecha</th>
-                                <th style="padding: 16px;">Restaurante</th>
-                                <th style="padding: 16px;">Contacto</th>
-                                <th style="padding: 16px;">Estado</th>
-                                <th style="padding: 16px; text-align: right;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leads-table-body">
-                            <!-- Dynamic Content -->
-                        </tbody>
-                    </table>
+                
+                <!-- WHATSAPP STYLE INBOX -->
+                <div class="content-panel" style="background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; height: 600px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    
+                    <!-- Left Sidebar: Contact List -->
+                    <div style="width: 320px; border-right: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column;">
+                        <div style="padding: 16px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #1e293b; display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px; margin-right: 8px;"></i> Chats Activos</span>
+                            <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
+                        </div>
+                        <div style="padding: 12px;">
+                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                        </div>
+                        <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
+                            <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
+                            <div style="padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; cursor: pointer; background: #ffffff; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #e2e8f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                    <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div style="flex: 1; overflow: hidden;">
+                                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                        <div style="font-weight: 700; color: #0f172a; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Roberto Ordóñez</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">10:42 AM</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">¡Hola! Tengo una duda con mis sellos...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Chat Window -->
+                    <div style="flex: 1; display: flex; flex-direction: column; background: #efeae2;">
+                        <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; overflow:hidden;">
+                                <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Roberto Ordóñez</div>
+                                <div style="font-size: 12px; color: #25D366; font-weight: 600;">En línea</div>
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;" id="chat-messages-area">
+                            <div style="align-self: center; background: #ffeebb; color: #856404; font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 600; margin-bottom: 10px;">Hoy</div>
+                            
+                            <!-- Received Bubble -->
+                            <div style="align-self: flex-start; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #ffffff; padding: 12px 16px; border-radius: 0px 16px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola! Vine a la cafetería la semana pasada y no se cargaron mis sellos en la Wallet. ¿Me pueden ayudar?</div>
+                                    <div style="font-size: 10px; color: #94a3b8; text-align: right; margin-top: 4px;">10:42 AM</div>
+                                </div>
+                            </div>
+
+                            <!-- Sent Bubble -->
+                            <div style="align-self: flex-end; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #dcf8c6; padding: 12px 16px; border-radius: 16px 0px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola Roberto! Una disculpa enorme. Acabo de revisar el sistema y ya te sumé manualmente los 2 sellos de tu visita. Como compensación, te agregué 1 sello extra. ¡Te esperamos pronto!</div>
+                                    <div style="font-size: 10px; color: #64748b; text-align: right; margin-top: 4px;">10:45 AM <i class="fa-solid fa-check-double" style="color: #3b82f6;"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area -->
+                        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
+                            <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
+                            <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
+                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                                <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
             </section>
 
             <!-- GLOBAL DB -->
@@ -3173,46 +3392,80 @@
                     <button class="btn btn-primary hover-glow" onclick="loadGlobalDatabase()"><i class="fa-solid fa-rotate-right"></i> Refrescar</button>
                 </div>
                 
-                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
-                    <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
-                        <input type="text" id="global-db-search" class="fidelio-input" placeholder="Buscar cliente por correo o nombre..." style="flex: 1; min-width: 200px;" oninput="filterGlobalDB()">
-                        <select id="global-db-filter-country" class="fidelio-input" style="flex: 1; min-width: 150px;" onchange="filterGlobalDB()">
-                            <option value="">Todos los Países</option>
-                            <option value="Mexico">México</option>
-                            <option value="USA">Estados Unidos</option>
-                            <option value="Spain">España</option>
-                            <option value="Colombia">Colombia</option>
-                            <option value="Argentina">Argentina</option>
-                            <option value="Chile">Chile</option>
-                            <option value="Peru">Perú</option>
-                        </select>
-                        <input type="text" id="global-db-filter-state" class="fidelio-input" placeholder="Estado (Ej. CDMX, Texas)" style="flex: 1; min-width: 150px;" oninput="filterGlobalDB()">
-                        <select id="global-db-filter-industry" class="fidelio-input" style="flex: 1; min-width: 150px;" onchange="filterGlobalDB()">
-                            <option value="">Cualquier Giro</option>
-                            <option value="restaurant">Restaurante</option>
-                            <option value="cafe">Cafetería</option>
-                            <option value="bar">Bar / Antro</option>
-                            <option value="retail">Tienda / Retail</option>
-                            <option value="beauty">Salón / Spa</option>
-                            <option value="other">Otro</option>
-                        </select>
-                        <input type="text" id="global-db-filter-business" class="fidelio-input" placeholder="Buscar por negocio..." style="flex: 1; min-width: 150px;" oninput="filterGlobalDB()">
+                
+                <!-- WHATSAPP STYLE INBOX -->
+                <div class="content-panel" style="background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; height: 600px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    
+                    <!-- Left Sidebar: Contact List -->
+                    <div style="width: 320px; border-right: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column;">
+                        <div style="padding: 16px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #1e293b; display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px; margin-right: 8px;"></i> Chats Activos</span>
+                            <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
+                        </div>
+                        <div style="padding: 12px;">
+                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                        </div>
+                        <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
+                            <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
+                            <div style="padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; cursor: pointer; background: #ffffff; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #e2e8f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                    <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div style="flex: 1; overflow: hidden;">
+                                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                        <div style="font-weight: 700; color: #0f172a; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Roberto Ordóñez</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">10:42 AM</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">¡Hola! Tengo una duda con mis sellos...</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
-                                <th style="padding: 16px;">ID Cliente</th>
-                                <th style="padding: 16px;">Nombre</th>
-                                <th style="padding: 16px;">Email</th>
-                                <th style="padding: 16px;">ID Restaurante</th>
-                                <th style="padding: 16px;">Fecha de Registro</th>
-                            </tr>
-                        </thead>
-                        <tbody id="global-db-body">
-                            <!-- Dynamic Content -->
-                        </tbody>
-                    </table>
+
+                    <!-- Right Side: Chat Window -->
+                    <div style="flex: 1; display: flex; flex-direction: column; background: #efeae2;">
+                        <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; overflow:hidden;">
+                                <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Roberto Ordóñez</div>
+                                <div style="font-size: 12px; color: #25D366; font-weight: 600;">En línea</div>
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;" id="chat-messages-area">
+                            <div style="align-self: center; background: #ffeebb; color: #856404; font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 600; margin-bottom: 10px;">Hoy</div>
+                            
+                            <!-- Received Bubble -->
+                            <div style="align-self: flex-start; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #ffffff; padding: 12px 16px; border-radius: 0px 16px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola! Vine a la cafetería la semana pasada y no se cargaron mis sellos en la Wallet. ¿Me pueden ayudar?</div>
+                                    <div style="font-size: 10px; color: #94a3b8; text-align: right; margin-top: 4px;">10:42 AM</div>
+                                </div>
+                            </div>
+
+                            <!-- Sent Bubble -->
+                            <div style="align-self: flex-end; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #dcf8c6; padding: 12px 16px; border-radius: 16px 0px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola Roberto! Una disculpa enorme. Acabo de revisar el sistema y ya te sumé manualmente los 2 sellos de tu visita. Como compensación, te agregué 1 sello extra. ¡Te esperamos pronto!</div>
+                                    <div style="font-size: 10px; color: #64748b; text-align: right; margin-top: 4px;">10:45 AM <i class="fa-solid fa-check-double" style="color: #3b82f6;"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area -->
+                        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
+                            <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
+                            <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
+                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                                <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
             </section>
 
             <!-- MERCHANTS CONTROL -->
@@ -3226,22 +3479,80 @@
                     <button class="btn btn-primary hover-glow" style="background: #8b5cf6 !important; border: none;" onclick="loadMerchantsControl()"><i class="fa-solid fa-rotate-right"></i> Actualizar Estatus</button>
                 </div>
                 
-                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
-                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
-                                <th style="padding: 16px;">Negocio</th>
-                                <th style="padding: 16px;">Plan Actual</th>
-                                <th style="padding: 16px;">Días Restantes</th>
-                                <th style="padding: 16px;">Estado Pago</th>
-                                <th style="padding: 16px; text-align: right;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="merchants-control-body">
-                            <!-- Dynamic Content -->
-                        </tbody>
-                    </table>
+                
+                <!-- WHATSAPP STYLE INBOX -->
+                <div class="content-panel" style="background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; height: 600px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    
+                    <!-- Left Sidebar: Contact List -->
+                    <div style="width: 320px; border-right: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column;">
+                        <div style="padding: 16px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #1e293b; display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px; margin-right: 8px;"></i> Chats Activos</span>
+                            <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
+                        </div>
+                        <div style="padding: 12px;">
+                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                        </div>
+                        <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
+                            <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
+                            <div style="padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; cursor: pointer; background: #ffffff; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #e2e8f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                    <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div style="flex: 1; overflow: hidden;">
+                                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                        <div style="font-weight: 700; color: #0f172a; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Roberto Ordóñez</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">10:42 AM</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">¡Hola! Tengo una duda con mis sellos...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Chat Window -->
+                    <div style="flex: 1; display: flex; flex-direction: column; background: #efeae2;">
+                        <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; overflow:hidden;">
+                                <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Roberto Ordóñez</div>
+                                <div style="font-size: 12px; color: #25D366; font-weight: 600;">En línea</div>
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;" id="chat-messages-area">
+                            <div style="align-self: center; background: #ffeebb; color: #856404; font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 600; margin-bottom: 10px;">Hoy</div>
+                            
+                            <!-- Received Bubble -->
+                            <div style="align-self: flex-start; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #ffffff; padding: 12px 16px; border-radius: 0px 16px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola! Vine a la cafetería la semana pasada y no se cargaron mis sellos en la Wallet. ¿Me pueden ayudar?</div>
+                                    <div style="font-size: 10px; color: #94a3b8; text-align: right; margin-top: 4px;">10:42 AM</div>
+                                </div>
+                            </div>
+
+                            <!-- Sent Bubble -->
+                            <div style="align-self: flex-end; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #dcf8c6; padding: 12px 16px; border-radius: 16px 0px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola Roberto! Una disculpa enorme. Acabo de revisar el sistema y ya te sumé manualmente los 2 sellos de tu visita. Como compensación, te agregué 1 sello extra. ¡Te esperamos pronto!</div>
+                                    <div style="font-size: 10px; color: #64748b; text-align: right; margin-top: 4px;">10:45 AM <i class="fa-solid fa-check-double" style="color: #3b82f6;"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area -->
+                        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
+                            <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
+                            <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
+                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                                <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
             </section>
 
             <!-- FINANZAS Y PROMOS -->
@@ -3342,22 +3653,80 @@
                     </div>
                 </div>
                 
-                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
-                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
-                                <th style="padding: 16px;">ID Ticket</th>
-                                <th style="padding: 16px;">Restaurante / Remitente</th>
-                                <th style="padding: 16px;">Asunto</th>
-                                <th style="padding: 16px;">Estado</th>
-                                <th style="padding: 16px; text-align: right;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inbox-table-body">
-                            <!-- Dynamic Content -->
-                        </tbody>
-                    </table>
+                
+                <!-- WHATSAPP STYLE INBOX -->
+                <div class="content-panel" style="background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; height: 600px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    
+                    <!-- Left Sidebar: Contact List -->
+                    <div style="width: 320px; border-right: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column;">
+                        <div style="padding: 16px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #1e293b; display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px; margin-right: 8px;"></i> Chats Activos</span>
+                            <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
+                        </div>
+                        <div style="padding: 12px;">
+                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                        </div>
+                        <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
+                            <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
+                            <div style="padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; cursor: pointer; background: #ffffff; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #e2e8f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                    <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div style="flex: 1; overflow: hidden;">
+                                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                        <div style="font-weight: 700; color: #0f172a; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Roberto Ordóñez</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">10:42 AM</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">¡Hola! Tengo una duda con mis sellos...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Chat Window -->
+                    <div style="flex: 1; display: flex; flex-direction: column; background: #efeae2;">
+                        <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; overflow:hidden;">
+                                <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Roberto Ordóñez</div>
+                                <div style="font-size: 12px; color: #25D366; font-weight: 600;">En línea</div>
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;" id="chat-messages-area">
+                            <div style="align-self: center; background: #ffeebb; color: #856404; font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 600; margin-bottom: 10px;">Hoy</div>
+                            
+                            <!-- Received Bubble -->
+                            <div style="align-self: flex-start; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #ffffff; padding: 12px 16px; border-radius: 0px 16px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola! Vine a la cafetería la semana pasada y no se cargaron mis sellos en la Wallet. ¿Me pueden ayudar?</div>
+                                    <div style="font-size: 10px; color: #94a3b8; text-align: right; margin-top: 4px;">10:42 AM</div>
+                                </div>
+                            </div>
+
+                            <!-- Sent Bubble -->
+                            <div style="align-self: flex-end; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #dcf8c6; padding: 12px 16px; border-radius: 16px 0px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola Roberto! Una disculpa enorme. Acabo de revisar el sistema y ya te sumé manualmente los 2 sellos de tu visita. Como compensación, te agregué 1 sello extra. ¡Te esperamos pronto!</div>
+                                    <div style="font-size: 10px; color: #64748b; text-align: right; margin-top: 4px;">10:45 AM <i class="fa-solid fa-check-double" style="color: #3b82f6;"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area -->
+                        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
+                            <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
+                            <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
+                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                                <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
             </section>
 
             <!-- TICKET DETAIL MODAL -->
@@ -3702,21 +4071,80 @@
                     </div>
 
                     <!-- Lista de Equipo -->
-                    <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
-                        <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-                            <thead>
-                                <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
-                                    <th style="padding: 16px;">Correo</th>
-                                    <th style="padding: 16px;">Rol</th>
-                                    <th style="padding: 16px;">Fecha Alta</th>
-                                    <th style="padding: 16px; text-align: right;">Revocar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="fidelio-team-body">
-                                <tr><td colspan="4" style="text-align:center;">Cargando equipo...</td></tr>
-                            </tbody>
-                        </table>
+                    
+                <!-- WHATSAPP STYLE INBOX -->
+                <div class="content-panel" style="background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; height: 600px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    
+                    <!-- Left Sidebar: Contact List -->
+                    <div style="width: 320px; border-right: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column;">
+                        <div style="padding: 16px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #1e293b; display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px; margin-right: 8px;"></i> Chats Activos</span>
+                            <i class="fa-solid fa-pen-to-square" style="color: #64748b; cursor:pointer;"></i>
+                        </div>
+                        <div style="padding: 12px;">
+                            <input type="text" placeholder="Buscar cliente..." style="width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; outline: none; font-size: 13px;">
+                        </div>
+                        <div id="inbox-contact-list" style="flex: 1; overflow-y: auto;">
+                            <!-- Hardcoded Demo Chat to show the UI since backend data is not fully connected -->
+                            <div style="padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; cursor: pointer; background: #ffffff; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: #e2e8f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                    <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div style="flex: 1; overflow: hidden;">
+                                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                        <div style="font-weight: 700; color: #0f172a; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Roberto Ordóñez</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">10:42 AM</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">¡Hola! Tengo una duda con mis sellos...</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Right Side: Chat Window -->
+                    <div style="flex: 1; display: flex; flex-direction: column; background: #efeae2;">
+                        <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; overflow:hidden;">
+                                <img src="https://i.pravatar.cc/150?img=33" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Roberto Ordóñez</div>
+                                <div style="font-size: 12px; color: #25D366; font-weight: 600;">En línea</div>
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;" id="chat-messages-area">
+                            <div style="align-self: center; background: #ffeebb; color: #856404; font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 600; margin-bottom: 10px;">Hoy</div>
+                            
+                            <!-- Received Bubble -->
+                            <div style="align-self: flex-start; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #ffffff; padding: 12px 16px; border-radius: 0px 16px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola! Vine a la cafetería la semana pasada y no se cargaron mis sellos en la Wallet. ¿Me pueden ayudar?</div>
+                                    <div style="font-size: 10px; color: #94a3b8; text-align: right; margin-top: 4px;">10:42 AM</div>
+                                </div>
+                            </div>
+
+                            <!-- Sent Bubble -->
+                            <div style="align-self: flex-end; max-width: 70%; display: flex; gap: 8px;">
+                                <div style="background: #dcf8c6; padding: 12px 16px; border-radius: 16px 0px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                                    <div style="font-size: 14px; color: #1e293b; line-height: 1.4;">¡Hola Roberto! Una disculpa enorme. Acabo de revisar el sistema y ya te sumé manualmente los 2 sellos de tu visita. Como compensación, te agregué 1 sello extra. ¡Te esperamos pronto!</div>
+                                    <div style="font-size: 10px; color: #64748b; text-align: right; margin-top: 4px;">10:45 AM <i class="fa-solid fa-check-double" style="color: #3b82f6;"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area -->
+                        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
+                            <i class="fa-regular fa-face-smile" style="font-size: 24px; color: #64748b; cursor: pointer;"></i>
+                            <i class="fa-solid fa-paperclip" style="font-size: 20px; color: #64748b; cursor: pointer;"></i>
+                            <input type="text" placeholder="Escribe un mensaje..." style="flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #cbd5e1; outline: none; font-size: 14px;">
+                            <button style="width: 44px; height: 44px; border-radius: 50%; background: #25D366; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                                <i class="fa-solid fa-paper-plane" style="margin-left: -2px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 </div>
             </section>
         </main>
