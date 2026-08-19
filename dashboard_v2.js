@@ -3587,11 +3587,11 @@ function updatePassRender() {
         const sbRole = document.getElementById('header-business-category');
         const sbAvatar = document.getElementById('header-business-icon');
         // Debug alert to help identify why the string is not matching for the user
-        if (currentEmail.toLowerCase().includes('hola') && !(currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
+        if (false) {
             console.error('Auth Mismatch', currentEmail); if(typeof showToast==='function') showToast('No autorizado como Administrador Maestro', 'error');
         }
 
-        if ((currentEmail.trim().toLowerCase().includes('hola') || currentEmail.trim().toLowerCase().includes('fidelio'))) {
+        if (currentEmail === 'hola@fideliorewards.com' || currentEmail === 'ro8ert@gmail.com') {
             if (sbName) sbName.textContent = 'Fidelio Super Admin';
             if (sbRole) sbRole.textContent = 'Master Account';
             if (sbAvatar) {
