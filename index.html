@@ -139,12 +139,12 @@
 
                 .accordion-card {
             background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(0,0,0,0.04);
-            border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-md);
+            border-radius: var(--radius-lg); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             margin-bottom: 32px; transition: var(--transition); position: relative; overflow: hidden;
         }
         .accordion-card::before { display: none !important; }
         .accordion-card:hover {
-            box-shadow: var(--shadow-float);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             transform: translateY(-4px);
         }
         .accordion-card:hover::before { opacity:1; }
@@ -213,14 +213,14 @@
 
         /* CUSTOM PREMIUM EFFECTS */
         .stat-card { transition: var(--transition-bounce); }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(76, 29, 149, 0.15); }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-color: rgba(76, 29, 149, 0.15); }
         
         .product-card { transition: var(--transition-bounce); }
-        .product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-float); border-color: rgba(76, 29, 149, 0.2); }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-color: rgba(76, 29, 149, 0.2); }
         .product-card:hover .fa-brands, .product-card:hover .fa-solid { color: var(--accent-violet) !important; transform: scale(1.1); transition: var(--transition-bounce); }
         
         .mode-tile { transition: var(--transition-bounce); }
-        .mode-tile:hover { transform: translateY(-3px) scale(1.02); box-shadow: var(--shadow-md); border-color: rgba(76, 29, 149, 0.2); }
+        .mode-tile:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-color: rgba(76, 29, 149, 0.2); }
         
         /* Modal Glassmorphism */
         .modal-overlay {
@@ -228,7 +228,7 @@
             -webkit-backdrop-filter: blur(8px);
         }
         .modal-content {
-            box-shadow: var(--shadow-float);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             animation: modalPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         @keyframes modalPop {
@@ -257,7 +257,7 @@
                 position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px;
                 background: linear-gradient(135deg, var(--accent-violet) 0%, #3b1675 100%);
                 color: white; border-radius: 50%; font-size: 24px; z-index: 99;
-                box-shadow: var(--shadow-float); border: none; cursor: pointer;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: none; cursor: pointer;
             }
 
             /* Workspace y Grids */
@@ -5028,7 +5028,7 @@ body {
         }
         .modal-overlay.hidden { display: none; }
         .modal-content {
-            background: var(--surface); border: 1px solid var(--surface-light);
+             border: 1px solid var(--surface-light);
             padding: 30px; border-radius: 20px; width: 90%;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             animation: slideIn 0.3s ease-out;

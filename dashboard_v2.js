@@ -4444,7 +4444,7 @@ window.sendSupportGeminiMessage = async function() {
         }
 
         chatWindow.innerHTML += `
-            <div style="background: var(--surface); border: 1px solid var(--border-soft); color: var(--text-main); padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start; line-height: 1.5; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="background: #ffffff; border: 1px solid var(--border-soft); color: var(--text-main); padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start; line-height: 1.5; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 ${reply}
             </div>
         `;
@@ -5224,7 +5224,7 @@ window.openCampaignModal = function() {
         programsGrid.style.boxShadow = "0 0 20px rgba(139,92,246,0.3)";
         setTimeout(() => {
             programsGrid.style.border = "none";
-            programsGrid.style.boxShadow = "var(--shadow-sm)";
+            programsGrid.style.boxShadow = "0 10px 30px rgba(0,0,0,0.05)";
         }, 3000);
     }
 }
@@ -6057,7 +6057,7 @@ window.saveCajaTransaction = async function() {
         return;
     }
     
-    const btn = document.querySelector('#modal-caja-transaction .btn-primary');
+    const btn = document.querySelector('#modal-caja-transaction .fidelio-btn-primary');
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
     btn.disabled = true;
