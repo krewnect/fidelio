@@ -1662,7 +1662,21 @@ No incluyas markdown, no incluyas texto fuera del JSON.
 
     } catch (error) {
         console.error('Error en Gemini Magic Builder:', error);
-        res.status(500).json({ error: `Fallo interno de IA: ${error.message}` });
+        
+        // Attempt to fetch available models to show in the error message
+        let availableModels = '';
+        try {
+            if (process.env.GEMINI_API_KEY) {
+                const fetch = require('node-fetch'); // or use native fetch in node 18+
+                const r = await globalThis.fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
+                const d = await r.json();
+                if (d && d.models) {
+                    availableModels = ' Modelos válidos en tu API Key: ' + d.models.map(m => m.name).join(', ');
+                }
+            }
+        } catch(e) {}
+        
+        res.status(500).json({ error: `Fallo de Modelo: ${error.message}.${availableModels}` });
     }
 });
 
