@@ -6521,7 +6521,6 @@ window.triggerRealAIMagicDesign = async function() {
         try {
             if (window.JSConfetti) {
                 const jsConfetti = new window.JSConfetti();
-                jsConfetti.addConfetti({ emojis: ['🧠', '✨', '⚡️'], confettiNumber: 40 });
             }
         } catch(e) {}
 
