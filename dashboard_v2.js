@@ -54,6 +54,8 @@ window.loadCampaigns = async function() {
             headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
         });
         if (!res.ok) throw new Error("Failed to fetch");
+        
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
         // Sort newest first
         if (data.campaigns && data.campaigns.length > 0) {
@@ -321,6 +323,8 @@ window.selectCampaign = async function(id, autoInit = false) {
         const res = await fetch('/api/campaigns', {
             headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
         });
+        
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
         const camp = data.campaigns.find(c => c.id === id);
         if (!camp) return;
@@ -1863,7 +1867,9 @@ renderCRMTable();
                     body: JSON.stringify({ customerId })
                 });
 
-                const data = await res.json();
+                
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
+        const data = await res.json();
                 if (!data.success) throw new Error(data.error || 'Error desconocido al generar Google Wallet');
                 
                 // Open the Google Pay Save URL
@@ -4115,7 +4121,9 @@ function updatePassRender() {
             });
             
             if (!res.ok) throw new Error('Error consultando historial');
-            const data = await res.json();
+            
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
+        const data = await res.json();
             
             const filterType = document.getElementById('hist-filter-type')?.value || 'all';
             const filterStatus = document.getElementById('hist-filter-status')?.value || 'all';
@@ -4725,7 +4733,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     showToast('Error al guardar el perfil: ' + data.error, 'error');
                 }
             } catch (err) {
-                console.error(err);
+                
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
+        console.error(err);
                 showToast('Error de red al guardar perfil.', 'error');
             } finally {
                 btnSaveBusiness.innerHTML = 'Guardar Cambios';
@@ -6392,6 +6402,8 @@ window.openCampaignHub = async function(id) {
         const res = await fetch('/api/campaigns', {
             headers: { 'Authorization': `Bearer ${window.merchantSession?.access_token || ''}` }
         });
+        
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
         const camp = data.campaigns.find(c => c.id === id);
         if (!camp) return;
@@ -6546,11 +6558,15 @@ window.fetchGeminiDashboardInsights = async function() {
 
         const res = await fetch('/api/ai/dashboard-insights', reqOpts);
         if (!res.ok) throw new Error('Error al conectar con Gemini');
+        
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
         
         textEl.innerHTML = `<b>Insight:</b> ${data.insight}`;
     } catch (err) {
         textEl.innerHTML = '<i>No se pudo obtener el análisis de Gemini en este momento.</i>';
+        
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         console.error(err);
     }
 };
@@ -6574,11 +6590,15 @@ window.fetchGeminiCRMInsights = async function() {
 
         const res = await fetch('/api/ai/crm-insights', reqOpts);
         if (!res.ok) throw new Error('Error al conectar con Gemini');
+        
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
         
         textEl.innerHTML = `<b>Recomendación Estratégica:</b> ${data.insight}`;
     } catch (err) {
         textEl.innerHTML = '<i>Gemini no está disponible en este momento.</i>';
+        
+        if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         console.error(err);
     }
 };
