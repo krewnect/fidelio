@@ -6519,3 +6519,11 @@ window.openCampaignHub = async function(id) {
         console.error(e);
     }
 };
+
+window.addEventListener('beforeunload', function (e) {
+    const builderActive = document.getElementById('tab-builder') && document.getElementById('tab-builder').classList.contains('active');
+    if (builderActive) {
+        e.preventDefault();
+        e.returnValue = 'Tienes cambios sin guardar en tu campaña. ¿Seguro que quieres salir?';
+    }
+});
