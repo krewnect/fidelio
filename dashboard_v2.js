@@ -887,7 +887,7 @@ let saveTimeout = null;
                 if(isBusiness && plan !== 'professional') {
                     el.style.display = 'none'; // Solo ocultar si es 100% negocio y NO profesional
                 } else {
-                    el.style.display = 'flex'; // Mostrar por defecto para professionals
+                    el.style.display = ''; // Mostrar por defecto para professionals
                 }
             });
         };
