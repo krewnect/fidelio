@@ -122,7 +122,7 @@ window.loadCampaigns = async function() {
                     <!-- Bottom Action Bar (slides up on hover) -->
                     <div class="campaign-magic-actions" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 12px 20px; display:flex; justify-content:space-between; align-items:center; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: absolute; bottom: 0; left: 0; width: 100%;">
                         <div style="color:#111827; font-size:13px; font-weight:800;"><i class="fa-solid fa-wand-magic-sparkles" style="color:#8b5cf6; margin-right:4px;"></i> Editar Diseño</div>
-                        <button class="btn-delete-campaign" onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')" style="background:rgba(239, 68, 68, 0.1); border:none; color:#ef4444; width:32px; height:32px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.background='#ef4444'; this.style.color='white';" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.color='#ef4444';"><i class="fa-solid fa-trash"></i></button>
+                        <button class="fidelio-btn-secondary-delete-campaign" onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')" style="background:rgba(239, 68, 68, 0.1); border:none; color:#ef4444; width:32px; height:32px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.background='#ef4444'; this.style.color='white';" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.color='#ef4444';"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
             </div>
@@ -1602,7 +1602,7 @@ window.updateUnifiedDesc = function(val) {
                             ${app.status ? app.status.toUpperCase() : 'PENDIENTE'}
                         </span>
                         <br>
-                        <button class="btn-outline" style="padding: 6px 12px; font-size: 12px; margin-right:4px;" onclick="if(typeof showToast==='function') window.showToast('La funcionalidad de contacto directo llegará pronto', 'info');">Contactar</button>
+                        <button class="fidelio-btn-secondary" style="padding: 6px 12px; font-size: 12px; margin-right:4px;" onclick="if(typeof showToast==='function') window.showToast('La funcionalidad de contacto directo llegará pronto', 'info');">Contactar</button>
                     </div>
                 </div>
             `;
@@ -1645,7 +1645,7 @@ window.updateUnifiedDesc = function(val) {
                                 ${b.mapsUrl ? `<a href="${b.mapsUrl}" target="_blank" style="color:var(--accent-violet); text-decoration:none; font-weight:600;"><i class="fa-solid fa-map"></i> Ver Maps</a>` : ''}
                             </div>
                         </div>
-                        <button class="btn btn-outline" style="padding:8px 12px; border-radius:8px; color:#ef4444; border-color:#fee2e2;" onclick="removeBranch(${b.id})">
+                        <button class="fidelio-btn-secondary" style="padding:8px 12px; border-radius:8px; color:#ef4444; border-color:#fee2e2;" onclick="removeBranch(${b.id})">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     `;
@@ -2142,16 +2142,16 @@ function renderCRMTable() {
                 <td><strong>$${avgSpend.toFixed(2)} MXN</strong></td>
                 <td>
                     <div style="display:flex; gap: 4px; justify-content: flex-end;">
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#25D366; border-color:rgba(37, 211, 102, 0.2);" title="Enviar WhatsApp" onclick="${waAction}">
+                        <button class="fidelio-btn-secondary" style="padding:6px 10px; font-size:12px; color:#25D366; border-color:rgba(37, 211, 102, 0.2);" title="Enviar WhatsApp" onclick="${waAction}">
                             <i class="fa-brands fa-whatsapp"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#3b82f6; border-color:rgba(59, 130, 246, 0.2);" title="Enviar Correo Electrónico" onclick="${emailAction}">
+                        <button class="fidelio-btn-secondary" style="padding:6px 10px; font-size:12px; color:#3b82f6; border-color:rgba(59, 130, 246, 0.2);" title="Enviar Correo Electrónico" onclick="${emailAction}">
                             <i class="fa-regular fa-envelope"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Notificación Push a Wallet" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Notificaciones Push','El envío de notificaciones directas al Apple Wallet/Google Wallet se habilitará cuando contrates un Add-on o subas de plan.','info');}else{if(typeof showToast==='function') window.showToast('El envío de notificaciones requiere un add-on adicional', 'info');}">
+                        <button class="fidelio-btn-secondary" style="padding:6px 10px; font-size:12px; color:var(--accent-violet); border-color:rgba(139, 92, 246, 0.2);" title="Enviar Notificación Push a Wallet" onclick="if(typeof Swal !== \'undefined\'){Swal.fire('Notificaciones Push','El envío de notificaciones directas al Apple Wallet/Google Wallet se habilitará cuando contrates un Add-on o subas de plan.','info');}else{if(typeof showToast==='function') window.showToast('El envío de notificaciones requiere un add-on adicional', 'info');}">
                             <i class="fa-regular fa-bell"></i>
                         </button>
-                        <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Ver Perfil Detallado" onclick="window.showCustomerProfile('${c.id}')">
+                        <button class="fidelio-btn-secondary" style="padding:6px 10px; font-size:12px; margin-left:4px;" title="Ver Perfil Detallado" onclick="window.showCustomerProfile('${c.id}')">
                             <i class="fa-solid fa-qrcode"></i>
                         </button>
                     </div>
@@ -2199,7 +2199,7 @@ function renderCRMTable() {
                 <td>${roleBadge}</td>
                 <td><span class="badge-status activo">Activo</span></td>
                 <td style="text-align:right;">
-                    <button class="btn btn-outline" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="if(typeof showToast==='function') window.showToast('Función de revocación próxima a liberarse', 'info')">
+                    <button class="fidelio-btn-secondary" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="if(typeof showToast==='function') window.showToast('Función de revocación próxima a liberarse', 'info')">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
@@ -2949,7 +2949,7 @@ function updatePassRender() {
                     <td style="padding: 16px;">${roleBadge}</td>
                     <td style="padding: 16px;">${date}</td>
                     <td style="padding: 16px; text-align: right;">
-                        ${m.email === 'hola@fideliorewards.com' ? '<span style="color:var(--text-muted);font-size:12px;">Dueño</span>' : `<button class="btn-preset" onclick="removeFidelioAdmin('${m.id}')" title="Revocar Acceso" style="border-color:#ef4444; color:#ef4444;"><i class="fa-solid fa-trash"></i></button>`}
+                        ${m.email === 'hola@fideliorewards.com' ? '<span style="color:var(--text-muted);font-size:12px;">Dueño</span>' : `<button class="fidelio-btn-secondary-preset" onclick="removeFidelioAdmin('${m.id}')" title="Revocar Acceso" style="border-color:#ef4444; color:#ef4444;"><i class="fa-solid fa-trash"></i></button>`}
                     </td>
                 </tr>
             `;
@@ -3025,10 +3025,10 @@ function updatePassRender() {
                     </td>
                     <td style="padding: 16px;">${statusBadge}</td>
                     <td style="padding: 16px; text-align: right; display: flex; gap: 8px; justify-content: flex-end;">
-                        <button class="btn-preset" onclick="updateLeadStatus('${lead.id}', 'interes')" title="Interés"><i class="fa-solid fa-fire" style="color:#f59e0b;"></i></button>
-                        <button class="btn-preset" onclick="updateLeadStatus('${lead.id}', 'negociacion')" title="Negociación"><i class="fa-solid fa-handshake" style="color:#3b82f6;"></i></button>
-                        <button class="btn-preset" onclick="updateLeadStatus('${lead.id}', 'cerrado')" title="Cerrado"><i class="fa-solid fa-check-circle" style="color:#10b981;"></i></button>
-                        <button class="btn-preset" onclick="deleteLead('${lead.id}')" title="Borrar" style="border-color:#ef4444; color:#ef4444;"><i class="fa-solid fa-trash"></i></button>
+                        <button class="fidelio-btn-secondary-preset" onclick="updateLeadStatus('${lead.id}', 'interes')" title="Interés"><i class="fa-solid fa-fire" style="color:#f59e0b;"></i></button>
+                        <button class="fidelio-btn-secondary-preset" onclick="updateLeadStatus('${lead.id}', 'negociacion')" title="Negociación"><i class="fa-solid fa-handshake" style="color:#3b82f6;"></i></button>
+                        <button class="fidelio-btn-secondary-preset" onclick="updateLeadStatus('${lead.id}', 'cerrado')" title="Cerrado"><i class="fa-solid fa-check-circle" style="color:#10b981;"></i></button>
+                        <button class="fidelio-btn-secondary-preset" onclick="deleteLead('${lead.id}')" title="Borrar" style="border-color:#ef4444; color:#ef4444;"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `;
@@ -3184,7 +3184,7 @@ function updatePassRender() {
                                 <strong style="display:block;">${m.business_name}</strong>
                                 <span style="font-size:12px; color:var(--text-muted);">Trial expirado hace ${Math.abs(14 - daysSinceCreated)} días</span>
                             </div>
-                            <button class="btn-preset" onclick="contactMerchant('${m.id}')"><i class="fa-solid fa-envelope"></i> Aviso</button>
+                            <button class="fidelio-btn-secondary-preset" onclick="contactMerchant('${m.id}')"><i class="fa-solid fa-envelope"></i> Aviso</button>
                         </div>
                     `;
                 } else {
@@ -3206,10 +3206,10 @@ function updatePassRender() {
                     <td style="padding: 16px;">${daysLeft}</td>
                     <td style="padding: 16px;">${paymentStatus}</td>
                     <td style="padding: 16px; text-align: right;">
-                        <button class="btn-preset" onclick="toggleMerchantStatus('${m.id}', '${m.plan_status}')" title="Pausar/Activar">
+                        <button class="fidelio-btn-secondary-preset" onclick="toggleMerchantStatus('${m.id}', '${m.plan_status}')" title="Pausar/Activar">
                             <i class="fa-solid ${m.plan_status === 'paused' ? 'fa-play' : 'fa-pause'}" style="color:var(--text-muted);"></i>
                         </button>
-                        <button class="btn-preset" onclick="grantFreeAccount('${m.id}')" title="Regalar Lifetime Free"><i class="fa-solid fa-gift" style="color:var(--accent-violet);"></i></button>
+                        <button class="fidelio-btn-secondary-preset" onclick="grantFreeAccount('${m.id}')" title="Regalar Lifetime Free"><i class="fa-solid fa-gift" style="color:var(--accent-violet);"></i></button>
                     </td>
                 </tr>
             `;
@@ -3348,8 +3348,8 @@ function updatePassRender() {
                     </td>
                     <td style="padding: 16px;">${statusBadge}</td>
                     <td style="padding: 16px; text-align: right;">
-                        <button class="btn-preset" onclick="viewTicketDetail(${index})" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
-                        ${t.status === 'abierto' ? `<button class="btn-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--accent-violet);"></i></button>` : ''}
+                        <button class="fidelio-btn-secondary-preset" onclick="viewTicketDetail(${index})" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
+                        ${t.status === 'abierto' ? `<button class="fidelio-btn-secondary-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--accent-violet);"></i></button>` : ''}
                     </td>
                 </tr>
             `;
@@ -3379,7 +3379,7 @@ function updatePassRender() {
         // Botón de email
         if(t.email) {
             const mailto = `mailto:${t.email}?subject=RE: ${encodeURIComponent(t.subject)}&body=${encodeURIComponent('\n\n--- Tu mensaje original ---\n' + t.message)}`;
-            actionsDiv.innerHTML += `<a href="${mailto}" class="btn btn-secondary" style="padding:10px 16px; text-decoration:none; display:inline-block;"><i class="fa-solid fa-reply"></i> Responder por Correo</a>`;
+            actionsDiv.innerHTML += `<a href="${mailto}" class="fidelio-btn-secondary btn-secondary" style="padding:10px 16px; text-decoration:none; display:inline-block;"><i class="fa-solid fa-reply"></i> Responder por Correo</a>`;
         }
         
         if(t.status === 'abierto') {
@@ -6157,7 +6157,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Recuperar Clientes Inactivos</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tienes 45 clientes que no han vuelto en 30 días. Enviarles un cupón de 10% de Cashback extra tiene alta probabilidad de retorno.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:var(--accent-violet); color:var(--accent-violet);" onclick="if(typeof window.showToast === 'function') window.showToast('Campaña generada y lista en Marketing.', 'success')">
+                <button class="fidelio-btn-secondary" style="width:100%; border-color:var(--accent-violet); color:var(--accent-violet);" onclick="if(typeof window.showToast === 'function') window.showToast('Campaña generada y lista en Marketing.', 'success')">
                     Crear Campaña
                 </button>
             </div>
@@ -6171,7 +6171,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Impulso a VIP Oro</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Hay 12 clientes a solo 1 visita de subir a Oro. Envíales un SMS automático felicitándolos para asegurar su próxima visita.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#3B82F6; color:#3B82F6;" onclick="if(typeof window.showToast === 'function') window.showToast('Campaña de Upsell programada.', 'success')">
+                <button class="fidelio-btn-secondary" style="width:100%; border-color:#3B82F6; color:#3B82F6;" onclick="if(typeof window.showToast === 'function') window.showToast('Campaña de Upsell programada.', 'success')">
                     Programar SMS
                 </button>
             </div>
@@ -6185,7 +6185,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Promoción Martes Lento</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tus martes por la tarde tienen baja afluencia. Lanza un 2x1 en puntos solo para ese día de la semana.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#10B981; color:#10B981;" onclick="if(typeof window.showToast === 'function') window.showToast('Regla de Horas Valle activada.', 'success')">
+                <button class="fidelio-btn-secondary" style="width:100%; border-color:#10B981; color:#10B981;" onclick="if(typeof window.showToast === 'function') window.showToast('Regla de Horas Valle activada.', 'success')">
                     Activar Regla
                 </button>
             </div>
