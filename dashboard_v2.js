@@ -36,15 +36,15 @@ window.saveDesignToSupabase = async function saveDesignToSupabase() {
         });
         if (res.ok) {
             console.log("Campaña guardada");
-            if (typeof showToast === 'function') window.showToast("Campaña guardada ☁️", "success");
+            if (typeof window.showToast === 'function') window.showToast("Campaña guardada ☁️", "success");
             await window.loadCampaigns();
         } else {
             console.error("Save Error:", await res.text());
-            if (typeof showToast === 'function') window.showToast("Error al guardar campaña", "error");
+            if (typeof window.showToast === 'function') window.showToast("Error al guardar campaña", "error");
         }
     } catch (ex) {
         console.error('Error de red saving campaign:', ex);
-        if (typeof showToast === 'function') window.showToast('Error de conexión al guardar campaña', 'error');
+        if (typeof window.showToast === 'function') window.showToast('Error de conexión al guardar campaña', 'error');
     }
 }
 
@@ -272,7 +272,7 @@ window.applyQuickTemplate = function(type) {
         if(modal) modal.style.display = 'none';
 
         // Lanzar celebración
-        if (typeof showToast === 'function') window.showToast("¡Magia lista! Tu campaña ha sido pre-configurada.", "success");
+        if (typeof window.showToast === 'function') window.showToast("¡Magia lista! Tu campaña ha sido pre-configurada.", "success");
         
         // Redirigir al constructor visual para que la vean y hagan ajustes mínimos
     // FUSION ROUTING
@@ -295,7 +295,7 @@ window.createNewSpecialCard = function() {
     state.colorPrimary = "#10b981";
     state.colorAccent = "#8b5cf6";
     state.activeMode = "membership"; // default
-    if (typeof showToast === 'function') window.showToast("Nueva tarjeta creada, edita y guarda.", "info");
+    if (typeof window.showToast === 'function') window.showToast("Nueva tarjeta creada, edita y guarda.", "info");
     
     const specialTabBtn = document.querySelector('.nav-tab[data-tab="tab-special-cards"]');
     if(specialTabBtn) specialTabBtn.click();
@@ -393,7 +393,7 @@ window.selectCampaign = async function(id, autoInit = false) {
         }
         
         updatePassRender();
-        if (typeof showToast === 'function') window.showToast("Campaña cargada en el editor", "success");
+        if (typeof window.showToast === 'function') window.showToast("Campaña cargada en el editor", "success");
     } catch(e) {
         console.error("Error selecting campaign", e);
     }
@@ -407,12 +407,12 @@ window.saveStripeKeys = async function() {
     const campId = campSelect ? campSelect.value : '';
     
     if (!campId) {
-        if (typeof showToast === 'function') window.showToast("Debes seleccionar una tarjeta a monetizar", "warning");
+        if (typeof window.showToast === 'function') window.showToast("Debes seleccionar una tarjeta a monetizar", "warning");
         return;
     }
     
     if (!paymentLink || !paymentLink.includes('stripe.com')) {
-        if (typeof showToast === 'function') window.showToast("Ingresa un Payment Link válido de Stripe", "warning");
+        if (typeof window.showToast === 'function') window.showToast("Ingresa un Payment Link válido de Stripe", "warning");
         return;
     }
     
@@ -429,11 +429,11 @@ window.saveStripeKeys = async function() {
             
         if (error) throw error;
         
-        if (typeof showToast === 'function') window.showToast("Checkout de Stripe vinculado exitosamente", "success");
+        if (typeof window.showToast === 'function') window.showToast("Checkout de Stripe vinculado exitosamente", "success");
         linkInput.value = ''; // clear
     } catch(err) {
         console.error("Error saving Stripe Link:", err);
-        if (typeof showToast === 'function') window.showToast("Error al guardar enlace: " + err.message, "error");
+        if (typeof window.showToast === 'function') window.showToast("Error al guardar enlace: " + err.message, "error");
     } finally {
         if(btn) btn.innerHTML = originalText;
     }
@@ -3434,9 +3434,9 @@ function updatePassRender() {
                         sbAvatarIcon.style.backgroundRepeat = 'no-repeat';
                     }
                     
-                    if (typeof showToast === 'function') window.showToast('Foto de perfil actualizada', 'success');
+                    if (typeof window.showToast === 'function') window.showToast('Foto de perfil actualizada', 'success');
                 } catch (err) {
-                    if (typeof showToast === 'function') window.showToast(err.message, 'error');
+                    if (typeof window.showToast === 'function') window.showToast(err.message, 'error');
                 } finally {
                     icon.className = originalIcon;
                 }
@@ -3457,9 +3457,9 @@ function updatePassRender() {
                 
                 btnSaveAccProfile.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Perfil';
                 if (error) {
-                    if (typeof showToast === 'function') window.showToast('Error al actualizar el perfil', 'error');
+                    if (typeof window.showToast === 'function') window.showToast('Error al actualizar el perfil', 'error');
                 } else {
-                    if (typeof showToast === 'function') window.showToast('Perfil actualizado con éxito', 'success');
+                    if (typeof window.showToast === 'function') window.showToast('Perfil actualizado con éxito', 'success');
                     document.getElementById('header-restaurant-name').textContent = newName || 'Mi Cuenta';
                     document.getElementById('header-business-category').textContent = newCat || 'Profesional';
                     window.merchantData.business_name = newName;
@@ -4038,7 +4038,7 @@ function updatePassRender() {
         const email = document.getElementById('emit-special-email').value;
         
         if (!name) {
-            if(typeof showToast === 'function') window.showToast('Por favor ingresa el nombre del destinatario.', 'warning');
+            if(typeof window.showToast === 'function') window.showToast('Por favor ingresa el nombre del destinatario.', 'warning');
             return;
         }
         
@@ -4047,27 +4047,27 @@ function updatePassRender() {
         
         if (method === 'whatsapp') {
             if (!phone) {
-                if(typeof showToast === 'function') window.showToast('Ingresa el teléfono para enviar por WhatsApp.', 'warning');
+                if(typeof window.showToast === 'function') window.showToast('Ingresa el teléfono para enviar por WhatsApp.', 'warning');
                 return;
             }
             const text = `¡Hola ${name}! Aquí tienes tu ${cardName}. Descárgala en el siguiente enlace: ${link}`;
             window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
-            if(typeof showToast === 'function') window.showToast('Abriendo WhatsApp Web...', 'info');
+            if(typeof window.showToast === 'function') window.showToast('Abriendo WhatsApp Web...', 'info');
         } else if (method === 'email') {
             if (!email) {
-                if(typeof showToast === 'function') window.showToast('Ingresa el correo para enviar por Email.', 'warning');
+                if(typeof window.showToast === 'function') window.showToast('Ingresa el correo para enviar por Email.', 'warning');
                 return;
             }
             const subject = `Tu ${cardName} está lista`;
             const body = `Hola ${name},\n\nAquí tienes tu ${cardName}.\n\nPuedes acceder y descargar tu tarjeta desde este enlace:\n${link}\n\n¡Gracias!`;
             window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            if(typeof showToast === 'function') window.showToast('Abriendo cliente de correo...', 'info');
+            if(typeof window.showToast === 'function') window.showToast('Abriendo cliente de correo...', 'info');
         } else if (method === 'link') {
             try {
                 await navigator.clipboard.writeText(link);
-                if(typeof showToast === 'function') window.showToast('Enlace copiado al portapapeles', 'success');
+                if(typeof window.showToast === 'function') window.showToast('Enlace copiado al portapapeles', 'success');
             } catch (err) {
-                if(typeof showToast === 'function') window.showToast('Error al copiar enlace. Enlace: ' + link, 'warning');
+                if(typeof window.showToast === 'function') window.showToast('Error al copiar enlace. Enlace: ' + link, 'warning');
             }
         }
         
@@ -4105,7 +4105,7 @@ function updatePassRender() {
             }
         } catch (err) {
             console.error("No se pudo guardar la emisión persistente:", err);
-            if(typeof showToast === 'function') window.showToast('Error de conexión al guardar el historial.', 'warning');
+            if(typeof window.showToast === 'function') window.showToast('Error de conexión al guardar el historial.', 'warning');
         }
     };
 
@@ -4335,7 +4335,7 @@ window.saveCustomFilter = function() {
     window.closeCustomFilterModal();
     
     // Show toast
-    if(typeof showToast === 'function') {
+    if(typeof window.showToast === 'function') {
         window.showToast("Filtro '" + filterName + "' creado exitosamente.", "success");
     }
 };
@@ -4690,7 +4690,7 @@ window.applyGeminiSuggestion = function() {
         // Close chat
         toggleGeminiChat();
         
-        if(typeof showToast === 'function') {
+        if(typeof window.showToast === 'function') {
             window.showToast("Sugerencia de Gemini aplicada ", "success");
         }
     }, 100);
@@ -5299,9 +5299,9 @@ window.loadCampaignToBuilder = function(campaignId) {
             if (btnPay) btnPay.value = rules.show_payment_btn ? 'yes' : 'no';
         }
 
-        if (typeof showToast === 'function') window.showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
+        if (typeof window.showToast === 'function') window.showToast("Cargando diseño de: " + (camp.name || camp.tipo), "success");
     } else {
-        if (typeof showToast === 'function') window.showToast("Campaña nueva. Configura el diseño.", "info");
+        if (typeof window.showToast === 'function') window.showToast("Campaña nueva. Configura el diseño.", "info");
     }
     
     if(window.checkRedundancy) window.checkRedundancy();
@@ -5496,7 +5496,7 @@ window.saveComplexSchedule = function() {
                 } else if (!data || data.length === 0) {
                     if(typeof showToast==='function') window.showToast('Error de permisos. Tu sesión pudo haber expirado.', 'error');
                 } else {
-                    if (typeof showToast === 'function') window.showToast('Horarios guardados en la nube', 'success');
+                    if (typeof window.showToast === 'function') window.showToast('Horarios guardados en la nube', 'success');
                     const modal = document.getElementById('schedule-config-modal');
                     if (modal) modal.style.display = 'none';
                 }
@@ -6012,7 +6012,7 @@ window.saveCajaTransaction = async function() {
     const method = document.getElementById('caja-method').value;
     
     if(!concept || isNaN(amount) || amount <= 0) {
-        if(typeof showToast === 'function') window.showToast("Por favor ingresa un concepto y monto válido.", "error");
+        if(typeof window.showToast === 'function') window.showToast("Por favor ingresa un concepto y monto válido.", "error");
         else if(typeof showToast==='function') window.showToast('Ingresa un concepto y monto válido', 'warning');
         return;
     }
@@ -6042,13 +6042,13 @@ window.saveCajaTransaction = async function() {
             throw error;
         }
         
-        if(typeof showToast === 'function') window.showToast("Pago registrado correctamente.", "success");
+        if(typeof window.showToast === 'function') window.showToast("Pago registrado correctamente.", "success");
         window.closeCajaModal();
         window.loadCajaTransactions(); // Reload list
         
     } catch (err) {
         console.error("Error saving transaction:", err);
-        if(typeof showToast === 'function') window.showToast("Error al guardar. Asegúrate de haber creado la tabla en Supabase.", "error");
+        if(typeof window.showToast === 'function') window.showToast("Error al guardar. Asegúrate de haber creado la tabla en Supabase.", "error");
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -6086,7 +6086,7 @@ window.fetchCopilotIdeas = function() {
     const isAdmin = window.merchantSession && window.merchantSession.user && window.merchantSession.user.email === 'hola@fideliorewards.com';
     
     if (plan !== 'business' && plan !== 'enterprise' && !isAdmin) {
-        if(typeof showToast === 'function') window.showToast('El Copiloto AI es exclusivo del Plan Business. Mejora tu plan para activarlo.', 'error');
+        if(typeof window.showToast === 'function') window.showToast('El Copiloto AI es exclusivo del Plan Business. Mejora tu plan para activarlo.', 'error');
         loading.style.display = 'none';
         results.style.display = 'block';
         container.innerHTML = `
@@ -6117,7 +6117,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Recuperar Clientes Inactivos</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tienes 45 clientes que no han vuelto en 30 días. Enviarles un cupón de 10% de Cashback extra tiene alta probabilidad de retorno.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:var(--accent-violet); color:var(--accent-violet);" onclick="if(typeof showToast === 'function') window.showToast('Campaña generada y lista en Marketing.', 'success')">
+                <button class="btn btn-outline" style="width:100%; border-color:var(--accent-violet); color:var(--accent-violet);" onclick="if(typeof window.showToast === 'function') window.showToast('Campaña generada y lista en Marketing.', 'success')">
                     Crear Campaña
                 </button>
             </div>
@@ -6131,7 +6131,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Impulso a VIP Oro</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Hay 12 clientes a solo 1 visita de subir a Oro. Envíales un SMS automático felicitándolos para asegurar su próxima visita.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#3B82F6; color:#3B82F6;" onclick="if(typeof showToast === 'function') window.showToast('Campaña de Upsell programada.', 'success')">
+                <button class="btn btn-outline" style="width:100%; border-color:#3B82F6; color:#3B82F6;" onclick="if(typeof window.showToast === 'function') window.showToast('Campaña de Upsell programada.', 'success')">
                     Programar SMS
                 </button>
             </div>
@@ -6145,7 +6145,7 @@ window.fetchCopilotIdeas = function() {
                 </div>
                 <h4 style="color:var(--text-main); margin-bottom:10px; font-size: 16px;">Promoción Martes Lento</h4>
                 <p style="color:var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height:1.5;">Tus martes por la tarde tienen baja afluencia. Lanza un 2x1 en puntos solo para ese día de la semana.</p>
-                <button class="btn btn-outline" style="width:100%; border-color:#10B981; color:#10B981;" onclick="if(typeof showToast === 'function') window.showToast('Regla de Horas Valle activada.', 'success')">
+                <button class="btn btn-outline" style="width:100%; border-color:#10B981; color:#10B981;" onclick="if(typeof window.showToast === 'function') window.showToast('Regla de Horas Valle activada.', 'success')">
                     Activar Regla
                 </button>
             </div>
@@ -6173,7 +6173,7 @@ window.copyLandingLink = function() {
         const display = document.getElementById('landing-link-display');
         if (display) {
             navigator.clipboard.writeText('https://' + display.textContent.trim());
-            if (typeof showToast === 'function') window.showToast('Enlace copiado al portapapeles', 'success');
+            if (typeof window.showToast === 'function') window.showToast('Enlace copiado al portapapeles', 'success');
         }
     };
 
@@ -6254,9 +6254,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) throw error;
                 
                 window.merchantData.appointment_settings = currentApptSettings;
-                if (typeof showToast === 'function') window.showToast('Formulario actualizado correctamente', 'success');
+                if (typeof window.showToast === 'function') window.showToast('Formulario actualizado correctamente', 'success');
             } catch (e) {
-                if (typeof showToast === 'function') window.showToast(e.message, 'error');
+                if (typeof window.showToast === 'function') window.showToast(e.message, 'error');
             } finally {
                 btnSaveForm.innerHTML = originalText;
                 btnSaveForm.disabled = false;
@@ -6465,7 +6465,7 @@ window.triggerRealAIMagicDesign = async function() {
     const iphone = document.querySelector('.iphone-pro-mockup');
     if(iphone) iphone.style.animation = "spinY 1.5s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275)";
     
-    if (typeof showToast === 'function') window.showToast("Gemini AI está analizando tu negocio...", "info");
+    if (typeof window.showToast === 'function') window.showToast("Gemini AI está analizando tu negocio...", "info");
 
     const industry = document.getElementById('business-category-input') ? document.getElementById('business-category-input').value : 'General';
     const businessName = document.getElementById('rest-name') ? document.getElementById('rest-name').value : 'Mi Negocio';
@@ -6516,7 +6516,7 @@ window.triggerRealAIMagicDesign = async function() {
         // Force UI update
         if (typeof updatePassRender === 'function') updatePassRender();
 
-        if (typeof showToast === 'function') window.showToast("¡Estrategia Gemini Aplicada!", "success");
+        if (typeof window.showToast === 'function') window.showToast("¡Estrategia Gemini Aplicada!", "success");
         
         try {
             if (window.JSConfetti) {
@@ -6526,7 +6526,7 @@ window.triggerRealAIMagicDesign = async function() {
 
     } catch (err) {
         console.error("Gemini Error:", err);
-        if (typeof showToast === 'function') window.showToast(err.message || "Error al generar estrategia con Gemini.", "error");
+        if (typeof window.showToast === 'function') window.showToast(err.message || "Error al generar estrategia con Gemini.", "error");
     } finally {
         btn.innerHTML = originalText;
         btn.style.opacity = '1';
