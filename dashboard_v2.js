@@ -889,7 +889,9 @@ let saveTimeout = null;
             
             // Toggle Professional-only tabs
             document.querySelectorAll('.plan-professional-only').forEach(el => {
-                if(isBusiness && plan !== 'professional') {
+                if(isAdmin) {
+                    el.style.display = ''; // Admin ve TODO
+                } else if(isBusiness && plan !== 'professional') {
                     el.style.display = 'none'; // Solo ocultar si es 100% negocio y NO profesional
                 } else {
                     el.style.display = ''; // Mostrar por defecto para professionals
