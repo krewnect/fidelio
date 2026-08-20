@@ -3547,7 +3547,7 @@ function updatePassRender() {
                     if (el.id === 'admin-team-tab' && !isSuperAdmin) {
                         el.style.display = 'none';
                     } else {
-                        el.style.display = el.tagName === 'BUTTON' ? 'flex' : 'block';
+                        el.style.display = 'flex';
                     }
                 });
                 
