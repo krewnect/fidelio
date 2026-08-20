@@ -4063,6 +4063,30 @@ aside {
                         </div>
                     </div>
                 </div>
+
+                <!-- Historial de Pagos -->
+                <div class="content-panel" style="margin-top: 24px; background: #ffffff; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                        <h3 style="font-size: 1.4rem; font-weight: 800;"><i class="fa-solid fa-file-invoice-dollar" style="color:#10b981;"></i> Historial de Pagos (Suscripciones)</h3>
+                        <button class="fidelio-btn-secondary" onclick="loadBillingHistory()"><i class="fa-solid fa-rotate-right"></i> Actualizar</button>
+                    </div>
+                    <table class="crm-table" style="width: max-content; border-collapse: collapse; text-align: left; table-layout: auto; white-space: nowrap;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #E5E7EB; color: #6B7280; font-size:11px; text-transform:uppercase;">
+                                <th style="padding: 12px 24px 12px 8px;">Negocio</th>
+                                <th style="padding: 12px 24px;">Fecha Registro</th>
+                                <th style="padding: 12px 24px;">Plan Actual</th>
+                                <th style="padding: 12px 24px;">Tarifa Vigente</th>
+                                <th style="padding: 12px 24px;">Estimado Pagado (LTV)</th>
+                                <th style="padding: 12px 8px;">Estado Pago</th>
+                            </tr>
+                        </thead>
+                        <tbody id="billing-history-body">
+                            <!-- Dynamic Content -->
+                            <tr><td colspan="6" style="padding: 24px; text-align: center; color: var(--text-muted);">Cargando historial de pagos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <!-- INBOX SOPORTE -->
