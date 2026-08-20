@@ -3216,10 +3216,9 @@ function updatePassRender() {
                     <td style="padding: 16px;">${daysLeft}</td>
                     <td style="padding: 16px;">${paymentStatus}</td>
                     <td style="padding: 16px; text-align: right;">
-                        <button class="fidelio-btn-secondary-preset" onclick="toggleMerchantStatus('${m.id}', '${m.plan_status}')" title="Pausar/Activar">
-                            <i class="fa-solid ${m.plan_status === 'paused' ? 'fa-play' : 'fa-pause'}" style="color:var(--text-muted);"></i>
+                        <button class="fidelio-btn-secondary-preset" onclick="openAdminMerchant('${m.id}')" style="background:var(--bg-main); color:var(--text-main); padding:6px 12px; font-size:12px; border:1px solid var(--border-soft);">
+                            <i class="fa-solid fa-sliders"></i> Administrar
                         </button>
-                        <button class="fidelio-btn-secondary-preset" onclick="grantFreeAccount('${m.id}')" title="Regalar Lifetime Free"><i class="fa-solid fa-gift" style="color:var(--accent-violet);"></i></button>
                     </td>
                 </tr>
             `;
