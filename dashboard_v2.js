@@ -4116,7 +4116,7 @@ function updatePassRender() {
         expirationDate.setDate(currentDate.getDate() + 30); // 30 days default expiration
         
         try {
-            const token = localStorage.getItem('fidelio_token');
+            const token = window.merchantSession?.access_token;
             const res = await fetch('/api/special-emissions', {
                 method: 'POST',
                 headers: {
@@ -4149,7 +4149,7 @@ function updatePassRender() {
         if (!tbody) return;
 
         try {
-            const token = localStorage.getItem('fidelio_token');
+            const token = window.merchantSession?.access_token;
             const res = await fetch('/api/special-emissions', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
@@ -5702,7 +5702,7 @@ window.fetchCopilotIdeas = async function() {
     containerEl.innerHTML = '';
     
     try {
-        const token = localStorage.getItem('fidelio_jwt');
+        const token = window.merchantSession?.access_token;
         
         // Mock de contexto del negocio para la demo
         const mockContext = {
@@ -6589,7 +6589,7 @@ window.fetchGeminiDashboardInsights = async function() {
         const scans = document.getElementById('metric-scans') ? document.getElementById('metric-scans').textContent : '0';
         const active = document.getElementById('metric-active-users') ? document.getElementById('metric-active-users').textContent : '0';
         
-        const token = localStorage.getItem('merchant_token');
+        const token = window.merchantSession?.access_token;
         const reqOpts = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -6621,7 +6621,7 @@ window.fetchGeminiCRMInsights = async function() {
     try {
         const customersCount = window.merchantData && window.merchantData.customers ? window.merchantData.customers.length : 0;
         
-        const token = localStorage.getItem('merchant_token');
+        const token = window.merchantSession?.access_token;
         const reqOpts = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -6672,7 +6672,7 @@ window.fetchGeminiMetricsInsights = async function() {
     if (!textEl) return;
     textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color:#7C3AED;"></i> Evaluando retornos de inversión y ticket promedio...';
     try {
-        const token = localStorage.getItem('merchant_token');
+        const token = window.merchantSession?.access_token;
         const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch('/api/ai/metrics-insights', reqOpts);
@@ -6689,7 +6689,7 @@ window.fetchGeminiAppointmentsInsights = async function() {
     if (!textEl) return;
     textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color:#7C3AED;"></i> Diseñando tácticas para reducir el ausentismo...';
     try {
-        const token = localStorage.getItem('merchant_token');
+        const token = window.merchantSession?.access_token;
         const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch('/api/ai/appointments-insights', reqOpts);
