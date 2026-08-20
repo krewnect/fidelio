@@ -2990,7 +2990,7 @@ function updatePassRender() {
 
 // 1. LEADS (PROSPECTOS)
     window.loadLeads = async function() {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const tbody = document.getElementById('leads-table-body');
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando prospectos...</td></tr>';
         
@@ -3038,14 +3038,14 @@ function updatePassRender() {
     };
 
     window.updateLeadStatus = async function(id, status) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const { error } = await window.supabaseClient.from('demo_requests').update({ status: status }).eq('id', id);
         if(error) window.showToast('Error actualizando lead: ' + error.message, 'error');
         else { window.showToast('Lead actualizado', 'success'); loadLeads(); }
     };
 
     window.deleteLead = async function(id) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         if(!confirm('¿Estás seguro de borrar este lead permanentemente?')) return;
         const { error } = await window.supabaseClient.from('demo_requests').delete().eq('id', id);
         if(error) window.showToast('Error borrando lead: ' + error.message, 'error');
@@ -3055,7 +3055,7 @@ function updatePassRender() {
     // 2. GLOBAL DATABASE
     let globalDBCache = [];
     window.loadGlobalDatabase = async function() {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const tbody = document.getElementById('global-db-body');
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Cargando base de datos global...</td></tr>';
         
@@ -3159,7 +3159,7 @@ function updatePassRender() {
 
     // 3. MERCHANTS CONTROL
     window.loadMerchantsControl = async function() {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const tbody = document.getElementById('merchants-control-body');
         const listMorosos = document.getElementById('morosos-list');
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando negocios...</td></tr>';
@@ -3229,7 +3229,7 @@ function updatePassRender() {
     };
 
     window.toggleMerchantStatus = async function(id, currentStatus) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const newStatus = currentStatus === 'paused' ? 'active' : 'paused';
         const { error } = await window.supabaseClient.from('merchants').update({ plan_status: newStatus }).eq('id', id);
         if(error) window.showToast('Error: ' + error.message, 'error');
@@ -3237,7 +3237,7 @@ function updatePassRender() {
     };
 
     window.grantFreeAccount = async function(id) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         if(!confirm('¿Estás seguro de regalar una cuenta lifetime free a este negocio?')) return;
         const { error } = await window.supabaseClient.from('merchants').update({ plan_status: 'lifetime_free' }).eq('id', id);
         if(error) window.showToast('Error: ' + error.message, 'error');
@@ -3246,7 +3246,7 @@ function updatePassRender() {
 
     // 4. MASTER ADMIN (PROMOS)
     window.generatePromoCode = async function() {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const codeInput = document.getElementById('promo-code-input');
         const typeSelect = document.getElementById('promo-type-select');
         const targetPlanSelect = document.getElementById('promo-target-plan');
@@ -3301,7 +3301,7 @@ function updatePassRender() {
 
     // 5. INBOX SUPPORT
     window.loadInbox = async function() {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const tbody = document.getElementById('inbox-table-body');
         const themeFilter = document.getElementById('inbox-theme-filter')?.value || 'all';
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando tickets...</td></tr>';
@@ -3402,7 +3402,7 @@ function updatePassRender() {
     };
 
     window.resolveTicket = async function(id) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const { error } = await window.supabaseClient.from('support_tickets').update({ status: 'resuelto' }).eq('id', id);
         if(error) window.showToast('Error al resolver: ' + error.message, 'error');
         else { window.showToast('Ticket resuelto', 'success'); loadInbox(); }
@@ -6843,7 +6843,7 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
 
     // --- ADVANCED MERCHANT CONTROL MODAL ---
     window.openAdminMerchant = async function(merchantId) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         
         document.getElementById('admin-current-merchant-id').value = merchantId;
         document.getElementById('admin-merchant-name').textContent = "Cargando...";
@@ -6885,7 +6885,7 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
     };
 
     window.saveAdminCustomPrice = async function() {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const id = document.getElementById('admin-current-merchant-id').value;
         const priceVal = document.getElementById('admin-custom-price').value;
         const customPrice = priceVal ? parseFloat(priceVal) : null;
@@ -6899,7 +6899,7 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
     };
 
     window.setAdminPlanStatus = async function(status) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const id = document.getElementById('admin-current-merchant-id').value;
         if(!confirm(`¿Estás seguro de cambiar el estatus a ${status}?`)) return;
         
@@ -6914,7 +6914,7 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
     };
 
     window.addAdminTrialDays = async function(daysToAdd) {
-        if (!checkMasterAdmin()) return;
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const id = document.getElementById('admin-current-merchant-id').value;
         if(!confirm(`¿Estás seguro de regalar ${daysToAdd} días más de prueba?`)) return;
         
