@@ -6596,7 +6596,7 @@ window.fetchGeminiDashboardInsights = async function() {
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
 
         const res = await fetch('/api/ai/dashboard-insights', reqOpts);
-        if (!res.ok) const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini');
+        if (!res.ok) { const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini'); }
         
         if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
@@ -6628,7 +6628,7 @@ window.fetchGeminiCRMInsights = async function() {
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
 
         const res = await fetch('/api/ai/crm-insights', reqOpts);
-        if (!res.ok) const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini');
+        if (!res.ok) { const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini'); }
         
         if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
@@ -6674,7 +6674,7 @@ window.fetchGeminiMetricsInsights = async function() {
         const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch('/api/ai/metrics-insights', reqOpts);
-        if (!res.ok) const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini');
+        if (!res.ok) { const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini'); }
         const data = await res.json();
         textEl.innerHTML = `<b>Reporte de Optimización:</b> ${data.insight}`;
     } catch (err) {
@@ -6691,7 +6691,7 @@ window.fetchGeminiAppointmentsInsights = async function() {
         const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch('/api/ai/appointments-insights', reqOpts);
-        if (!res.ok) const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini');
+        if (!res.ok) { const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini'); }
         const data = await res.json();
         textEl.innerHTML = `<b>Táctica Sugerida:</b> ${data.insight}`;
     } catch (err) {
