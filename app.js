@@ -1148,6 +1148,22 @@ app.get('/:slug', (req, res) => {
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 
+// Helper with exponential backoff for 503/429 spikes
+async function callGeminiWithRetry(prompt, retries = 2) {
+    if (!genAI) throw new Error('La IA no está configurada.');
+    const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
+    for (let i = 0; i <= retries; i++) {
+        try {
+            return await model.generateContent(prompt);
+        } catch (e) {
+            if (i === retries || (!e.message.includes('503') && !e.message.includes('429') && !e.message.includes('overloaded'))) {
+                throw new Error("Los servidores de IA están temporalmente saturados. Por favor, intenta de nuevo en unos minutos.");
+            }
+            await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+        }
+    }
+}
+
 app.post('/api/ai/support', apiLimiter, requireMerchantAuth, async (req, res) => {
     if (!genAI) {
         return res.status(503).json({ error: 'La IA no está configurada actualmente (GEMINI_API_KEY).' });
@@ -1219,10 +1235,8 @@ app.post('/api/ai/dashboard-insights', apiLimiter, requireMerchantAuth, async (r
     if (!genAI) return res.status(503).json({ error: 'La IA no está configurada.' });
     try {
         const { metrics } = req.body;
-        const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         const systemPrompt = `Eres un Director Financiero AI. Analiza estas métricas en tiempo real del negocio y dame un resumen ejecutivo de máximo 3 oraciones con un tono profesional, alentador y estratégico. Destaca qué métrica es la mejor y da una sugerencia táctica rápida. Métricas: ${JSON.stringify(metrics)}`;
-        
-        const result = await model.generateContent(systemPrompt);
+        const result = await callGeminiWithRetry(systemPrompt);
         let text = await result.response.text();
         res.json({ insight: text });
     } catch (error) {
@@ -1241,9 +1255,8 @@ app.post('/api/ai/dashboard-insights', apiLimiter, requireMerchantAuth, async (r
 app.post('/api/ai/metrics-insights', apiLimiter, requireMerchantAuth, async (req, res) => {
     if (!genAI) return res.status(503).json({ insight: 'La IA no está configurada.' });
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         const prompt = "Eres un estratega de negocios. Analiza estas métricas generales: Tasa de Retorno, Crecimiento mensual, CAC, LTV. Dame un consejo de 2 líneas sobre cómo optimizarlas y retener más clientes.";
-        const result = await model.generateContent(prompt);
+        const result = await callGeminiWithRetry(prompt);
         res.json({ success: true, insight: result.response.text().replace(/\*/g, '') });
     } catch (e) {
         res.status(500).json({ success: false, error: e.message });
@@ -1256,9 +1269,8 @@ app.post('/api/ai/metrics-insights', apiLimiter, requireMerchantAuth, async (req
 app.post('/api/ai/appointments-insights', apiLimiter, requireMerchantAuth, async (req, res) => {
     if (!genAI) return res.status(503).json({ insight: 'La IA no está configurada.' });
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         const prompt = "Eres un experto en optimización de agendas. Dame un consejo corto (2 líneas) sobre cómo reducir el ausentismo (no-shows) y aumentar la tasa de reservas (upselling de servicios adicionales).";
-        const result = await model.generateContent(prompt);
+        const result = await callGeminiWithRetry(prompt);
         res.json({ success: true, insight: result.response.text().replace(/\*/g, '') });
     } catch (e) {
         res.status(500).json({ success: false, error: e.message });
@@ -1269,10 +1281,8 @@ app.post('/api/ai/crm-insights', apiLimiter, requireMerchantAuth, async (req, re
     if (!genAI) return res.status(503).json({ error: 'La IA no está configurada.' });
     try {
         const { customersCount } = req.body;
-        const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         const systemPrompt = `Eres un analista de CRM AI. El negocio tiene actualmente ${customersCount} clientes en su base de datos privada. Dame 1 sola sugerencia audaz y altamente efectiva para monetizar esta base de datos esta semana. Solo responde con la sugerencia, sin saludos ni despedidas, directo al punto.`;
-        
-        const result = await model.generateContent(systemPrompt);
+        const result = await callGeminiWithRetry(systemPrompt);
         let text = await result.response.text();
         res.json({ insight: text });
     } catch (error) {
@@ -1313,7 +1323,7 @@ Contexto actual del negocio:
 ${JSON.stringify(merchantContext || {})}
 `;
 
-        const result = await model.generateContent(systemPrompt);
+        const result = await callGeminiWithRetry(systemPrompt);
         let text = await result.response.text();
         
         // Limpiar el texto de Gemini si responde con ```json
@@ -1648,7 +1658,7 @@ Devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta:
 No incluyas markdown, no incluyas texto fuera del JSON.
 `;
 
-        const result = await model.generateContent(systemPrompt);
+        const result = await callGeminiWithRetry(systemPrompt);
         let text = await result.response.text();
         
         // Extract JSON reliably even if Gemini adds conversational text
