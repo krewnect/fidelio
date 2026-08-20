@@ -3211,11 +3211,11 @@ function updatePassRender() {
 
             tbody.innerHTML += `
                 <tr style="border-bottom: 1px solid var(--border-soft); transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 12px 8px; white-space: normal; word-break: break-word;"><strong style="font-size: 14px;">${m.business_name}</strong></td>
-                    <td style="padding: 12px 8px;">${planBadge}</td>
-                    <td style="padding: 12px 8px; font-variant-numeric: tabular-nums;">${daysLeft}</td>
-                    <td style="padding: 12px 8px;">${paymentStatus}</td>
-                    <td style="padding: 12px 8px; text-align: right;">
+                    <td style="padding: 12px 24px 12px 8px; white-space: nowrap;"><strong style="font-size: 14px;">${m.business_name}</strong></td>
+                    <td style="padding: 12px 24px; white-space: nowrap;">${planBadge}</td>
+                    <td style="padding: 12px 24px; white-space: nowrap; font-variant-numeric: tabular-nums;">${daysLeft}</td>
+                    <td style="padding: 12px 24px; white-space: nowrap;">${paymentStatus}</td>
+                    <td style="padding: 12px 8px; white-space: nowrap;">
                         <button class="fidelio-btn-secondary-preset" onclick="document.getElementById('modal-admin-merchant').style.display='flex'; openAdminMerchant('${m.id}')" style="background:var(--bg-main); color:var(--text-main); padding:6px 12px; font-size:12px; border:1px solid var(--border-soft);">
                             <i class="fa-solid fa-sliders"></i> Administrar
                         </button>
