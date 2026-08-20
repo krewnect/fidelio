@@ -4110,6 +4110,12 @@ function updatePassRender() {
         document.getElementById('emit-special-phone').value = '';
         document.getElementById('emit-special-email').value = '';
         
+        // Reset special card emission UI back to payment required
+        const btnPayment = document.getElementById('special-card-pre-payment');
+        const btnsEmission = document.getElementById('special-card-emission-buttons');
+        if(btnPayment) btnPayment.style.display = 'block';
+        if(btnsEmission) btnsEmission.style.display = 'none';
+        
         // Agregar al historial mediante API real
         const currentDate = new Date();
         const expirationDate = new Date();
@@ -5917,6 +5923,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 // CAJA (POS) LOGIC
 // ==========================================
+
+
+window.requireSpecialCardPayment = function() {
+    window.specialCardPaymentPending = true;
+    const conceptInput = document.getElementById('caja-concept');
+    if(conceptInput) conceptInput.value = 'Pago por Tarjeta Especial';
+    
+    // Auto-select general client
+    const customerSelect = document.getElementById('caja-customer');
+    if(customerSelect) customerSelect.value = '';
+    
+    window.openCajaModal();
+};
 
 window.openCajaModal = function() {
     const modal = document.getElementById('modal-caja-transaction');

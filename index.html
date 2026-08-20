@@ -3097,7 +3097,16 @@ aside {
                         </div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                    <div id="special-card-pre-payment">
+                        <button class="fidelio-btn-primary" style="width:100%; margin-bottom: 24px; padding: 16px; font-size: 16px;" onclick="window.requireSpecialCardPayment()">
+                            <i class="fa-solid fa-cash-register"></i> 1. Registrar Pago en Caja (Obligatorio)
+                        </button>
+                    </div>
+                    
+                    <div id="special-card-emission-buttons" style="display:none; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                        <div style="grid-column: 1 / -1; font-size: 14px; color: #10b981; text-align: center; margin-bottom: 8px; font-weight: bold;">
+                            <i class="fa-solid fa-check-circle"></i> ¡Pago registrado! Ahora puedes emitir la tarjeta.
+                        </div>
                         <button class="fidelio-btn-secondary" style="color:#25D366; border-color:#25D366;" onclick="window.emitirEspecial('whatsapp')">
                             <i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp
                         </button>
@@ -3804,7 +3813,7 @@ aside {
                     
                     <div style="display:flex; gap:12px;">
                         <button class="fidelio-btn-secondary" onclick="closeCajaModal()" style="flex: 1; justify-content: center;">Cancelar</button>
-                        <button class="fidelio-btn-primary"><i class="fa-solid fa-check"></i> Guardar Pago</button>
+                        <button class="fidelio-btn-primary" onclick="saveCajaTransaction()"><i class="fa-solid fa-check"></i> Guardar Pago</button>
                     </div>
                 </div>
             </div>
