@@ -6650,7 +6650,7 @@ window.fetchGeminiCRMInsights = async function() {
     textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Evaluando oportunidades en tu base de clientes...';
     
     try {
-        const customersCount = window.merchantData && window.merchantData.customers ? window.merchantData.customers.length : 0;
+        const customersCount = typeof state !== "undefined" && state.customers ? state.customers.length : 0;
         
         const token = window.merchantSession?.access_token;
         const reqOpts = {
