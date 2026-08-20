@@ -2856,7 +2856,7 @@ function updatePassRender() {
         const merchantId = window.merchantSession.user.id;
         
         const tbody = document.getElementById('bank-table-body');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Calculando saldos...</td></tr>';
+        if (tbody) tbody.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted);">Calculando saldos...</div>';
         
         // Fetch customers with wallet info
         const { data: customers, error } = await window.supabaseClient
@@ -2867,9 +2867,9 @@ function updatePassRender() {
             
         if (error) {
             if (error.code === '42703') {
-                if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#ef4444;">Faltan las columnas del Monedero. Corre el script SQL primero.</td></tr>';
+                if (tbody) tbody.innerHTML = '<div style="padding: 20px; text-align: center; color: #ef4444;">Faltan las columnas del Monedero. Corre el script SQL primero.</div>';
             } else {
-                if (tbody) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+                if (tbody) tbody.innerHTML = `<div style="padding: 20px; text-align: center; color: #ef4444;">Error: ${error.message}</div>`;
             }
             return;
         }
@@ -2891,15 +2891,15 @@ function updatePassRender() {
 
                 if (tbody) {
                     tbody.innerHTML += `
-                        <tr style="border-bottom: 1px solid var(--border-soft);">
-                            <td style="padding: 16px;">
-                                <strong>${c.full_name || 'Sin Nombre'}</strong>
-                                <div style="font-size:12px; color:var(--text-muted);">${c.email}</div>
-                            </td>
-                            <td style="padding: 16px; color: #10b981; font-weight: 600;">$${deposited.toFixed(2)}</td>
-                            <td style="padding: 16px; color: #ef4444;">$${spent.toFixed(2)}</td>
-                            <td style="padding: 16px; font-weight: 700; color: var(--accent-violet);">$${balance.toFixed(2)}</td>
-                        </tr>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; padding: 16px; border-bottom: 1px solid var(--border-soft); align-items: center; transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                            <div style="min-width: 150px;">
+                                <strong style="color: #111827;">${c.full_name || 'Sin Nombre'}</strong>
+                                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${c.email}</div>
+                            </div>
+                            <div style="color: #10b981; font-weight: 600; font-size: 15px;">$${deposited.toFixed(2)}</div>
+                            <div style="color: #ef4444; font-size: 15px;">$${spent.toFixed(2)}</div>
+                            <div style="font-weight: 700; color: var(--accent-violet); font-size: 16px;">$${balance.toFixed(2)}</div>
+                        </div>
                     `;
                 }
             });
