@@ -3211,7 +3211,7 @@ function updatePassRender() {
 
             tbody.innerHTML += `
                 <tr style="border-bottom: 1px solid var(--border-soft); transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 12px 8px; max-width: 200px; white-space: normal; word-break: break-word;"><strong style="font-size: 14px;">${m.business_name}</strong></td>
+                    <td style="padding: 12px 8px; white-space: normal; word-break: break-word;"><strong style="font-size: 14px;">${m.business_name}</strong></td>
                     <td style="padding: 12px 8px;">${planBadge}</td>
                     <td style="padding: 12px 8px; font-variant-numeric: tabular-nums;">${daysLeft}</td>
                     <td style="padding: 12px 8px;">${paymentStatus}</td>
