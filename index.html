@@ -3498,207 +3498,88 @@ aside {
                 </div>
 
                 <!-- BANNER TUTORIAL PREMIUM -->
-                <div style="margin-bottom: 32px; max-width: 1000px;">
-                    <div onclick="openTutorialModal()" style="background: linear-gradient(135deg, var(--accent-violet) 0%, #4c1d95 100%);  padding: 32px; color: white; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);" class="tutorial-trigger-banner content-panel">
-                        <div style="display: flex; align-items: center; gap: 20px;">
-                            <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; backdrop-filter: blur(5px);">
-                                <i class="fa-solid fa-play"></i>
-                            </div>
-                            <div>
-                                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 4px;">Tutorial Interactivo de Fidelio</h3>
-                                <p style="font-size: 14px; opacity: 0.9; margin: 0;">Descubre cómo funciona la plataforma en 5 pasos interactivos.</p>
-                            </div>
-                        </div>
-                        <div style="font-size: 24px; opacity: 0.7;">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <style>
-                        .tutorial-trigger-banner:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4) !important; }
+                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; max-width: 1200px;">
                     
-        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
-        #pass-render, .pass-preview-card {
-            color-scheme: light !important;
-        }
-        .premium-white-card {
-            background-color: #ffffff !important;
-            color: #111827 !important;
-        }
-
-
-
-
-/* 7. Unified Card Hovers (Kill the purple borders) */
-.tab-content > div[style*="background"]:hover, 
-.stat-card:hover, 
-.content-panel:hover, 
-.settings-card:hover,
-.gemini-insight-panel:hover,
-.accordion-card:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
-    border-color: #E5E7EB !important; /* Force keep grey border */
-}
-
-
-/* Responsive Tables for Fidelio UI */
-.fidelio-table-container {
-    width: 100%;
-    overflow-x: auto;
-    border-radius: 12px;
-    border: 1px solid #E5E7EB;
-    background: #FFFFFF;
-}
-.fidelio-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    white-space: nowrap;
-}
-.fidelio-table th {
-    background: #F9FAFB;
-    padding: 16px 24px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #6B7280;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid #E5E7EB;
-}
-.fidelio-table td {
-    padding: 16px 24px;
-    font-size: 14px;
-    color: #111827;
-    border-bottom: 1px solid #E5E7EB;
-}
-.fidelio-table tr:last-child td {
-    border-bottom: none;
-}
-.fidelio-table tbody tr:hover {
-    background: #F9FAFB;
-}
-
-
-/* Fix new button hovers */
-#tab-home button[style*="background:#F9FAFB"]:hover {
-    background: #F3F4F6 !important;
-    border-color: #D1D5DB !important;
-}
-
-</style>
-                </div>
-
-
-                <!-- TUTORIALES NUEVOS -->
-                <div style="margin-bottom: 32px; max-width: 1000px;">
-                    <h3 style="font-size: 1.1rem; margin-bottom: 15px; font-weight: 700;">Tutoriales de Nuevas Funciones</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                    <!-- Columna Izquierda: Academia Fidelio (Tutoriales) -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
                         
-                        <div class="content-panel plan-business-only" style="border-radius: 16px; padding: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-soft);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-soft)'" onclick="document.getElementById('support-gemini-input').value = 'Cómo usar Campañas Push'; sendSupportGeminiMessage();">
-                            <div style="background: linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(0,0,0,0) 100%); height: 120px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative;">
-                                <i class="fa-solid fa-mobile-screen" style="font-size: 40px; color: var(--primary);"></i>
-                                <div style="position: absolute; bottom: 10px; background: white; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">PREVIEW</div>
-                            </div>
-                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">Cómo usar Campañas Push</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Aprende a enviar notificaciones directas a los móviles de tus clientes.</p>
-                        </div>
-                        
-                        <div class="content-panel plan-business-only" style="border-radius: 16px; padding: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-soft);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-soft)'" onclick="document.getElementById('support-gemini-input').value = 'Explícame los 8 programas de lealtad'; sendSupportGeminiMessage();">
-                            <div style="background: linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(0,0,0,0) 100%); height: 120px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-tags" style="font-size: 30px; color: #10b981;"></i>
-                            </div>
-                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">Los 8 Programas (Cupones)</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Configura tarjetas de descuento, sellos, o membresías.</p>
-                        </div>
-                        
-                        <div class="content-panel plan-business-only" style="border-radius: 16px; padding: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-soft);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-soft)'" onclick="document.getElementById('support-gemini-input').value = 'Cómo cobro con Stripe y agendo citas'; sendSupportGeminiMessage();">
-                            <div style="background: linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(0,0,0,0) 100%); height: 120px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-calendar-check" style="font-size: 30px; color: #f59e0b;"></i>
-                            </div>
-                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">Citas Médicas y Stripe</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Gestiona tu agenda y cobra anticipos con Payment Links.</p>
-                        </div>
-                        
-                        <div class="content-panel plan-business-only" style="border-radius: 16px; padding: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-soft);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-soft)'" onclick="document.getElementById('support-gemini-input').value = 'Cómo atender clientes en el Inbox'; sendSupportGeminiMessage();">
-                            <div style="background: linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(0,0,0,0) 100%); height: 120px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-headset" style="font-size: 30px; color: #3b82f6;"></i>
-                            </div>
-                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">Uso del Inbox de Soporte</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Atiende a tus clientes estilo Zendesk en la zona Admin.</p>
-                        </div>
-                        
-                        <div class="content-panel plan-business-only" style="border-radius: 16px; padding: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-soft);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-soft)'" onclick="document.getElementById('support-gemini-input').value = 'Explícame cómo usar el escáner premium'; sendSupportGeminiMessage();">
-                            <div style="background: linear-gradient(135deg, rgba(236,72,153,0.2) 0%, rgba(0,0,0,0) 100%); height: 120px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-qrcode" style="font-size: 30px; color: #ec4899;"></i>
-                            </div>
-                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">Escáner Premium y PoS</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Lee QRs, linca tarjetas físicas y premia rápido a tus clientes.</p>
-                        </div>
-
-                        <div class="content-panel plan-business-only" style="border-radius: 16px; padding: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-soft);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-soft)'" onclick="document.getElementById('support-gemini-input').value = 'Cómo funcionan los niveles VIP y logros'; sendSupportGeminiMessage();">
-                            <div style="background: linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(0,0,0,0) 100%); height: 120px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-trophy" style="font-size: 30px; color: #f59e0b;"></i>
-                            </div>
-                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">Niveles y Logros</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Crea gamificación con niveles VIP y misiones para tus clientes.</p>
-                        </div>
-
-                        <div class="content-panel plan-business-only" style="border-radius: 16px; padding: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-soft);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-soft)'" onclick="document.getElementById('support-gemini-input').value = 'Cómo configuro los referidos'; sendSupportGeminiMessage();">
-                            <div style="background: linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(0,0,0,0) 100%); height: 120px; border-radius: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-users" style="font-size: 30px; color: #10b981;"></i>
-                            </div>
-                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">Programa de Referidos</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Multiplica tus clientes dando recompensas por invitar amigos.</p>
-                        </div>
-                        
-                    </div>
-                </div>
-
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1000px;">
-                    <!-- Columna Izquierda: Asistente Gemini -->
-                    <div class="content-panel" style="padding: 24px;  display: flex; flex-direction: column; height: 500px;">
-                        <div style="display: flex; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft);">
-                            <img src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif" alt="Gemini" style="width: 24px; height: 24px; margin-right: 12px; border-radius: 50%;">
-                            <h3 style="font-size: 1.2rem; font-weight: 700;">Asistente Fidelio (IA)</h3>
-                        </div>
-                        
-                        <div id="support-gemini-chat" style="flex: 1; overflow-y: auto; padding-right: 8px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
-                            <div style="background: var(--bg-hover); padding: 12px 16px; border-radius: 12px 12px 12px 0; max-width: 85%; align-self: flex-start; color: var(--text-main);">
-                                ¡Hola! Soy el asistente inteligente de Fidelio. Conozco todo sobre la plataforma. ¿En qué te puedo ayudar hoy?
+                        <div class="content-panel" style="padding: 24px;">
+                            <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-graduation-cap" style="color: var(--accent-violet);"></i> Academia Fidelio (General)
+                            </h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Aprende las bases para lanzar tu programa de lealtad en minutos.</p>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div style="background: var(--bg-hover); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.1)'" onmouseout="this.style.background='var(--bg-hover)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-paintbrush" style="color:var(--accent-violet);"></i> Diseño de Tarjeta</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Cómo usar el Diseñador Mágico IA.</p>
+                                </div>
+                                <div style="background: var(--bg-hover); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.1)'" onmouseout="this.style.background='var(--bg-hover)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-paper-plane" style="color:var(--accent-violet);"></i> Campañas Push</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Envía notificaciones a tus clientes.</p>
+                                </div>
+                                <div style="background: var(--bg-hover); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.1)'" onmouseout="this.style.background='var(--bg-hover)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-chart-pie" style="color:var(--accent-violet);"></i> Métricas</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Entendiendo tu retorno de inversión.</p>
+                                </div>
+                                <div style="background: var(--bg-hover); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.1)'" onmouseout="this.style.background='var(--bg-hover)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-database" style="color:var(--accent-violet);"></i> CRM Base de Datos</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Importa y administra clientes.</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 8px;">
-                            <input type="text" id="support-gemini-input" class="fidelio-input" placeholder="Escribe tu pregunta aquí..." style="flex: 1;  padding: 12px 16px;" onkeypress="if(event.key === 'Enter') sendSupportGeminiMessage()">
-                            <button class="fidelio-btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+                        <div class="content-panel plan-business-only" style="padding: 24px; border: 1px solid rgba(139,92,246,0.3); background: linear-gradient(180deg, #ffffff, #fafafa);">
+                            <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Tutoriales Plan Business (Avanzado)
+                            </h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Domina las herramientas operativas de tu punto de venta.</p>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div style="background: #ffffff; border: 1px solid var(--border-soft); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s;" onmouseover="this.style.borderColor='#f59e0b'" onmouseout="this.style.borderColor='var(--border-soft)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-qrcode" style="color:#ec4899;"></i> Escáner Premium</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Leer códigos y dar sellos.</p>
+                                </div>
+                                <div style="background: #ffffff; border: 1px solid var(--border-soft); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s;" onmouseover="this.style.borderColor='#f59e0b'" onmouseout="this.style.borderColor='var(--border-soft)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-cash-register" style="color:#10b981;"></i> Integración PoS (Caja)</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Registra ingresos financieros.</p>
+                                </div>
+                                <div style="background: #ffffff; border: 1px solid var(--border-soft); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s;" onmouseover="this.style.borderColor='#f59e0b'" onmouseout="this.style.borderColor='var(--border-soft)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> Niveles y Recompensas</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Cómo configurar los premios.</p>
+                                </div>
+                                <div style="background: #ffffff; border: 1px solid var(--border-soft); padding: 16px; border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s;" onmouseover="this.style.borderColor='#f59e0b'" onmouseout="this.style.borderColor='var(--border-soft)'">
+                                    <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-user-tie" style="color:#3b82f6;"></i> Cuentas de Staff</h4>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Roles para tus cajeros.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Columna Derecha: Opciones Humanas -->
-                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <!-- Columna Derecha: Asistencia Humana (Tickets & Mail) -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
                         
                         <div class="content-panel" style="padding: 24px;">
                             <h3 style="font-size: 1.1rem; margin-bottom: 8px; font-weight: 700;"><i class="fa-solid fa-ticket" style="color: var(--accent-violet);"></i> Levantar Ticket de Soporte</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Si enfrentas un problema técnico que la IA no pudo resolver, abre un ticket directo con nuestros ingenieros.</p>
-                            <input type="text" id="ticket-subject" class="fidelio-input" placeholder="Asunto del problema" style="margin-bottom: 12px;">
-                            <textarea id="ticket-message" class="fidelio-input" placeholder="Describe detalladamente el problema..." style="height: 80px; margin-bottom: 12px; resize: none;"></textarea>
-                            <button class="fidelio-btn-primary">Enviar Ticket</button>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Si enfrentas un problema técnico en tu sistema, abre un ticket directo con nuestros ingenieros.</p>
+                            <input type="text" id="ticket-subject" class="fidelio-input" placeholder="Asunto del problema" style="margin-bottom: 12px; width: 100%;">
+                            <textarea id="ticket-message" class="fidelio-input" placeholder="Describe detalladamente el problema para poder apoyarte..." style="height: 100px; margin-bottom: 12px; resize: none; width: 100%;"></textarea>
+                            <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.submitSupportTicket('soporte')"><i class="fa-solid fa-paper-plane"></i> Enviar Ticket</button>
                         </div>
 
                         <div class="content-panel" style="padding: 24px;">
                             <h3 style="font-size: 1.1rem; margin-bottom: 8px; font-weight: 700;"><i class="fa-solid fa-lightbulb" style="color: #eab308;"></i> Buzón de Sugerencias</h3>
                             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">¿Tienes una idea para mejorar Fidelio? ¡Nos encantaría escucharla!</p>
-                            <textarea id="feature-message" class="fidelio-input" placeholder="Me gustaría que la app pudiera..." style="height: 60px; margin-bottom: 12px; resize: none;"></textarea>
-                            <button class="fidelio-btn-primary">Enviar Sugerencia</button>
+                            <textarea id="feature-message" class="fidelio-input" placeholder="Me gustaría que la app pudiera..." style="height: 80px; margin-bottom: 12px; resize: none; width: 100%;"></textarea>
+                            <button class="fidelio-btn-secondary" style="width: 100%; justify-content: center;" onclick="window.submitSupportTicket('sugerencia')"><i class="fa-solid fa-comment-dots"></i> Enviar Sugerencia</button>
                         </div>
 
-                        <div class="content-panel" style="padding: 24px;  display: flex; align-items: center; justify-content: space-between;">
+                        <div class="content-panel" style="padding: 24px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-card);">
                             <div>
                                 <h3 style="font-size: 1.1rem; margin-bottom: 4px; font-weight: 700;"><i class="fa-solid fa-envelope" style="color: var(--accent-violet);"></i> Correo Directo</h3>
-                                <p style="font-size: 12px; color: var(--text-muted);">Para asuntos urgentes o facturación.</p>
+                                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Para facturación y dudas urgentes.</p>
                             </div>
-                            <a href="mailto:hola@fideliorewards.com" class="fidelio-btn-primary">Enviar Email</a>
+                            <a href="mailto:hola@fideliorewards.com" class="fidelio-btn-secondary" style="text-decoration:none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Escribir Email</a>
                         </div>
                     </div>
                 </div>
