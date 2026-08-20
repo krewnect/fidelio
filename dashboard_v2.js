@@ -6853,7 +6853,7 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
         document.getElementById('admin-merchant-crm').textContent = "...";
         document.getElementById('admin-custom-price').value = "";
         
-        openModal('modal-admin-merchant');
+        document.getElementById('modal-admin-merchant').style.display = 'flex';
 
         try {
             // 1. Fetch Merchant Details
