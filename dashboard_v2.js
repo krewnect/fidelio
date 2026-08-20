@@ -3210,13 +3210,13 @@ function updatePassRender() {
             }
 
             tbody.innerHTML += `
-                <tr style="border-bottom: 1px solid var(--border-soft);">
-                    <td style="padding: 16px;"><strong>${m.business_name}</strong></td>
-                    <td style="padding: 16px;">${planBadge}</td>
-                    <td style="padding: 16px;">${daysLeft}</td>
-                    <td style="padding: 16px;">${paymentStatus}</td>
-                    <td style="padding: 16px; text-align: right;">
-                        <button class="fidelio-btn-secondary-preset" onclick="openAdminMerchant('${m.id}')" style="background:var(--bg-main); color:var(--text-main); padding:6px 12px; font-size:12px; border:1px solid var(--border-soft);">
+                <tr style="border-bottom: 1px solid var(--border-soft); transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 12px 8px; max-width: 200px; white-space: normal; word-break: break-word;"><strong style="font-size: 14px;">${m.business_name}</strong></td>
+                    <td style="padding: 12px 8px;">${planBadge}</td>
+                    <td style="padding: 12px 8px; font-variant-numeric: tabular-nums;">${daysLeft}</td>
+                    <td style="padding: 12px 8px;">${paymentStatus}</td>
+                    <td style="padding: 12px 8px; text-align: right;">
+                        <button class="fidelio-btn-secondary-preset" onclick="document.getElementById('modal-admin-merchant').style.display='flex'; openAdminMerchant('${m.id}')" style="background:var(--bg-main); color:var(--text-main); padding:6px 12px; font-size:12px; border:1px solid var(--border-soft);">
                             <i class="fa-solid fa-sliders"></i> Administrar
                         </button>
                     </td>
