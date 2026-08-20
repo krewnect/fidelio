@@ -3059,38 +3059,48 @@ function updatePassRender() {
         const tbody = document.getElementById('global-db-body');
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Cargando base de datos global...</td></tr>';
         
-        // Obtener clientes junto con los datos de su restaurante
+        // Obtener clientes junto con los datos geográficos de su restaurante
         const { data, error } = await window.supabaseClient
             .from('customers')
             .select(`
                 id, full_name, email, merchant_id, created_at,
-                merchants(business_name, industry)
+                merchants(*)
             `)
             .order('created_at', { ascending: false })
-            .limit(1000); 
+            .limit(1500); 
 
         if (error) {
             tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
             return;
         }
         
-        // Formatear la data para que sea más plana y fácil de filtrar
+        // Privacidad: Enmascarar email y aplanar datos
         globalDBCache = (data || []).map(c => {
             const m = c.merchants || {};
+            
+            // Mask Email (e.g. j***@gmail.com)
+            let maskedEmail = 'N/D';
+            if (c.email && c.email.includes('@')) {
+                const parts = c.email.split('@');
+                maskedEmail = parts[0].charAt(0) + '****@' + parts[1];
+            }
+
             return {
                 id: c.id,
-                full_name: c.full_name,
-                email: c.email,
+                full_name: c.full_name || 'Anónimo',
+                email: maskedEmail,
+                raw_email: c.email || '', 
                 merchant_id: c.merchant_id,
                 created_at: c.created_at,
                 business_name: m.business_name || 'Desconocido',
                 country: m.country || '',
                 state: m.state || '',
+                colonia: m.colonia || m.neighborhood || '',
                 industry: m.industry || 'other'
             };
         });
         
-        filterGlobalDB(); // Llama el render inicial respetando filtros (si los hubiera en el DOM cacheado)
+        filterGlobalDB();
     };
 
     window.renderGlobalDB = function(data) {
@@ -3125,23 +3135,21 @@ function updatePassRender() {
 
     window.filterGlobalDB = function() {
         const searchInput = document.getElementById('global-db-search')?.value.toLowerCase() || '';
-        const filterCountry = document.getElementById('global-db-filter-country')?.value || '';
-        const filterState = document.getElementById('global-db-filter-state')?.value.toLowerCase() || '';
-        const filterIndustry = document.getElementById('global-db-filter-industry')?.value || '';
         const filterBusiness = document.getElementById('global-db-filter-business')?.value.toLowerCase() || '';
+        const filterCountry = document.getElementById('global-db-filter-country')?.value.toLowerCase() || '';
+        const filterState = document.getElementById('global-db-filter-state')?.value.toLowerCase() || '';
+        const filterColonia = document.getElementById('global-db-filter-colonia')?.value.toLowerCase() || '';
 
         const filtered = globalDBCache.filter(c => {
             let match = true;
-            // Name or email search
-            if (searchInput && !c.full_name.toLowerCase().includes(searchInput) && !c.email.toLowerCase().includes(searchInput)) match = false;
-            // Country
-            if (filterCountry && c.country !== filterCountry) match = false;
-            // State
-            if (filterState && !c.state.toLowerCase().includes(filterState)) match = false;
-            // Industry
-            if (filterIndustry && c.industry !== filterIndustry) match = false;
-            // Business Name
+            // Name or hash search
+            if (searchInput && !c.full_name.toLowerCase().includes(searchInput) && !c.id.toLowerCase().includes(searchInput)) match = false;
+            
+            // Geography & Business filters
             if (filterBusiness && !c.business_name.toLowerCase().includes(filterBusiness)) match = false;
+            if (filterCountry && !c.country.toLowerCase().includes(filterCountry)) match = false;
+            if (filterState && !c.state.toLowerCase().includes(filterState)) match = false;
+            if (filterColonia && !c.colonia.toLowerCase().includes(filterColonia)) match = false;
             
             return match;
         });
