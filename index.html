@@ -693,8 +693,27 @@ aside {
     flex-shrink: 0;
 }
 .nav-tab.admin-only-item {
-    padding: 8px 16px !important; 
-    min-height: 44px !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0 16px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    line-height: 42px !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    background: transparent;
+    overflow: visible !important;
+}
+.nav-tab.admin-only-item i {
+    line-height: 42px !important;
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .nav-tab.active {
