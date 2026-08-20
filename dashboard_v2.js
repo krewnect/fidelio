@@ -848,7 +848,7 @@ let saveTimeout = null;
             // Toggle Business-only tabs
             document.querySelectorAll('.plan-business-only').forEach(el => {
                 if(isBusiness) {
-                    el.style.display = 'flex';
+                    el.style.display = '';
                 } else {
                     el.style.display = 'none';
                 }
