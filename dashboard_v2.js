@@ -6636,7 +6636,7 @@ window.fetchGeminiDashboardInsights = async function() {
         
         textEl.innerHTML = `<b>Insight:</b> ${data.insight}`;
     } catch (err) {
-        textEl.innerHTML = '<i>No se pudo obtener el análisis de Gemini en este momento.</i>';
+        textEl.innerHTML = '<i>' + err.message + '</i>';
         
         if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         console.error(err);
@@ -6668,7 +6668,7 @@ window.fetchGeminiCRMInsights = async function() {
         
         textEl.innerHTML = `<b>Recomendación Estratégica:</b> ${data.insight}`;
     } catch (err) {
-        textEl.innerHTML = '<i>Gemini no está disponible en este momento.</i>';
+        textEl.innerHTML = '<i>' + err.message + '</i>';
         
         if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         console.error(err);
