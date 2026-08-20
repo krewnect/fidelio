@@ -3059,7 +3059,7 @@ function updatePassRender() {
         const tbody = document.getElementById('global-db-body');
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Cargando base de datos global...</td></tr>';
         
-        // Obtener clientes junto con los datos geográficos de su restaurante
+        // Obtener clientes junto con los datos geográficos de su negocio
         const { data, error } = await window.supabaseClient
             .from('customers')
             .select(`
@@ -3162,7 +3162,7 @@ function updatePassRender() {
         if (!checkMasterAdmin()) return;
         const tbody = document.getElementById('merchants-control-body');
         const listMorosos = document.getElementById('morosos-list');
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando restaurantes...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando negocios...</td></tr>';
         listMorosos.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Cargando...</div>';
         
         const { data, error } = await window.supabaseClient.from('merchants').select('id, business_name, plan_status, created_at');
@@ -3239,7 +3239,7 @@ function updatePassRender() {
 
     window.grantFreeAccount = async function(id) {
         if (!checkMasterAdmin()) return;
-        if(!confirm('¿Estás seguro de regalar una cuenta lifetime free a este restaurante?')) return;
+        if(!confirm('¿Estás seguro de regalar una cuenta lifetime free a este negocio?')) return;
         const { error } = await window.supabaseClient.from('merchants').update({ plan_status: 'lifetime_free' }).eq('id', id);
         if(error) window.showToast('Error: ' + error.message, 'error');
         else { window.showToast('Cuenta otorgada', 'success'); loadMerchantsControl(); }
