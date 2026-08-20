@@ -5711,6 +5711,15 @@ window.fetchCopilotIdeas = async function() {
     containerEl.innerHTML = '';
     
     try {
+        const cacheKey = 'gemini_cache_metrics';
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp < 1000 * 60 * 60 * 4) {
+                textEl.innerHTML = `<b>Reporte de Optimización:</b> ${parsed.data.insight}`;
+                return;
+            }
+        }
         const token = window.merchantSession?.access_token;
         
         // Mock de contexto del negocio para la demo
@@ -6638,6 +6647,16 @@ window.fetchGeminiDashboardInsights = async function() {
     textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Gemini está analizando tus ingresos y escaneos...';
     
     try {
+        const cacheKey = 'gemini_cache_dashboard';
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp < 1000 * 60 * 60 * 4) { // 4 hours TTL
+                textEl.innerHTML = `<b>Insight:</b> ${parsed.data.insight}`;
+                return;
+            }
+        }
+
         const sales = document.getElementById('metric-sales') ? document.getElementById('metric-sales').textContent : '$0.00';
         const scans = document.getElementById('metric-scans') ? document.getElementById('metric-scans').textContent : '0';
         const active = document.getElementById('metric-active-users') ? document.getElementById('metric-active-users').textContent : '0';
@@ -6656,6 +6675,7 @@ window.fetchGeminiDashboardInsights = async function() {
         if(typeof stepInterval !== 'undefined') clearInterval(stepInterval);
         const data = await res.json();
         
+        localStorage.setItem('gemini_cache_dashboard', JSON.stringify({ timestamp: Date.now(), data }));
         textEl.innerHTML = `<b>Insight:</b> ${data.insight}`;
     } catch (err) {
         textEl.innerHTML = '<i>' + err.message + '</i>';
@@ -6672,6 +6692,16 @@ window.fetchGeminiCRMInsights = async function() {
     textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Evaluando oportunidades en tu base de clientes...';
     
     try {
+        const cacheKey = 'gemini_cache_crm';
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp < 1000 * 60 * 60 * 4) { // 4 hours TTL
+                textEl.innerHTML = `<b>Oportunidad:</b> ${parsed.data.insight}`;
+                return;
+            }
+        }
+
         const customersCount = typeof state !== "undefined" && state.customers ? state.customers.length : 0;
         
         const token = window.merchantSession?.access_token;
@@ -6725,12 +6755,22 @@ window.fetchGeminiMetricsInsights = async function() {
     if (!textEl) return;
     textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color:#7C3AED;"></i> Evaluando retornos de inversión y ticket promedio...';
     try {
+        const cacheKey = 'gemini_cache_metrics';
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp < 1000 * 60 * 60 * 4) {
+                textEl.innerHTML = `<b>Reporte de Optimización:</b> ${parsed.data.insight}`;
+                return;
+            }
+        }
         const token = window.merchantSession?.access_token;
         const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch('/api/ai/metrics-insights', reqOpts);
         if (!res.ok) { const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini'); }
         const data = await res.json();
+        localStorage.setItem('gemini_cache_metrics', JSON.stringify({ timestamp: Date.now(), data }));
         textEl.innerHTML = `<b>Reporte de Optimización:</b> ${data.insight}`;
     } catch (err) {
         textEl.innerHTML = '<i style="color:#ef4444;">' + err.message + '</i>';
@@ -6742,12 +6782,22 @@ window.fetchGeminiAppointmentsInsights = async function() {
     if (!textEl) return;
     textEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color:#7C3AED;"></i> Diseñando tácticas para reducir el ausentismo...';
     try {
+        const cacheKey = 'gemini_cache_metrics';
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp < 1000 * 60 * 60 * 4) {
+                textEl.innerHTML = `<b>Reporte de Optimización:</b> ${parsed.data.insight}`;
+                return;
+            }
+        }
         const token = window.merchantSession?.access_token;
         const reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) };
         if (token) reqOpts.headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch('/api/ai/appointments-insights', reqOpts);
         if (!res.ok) { const errData = await res.json().catch(()=>({})); throw new Error(errData.error || errData.insight || 'Error al conectar con Gemini'); }
         const data = await res.json();
+        localStorage.setItem('gemini_cache_appointments', JSON.stringify({ timestamp: Date.now(), data }));
         textEl.innerHTML = `<b>Táctica Sugerida:</b> ${data.insight}`;
     } catch (err) {
         textEl.innerHTML = '<i style="color:#ef4444;">' + err.message + '</i>';
