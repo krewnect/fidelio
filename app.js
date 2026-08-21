@@ -1939,11 +1939,21 @@ app.delete('/api/admin/merchant/:id', async (req, res) => {
     const merchantId = req.params.id;
     if (!supabaseAdmin) return res.status(500).json({error: 'Admin client not initialized'});
     try {
-        const { error } = await supabaseAdmin.auth.admin.deleteUser(merchantId);
-        if (error) throw error;
-        res.json({ success: true });
+        // Attempt to delete from Auth (this cascades to tables if configured)
+        const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(merchantId);
+        
+        // Even if auth fails (e.g. 'User not found' orphan record), force delete from merchants table
+        const { error: dbError } = await supabaseAdmin.from('merchants').delete().eq('id', merchantId);
+        
+        if (authError && authError.message !== 'User not found' && !dbError) {
+            console.warn("Auth deletion had an issue, but DB record was deleted:", authError);
+        } else if (authError && authError.message !== 'User not found' && dbError) {
+            throw new Error(`Auth Error: ${authError.message} | DB Error: ${dbError.message}`);
+        }
+        
+        res.json({ success: true, warning: authError ? authError.message : null });
     } catch (err) {
-        console.error(err);
+        console.error("Delete Merchant Error:", err);
         res.status(500).json({error: err.message});
     }
 });
