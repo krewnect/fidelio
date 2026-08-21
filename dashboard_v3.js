@@ -2472,7 +2472,7 @@ function updatePassRender() {
                 referLink = document.createElement('div');
                 referLink.id = 'render-refer-link';
                 referLink.style = 'margin-top:16px; width:100%; text-align:center; padding-top:12px; border-top:1px solid rgba(0,0,0,0.05);';
-                referLink.innerHTML = `<a href="#" style="color:var(--accent-violet); font-size:12px; font-weight:700; text-decoration:none;"><i class="fa-solid fa-user-plus"></i> Invitar a un amigo y ganar recompensas</a>`;
+                referLink.innerHTML = `<a href="javascript:void(0)" style="color:var(--accent-violet); font-size:12px; font-weight:700; text-decoration:none;"><i class="fa-solid fa-user-plus"></i> Invitar a un amigo y ganar recompensas</a>`;
                 qrSection.parentNode.insertBefore(referLink, qrSection.nextSibling);
             }
         }
