@@ -6923,7 +6923,7 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
         if(typeof window.showToast === 'function') {
             window.showToast("Copiado al portapapeles. ¡Pégalo en tu consola local de Antigravity!", "success");
         } else {
-            alert("Copiado al portapapeles. Pégalo en Antigravity.");
+            if(typeof showToast==='function') window.showToast('Copiado al portapapeles.', 'success');
         }
     } catch(err) {
         if(typeof window.showToast === 'function') window.showToast("Error al copiar texto", "error");
