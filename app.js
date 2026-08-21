@@ -1900,6 +1900,29 @@ app.post('/api/wallet/v1/log', (req, res) => {
 });
 
 // ============================================================================
+
+// ============================================================================
+// ADMIN API: GET MERCHANT AUTH DETAILS
+// ============================================================================
+app.get('/api/admin/merchant-details/:id', async (req, res) => {
+    const merchantId = req.params.id;
+    if (!supabaseAdmin) return res.status(500).json({error: 'Admin client not initialized'});
+    try {
+        const { data: { user }, error } = await supabaseAdmin.auth.admin.getUserById(merchantId);
+        if (error || !user) return res.status(404).json({error: 'Not found'});
+        res.json({
+            email: user.email,
+            first_name: user.user_metadata?.first_name || '',
+            last_name: user.user_metadata?.last_name || '',
+            phone: user.phone || ''
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({error: err.message});
+    }
+});
+
+// ============================================================================
 // TRIGGER MARKETING PUSH API
 // ============================================================================
 app.post('/api/push/send', apiLimiter, requireMerchantAuth, async (req, res) => {

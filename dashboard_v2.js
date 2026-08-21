@@ -6947,7 +6947,22 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
         document.getElementById('modal-admin-merchant').style.display = 'flex';
 
         try {
-            // 1. Fetch Merchant Details (Including new expiry column safely in case it doesn't exist yet)
+            // Fetch Owner Auth Details via secure backend API
+            fetch('https://fidelio-41j9.onrender.com/api/admin/merchant-details/' + merchantId)
+                .then(res => res.json())
+                .then(user => {
+                    const fullName = (user.first_name + ' ' + user.last_name).trim();
+                    document.getElementById('admin-merchant-owner').textContent = fullName || 'No especificado';
+                    document.getElementById('admin-merchant-email').textContent = user.email || 'No disponible';
+                    document.getElementById('admin-merchant-phone').textContent = user.phone || 'No registrado';
+                })
+                .catch(err => {
+                    document.getElementById('admin-merchant-owner').textContent = 'Error';
+                    document.getElementById('admin-merchant-email').textContent = 'Error';
+                    document.getElementById('admin-merchant-phone').textContent = 'Error';
+                });
+
+            // 1. Fetch Merchant Details
             const { data: m, error: mErr } = await window.supabaseClient.from('merchants').select('business_name, plan_status, created_at, custom_price, custom_price_expires_at').eq('id', merchantId).single();
             if (mErr) throw mErr;
             
