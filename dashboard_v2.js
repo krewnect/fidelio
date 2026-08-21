@@ -3070,7 +3070,7 @@ function updatePassRender() {
             .limit(1500); 
 
         if (error) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
             return;
         }
         
@@ -3164,11 +3164,11 @@ function updatePassRender() {
         const tbody = document.getElementById('billing-history-body');
         if (!tbody) return;
         
-        tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-muted);">Cargando...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--text-muted);">Cargando...</td></tr>';
         
         const { data, error } = await window.supabaseClient.from('merchants').select('id, business_name, plan_status, created_at, custom_price').order('created_at', { ascending: false });
         if (error) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#ef4444;">Error: ${error.message}</td></tr>`;
             return;
         }
         
@@ -3204,17 +3204,14 @@ function updatePassRender() {
             tbody.innerHTML += `
                 <tr style="border-bottom: 1px solid var(--border-soft); transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
                     <td style="padding: 12px 24px 12px 8px; white-space: nowrap;"><strong style="font-size: 14px;">${m.business_name}</strong></td>
-                    <td style="padding: 12px 24px; white-space: nowrap; color: var(--text-muted);">${createdDate.toLocaleDateString()}</td>
-                    <td style="padding: 12px 24px; white-space: nowrap;"><span class="menu-badge" style="background:var(--accent-violet);color:#fff;font-size:10px;">${planText}</span></td>
-                    <td style="padding: 12px 24px; white-space: nowrap; font-variant-numeric: tabular-nums;">${tarifa}</td>
-                    <td style="padding: 12px 24px; white-space: nowrap; font-weight:700; font-variant-numeric: tabular-nums;">${ltv}</td>
-                    <td style="padding: 12px 8px; white-space: nowrap;">${estado}</td>
+                    <td style="padding: 12px 24px; white-space: nowrap; font-weight:700; font-variant-numeric: tabular-nums; color: #10b981;">${ltv}</td>
+                    <td style="padding: 12px 8px; white-space: nowrap; color: var(--text-muted);">${createdDate.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                 </tr>
             `;
         });
         
         if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-muted);">No hay negocios registrados.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--text-muted);">No hay negocios registrados.</td></tr>';
         }
     };
 
