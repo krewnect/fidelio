@@ -5158,8 +5158,12 @@ body {
                 }
                 
                 // Add script dynamically so it runs after supabase is ready
+                const bridge = document.createElement('script');
+                bridge.src = 'magic_bridge.js';
+                document.body.appendChild(bridge);
+
                 const script = document.createElement('script');
-                script.src = 'dashboard_v3.js?v=9999';
+                script.src = 'dashboard_v3.js?v=' + new Date().getTime();
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));
