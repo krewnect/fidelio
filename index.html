@@ -893,7 +893,7 @@ aside {
                         <h1>Mis Campañas</h1>
                         <p>Selecciona una campaña para editarla o crea una nueva.</p>
                     </div>
-                    <button class="fidelio-btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñar Nueva Campaña Mágica</button>
+                    <button class="fidelio-btn-primary" onclick="window.forceNewCampaignFlow()"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñar Nueva Campaña</button>
                 </div>
                 <div id="campaigns-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
                     <div id="campaigns-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #f8fafc;  border: 2px dashed #cbd5e1;">
@@ -5036,7 +5036,7 @@ body {
                 
                 // Add script dynamically so it runs after supabase is ready
                 const script = document.createElement('script');
-                script.src = 'dashboard_v3.js?v=' + new Date().getTime();
+                script.src = 'dashboard_v3.js?v=9999;
                 document.body.appendChild(script);
             })
             .catch(err => console.error('Error fetching config:', err));
@@ -5536,6 +5536,45 @@ body {
         </div>
     </div>
 
+
+    <!-- FORCE NEW CAMPAIGN FLOW INJECTION -->
+    <script>
+    window.forceNewCampaignFlow = function() {
+        try {
+            console.log("forceNewCampaignFlow triggered");
+            // 1. Reset state if it exists
+            if (typeof window.state !== 'undefined' && window.state) {
+                window.state.currentCampaignId = null;
+            }
+            
+            // 2. Hide all tabs forcefully
+            document.querySelectorAll('.tab-content').forEach(t => {
+                t.classList.remove('active');
+                t.style.display = 'none';
+            });
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            
+            // 3. Show loyalty tab
+            const loy = document.getElementById('tab-loyalty');
+            if (loy) {
+                loy.classList.add('active');
+                loy.style.display = 'block';
+            } else {
+                alert("DOM ERROR: tab-loyalty is missing!");
+            }
+            
+            // 4. Toast
+            if (typeof window.showToast === 'function') {
+                window.showToast("Paso 1: Elige el Programa de Fidelización.", "success");
+            }
+        } catch (e) {
+            alert("Error crítico en forceNewCampaignFlow: " + e.message);
+        }
+    };
+    </script>
 </body>
+
 
 </html>
