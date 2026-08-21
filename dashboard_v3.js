@@ -2688,7 +2688,7 @@ function updatePassRender() {
             if(sidebar) sidebar.classList.remove('mobile-open');
 
             navTabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
+            tabContents.forEach(c => { c.classList.remove('active'); c.style.display = ''; });
 
             tab.classList.add('active');
             const targetTab = tab.getAttribute('data-tab');
@@ -5363,7 +5363,7 @@ window.startDesignerFlow = function(programType) {
     const navTabs = document.querySelectorAll('.nav-tab');
     const tabContents = document.querySelectorAll('.tab-content');
     navTabs.forEach(t => t.classList.remove('active'));
-    tabContents.forEach(c => c.classList.remove('active'));
+    tabContents.forEach(c => { c.classList.remove('active'); c.style.display = ''; });
     
     document.getElementById('tab-builder').classList.add('active');
     const bldTab = document.getElementById('nav-builder');
@@ -5923,7 +5923,7 @@ window.executeCopilotIdea = function(opp) {
     const navTabs = document.querySelectorAll('.nav-tab');
     const tabContents = document.querySelectorAll('.tab-content');
     navTabs.forEach(t => t.classList.remove('active'));
-    tabContents.forEach(c => c.classList.remove('active'));
+    tabContents.forEach(c => { c.classList.remove('active'); c.style.display = ''; });
 
     if (opp.format === 'card') {
         // 1. Inicializar como Tarjeta Especial
