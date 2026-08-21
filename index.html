@@ -5187,9 +5187,7 @@ body {
                 }
                 
                 // Add script dynamically so it runs after supabase is ready
-                const bridge = document.createElement('script');
-                bridge.src = 'magic_bridge.js';
-                document.body.appendChild(bridge);
+
 
                 const script = document.createElement('script');
                 script.src = 'dashboard_v3.js?v=' + new Date().getTime();
@@ -5731,6 +5729,8 @@ body {
     };
     </script>
 
+    
+    <script src="magic_bridge.js"></script>
     <!-- MAGIC ENGINE TEST HANDLERS -->
     <script>
     window.testFlashDrop = async function() {
