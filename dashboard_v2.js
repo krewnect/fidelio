@@ -6947,23 +6947,18 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
         document.getElementById('modal-admin-merchant').style.display = 'flex';
 
         try {
-            // Fetch Owner Auth Details via secure backend API
-            fetch('https://fidelio-41j9.onrender.com/api/admin/merchant-details/' + merchantId)
-                .then(res => res.json())
-                .then(user => {
-                    const fullName = (user.first_name + ' ' + user.last_name).trim();
-                    document.getElementById('admin-merchant-owner').textContent = fullName || 'No especificado';
-                    document.getElementById('admin-merchant-email').textContent = user.email || 'No disponible';
-                    document.getElementById('admin-merchant-phone').textContent = user.phone || 'No registrado';
-                })
-                .catch(err => {
-                    document.getElementById('admin-merchant-owner').textContent = 'Error';
-                    document.getElementById('admin-merchant-email').textContent = 'Error';
-                    document.getElementById('admin-merchant-phone').textContent = 'Error';
-                });
-
             // 1. Fetch Merchant Details
-            const { data: m, error: mErr } = await window.supabaseClient.from('merchants').select('business_name, plan_status, created_at, custom_price, custom_price_expires_at').eq('id', merchantId).single();
+            const { data: m, error: mErr } = await window.supabaseClient.from('merchants').select('business_name, plan_status, created_at, custom_price, custom_price_expires_at, owner_name, owner_email, owner_phone').eq('id', merchantId).single();
+            if (!mErr) {
+                document.getElementById('admin-merchant-owner').textContent = m.owner_name || 'Pendiente de Sincronizar';
+                document.getElementById('admin-merchant-email').textContent = m.owner_email || 'Pendiente de Sincronizar';
+                document.getElementById('admin-merchant-phone').textContent = m.owner_phone || 'Pendiente de Sincronizar';
+            } else {
+                document.getElementById('admin-merchant-owner').textContent = 'Error DB';
+                document.getElementById('admin-merchant-email').textContent = 'Error DB';
+                document.getElementById('admin-merchant-phone').textContent = 'Error DB';
+            }
+
             if (mErr) throw mErr;
             
             document.getElementById('admin-merchant-name').textContent = m.business_name;
