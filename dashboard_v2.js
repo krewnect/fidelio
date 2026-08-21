@@ -7022,8 +7022,8 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
             window.showToast("Cuenta eliminada permanentemente", "success");
             document.getElementById('modal-admin-merchant').style.display = 'none';
             // Refrescar lista de negocios
-            if(typeof window.loadFidelioTeam === 'function') {
-                window.loadFidelioTeam();
+            if(typeof window.loadMerchantsControl === 'function') {
+                window.loadMerchantsControl();
             }
         } catch(e) {
             console.error(e);
