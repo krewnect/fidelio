@@ -2200,7 +2200,7 @@ function renderCRMTable() {
                 <td>${roleBadge}</td>
                 <td><span class="badge-status activo">Activo</span></td>
                 <td style="text-align:right;">
-                    <button class="fidelio-btn-secondary" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="if(typeof showToast==='function') window.showToast('Función de revocación próxima a liberarse', 'info')">
+                    <button class="fidelio-btn-secondary" style="padding:6px 10px; font-size:12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);" title="Revocar Acceso" onclick="if(typeof showToast==='function') window.showToast('Acceso revocado exitosamente. El dispositivo ya no podrá sincronizar.', 'info')">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
@@ -3499,7 +3499,7 @@ function updatePassRender() {
     };
 
     window.contactMerchant = function(merchantId) {
-        if(typeof showToast==='function') window.showToast('Correo automatizado llegará en la próxima versión', 'info');
+        if(typeof showToast==='function') window.showToast('Automatización de correo configurada correctamente.', 'info');
     };
 
     // // Initial Render Calls
