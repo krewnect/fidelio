@@ -889,12 +889,10 @@ let saveTimeout = null;
             
             // Toggle Professional-only tabs
             document.querySelectorAll('.plan-professional-only').forEach(el => {
-                if(isAdmin) {
-                    el.style.display = ''; // Admin ve TODO
-                } else if(isBusiness && plan !== 'professional') {
-                    el.style.display = 'none'; // Solo ocultar si es 100% negocio y NO profesional
+                if(plan === 'professional') {
+                    el.style.display = '';
                 } else {
-                    el.style.display = ''; // Mostrar por defecto para professionals
+                    el.style.display = 'none'; 
                 }
             });
         };
@@ -4973,7 +4971,7 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
             btnUpsell.innerHTML = '<i class="fa-solid fa-check"></i> Activar Licencia Gratuita';
             btnUpsell.onclick = async () => {
                 await window.supabaseClient.from('promo_codes').update({ used_count: data.used_count + 1 }).eq('code', code);
-                await window.supabaseClient.from('merchants').update({ plan_status: 'active_lifetime' }).eq('id', window.fidelioState.tenantId);
+                await window.supabaseClient.from('merchants').update({ plan_status: 'active_lifetime', business_type: data.target_plan || 'business' }).eq('id', state.tenantId);
                 window.showToast('Licencia habilitada', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             };
