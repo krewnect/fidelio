@@ -4147,21 +4147,23 @@ function updatePassRender() {
                     
                     window.showToast('Configuración guardada exitosamente.', 'success');
                     
-                    // Si veníamos de 'Nueva Campaña', avanzar al Diseñador Card
-                    if (state.currentCampaignId) {
-                        if (typeof window.saveDesignToSupabase === 'function') {
-                            await window.saveDesignToSupabase();
-                        }
-                        setTimeout(() => {
-                            if (typeof window.goToBuilder === 'function') {
-                                window.goToBuilder();
-                            } else {
-                                const bTab = document.querySelector('.nav-tab[data-tab="tab-builder"]');
-                                if (bTab) bTab.click();
-                            }
-                            window.showToast('Reglas guardadas. Ahora diseña tu tarjeta.', 'info');
-                        }, 500);
+                    // Avanzar siempre al Diseñador Card (ya sea campaña existente o nueva)
+                    if (typeof window.saveDesignToSupabase === 'function') {
+                        await window.saveDesignToSupabase(); // Esto auto-generará el currentCampaignId si es null
                     }
+                    setTimeout(() => {
+                        // Navegar forzosamente al tab-builder
+                        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        const builderTab = document.getElementById('tab-builder');
+                        if (builderTab) builderTab.classList.add('active');
+                        window.showToast('Reglas guardadas. Paso 2: Diseña tu tarjeta.', 'info');
+                        
+                        // Actualizar la lista en el builder si es necesario
+                        if (typeof window.populateBuilderCampaignSelect === 'function') {
+                            window.populateBuilderCampaignSelect();
+                        }
+                    }, 500);
                 } catch (err) {
                     console.error("Error saving config:", err);
                     window.showToast('Error al guardar: ' + err.message, 'warning');
@@ -5320,7 +5322,8 @@ const newSelectCamp = "        state.customBannerUrl = camp.banner_url || null;\
 // ==========================================
 
 window.openCampaignModal = function() {
-    // Start the unified flow
+    // Force a new campaign context
+    if(window.state) window.state.currentCampaignId = null;
     window.showToast("Paso 1: Elige el Programa de Fidelización para tu campaña.", "success");
     
     // Switch to loyalty tab
