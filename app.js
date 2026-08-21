@@ -446,7 +446,10 @@ app.post('/api/auth/register', async (req, res) => {
                 }
             ]);
         
-        if (dbError) console.error("Error al crear merchant:", dbError);
+        if (dbError) {
+            console.error("Error al crear merchant:", dbError);
+            throw new Error("No se pudo crear el perfil del negocio. Por favor intenta de nuevo.");
+        }
 
         res.json({ success: true, user: authData.user, skipStripe });
     } catch (error) {
