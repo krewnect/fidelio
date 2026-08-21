@@ -1968,7 +1968,7 @@ function renderCRMTable() {
         const crmFilterMonth = document.getElementById('crm-filter-month');
         const crmCountBadge = document.getElementById('crm-count-badge');
         
-        if (!crmTableBody || !state || !state.customers) return;
+        if (!crmTableBody || typeof state === 'undefined' || !state.customers || !Array.isArray(state.customers)) return;
 
         const searchTerm = (crmSearchInput?.value || '').toLowerCase();
         const tierFilter = crmFilterTier?.value || 'all';
