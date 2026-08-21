@@ -431,7 +431,8 @@ app.post('/api/auth/register', async (req, res) => {
         }
 
         // 2. Insertar perfil en merchants
-        const { error: dbError } = await supabase
+        const clientToUse = supabaseAdmin || supabase;
+        const { error: dbError } = await clientToUse
             .from('merchants')
             .insert([
                 { 
