@@ -798,6 +798,7 @@ let saveTimeout = null;
                     id: merchantId,
                     business_name: "Mi Negocio",
                     industry: "restaurant",
+                    business_type: "business",
                     color_primary: "#090d16",
                     color_accent: "#5b0eb8",
                     cashback_percent: 5,
