@@ -7010,7 +7010,7 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
         
         try {
             window.showToast("Eliminando cuenta...", "info");
-            const res = await fetch('https://fidelio-41j9.onrender.com/api/admin/merchant/' + id, {
+            const res = await fetch('/api/admin/merchant/' + id, {
                 method: 'DELETE'
             });
             
