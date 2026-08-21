@@ -4951,7 +4951,7 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
             return window.showToast('Código inválido o expirado', 'error');
         }
 
-        if (data.current_uses >= data.max_uses) {
+        if (data.used_count >= data.max_uses) {
             return window.showToast('Este código ha superado su límite de usos', 'error');
         }
 
@@ -4961,19 +4961,19 @@ const billingCycle = document.getElementById('billing-cycle-toggle')?.checked ? 
             window.showToast(`¡Código aplicado! Tienes ${data.free_branches_count} sucursales extra gratis.`, 'success');
             btnUpsell.innerHTML = '<i class="fa-solid fa-check"></i> Activar Sucursales Gratis';
             btnUpsell.onclick = async () => {
-                await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
+                await window.supabaseClient.from('promo_codes').update({ used_count: data.used_count + 1 }).eq('code', code);
                 window.showToast('Sucursales habilitadas', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             };
         } else if (data.reward_type === 'custom_branch_price') {
             window.showToast(`¡Código aplicado! Precio preferencial de $${data.custom_branch_price} USD.`, 'success');
             btnUpsell.innerHTML = `<i class="fa-brands fa-stripe"></i> Pagar $${data.custom_branch_price} USD / mes`;
-            // Si tuvieras un link específico para esto en la DB, podrías reemplazarlo aquí.
-        } else if (data.reward_type === 'lifetime_free' || (data.reward_type === 'discount' && data.discount_pct === 100)) {
+        } else if (data.reward_type === 'lifetime_free' || (data.reward_type === 'discount' && data.discount_pct >= 100)) {
             window.showToast('¡Felicidades! Tienes acceso ilimitado gratuito.', 'success');
             btnUpsell.innerHTML = '<i class="fa-solid fa-check"></i> Activar Licencia Gratuita';
             btnUpsell.onclick = async () => {
-                await window.supabaseClient.from('promo_codes').update({ current_uses: data.current_uses + 1 }).eq('code', code);
+                await window.supabaseClient.from('promo_codes').update({ used_count: data.used_count + 1 }).eq('code', code);
+                await window.supabaseClient.from('merchants').update({ plan_status: 'active_lifetime' }).eq('id', window.fidelioState.tenantId);
                 window.showToast('Licencia habilitada', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             };
