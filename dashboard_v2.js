@@ -2213,7 +2213,7 @@ function renderCRMTable() {
 function updatePassRender() {
         window._updatePassRenderGlobal = true; // Debug flag
         const passRender = document.getElementById('pass-render');
-        if (!passRender) return;
+        if (!passRender || typeof state === 'undefined' || !state.customers || !state.vipTiers) return;
         scheduleAutoSave();
         
         const pType = document.getElementById('program-type-select')?.value || 'cashback';
