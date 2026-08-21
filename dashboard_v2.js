@@ -6947,19 +6947,18 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
         document.getElementById('modal-admin-merchant').style.display = 'flex';
 
         try {
-            // 1. Fetch Merchant Details
-            const { data: m, error: mErr } = await window.supabaseClient.from('merchants').select('business_name, plan_status, created_at, custom_price, custom_price_expires_at, owner_name, owner_email, owner_phone').eq('id', merchantId).single();
-            if (!mErr) {
-                document.getElementById('admin-merchant-owner').textContent = m.owner_name || 'Pendiente de Sincronizar';
-                document.getElementById('admin-merchant-email').textContent = m.owner_email || 'Pendiente de Sincronizar';
-                document.getElementById('admin-merchant-phone').textContent = m.owner_phone || 'Pendiente de Sincronizar';
-            } else {
+                        // 1. Fetch Merchant Details
+            const { data: m, error: mErr } = await window.supabaseClient.from('merchants').select('*').eq('id', merchantId).single();
+            if (mErr) {
                 document.getElementById('admin-merchant-owner').textContent = 'Error DB';
                 document.getElementById('admin-merchant-email').textContent = 'Error DB';
                 document.getElementById('admin-merchant-phone').textContent = 'Error DB';
+                throw mErr;
             }
-
-            if (mErr) throw mErr;
+            
+            document.getElementById('admin-merchant-owner').textContent = m.owner_name || 'No especificado';
+            document.getElementById('admin-merchant-email').textContent = m.owner_email || 'No disponible';
+            document.getElementById('admin-merchant-phone').textContent = m.owner_phone || 'No registrado';
             
             document.getElementById('admin-merchant-name').textContent = m.business_name;
             document.getElementById('admin-merchant-id').textContent = merchantId;
