@@ -1931,6 +1931,23 @@ app.get('/api/admin/merchant-details/:id', async (req, res) => {
 });
 
 // ============================================================================
+
+// ============================================================================
+// ADMIN API: DELETE MERCHANT
+// ============================================================================
+app.delete('/api/admin/merchant/:id', async (req, res) => {
+    const merchantId = req.params.id;
+    if (!supabaseAdmin) return res.status(500).json({error: 'Admin client not initialized'});
+    try {
+        const { error } = await supabaseAdmin.auth.admin.deleteUser(merchantId);
+        if (error) throw error;
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({error: err.message});
+    }
+});
+
 // TRIGGER MARKETING PUSH API
 // ============================================================================
 app.post('/api/push/send', apiLimiter, requireMerchantAuth, async (req, res) => {

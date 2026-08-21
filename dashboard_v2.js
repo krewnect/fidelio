@@ -7002,6 +7002,35 @@ Por favor, revisa el código correspondiente y propón la corrección.`;
         }
     };
 
+    
+    window.deleteAdminMerchant = async function() {
+        if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
+        const id = document.getElementById('admin-current-merchant-id').value;
+        if(!id) return;
+        
+        try {
+            window.showToast("Eliminando cuenta...", "info");
+            const res = await fetch('https://fidelio-41j9.onrender.com/api/admin/merchant/' + id, {
+                method: 'DELETE'
+            });
+            
+            if(!res.ok) {
+                const errData = await res.json().catch(()=>({}));
+                throw new Error(errData.error || 'Error del servidor');
+            }
+            
+            window.showToast("Cuenta eliminada permanentemente", "success");
+            document.getElementById('modal-admin-merchant').style.display = 'none';
+            // Refrescar lista de negocios
+            if(typeof window.loadFidelioTeam === 'function') {
+                window.loadFidelioTeam();
+            }
+        } catch(e) {
+            console.error(e);
+            window.showToast("Error al eliminar la cuenta: " + e.message, "error");
+        }
+    };
+
     window.saveAdminCustomPrice = async function() {
         if (window.fidelioAdminRole !== 'admin' && window.fidelioAdminRole !== 'super_admin') return;
         const id = document.getElementById('admin-current-merchant-id').value;
