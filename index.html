@@ -2403,43 +2403,285 @@ aside {
 </section>
 
             <!-- BRANCHES TAB -->
-                        <section id="tab-branches" class="tab-content">
-                <div class="workspace-header">
+                        <section id="tab-branches" class="tab-content" x-data="branchesJewel()">
+<!-- Toast AI -->
+    <div x-show="showToast" style="display: none;" 
+         x-transition:enter="transition ease-out duration-300" 
+         x-transition:enter-start="opacity-0 transform -translate-y-8" 
+         x-transition:enter-end="opacity-100 transform translate-y-0" 
+         x-transition:leave="transition ease-in duration-200" 
+         x-transition:leave-start="opacity-100 transform translate-y-0" 
+         x-transition:leave-end="opacity-0 transform -translate-y-8" 
+         class="absolute top-6 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-fidelio-500/30 flex items-center space-x-4 min-w-[400px]">
+        <div class="w-10 h-10 rounded-full bg-fidelio-500/20 flex items-center justify-center text-fidelio-400 shrink-0">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+            <p class="text-[10px] font-black text-fidelio-400 uppercase tracking-widest mb-0.5">Sistema GPS</p>
+            <p class="text-sm font-medium leading-tight" x-text="toastMsg"></p>
+        </div>
+    </div>
+
+    <!-- MODAL: AGREGAR SUCURSAL -->
+    <div x-show="showAddModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md px-4">
+        <div x-show="showAddModal" @click.away="showAddModal = false" class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100 transform transition-all">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-slate-900 text-fidelio-400 flex items-center justify-center relative overflow-hidden">
+                        <i class="fa-solid fa-satellite-dish text-sm relative z-10"></i>
+                        <div class="absolute inset-0 border-2 border-fidelio-400 rounded-full animate-ping opacity-20"></div>
+                    </div>
                     <div>
-                        <div class="workspace-eyebrow">CONFIGURACIÓN MULTISEDE</div>
-                        <h1>Sucursales y Reseñas</h1>
-                        <p>Geolocalización para Apple Wallet y motor de reseñas independiente por sucursal.</p>
+                        <h3 class="text-lg font-black text-slate-900">Nueva Geocerca</h3>
+                        <p class="text-[10px] uppercase tracking-widest font-bold text-slate-400">Instalar radar satelital</p>
                     </div>
                 </div>
+                <button @click="showAddModal = false" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-400 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-5 relative">
+                <!-- Decorative background map lines inside modal -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-grid-pattern opacity-50 rounded-bl-full pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nombre Comercial</label>
+                    <input type="text" x-model="newBranch.name" placeholder="Ej. Flagship Reforma" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-500/20 transition">
+                </div>
+                <div class="relative z-10">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Dirección Física</label>
+                    <input type="text" x-model="newBranch.address" placeholder="Av. Paseo de la Reforma 222" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-500/20 transition">
+                </div>
                 
-                <div class="content-panel">
-                    <div class="card-title-bar" style="margin-bottom:16px; justify-content:space-between;">
-                        <div style="display:flex; align-items:center; gap:16px;">
-                            <div style="width:48px; height:48px; border-radius:12px; background: rgba(255, 255, 255, 0.1); display:flex; align-items:center; justify-content:center; color:var(--accent-violet); font-size:20px;">
-                                <i class="fa-solid fa-map-location-dot"></i>
-                            </div>
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100 relative z-10">
+                    <div class="col-span-2 flex justify-between items-end mb-2">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-fidelio-600"><i class="fa-solid fa-crosshairs mr-1"></i> Coordenadas</p>
+                        <button class="text-[9px] font-bold text-blue-500 hover:text-blue-600"><i class="fa-solid fa-map mr-1"></i> Usar mi ubicación actual</button>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Latitud</label>
+                        <input type="text" x-model="newBranch.lat" placeholder="19.4284" class="w-full bg-white border border-slate-200 text-slate-900 font-mono text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-fidelio-500 focus:ring-1 focus:ring-fidelio-500 transition shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Longitud</label>
+                        <input type="text" x-model="newBranch.lng" placeholder="-99.1627" class="w-full bg-white border border-slate-200 text-slate-900 font-mono text-xs rounded-lg px-3 py-2.5 focus:outline-none focus:border-fidelio-500 focus:ring-1 focus:ring-fidelio-500 transition shadow-sm">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
+                <button @click="showAddModal = false" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-200 transition">Cancelar</button>
+                <button @click="addBranch()" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-fidelio-400 shadow-[0_0_15px_rgba(139,92,246,0.3)] transition flex items-center">
+                    <i class="fa-solid fa-power-off mr-2"></i> Encender Radar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL: CONFIGURACIÓN AVANZADA -->
+    <div x-show="showConfigModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md px-4">
+        <div x-show="showConfigModal" @click.away="showConfigModal = false" class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden border border-slate-100 transform transition-all">
+            
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-fidelio-50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-fidelio-100 text-fidelio-600 flex items-center justify-center">
+                        <i class="fa-solid fa-sliders text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-black text-slate-900" x-text="configBranch ? configBranch.name : ''"></h3>
+                        <p class="text-[10px] uppercase tracking-widest font-bold text-fidelio-500">Configuración Avanzada</p>
+                    </div>
+                </div>
+                <button @click="showConfigModal = false" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-400 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <template x-if="configBranch">
+                <div class="p-6 space-y-6">
+                    
+                    <!-- Rango de Alcance (Geofence Radius) -->
+                    <div>
+                        <div class="flex justify-between items-end mb-4">
                             <div>
-                                <h2 style="margin:0; font-size:20px;">Red de Sucursales</h2>
-                                <p style="margin:0; font-size:13px; color:var(--text-muted);">Administra la información, responsables y enlaces de Google Maps de cada ubicación.</p>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500"><i class="fa-solid fa-rss mr-1"></i> Perímetro de Escaneo</p>
+                                <p class="text-[10px] text-slate-400 mt-1 leading-tight max-w-[250px]">Ajusta a qué distancia del punto GPS se disparará la notificación en la Wallet del cliente.</p>
                             </div>
+                            <div class="bg-slate-900 text-fidelio-400 px-3 py-1.5 rounded-lg font-mono font-black text-sm shadow-inner" x-text="configBranch.radius + 'm'"></div>
                         </div>
-                        <div style="display:flex; align-items:center; gap: 8px; flex-wrap: nowrap;">
-                            <button class="fidelio-btn-primary" style="flex: 1; height: 42px !important; box-sizing: border-box !important; white-space: nowrap; padding: 0 16px !important; justify-content: center; min-width: 140px; font-size: 14px !important;"><i class="fa-solid fa-file-excel"></i> Descargar Layout</button>
-                            <button class="fidelio-btn-primary" onclick="document.getElementById('upload-branches-csv').click()" style="flex: 1; height: 42px !important; box-sizing: border-box !important; white-space: nowrap; padding: 0 16px !important; justify-content: center; min-width: 140px; font-size: 14px !important; margin: 0; cursor: pointer;">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Subir CSV
-                                <input type="file" id="upload-branches-csv" accept=".csv" style="display: none;" onchange="uploadBranchesCSV(event)">
-                            </button>
-                            <button class="fidelio-btn-primary" style="flex: 1; height: 42px !important; box-sizing: border-box !important; white-space: nowrap; padding: 0 16px !important; justify-content: center; min-width: 140px; font-size: 14px !important;"><i class="fa-solid fa-plus"></i> Añadir Sucursal</button>
+                        <input type="range" x-model="configBranch.radius" min="10" max="500" step="10" class="w-full">
+                        <div class="flex justify-between text-[8px] font-bold text-slate-400 mt-2 uppercase">
+                            <span>10m (Solo en tienda)</span>
+                            <span>500m (Calles aledañas)</span>
                         </div>
                     </div>
                     
-                    <div style="background:var(--bg-input); border-radius:16px; padding:24px; border:1px solid rgba(0,0,0,0.03);">
-                        <div id="branches-list-container" style="display:flex; flex-direction:column; gap:12px;">
-                            <p style="color:var(--text-muted); text-align:center; padding: 20px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando red de sucursales...</p>
+                    <div class="h-px bg-slate-100 w-full"></div>
+
+                    <!-- Mensaje Personalizado por Sucursal -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2"><i class="fa-solid fa-comment-dots mr-1"></i> Mensaje Push Local</p>
+                        <p class="text-[10px] text-slate-400 mb-3 leading-tight">Este mensaje aparecerá en la pantalla de bloqueo cuando crucen el perímetro de esta sucursal.</p>
+                        <div class="relative">
+                            <textarea x-model="configBranch.customMessage" rows="3" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-medium text-xs rounded-xl p-3 focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-500/20 transition resize-none" placeholder="Ej. ¡Bienvenido a Polanco! Usa tus 150 puntos Fidelio hoy..."></textarea>
+                            <div class="absolute bottom-3 right-3 text-[9px] font-bold text-slate-400" x-text="configBranch.customMessage.length + '/150'"></div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </template>
+            
+            <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
+                <button @click="showConfigModal = false" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-200 transition">Cancelar</button>
+                <button @click="saveConfig()" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-fidelio-600 hover:bg-fidelio-700 text-white shadow-lg shadow-fidelio-500/30 transition flex items-center">
+                    <i class="fa-solid fa-check mr-2"></i> Guardar Ajustes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8">
+        <div class="max-w-[1400px] mx-auto">
+
+            <!-- HIGH-TECH HERO BANNER (THE WOW FACTOR) -->
+            <div class="relative w-full rounded-[2rem] bg-slate-900 overflow-hidden mb-8 shadow-2xl border border-slate-800 flex flex-col md:flex-row items-center justify-between p-8 lg:p-10">
+                <!-- CSS Radar Sweep effect in background -->
+                <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                <!-- Radar Rings -->
+                <div class="absolute top-1/2 right-10 md:right-32 w-[300px] h-[300px] -mt-[150px] rounded-full border border-fidelio-500/20 shadow-[0_0_40px_rgba(139,92,246,0.15)] flex items-center justify-center">
+                    <div class="w-[200px] h-[200px] rounded-full border border-fidelio-400/30 flex items-center justify-center">
+                        <div class="w-[100px] h-[100px] rounded-full border border-fidelio-300/40 relative">
+                            <!-- Spinning Radar Line -->
+                            <div class="absolute top-1/2 left-1/2 w-[150px] h-[2px] bg-gradient-to-r from-fidelio-400 to-transparent animate-spin-slow origin-left" style="transform-origin: 0 50%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-10 max-w-xl">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full mb-4">
+                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                        <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Sistema Satelital En Línea</span>
+                    </div>
+                    <h1 class="text-4xl lg:text-5xl font-black tracking-tight text-white mb-4">Red de Geocercas</h1>
+                    <p class="text-sm font-medium text-slate-400 leading-relaxed">
+                        Tus radares cubren un área táctica de <span class="text-white font-bold">45,000 m²</span>. Cualquier cliente que cruce estas coordenadas exactas recibirá una notificación Push persuasiva directo en su pantalla de bloqueo.
+                    </p>
+                </div>
+
+                <div class="relative z-10 flex space-x-8 mt-8 md:mt-0 bg-slate-800/50 backdrop-blur-md border border-slate-700/50 p-6 rounded-3xl">
+                    <div class="text-center">
+                        <p class="text-4xl font-black text-white font-mono" x-text="branches.filter(b=>b.active).length"></p>
+                        <p class="text-[9px] text-fidelio-400 font-bold uppercase tracking-widest mt-1">Nodos Activos</p>
+                    </div>
+                    <div class="w-px bg-slate-700"></div>
+                    <div class="text-center">
+                        <p class="text-4xl font-black text-slate-300 font-mono" x-text="(branches.filter(b=>b.active).reduce((sum, b) => sum + b.radius, 0) * 3.14).toFixed(0) + 'm²'"></p>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Perímetro Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION BAR -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+                <!-- SEARCH BAR -->
+                <div class="relative w-full max-w-sm">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                    </div>
+                    <input type="text" x-model="searchQuery" placeholder="Buscar coordenada o sucursal..." class="w-full bg-white border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl pl-11 pr-4 py-3 focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-500/20 transition shadow-sm">
+                </div>
+
+                <div class="flex items-center space-x-3 w-full sm:w-auto">
+                    <!-- Descargar Layout -->
+                    <button @click="fireToast('Descargando plantilla: layout_coordenadas.csv...')" class="text-slate-500 hover:text-slate-900 text-xs font-bold px-3 py-3 transition underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 flex items-center shrink-0">
+                        <i class="fa-solid fa-cloud-arrow-down mr-1.5 text-[10px]"></i> Layout CSV
+                    </button>
+                    <!-- Botón Importar CSV -->
+                    <button @click="uploadBranchesCSV()" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold px-5 py-3 rounded-2xl transition shadow-sm flex items-center shrink-0">
+                        <i class="fa-solid fa-file-import text-slate-400 mr-2 text-sm"></i> Subir Nodos
+                    </button>
+                    <!-- Botón Nueva Sucursal -->
+                    <button @click="showAddModal = true" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-5 py-3 rounded-2xl transition shadow-lg flex items-center shrink-0">
+                        <i class="fa-solid fa-crosshairs text-fidelio-400 mr-2 text-sm"></i> Instalar Radar
+                    </button>
+                </div>
+            </div>
+
+            <!-- GEOFENCING RADAR GRID (#branches-list-container) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="branches-list-container">
+                
+                <template x-for="branch in filteredBranches" :key="branch.id">
+                    <!-- RADAR CARD (High-tech feel) -->
+                    <div class="bg-white border border-slate-100 rounded-[2rem] p-1 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative group hover:shadow-xl transition-all duration-300" :class="branch.active ? 'hover:border-fidelio-300' : 'opacity-70'">
+                        <div class="bg-white rounded-[1.8rem] p-6 h-full relative overflow-hidden">
+                            
+                            <!-- Subtle Grid Background -->
+                            <div class="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none"></div>
+
+                            <!-- Toggle Status -->
+                            <div class="absolute top-6 right-6 flex items-center z-20">
+                                <div class="relative inline-block w-9 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" :id="'toggle-'+branch.id" x-model="branch.active" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                    <label :for="'toggle-'+branch.id" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label>
+                                </div>
+                            </div>
+
+                            <!-- Card Header -->
+                            <div class="flex items-center space-x-4 mb-5 relative z-10">
+                                <div class="w-14 h-14 rounded-2xl flex items-center justify-center relative shadow-inner" :class="branch.active ? 'bg-fidelio-900 text-fidelio-400' : 'bg-slate-100 text-slate-400'">
+                                    <i class="fa-solid fa-satellite-dish text-xl relative z-10"></i>
+                                    <!-- Visual Radar effect when active -->
+                                    <div x-show="branch.active" class="absolute inset-0 rounded-2xl bg-fidelio-500 opacity-30 animate-radar-ping"></div>
+                                </div>
+                                <div class="pr-10">
+                                    <h3 class="text-base font-black text-slate-900 leading-tight" x-text="branch.name"></h3>
+                                    <p class="text-[10px] font-bold mt-1 uppercase tracking-widest" :class="branch.active ? 'text-fidelio-500' : 'text-slate-400'" x-text="branch.active ? 'Transmitiendo' : 'Fuera de Línea'"></p>
+                                </div>
+                            </div>
+
+                            <!-- GPS Data Block -->
+                            <div class="relative z-10 bg-slate-900 rounded-2xl p-4 shadow-inner mb-4">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Latitud</p>
+                                        <p class="text-xs font-mono font-black text-white" x-text="branch.lat"></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Longitud</p>
+                                        <p class="text-xs font-mono font-black text-white" x-text="branch.lng"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Address & Config Footer -->
+                            <div class="relative z-10 flex items-center justify-between border-t border-slate-100 pt-4">
+                                <div class="flex items-start space-x-2 max-w-[70%]">
+                                    <i class="fa-solid fa-location-dot text-slate-300 text-[10px] mt-0.5 shrink-0"></i>
+                                    <p class="text-[10px] font-medium text-slate-500 leading-snug truncate" title="branch.address" x-text="branch.address"></p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-lg">
+                                        <i class="fa-solid fa-expand mr-1" :class="branch.active ? 'text-fidelio-400' : ''"></i> 
+                                        <span x-text="branch.radius + 'm'"></span>
+                                    </div>
+                                    <!-- Advanced Config Button -->
+                                    <button @click="openConfig(branch)" title="Configuración Avanzada" class="w-6 h-6 rounded-md bg-white border border-slate-200 hover:border-fidelio-300 hover:text-fidelio-600 text-slate-400 flex items-center justify-center transition shadow-sm">
+                                        <i class="fa-solid fa-sliders text-[9px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+        </div>
+    </main>
+
+    
+</section>
 
             <!-- MARKETING TAB -->
             <section id="tab-marketing" class="tab-content">
@@ -6411,6 +6653,90 @@ function crmJewel() {
                     setTimeout(() => {
                         this.showToast = false;
                     }, 4000);
+                }
+            }
+        }
+    </script>
+
+<script>
+        function branchesJewel() {
+            return {
+                showToast: false,
+                toastMsg: '',
+                showAddModal: false,
+                showConfigModal: false,
+                configBranch: null,
+                searchQuery: '',
+                
+                // Form model for new branch
+                newBranch: { name: '', address: '', lat: '', lng: '', radius: 100, active: true },
+                
+                // Simulated Database (merchant_branches)
+                branches: [
+                    { id: 1, name: 'Flagship Polanco', address: 'Av. Presidente Masaryk 123, Polanco, CDMX', lat: '19.4323', lng: '-99.1932', radius: 150, active: true, customMessage: '¡Bienvenido a Polanco! Usa tus 150 puntos Fidelio hoy en tu cuenta.' },
+                    { id: 2, name: 'Terraza Roma Norte', address: 'Orizaba 45, Roma Norte, CDMX', lat: '19.4194', lng: '-99.1595', radius: 100, active: true, customMessage: '¡Estás muy cerca! Pasa a la terraza y disfruta tu café.' },
+                    { id: 3, name: 'Express Satélite', address: 'Cto. Comercial 22, Naucalpan, EdoMex', lat: '19.5123', lng: '-99.2312', radius: 150, active: false, customMessage: '' },
+                    { id: 4, name: 'Boutique Condesa', address: 'Michoacán 88, Hipódromo Condesa, CDMX', lat: '19.4125', lng: '-99.1724', radius: 100, active: true, customMessage: 'La Boutique de Condesa te espera. Escanea tu Wallet y gana puntos dobles.' }
+                ],
+                
+                get filteredBranches() {
+                    if (this.searchQuery === '') return this.branches;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.branches.filter(b => 
+                        b.name.toLowerCase().includes(q) || 
+                        b.address.toLowerCase().includes(q)
+                    );
+                },
+                
+                addBranch() {
+                    if (!this.newBranch.name || !this.newBranch.lat || !this.newBranch.lng) {
+                        this.fireToast('Por favor completa Nombre y Coordenadas.');
+                        return;
+                    }
+                    
+                    const branchToInsert = {
+                        id: Date.now(),
+                        name: this.newBranch.name,
+                        address: this.newBranch.address || 'Sin dirección registrada',
+                        lat: this.newBranch.lat,
+                        lng: this.newBranch.lng,
+                        radius: 100,
+                        active: true,
+                        customMessage: '¡Hola! Te vimos cerca, pasa a visitarnos.'
+                    };
+                    
+                    this.branches.unshift(branchToInsert);
+                    this.fireToast(`Radar satelital encendido para: ${branchToInsert.name}`);
+                    
+                    this.newBranch = { name: '', address: '', lat: '', lng: '', radius: 100, active: true };
+                    this.showAddModal = false;
+                },
+                
+                openConfig(branch) {
+                    // Crea una copia del objeto para no editar en vivo hasta darle 'Guardar'
+                    this.configBranch = JSON.parse(JSON.stringify(branch));
+                    if(!this.configBranch.customMessage) this.configBranch.customMessage = '';
+                    this.showConfigModal = true;
+                },
+
+                saveConfig() {
+                    const idx = this.branches.findIndex(b => b.id === this.configBranch.id);
+                    if(idx !== -1) {
+                        this.branches[idx].radius = this.configBranch.radius;
+                        this.branches[idx].customMessage = this.configBranch.customMessage;
+                    }
+                    this.showConfigModal = false;
+                    this.fireToast('Configuración del radar guardada con éxito.');
+                },
+
+                uploadBranchesCSV() {
+                    this.fireToast('Conectando a base de datos... Se han sincronizado 12 nuevos radares.');
+                },
+                
+                fireToast(msg) {
+                    this.toastMsg = msg;
+                    this.showToast = true;
+                    setTimeout(() => { this.showToast = false; }, 3500);
                 }
             }
         }
