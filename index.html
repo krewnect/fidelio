@@ -850,6 +850,24 @@ aside {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
     
 </style>
+
+    <!-- Tailwind CSS (Scoped via Preflight False) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            },
+            theme: {
+                extend: {
+                    colors: { 
+                        fidelio: { 50: "#f5f3ff", 100: "#ede9fe", 200: "#ddd6fe", 300: "#c4b5fd", 400: "#a78bfa", 500: "#8b5cf6", 600: "#7c3aed", 700: "#6d28d9", 900: "#4c1d95" } 
+                    }
+                }
+            }
+        }
+    </script>
+
 </head>
 <body>
     <script>
