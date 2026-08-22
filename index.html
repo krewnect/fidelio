@@ -806,29 +806,7 @@ aside {
 </style>
 
 
-    <!-- ERROR CATCHER FOR LOCALHOST DEBUGGING -->
-    <script>
-    window.addEventListener('error', function(e) {
-        let errDiv = document.getElementById('debug-error-overlay');
-        if (!errDiv) {
-            errDiv = document.createElement('div');
-            errDiv.id = 'debug-error-overlay';
-            errDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; padding:20px; background:red; color:white; z-index:999999; font-family:monospace; white-space:pre-wrap; max-height:50vh; overflow-y:auto;';
-            document.body.prepend(errDiv);
-        }
-        errDiv.innerHTML += `\nERROR: ${e.message} at ${e.filename}:${e.lineno}`;
-    });
-    window.addEventListener('unhandledrejection', function(e) {
-        let errDiv = document.getElementById('debug-error-overlay');
-        if (!errDiv) {
-            errDiv = document.createElement('div');
-            errDiv.id = 'debug-error-overlay';
-            errDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; padding:20px; background:red; color:white; z-index:999999; font-family:monospace; white-space:pre-wrap; max-height:50vh; overflow-y:auto;';
-            document.body.prepend(errDiv);
-        }
-        errDiv.innerHTML += `\nUNHANDLED PROMISE: ${e.reason}`;
-    });
-    </script>
+    
 <style id="crm-jewel-style">
 
         @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
