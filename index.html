@@ -555,7 +555,7 @@
 <style>
 /* 1. Global Reset & Typography */
 body {
-    background-color: #F7F9FC !important; /* Clean off-white background */
+    background-color: transparent !important;
     color: #111827 !important;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif !important;
 }
@@ -568,12 +568,12 @@ body {
 .apple-section,
 .stats-grid > div,
 .content-panel {
-    background: #FFFFFF !important;
-    border: 1px solid #E5E7EB !important;
-    border-radius: 24px !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
-    backdrop-filter: none !important; /* Remove messy glassmorphism */
-    -webkit-backdrop-filter: none !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    border-radius: 32px !important; /* rounded-[2rem] */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
     padding: 32px !important;
     margin-bottom: 24px !important;
     transition: box-shadow 0.2s ease !important;
@@ -632,8 +632,9 @@ button.btn-secondary:hover {
 
 /* 4. Unified Inputs & Dropdowns */
 input[type="text"], input[type="email"], input[type="url"], input[type="number"], input[type="password"], select, textarea, .apple-input, .fidelio-input, .form-control {
-    background: #F9FAFB !important;
-    border: 1px solid #D1D5DB !important;
+    background: rgba(255,255,255,0.4) !important;
+    border: 1px solid rgba(255,255,255,0.6) !important;
+    backdrop-filter: blur(10px) !important;
     border-radius: 12px !important;
     padding: 14px 16px !important;
     font-size: 15px !important;
@@ -5153,7 +5154,7 @@ aside {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
                 <!-- 1. The ROI Prover -->
-                <div x-show="activeWidgets.includes('roi')" x-transition class="fidelio-card p-8 md:col-span-2 relative overflow-hidden bg-gradient-to-br from-fidelio-900 to-slate-900 text-white border-none shadow-xl group">
+                <div x-show="activeWidgets.includes('roi')" x-transition class="fidelio-card p-8 md:col-span-2 relative overflow-hidden bg-gradient-to-br from-fidelio-900 to-slate-900 text-white border-none shadow-xl group rounded-[2rem]">
                     <div class="absolute -right-10 -top-10 w-40 h-40 bg-fidelio-500 rounded-full mix-blend-screen filter blur-3xl opacity-50 group-hover:opacity-70 transition"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-6">
@@ -5175,7 +5176,7 @@ aside {
                 </div>
 
                 <!-- 2. META MENSUAL (INTERACTIVA) -->
-                <div x-show="activeWidgets.includes('monthly_goal')" x-transition class="fidelio-card p-8 flex flex-col justify-center relative md:col-span-2 border-emerald-100 bg-emerald-50/20">
+                <div x-show="activeWidgets.includes('monthly_goal')" x-transition class="fidelio-card p-8 flex flex-col justify-center relative md:col-span-2 border-emerald-100 bg-emerald-50/20 rounded-[2rem]">
                     <div class="flex justify-between items-center mb-4">
                         <div>
                             <h3 class="text-base font-black text-slate-900">Meta de Facturación</h3>
@@ -5211,7 +5212,7 @@ aside {
                 </div>
 
                 <!-- 3. VIRTUAL ECONOMY -->
-                <div x-show="activeWidgets.includes('virtual_economy')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 border-emerald-100">
+                <div x-show="activeWidgets.includes('virtual_economy')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 border-emerald-100 rounded-[2rem]">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-base font-black text-slate-900">Economía Prepago</h3>
                         <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-money-bill-transfer"></i></div>
@@ -5233,7 +5234,7 @@ aside {
                 </div>
 
                 <!-- 4. LOYALTY DEBT -->
-                <div x-show="activeWidgets.includes('loyalty_debt')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 border-violet-100">
+                <div x-show="activeWidgets.includes('loyalty_debt')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 border-violet-100 rounded-[2rem]">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-base font-black text-slate-900">Deuda Cashback</h3>
                         <div class="w-8 h-8 rounded-full bg-violet-50 text-violet-500 flex items-center justify-center"><i class="fa-solid fa-gift"></i></div>
@@ -5255,7 +5256,7 @@ aside {
                 </div>
 
                 <!-- 5. Dinero Dormido -->
-                <div x-show="activeWidgets.includes('sleeping_money')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden border-rose-100 md:col-span-1">
+                <div x-show="activeWidgets.includes('sleeping_money')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden border-rose-100 md:col-span-1 rounded-[2rem]">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-sm font-black uppercase tracking-widest text-fidelio-500"><i class="fa-solid fa-vault mr-1"></i> Dinero Dormido</p>
                     </div>
@@ -5269,7 +5270,7 @@ aside {
                 </div>
                 
                 <!-- 6. Costo de Lealtad -->
-                <div x-show="activeWidgets.includes('cost_loyalty')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1  bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-slate-200">
+                <div x-show="activeWidgets.includes('cost_loyalty')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1  bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-slate-200 rounded-[2rem]">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-sm font-black uppercase tracking-widest text-slate-600"><i class="fa-solid fa-scale-balanced mr-1"></i> Costo del Programa</p>
                     </div>
@@ -5283,7 +5284,7 @@ aside {
                 </div>
 
                 <!-- 7. FUNNEL DE CAMPAÑAS PUSH (UPGRADED + INTERACTIVE) -->
-                <div x-show="activeWidgets.includes('push_perf')" x-transition class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-none bg-slate-900 text-white">
+                <div x-show="activeWidgets.includes('push_perf')" x-transition class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-none bg-slate-900 text-white rounded-[2rem]">
                     <div class="flex justify-between items-start mb-4">
                         <p class="text-sm font-black uppercase tracking-widest text-blue-400"><i class="fa-solid fa-paper-plane mr-1"></i> Análisis Push</p>
                         
@@ -5345,7 +5346,7 @@ aside {
                 </div>
                 
                 <!-- 8. Clientes Resucitados -->
-                <div x-show="activeWidgets.includes('resurrected')" x-transition class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-fidelio-100 bg-fidelio-50/50">
+                <div x-show="activeWidgets.includes('resurrected')" x-transition class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-fidelio-100 bg-fidelio-50/50 rounded-[2rem]">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-sm font-black uppercase tracking-widest text-fidelio-600"><i class="fa-solid fa-heart-pulse mr-1"></i> Zombis Recuperados</p>
                     </div>
@@ -5356,7 +5357,7 @@ aside {
                 </div>
 
                 <!-- 9. Alerta VIP Churn -->
-                <div x-show="activeWidgets.includes('vip_churn')" x-transition class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-orange-200 bg-orange-50/30">
+                <div x-show="activeWidgets.includes('vip_churn')" x-transition class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-orange-200 bg-orange-50/30 rounded-[2rem]">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-sm font-black uppercase tracking-widest text-orange-500"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Alerta Fuga VIP</p>
                     </div>
@@ -5370,7 +5371,7 @@ aside {
                 </div>
 
                 <!-- 10. BRANCH BATTLE -->
-                <div x-show="activeWidgets.includes('branch_battle')" x-transition class="fidelio-card p-8 flex flex-col lg:col-span-1">
+                <div x-show="activeWidgets.includes('branch_battle')" x-transition class="fidelio-card p-8 flex flex-col lg:col-span-1 rounded-[2rem]">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-base font-black text-slate-900">Sucursales</h3>
                         <i class="fa-solid fa-map-location-dot text-fidelio-500"></i>
@@ -5394,7 +5395,7 @@ aside {
                 </div>
 
                 <!-- 11. HABITS & FREQUENCY -->
-                <div x-show="activeWidgets.includes('habits')" x-transition class="fidelio-card p-8 lg:col-span-2">
+                <div x-show="activeWidgets.includes('habits')" x-transition class="fidelio-card p-8 lg:col-span-2 rounded-[2rem]">
                     <div class="flex justify-between items-end mb-6">
                         <h3 class="text-base font-black text-slate-900">Hábitos (Usuarios Wallet)</h3>
                     </div>
@@ -5442,7 +5443,7 @@ aside {
                 </div>
 
                 <!-- 12. HEATMAP (WITH INTERACTIVE INSIGHTS PANEL) -->
-                <div x-show="activeWidgets.includes('heatmap')" x-transition class="fidelio-card p-8 lg:col-span-4">
+                <div x-show="activeWidgets.includes('heatmap')" x-transition class="fidelio-card p-8 lg:col-span-4 rounded-[2rem]">
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <h3 class="text-base font-black text-slate-900">Matriz Térmica (Escaneos)</h3>
