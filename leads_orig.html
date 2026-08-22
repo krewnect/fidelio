@@ -1,0 +1,27 @@
+            <section id="tab-leads" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">ADMINISTRACIÓN CENTRAL</span>
+                        <h1>Prospectos Entrantes</h1>
+                        <p>Gestión del embudo de ventas para nuevos restaurantes.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadLeads()"><i class="fa-solid fa-rotate-right"></i> Refrescar Lista</button>
+                </div>
+                
+                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
+                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
+                                <th style="padding: 16px;">Fecha</th>
+                                <th style="padding: 16px;">Restaurante</th>
+                                <th style="padding: 16px;">Contacto</th>
+                                <th style="padding: 16px;">Estado</th>
+                                <th style="padding: 16px; text-align: right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leads-table-body">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>

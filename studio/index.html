@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelio Studio | Pro Editor v7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #fafafa; color: #09090b; overflow: hidden; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 10px; }
+        
+        .input-pro { background: #ffffff; border: 1px solid #e4e4e7; color: #09090b; transition: all 0.15s ease; font-size: 0.875rem; padding: 0.625rem 0.875rem; border-radius: 0.5rem; width: 100%; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02); }
+        .input-pro:focus { border-color: #09090b; box-shadow: 0 0 0 2px rgba(9, 9, 11, 0.1); outline: none; }
+        .label-pro { font-size: 0.65rem; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; }
+
+        .perspective-1000 { perspective: 1200px; }
+        .preserve-3d { transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        .iphone-bezel { width: 320px; height: 650px; border-radius: 50px; border: 12px solid #09090b; background: #000; position: relative; box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3), inset 0 0 0 1px #27272a; overflow: visible; z-index: 10; }
+        .dynamic-island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 110px; height: 30px; background: #000; border-radius: 20px; z-index: 50; }
+        
+        .wallet-pass { width: 100%; height: 470px; border-radius: 16px; position: absolute; top: 75px; left: 0; display: flex; flex-direction: column; color: white; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); overflow: hidden; background-size: cover; background-position: center; }
+        .wallet-pass::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.8)); z-index: 0; }
+        
+        .wallet-pass-back { width: 100%; height: 470px; border-radius: 16px; position: absolute; top: 75px; left: 0; background-color: #18181b; color: white; display: flex; flex-direction: column; overflow-y: auto; }
+        
+        /* SHAPES / FORMATS */
+        .shape-storeCard { height: 470px !important; border-radius: 16px !important; }
+        .shape-generic { height: 320px !important; border-radius: 12px !important; } /* Walgreens size */
+        .shape-boardingPass { height: 490px !important; border-top-left-radius: 24px !important; border-top-right-radius: 24px !important; }
+        .cutout-top { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 140px; height: 35px; background: #000; border-radius: 20px; z-index: 20; }
+        .shape-eventTicket { height: 440px !important; mask-image: radial-gradient(circle at 0 60%, transparent 14px, black 15px), radial-gradient(circle at 100% 60%, transparent 14px, black 15px); mask-size: 51% 100%; mask-position: left, right; mask-repeat: no-repeat; -webkit-mask-image: radial-gradient(circle at 0 60%, transparent 14px, black 15px), radial-gradient(circle at 100% 60%, transparent 14px, black 15px); }
+        .shape-coupon { height: 400px !important; clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 90% 95%, 85% 100%, 80% 95%, 75% 100%, 70% 95%, 65% 100%, 60% 95%, 55% 100%, 50% 95%, 45% 100%, 40% 95%, 35% 100%, 30% 95%, 25% 100%, 20% 95%, 15% 100%, 10% 95%, 5% 100%, 0 95%); }
+
+        .texture-glass { backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); box-shadow: inset 0 0 30px rgba(255,255,255,0.1); }
+        input[type="color"] { -webkit-appearance: none; border: none; width: 100%; height: 42px; border-radius: 8px; cursor: pointer; padding: 0; background: transparent; }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: 1px solid #e4e4e7; border-radius: 8px; }
+        .bg-grid { background-image: radial-gradient(#e4e4e7 1px, transparent 1px); background-size: 20px 20px; }
+        
+        .scratch-card { background: repeating-linear-gradient(45deg, #f8fafc, #f8fafc 10px, #e2e8f0 10px, #e2e8f0 20px); border: 2px dashed #cbd5e1; }
+    </style>
+</head>
+<body x-data="fidelioWizard()" x-init="$watch('currentStep', val => { if(val === 5) isFlipped = true; else isFlipped = false; })">
+
+    <main class="h-screen flex bg-white">
+        
+        <!-- CANVAS WORKSPACE (Left) -->
+        <section class="w-1/2 flex flex-col items-center justify-center relative bg-[#fafafa] bg-grid border-r border-zinc-200">
+            <div class="absolute top-8 left-8"><div class="text-lg font-bold tracking-tight text-[#8b5cf6] flex items-center"><img src="/fidelio_logo_purple.png" class="h-6 mr-2 object-contain" alt="Fidelio Logo"><span class="font-normal text-zinc-500 ml-1">Studio</span></div></div>
+            <div class="absolute top-8 flex space-x-1 z-20 bg-white p-1 rounded-lg shadow-sm border border-zinc-200">
+                <button @click="isFlipped = false" :class="!isFlipped ? 'bg-[#8b5cf6] text-white shadow-sm' : 'text-zinc-500 hover:text-[#8b5cf6]'" class="px-4 py-1.5 rounded-md text-xs font-medium transition">Frente</button>
+                <button @click="isFlipped = true" :class="isFlipped ? 'bg-[#8b5cf6] text-white shadow-sm' : 'text-zinc-500 hover:text-[#8b5cf6]'" class="px-4 py-1.5 rounded-md text-xs font-medium transition">Reverso</button>
+            </div>
+
+            <!-- Device Mockup -->
+            <div class="perspective-1000 mt-6">
+                <div class="iphone-bezel preserve-3d" :class="isFlipped ? 'rotate-y-180' : ''">
+                    <div class="dynamic-island backface-hidden"></div>
+                    
+                    <!-- FRONT RENDERING -->
+                    <div class="wallet-pass backface-hidden px-5 py-6 transition-all duration-500" 
+                         :class="[
+                            magicShape === 'eventTicket' ? 'shape-eventTicket' : '', 
+                            magicShape === 'boardingPass' ? 'shape-boardingPass' : '', 
+                            magicShape === 'generic' ? 'shape-generic' : '', 
+                            magicShape === 'coupon' ? 'shape-coupon' : '', 
+                            magicShape === 'storeCard' ? 'shape-storeCard' : '', 
+                            texture === 'glass' ? 'texture-glass' : ''
+                         ]"
+                         :style="banner ? `background-color: ${colorPrimary}; background-image: url(${banner});` : `background-color: ${colorPrimary};`">
+                        
+                        <!-- Overlay handled by CSS ::before -->
+                        <div x-show="magicShape === 'boardingPass'" class="cutout-top"></div>
+                        
+                        <!-- Header -->
+                        <div class="flex items-center justify-between z-10 relative">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center overflow-hidden border border-white/20 shadow-sm backdrop-blur-md">
+                                    <img x-show="logo" :src="logo" class="w-full h-full object-cover">
+                                    <i x-show="!logo" class="fa-solid fa-store text-lg opacity-90" :style="`color: ${colorAccent}`"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-sm font-bold leading-tight" :style="`color: ${colorAccent}`" x-text="restName"></h1>
+                                    <p class="text-[9px] font-medium opacity-80 uppercase tracking-widest mt-0.5" :style="`color: ${colorAccent}`" x-text="businessType === 'Otro' ? restDesc : businessType"></p>
+                                </div>
+                            </div>
+                            <div x-show="qrPosition === 'back'" class="animate-pulse"><i class="fa-brands fa-nfc-symbol text-xl opacity-90" :style="`color: ${colorAccent}`"></i></div>
+                        </div>
+
+                        <!-- LOYALTY RENDERER -->
+                        <div class="mt-8 z-10 relative flex-1 flex flex-col justify-center">
+                            
+                            <!-- Hibrido / Solo Niveles -->
+                            <div x-show="['hibrido', 'niveles'].includes(loyaltyType)" class="animate-fade-in text-center">
+                                <div class="inline-flex items-center space-x-2 bg-white/20 px-3 py-1.5 rounded-full border border-white/30 backdrop-blur-md mb-4">
+                                    <i class="fa-solid fa-crown text-amber-400 text-[10px]"></i>
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-white shadow-sm">Nivel Oro VIP</span>
+                                </div>
+                                <p x-show="loyaltyType === 'hibrido'" class="text-4xl font-bold font-mono tracking-tighter mb-2" :style="`color: ${colorAccent}`">$450.00</p>
+                                <div x-show="loyaltyType === 'hibrido'" class="flex justify-center space-x-1.5">
+                                    <template x-for="i in 5"><div class="w-5 h-5 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center border border-white/20"><i x-show="i <= 3" :class="stampIcon" class="fa-solid text-[8px]" :style="`color: ${colorAccent}`"></i></div></template>
+                                </div>
+                            </div>
+
+                            <!-- Sellos -->
+                            <div x-show="loyaltyType === 'stamps'" class="animate-fade-in">
+                                <p class="text-[9px] uppercase font-bold opacity-90 mb-2" :style="`color: ${colorAccent}`">Premio: <span x-text="stampsReward"></span></p>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="i in parseInt(stampsTotal)" :key="i">
+                                        <div class="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-inner">
+                                            <i x-show="i <= 3" :class="stampIcon" class="fa-solid text-[11px] drop-shadow-md" :style="`color: ${colorAccent}`"></i>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Metas de Gasto -->
+                            <div x-show="loyaltyType === 'metas'" class="animate-fade-in w-full">
+                                <p class="text-[10px] uppercase font-bold opacity-80 mb-1 text-center" :style="`color: ${colorAccent}`">Gasto Acumulado</p>
+                                <p class="text-4xl font-bold font-mono tracking-tighter text-center mb-4" :style="`color: ${colorAccent}`">$350.00</p>
+                                <div class="relative w-full h-2 bg-black/40 rounded-full mb-2 border border-white/20">
+                                    <div class="absolute top-0 left-0 h-full bg-white/90 rounded-full" style="width: 70%;"></div>
+                                </div>
+                                <div class="flex justify-between items-center text-[8px] font-bold tracking-widest uppercase" :style="`color: ${colorAccent}`">
+                                    <span class="opacity-70">Inicio</span>
+                                    <span x-text="metas.length > 0 ? `Meta 1: $${metas[0].target}` : ''"></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Others simplified for rendering... -->
+                            <div x-show="['cashback', 'monedero'].includes(loyaltyType)" class="animate-fade-in text-center mt-4">
+                                <p class="text-4xl font-bold font-mono tracking-tighter" :style="`color: ${colorAccent}`">$450.00</p>
+                            </div>
+                            <div x-show="['membresia', 'multipass', 'descuentos', 'cupones', 'giftcard'].includes(loyaltyType)" class="h-full flex items-center justify-center opacity-90">
+                                <p class="text-xs font-bold uppercase tracking-widest drop-shadow-md" :style="`color: ${colorAccent}`" x-text="loyaltyType + ' ACTIVO'"></p>
+                            </div>
+                        </div>
+
+                        <!-- Gamification Badges -->
+                        <div class="flex space-x-2 z-10 relative mt-auto mb-4">
+                            <div x-show="lootBox" class="bg-black/40 backdrop-blur-md p-2 rounded-lg flex-1 flex items-center border border-white/20">
+                                <i class="fa-solid fa-box-open text-purple-400 mr-2 text-xs"></i>
+                                <div><p class="text-[7px] uppercase opacity-80 font-bold" :style="`color: ${colorAccent}`">Caja Botín</p><p class="text-[10px] font-bold text-white leading-none">Lista</p></div>
+                            </div>
+                            <div x-show="streak" class="bg-black/40 backdrop-blur-md p-2 rounded-lg flex-1 flex items-center border border-white/20">
+                                <i class="fa-solid fa-fire text-orange-400 mr-2 text-xs"></i>
+                                <div><p class="text-[7px] uppercase opacity-80 font-bold" :style="`color: ${colorAccent}`">Racha</p><p class="text-[10px] font-bold text-orange-400 leading-none">Día 4</p></div>
+                            </div>
+                        </div>
+
+                        <div x-show="qrPosition === 'front'" class="bg-white p-2 rounded-xl mx-auto flex flex-col items-center justify-center z-10 relative w-24 shadow-xl">
+                            <i class="fa-solid fa-qrcode text-4xl text-black"></i>
+                        </div>
+                    </div>
+
+                    <!-- BACK RENDERING -->
+                    <div class="wallet-pass-back p-5 rotate-y-180 backface-hidden transition-all duration-500" 
+                         :class="[
+                            magicShape === 'eventTicket' ? 'shape-eventTicket' : '', 
+                            magicShape === 'boardingPass' ? 'shape-boardingPass' : '', 
+                            magicShape === 'generic' ? 'shape-generic' : '', 
+                            magicShape === 'coupon' ? 'shape-coupon' : '', 
+                            magicShape === 'storeCard' ? 'shape-storeCard' : ''
+                         ]"
+                         :style="`background-color: ${colorPrimary};`">
+                        <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3">
+                            <span class="text-[10px] font-bold uppercase tracking-widest" :style="`color: ${colorAccent}`">Beneficios & Legal</span>
+                            <i class="fa-solid fa-circle-info text-[10px] opacity-70" :style="`color: ${colorAccent}`"></i>
+                        </div>
+                        
+                        <!-- QR Code (BACK) -->
+                        <div x-show="qrPosition === 'back'" class="bg-white p-2.5 rounded-xl mx-auto flex flex-col items-center justify-center z-10 w-28 mb-4 shadow-xl">
+                            <i class="fa-solid fa-qrcode text-4xl text-black mb-1"></i><span class="text-[8px] font-bold text-black uppercase">Escanear</span>
+                        </div>
+                        
+                        <!-- DYNAMIC VIP TIERS -->
+                        <div x-show="['hibrido', 'niveles'].includes(loyaltyType)" class="mb-4 bg-white/5 border border-white/10 p-3 rounded-xl">
+                            <p class="text-[9px] uppercase font-bold opacity-60 mb-2 border-b border-white/10 pb-1" :style="`color: ${colorAccent}`">Programa de Niveles VIP</p>
+                            <div class="space-y-2">
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-crown text-amber-700 text-[10px] mt-0.5 mr-1.5 w-3"></i>
+                                    <div><p class="text-[9px] font-bold" :style="`color: ${colorAccent}`">Bronce</p><p class="text-[8px] opacity-70" :style="`color: ${colorAccent}`" x-text="vipBronzeReward"></p></div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-crown text-slate-400 text-[10px] mt-0.5 mr-1.5 w-3"></i>
+                                    <div><p class="text-[9px] font-bold" :style="`color: ${colorAccent}`">Plata</p><p class="text-[8px] opacity-70" :style="`color: ${colorAccent}`" x-text="vipSilverReward"></p></div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-crown text-yellow-400 text-[10px] mt-0.5 mr-1.5 w-3"></i>
+                                    <div><p class="text-[9px] font-bold" :style="`color: ${colorAccent}`">Oro</p><p class="text-[8px] opacity-70" :style="`color: ${colorAccent}`" x-text="vipGoldReward"></p></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- METAS DE GASTO -->
+                        <div x-show="loyaltyType === 'metas'" class="mb-4 bg-white/5 border border-white/10 p-3 rounded-xl">
+                            <p class="text-[9px] uppercase font-bold opacity-60 mb-2 border-b border-white/10 pb-1" :style="`color: ${colorAccent}`">Recompensas por Metas</p>
+                            <div class="space-y-2">
+                                <template x-for="(meta, index) in metas" :key="index">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-bullseye text-emerald-500 text-[10px] mt-0.5 mr-1.5 w-3"></i>
+                                        <div><p class="text-[9px] font-bold" :style="`color: ${colorAccent}`">Meta <span x-text="index + 1"></span> ($<span x-text="meta.target"></span>)</p><p class="text-[8px] opacity-70" :style="`color: ${colorAccent}`" x-text="meta.reward"></p></div>
+                                    </div>
+                                </template>
+                                <p class="text-[7px] opacity-50 mt-2 leading-tight" :style="`color: ${colorAccent}`">*Al cobrar un premio, tu acumulado regresa a cero para volver a empezar.</p>
+                            </div>
+                        </div>
+
+                        <!-- GAMIFICATION MODULES ON THE BACK -->
+                        <div class="space-y-3 mb-4">
+                            <!-- Associated App (Nativo) -->
+                            <div x-show="appLink" class="bg-white/10 rounded-xl p-3 flex items-center justify-between mb-4 border border-white/20 backdrop-blur-md">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center font-bold text-lg" :style="`color: ${colorPrimary}`"><span x-text="restName.charAt(0)"></span></div>
+                                    <div><p class="text-[10px] font-bold text-white" x-text="restName"></p><p class="text-[8px] opacity-70 text-white truncate w-24">App Oficial</p></div>
+                                </div>
+                                <button class="bg-white text-black px-3 py-1.5 rounded-full text-[9px] font-bold shadow-sm uppercase tracking-wider">Obtener</button>
+                            </div>
+
+                            <!-- Welcome / Birthday -->
+                            <div x-show="funBack.welcome" class="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 rounded-xl shadow-md text-white flex items-center space-x-3">
+                                <div class="text-2xl"><i class="fa-solid fa-handshake-angle"></i></div>
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold tracking-wider mb-0.5">Bienvenido</p>
+                                    <p class="text-[9px] opacity-90 leading-tight font-medium">¡Cupón de regalo válido en tu próxima visita!</p>
+                                </div>
+                            </div>
+                            <div x-show="funBack.birthday" class="bg-gradient-to-r from-pink-500 to-rose-500 p-4 rounded-xl shadow-md text-white flex items-center space-x-3">
+                                <div class="text-2xl"><i class="fa-solid fa-cake-candles animate-bounce"></i></div>
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold tracking-wider mb-0.5">Mes de Cumpleaños</p>
+                                    <p class="text-[9px] opacity-90 leading-tight font-medium">¡Felicidades! Muestra este mensaje para tu postre de regalo.</p>
+                                </div>
+                            </div>
+                            <div x-show="funBack.scratch" class="scratch-card p-4 rounded-xl flex flex-col items-center justify-center relative overflow-hidden shadow-inner text-zinc-800">
+                                <p class="text-[9px] font-bold uppercase tracking-widest text-zinc-500 mb-1 z-10" x-text="scratchPrize ? 'Premio Oculto' : 'Raspadito Sorpresa'"></p>
+                                <p class="text-xs font-black z-10"><i class="fa-solid fa-coins text-amber-500 mr-1"></i> Ráspele aquí</p>
+                            </div>
+                            
+                            <!-- Spin the Wheel -->
+                            <div x-show="funBack.roulette" class="bg-white/10 p-3 rounded-xl border border-white/20 backdrop-blur flex justify-between items-center">
+                                <div><p class="text-[10px] font-bold uppercase" :style="`color: ${colorAccent}`"><i class="fa-solid fa-dharmachakra mr-1"></i> Ruleta Diaria</p><p class="text-[8px] opacity-70" :style="`color: ${colorAccent}`">Toca para girar la ruleta.</p></div>
+                                <button class="bg-white text-black text-[9px] font-bold px-3 py-1.5 rounded-full shadow-sm">Jugar</button>
+                            </div>
+                        </div>
+
+                        <!-- GPS Alert Config Indicator (Visual cue) -->
+                        <div x-show="geoAlert.active" class="mb-4 bg-white/5 border border-white/10 p-3 rounded-xl flex items-center space-x-2">
+                            <i class="fa-solid fa-location-dot text-rose-500 animate-pulse"></i>
+                            <div><p class="text-[8px] font-bold uppercase opacity-60" :style="`color: ${colorAccent}`">Radar Activo</p><p class="text-[9px] opacity-90 leading-tight" :style="`color: ${colorAccent}`">Recibirás alertas al estar cerca.</p></div>
+                        </div>
+
+                        <!-- Legal at the bottom -->
+                        <div class="mt-auto pt-4 border-t border-white/10">
+                            <p class="text-[8px] uppercase opacity-50 font-bold mb-1" :style="`color: ${colorAccent}`">Términos y Condiciones</p>
+                            <p class="text-[9px] leading-relaxed font-medium opacity-70 whitespace-pre-line" :style="`color: ${colorAccent}`" x-text="legalTerms"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDITOR WORKSPACE (Right) -->
+        <section class="w-1/2 bg-white flex flex-col relative z-20 shadow-[-10px_0_30px_rgba(0,0,0,0.02)]">
+            
+            <div class="pt-8 px-10 pb-4 border-b border-zinc-100">
+                <div class="flex justify-between items-center relative">
+                    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-[2px] bg-zinc-100 z-0"></div>
+                    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-[2px] bg-[#8b5cf6] z-0 transition-all duration-500" :style="`width: ${(currentStep - 1) * 25}%`"></div>
+                    <template x-for="step in [1, 2, 3, 4, 5]">
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-[11px] transition-colors duration-300 ring-4 ring-white" :class="currentStep >= step ? 'bg-[#8b5cf6] text-white' : 'bg-zinc-100 text-zinc-400'"><span x-text="step"></span></div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- SCROLLABLE EDITOR CONTENT -->
+            <div class="flex-1 overflow-y-auto px-10 py-6 scroll-hidden">
+                
+                <!-- STEP 1: BRANDING -->
+                <div x-show="currentStep === 1" class="animate-fade-in space-y-5">
+                    <div class="mb-6"><h2 class="text-2xl font-bold text-[#8b5cf6] tracking-tight mb-1">Identidad de Marca</h2><p class="text-xs text-zinc-500 font-medium">Configura el diseño base de la tarjeta.</p></div>
+                    
+                    <div>
+                        <label class="label-pro">Tipo de Negocio</label>
+                        <select x-model="businessType" @change="updateStampCatalog()" class="input-pro bg-white">
+                            <template x-for="biz in ['Restaurante', 'Cafetería', 'Estética', 'Barbería', 'Studio Fitness', 'GYM', 'Salón de Uñas', 'Clínica Dental', 'Spa', 'Heladería', 'Dulcería', 'Tienda de Ropa', 'Belleza', 'Otro']"><option :value="biz" x-text="biz"></option></template>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="block">
+                            <span class="label-pro flex justify-between"><span>Logotipo</span> <span class="text-[9px] text-zinc-400 normal-case font-normal">(480x150 px PNG)</span></span>
+                            <div class="border border-dashed border-zinc-300 rounded-lg p-4 text-center hover:bg-zinc-50 transition cursor-pointer flex flex-col items-center">
+                                <img x-show="logo" :src="logo" class="h-10 object-contain mb-2 rounded">
+                                <div class="w-8 h-8 bg-zinc-100 text-zinc-500 rounded-full flex items-center justify-center text-sm mb-2" x-show="!logo"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                                <span class="text-[10px] font-semibold text-zinc-600" x-text="logo ? 'Cambiar Logo' : 'Subir Logo'"></span>
+                            </div>
+                            <input type="file" class="hidden" @change="handleLogo">
+                        </label>
+                        <label class="block">
+                            <span class="label-pro flex justify-between"><span>Banner Fondo</span> <span class="text-[9px] text-zinc-400 normal-case font-normal">(1125x432 px)</span></span>
+                            <div class="border border-dashed border-zinc-300 rounded-lg p-4 text-center hover:bg-zinc-50 transition cursor-pointer flex flex-col items-center">
+                                <img x-show="banner" :src="banner" class="h-10 object-cover w-full mb-2 rounded">
+                                <div class="w-8 h-8 bg-zinc-100 text-zinc-500 rounded-full flex items-center justify-center text-sm mb-2" x-show="!banner"><i class="fa-solid fa-image"></i></div>
+                                <span class="text-[10px] font-semibold text-zinc-600" x-text="banner ? 'Cambiar Banner' : 'Subir Fondo'"></span>
+                            </div>
+                            <input type="file" class="hidden" @change="handleBanner">
+                        </label>
+                    </div>
+
+                    <div><label class="label-pro">Nombre del Negocio</label><input type="text" x-model="restName" class="input-pro"></div>
+                    <div x-show="businessType === 'Otro'"><label class="label-pro">Subtítulo / Lema</label><input type="text" x-model="restDesc" class="input-pro"></div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="label-pro">Color Base</label><input type="color" x-model="colorPrimary"></div>
+                        <div><label class="label-pro">Color Texto</label><input type="color" x-model="colorAccent"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: ARCHITECTURE -->
+                <div x-show="currentStep === 2" class="animate-fade-in space-y-6" style="display: none;">
+                    <div class="mb-6"><h2 class="text-2xl font-bold text-[#8b5cf6] tracking-tight mb-1">Arquitectura Visual</h2><p class="text-xs text-zinc-500 font-medium">Define el corte físico y material.</p></div>
+                    
+                    <div>
+                        <label class="label-pro">Formato Físico (Plantilla de Wallet)</label>
+                        <select x-model="magicShape" class="input-pro h-10">
+                            <option value="storeCard">Store Card (Clásica Rectangular)</option>
+                            <option value="generic">Tarjeta Genérica (Cuadrada / Bancaria)</option>
+                            <option value="coupon">Cupón Promocional (Con corte de sierra)</option>
+                            <option value="eventTicket">Event Ticket (Corte Lateral)</option>
+                            <option value="boardingPass">Boarding Pass (Corte Superior)</option>
+                        </select>
+                    </div>
+                    <div><label class="label-pro">Ubicación del Escáner (QR)</label><div class="grid grid-cols-2 gap-3"><button @click="qrPosition = 'front'" :class="qrPosition === 'front' ? 'ring-2 ring-zinc-900 bg-zinc-50' : 'border-zinc-200'" class="p-3 rounded-lg border text-left"><div class="flex items-center mb-1"><i class="fa-solid fa-qrcode mr-2 text-zinc-700 text-xs"></i><span class="font-semibold text-xs">Frente</span></div></button><button @click="qrPosition = 'back'" :class="qrPosition === 'back' ? 'ring-2 ring-zinc-900 bg-zinc-50' : 'border-zinc-200'" class="p-3 rounded-lg border text-left"><div class="flex items-center mb-1"><i class="fa-brands fa-nfc-symbol mr-2 text-zinc-700 text-xs"></i><span class="font-semibold text-xs">Reverso</span></div></button></div></div>
+                </div>
+
+                <!-- STEP 3: LOYALTY ENGINE (VIP CONNECTED) -->
+                <div x-show="currentStep === 3" class="animate-fade-in space-y-6" style="display: none;">
+                    <div class="mb-6"><h2 class="text-2xl font-bold text-[#8b5cf6] tracking-tight mb-1">Motor de Fidelización</h2><p class="text-xs text-zinc-500 font-medium">Configuración de programas y reglas VIP.</p></div>
+
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="label-pro mb-0">Tipo de Programa</label>
+                        <span x-show="fidelioTier === 'basic'" class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">Fidelio Basic</span>
+                        <span x-show="fidelioTier === 'business'" class="text-[9px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Fidelio Business</span>
+                    </div>
+                    <select x-model="loyaltyType" class="input-pro h-11 bg-zinc-50 font-semibold border-zinc-300" :disabled="fidelioTier === 'basic'">
+                        <template x-if="fidelioTier !== 'basic'">
+                            <optgroup label="Opciones Avanzadas (Business)">
+                                <option value="hibrido">⚡️ Híbrido (VIP + Cashback + Sellos)</option>
+                                <option value="niveles">Solo Niveles VIP</option>
+                                <option value="metas">🎯 Metas de Gasto (Milestones)</option>
+                                <option value="cashback">Saldo Digital (Cashback)</option>
+                                <option value="monedero">Monedero Digital</option>
+                                <option value="descuentos">Descuentos Fijos</option>
+                                <option value="multipass">Multipass (Clases/Pases)</option>
+                                <option value="membresia">Membresía Temporal</option>
+                                <option value="cupones">Cupones Promocionales</option>
+                                <option value="giftcard">Certificados / Gift Cards</option>
+                            </optgroup>
+                        </template>
+                        <optgroup label="Fidelio Basic">
+                            <option value="stamps">Solo Sellos (Clásico)</option>
+                        </optgroup>
+                    </select>
+
+                    <div x-show="['hibrido', 'niveles'].includes(loyaltyType)" class="animate-fade-in">
+                        <div class="bg-white border border-zinc-200 rounded-xl p-4 shadow-sm mb-5">
+                            <label class="label-pro text-indigo-600">Niveles VIP Automáticos</label>
+                            <p class="text-[9px] text-zinc-500 mb-3">Los beneficios escritos aquí se imprimirán en el reverso de la tarjeta.</p>
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="bg-zinc-50 p-2.5 rounded-lg border border-zinc-200 flex space-x-3 items-center">
+                                    <div class="w-16"><p class="text-[10px] font-bold text-amber-700">Bronce</p></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">GASTO MÍN</label><input type="number" value="0" class="input-pro h-7 text-xs px-2"></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">BENEFICIO</label><input type="text" x-model="vipBronzeReward" class="input-pro h-7 text-xs px-2"></div>
+                                </div>
+                                <div class="bg-zinc-50 p-2.5 rounded-lg border border-zinc-200 flex space-x-3 items-center">
+                                    <div class="w-16"><p class="text-[10px] font-bold text-slate-500">Plata</p></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">GASTO MÍN</label><input type="number" value="1000" class="input-pro h-7 text-xs px-2"></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">BENEFICIO</label><input type="text" x-model="vipSilverReward" class="input-pro h-7 text-xs px-2"></div>
+                                </div>
+                                <div class="bg-zinc-50 p-2.5 rounded-lg border border-zinc-200 flex space-x-3 items-center">
+                                    <div class="w-16"><p class="text-[10px] font-bold text-yellow-600">Oro</p></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">GASTO MÍN</label><input type="number" value="3000" class="input-pro h-7 text-xs px-2"></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">BENEFICIO</label><input type="text" x-model="vipGoldReward" class="input-pro h-7 text-xs px-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel: Metas de Gasto -->
+                    <div x-show="loyaltyType === 'metas'" class="animate-fade-in bg-white border border-zinc-200 rounded-xl p-4 shadow-sm mb-5">
+                        <label class="label-pro text-emerald-600">Metas de Gasto (Milestones)</label>
+                        <p class="text-[9px] text-zinc-500 mb-3">Si el cliente redime una meta menor, sus puntos regresan a 0. Puede ahorrar para la meta mayor.</p>
+                        <div class="space-y-3">
+                            <template x-for="(meta, index) in metas" :key="index">
+                                <div class="bg-zinc-50 p-2.5 rounded-lg border border-zinc-200 flex space-x-2 items-center">
+                                    <div class="w-12"><p class="text-[10px] font-bold text-zinc-700">Meta <span x-text="index + 1"></span></p></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">GASTO ($)</label><input type="number" x-model="meta.target" class="input-pro h-7 text-xs px-2"></div>
+                                    <div class="flex-1"><label class="text-[8px] font-bold text-zinc-500 block">PREMIO</label><input type="text" x-model="meta.reward" class="input-pro h-7 text-xs px-2"></div>
+                                    <button @click="metas.splice(index, 1)" class="text-zinc-400 hover:text-red-500 transition px-1" title="Eliminar"><i class="fa-solid fa-trash text-xs"></i></button>
+                                </div>
+                            </template>
+                            <button @click="metas.push({target: 1000, reward: 'Nuevo Premio'})" class="w-full py-2 border-2 border-dashed border-zinc-300 rounded-lg text-xs font-bold text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800 transition">+ Agregar Nivel de Meta</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: DISTRIBUCION -->
+                <div x-show="currentStep === 4" class="animate-fade-in space-y-5" style="display: none;">
+                    <div class="mb-6"><h2 class="text-2xl font-bold text-[#8b5cf6] tracking-tight mb-1">Distribución</h2><p class="text-xs text-zinc-500 font-medium">Emisión y vinculación.</p></div>
+                     <div x-show="!['giftcard', 'membresia', 'multipass'].includes(loyaltyType)" class="bg-white border border-zinc-200 rounded-xl p-6 shadow-sm flex flex-col">
+                        <div class="bg-indigo-50 text-indigo-700 text-[10px] px-3 py-1.5 rounded-full font-bold mb-4 self-start">Descarga Autónoma (Abierta)</div>
+                        <div class="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-4 flex items-center space-x-4"><div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600"><i class="fa-solid fa-link text-lg"></i></div><div><h4 class="text-[11px] font-bold text-[#8b5cf6] mb-0.5">Vinculación al QR de tu Sucursal</h4><p class="text-[10px] text-zinc-500 leading-tight">Al publicar, se activará automáticamente en tu escáner QR físico.</p></div></div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: DEEP TECH Y REVERSO GAMIFICADO -->
+                <div x-show="currentStep === 5" class="animate-fade-in space-y-6" style="display: none;">
+                    <div class="mb-6"><h2 class="text-2xl font-bold text-[#8b5cf6] tracking-tight mb-1">Configuración del Reverso</h2><p class="text-xs text-zinc-500 font-medium">Juegos, notificaciones Push, Apps y legales.</p></div>
+
+                    <!-- Autopilot (Notificaciones Post-Visita) -->
+                    <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-sm mb-4">
+                        <div class="p-3.5 bg-white border-b border-zinc-100 flex items-center justify-between">
+                            <div class="flex items-center space-x-2"><i class="fa-solid fa-paper-plane text-blue-500"></i><span class="text-sm font-bold text-zinc-800">Piloto Automático (Post-Visita)</span></div>
+                        </div>
+                        <div class="p-4 bg-zinc-50 space-y-3">
+                            <p class="text-[9px] text-zinc-500 mb-2">La notificación Push atrae al cliente a su Apple Wallet, y al abrir la tarjeta verán el botón directo con el enlace que configures aquí.</p>
+                            
+                            <div class="bg-white border border-zinc-200 rounded-lg p-2.5 space-y-2 shadow-sm">
+                                <span class="text-[9px] text-zinc-800 font-black uppercase tracking-wider bg-zinc-100 px-2 py-0.5 rounded">Visita 1</span>
+                                <div><label class="text-[8px] font-bold text-zinc-400 block mb-0.5">TEXTO PUSH</label><input type="text" x-model="pushV1" placeholder="Ej. ¡Gracias! Síguenos en Instagram..." class="input-pro h-7 text-xs w-full"></div>
+                                <div><label class="text-[8px] font-bold text-blue-500 block mb-0.5">ENLACE (URL)</label><input type="url" x-model="pushLinkV1" placeholder="Ej. https://instagram.com/tu_marca" class="input-pro h-7 text-xs w-full text-blue-600 bg-blue-50/30"></div>
+                            </div>
+                            
+                            <div class="bg-white border border-zinc-200 rounded-lg p-2.5 space-y-2 shadow-sm">
+                                <span class="text-[9px] text-zinc-800 font-black uppercase tracking-wider bg-zinc-100 px-2 py-0.5 rounded">Visita 2</span>
+                                <div><label class="text-[8px] font-bold text-zinc-400 block mb-0.5">TEXTO PUSH</label><input type="text" x-model="pushV2" placeholder="Ej. Danos 5 estrellas en Google Maps..." class="input-pro h-7 text-xs w-full"></div>
+                                <div><label class="text-[8px] font-bold text-blue-500 block mb-0.5">ENLACE (URL)</label><input type="url" x-model="pushLinkV2" placeholder="Ej. https://maps.google.com/..." class="input-pro h-7 text-xs w-full text-blue-600 bg-blue-50/30"></div>
+                            </div>
+                            
+                            <div class="bg-white border border-zinc-200 rounded-lg p-2.5 space-y-2 shadow-sm">
+                                <span class="text-[9px] text-zinc-800 font-black uppercase tracking-wider bg-zinc-100 px-2 py-0.5 rounded">Visita 3</span>
+                                <div><label class="text-[8px] font-bold text-zinc-400 block mb-0.5">TEXTO PUSH</label><input type="text" x-model="pushV3" placeholder="Ej. ¡Descubre nuestro menú secreto en TikTok!" class="input-pro h-7 text-xs w-full"></div>
+                                <div><label class="text-[8px] font-bold text-blue-500 block mb-0.5">ENLACE (URL)</label><input type="url" x-model="pushLinkV3" placeholder="Ej. https://tiktok.com/@tu_marca" class="input-pro h-7 text-xs w-full text-blue-600 bg-blue-50/30"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gamificación Dinámica -->
+                    <div class="space-y-4">
+                        
+                        <!-- App Oficial -->
+                        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-sm">
+                            <label class="flex items-center justify-between p-3.5 bg-white cursor-pointer hover:bg-zinc-50 transition border-b border-zinc-100">
+                                <div class="flex flex-col"><span class="text-sm font-bold text-zinc-800">Botón de App Oficial</span><span class="text-[10px] text-zinc-500 mt-1">Muestra un botón nativo para bajar tu app.</span></div>
+                                <input type="checkbox" x-model="appLink" class="w-4 h-4 rounded border-zinc-300 text-indigo-600">
+                            </label>
+                            <div x-show="appLink" class="p-4 bg-zinc-50 border-t border-zinc-200 space-y-3 animate-fade-in">
+                                <div><label class="label-pro">ID de App Store (Apple)</label><input type="text" placeholder="Ej. 123456789" class="input-pro h-8 text-xs"></div>
+                                <div><label class="label-pro">Google Play ID (Android)</label><input type="text" placeholder="Ej. com.tumarca.app" class="input-pro h-8 text-xs"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Welcome / Birthday -->
+                        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-sm">
+                            <label class="flex items-center justify-between p-3.5 bg-white cursor-pointer hover:bg-zinc-50 transition border-b border-zinc-100">
+                                <div class="flex flex-col"><span class="text-sm font-bold text-zinc-800">Cupón de Bienvenida</span><span class="text-[10px] text-zinc-500 mt-1">Regalo para incentivar su siguiente visita.</span></div>
+                                <input type="checkbox" x-model="funBack.welcome" class="w-4 h-4 rounded border-zinc-300 text-indigo-600">
+                            </label>
+                            <label class="flex items-center justify-between p-3.5 bg-white cursor-pointer hover:bg-zinc-50 transition">
+                                <div class="flex flex-col"><span class="text-sm font-bold text-zinc-800">Cupón de Cumpleaños</span><span class="text-[10px] text-zinc-500 mt-1">Premio automático en el mes de su cumpleaños.</span></div>
+                                <input type="checkbox" x-model="funBack.birthday" class="w-4 h-4 rounded border-zinc-300 text-indigo-600">
+                            </label>
+                        </div>
+
+                        <!-- Scratch Card -->
+                        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-sm">
+                            <label class="flex items-center justify-between p-3.5 bg-white cursor-pointer hover:bg-zinc-50 transition">
+                                <div class="flex flex-col"><span class="text-sm font-bold text-zinc-800">Cupón Raspadito (Scratch)</span><span class="text-[10px] text-zinc-500 mt-1">El cliente "raspa" con el dedo para revelar premio.</span></div>
+                                <input type="checkbox" x-model="funBack.scratch" class="w-4 h-4 rounded border-zinc-300 text-indigo-600">
+                            </label>
+                            <div x-show="funBack.scratch" class="p-4 bg-zinc-50 border-t border-zinc-200 space-y-3 animate-fade-in">
+                                <div><label class="label-pro">Premio Oculto</label><input type="text" x-model="scratchPrize" placeholder="Ej. Bebida Gratis" class="input-pro h-8 text-xs"></div>
+                                <div>
+                                    <label class="label-pro">Pacing / Frecuencia de Ganancia</label>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-zinc-500 font-medium">1 premio máximo cada</span>
+                                        <input type="number" x-model="scratchFreq" class="input-pro h-8 text-xs w-16 text-center font-bold text-indigo-600">
+                                        <span class="text-xs text-zinc-500 font-medium">días.</span>
+                                    </div>
+                                </div>
+                                <div class="bg-indigo-50 border border-indigo-100 rounded p-2 flex items-start space-x-2 mt-2">
+                                    <i class="fa-solid fa-robot text-indigo-500 mt-0.5 text-xs"></i>
+                                    <p class="text-[9px] text-indigo-800 leading-tight"><strong>Algoritmo Activo:</strong> El motor asegurará la victoria un día al azar dentro de este periodo de <span x-text="scratchFreq" class="font-bold"></span> días.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Roulette -->
+                        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-sm">
+                            <label class="flex items-center justify-between p-3.5 bg-white cursor-pointer hover:bg-zinc-50 transition">
+                                <div class="flex flex-col"><span class="text-sm font-bold text-zinc-800">Ruleta de Premios</span><span class="text-[10px] text-zinc-500 mt-1">Gira una ruleta visual para ganar recompensas.</span></div>
+                                <input type="checkbox" x-model="funBack.roulette" class="w-4 h-4 rounded border-zinc-300 text-indigo-600">
+                            </label>
+                            <div x-show="funBack.roulette" class="p-4 bg-zinc-50 border-t border-zinc-200 space-y-3 animate-fade-in">
+                                <div><label class="label-pro text-amber-600">Premio Mayor (Jackpot)</label><input type="text" placeholder="Ej. Comida Gratis" class="input-pro h-8 text-xs"></div>
+                                <div><label class="label-pro">Premios Menores (Separados por coma)</label><input type="text" placeholder="Ej. 10% Descuento, Postre Gratis" class="input-pro h-8 text-xs"></div>
+                                <div class="pt-2 border-t border-zinc-200">
+                                    <label class="label-pro">Control de Victorias (Jackpot)</label>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-zinc-500 font-medium">Soltar 1 jackpot cada</span>
+                                        <input type="number" x-model="rouletteFreq" class="input-pro h-8 text-xs w-16 text-center font-bold text-amber-600">
+                                        <span class="text-xs text-zinc-500 font-medium">días.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Geolocation Alert -->
+                    <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-sm mt-4">
+                        <label class="flex items-center justify-between p-3.5 bg-white cursor-pointer hover:bg-zinc-50 transition">
+                            <div class="flex flex-col"><span class="text-sm font-bold text-rose-600">Alertas por Geolocalización (Multi-Sucursal)</span><span class="text-[10px] text-zinc-500 mt-1">Sincronización automática con tus Sucursales GPS.</span></div>
+                            <input type="checkbox" x-model="geoAlert.active" class="w-4 h-4 rounded border-zinc-300 text-rose-600">
+                        </label>
+                        <div x-show="geoAlert.active" class="p-4 bg-zinc-50 border-t border-zinc-200 space-y-3 animate-fade-in">
+                            <p class="text-[9px] text-zinc-600 mb-2 leading-tight bg-zinc-200/50 p-2 rounded">
+                                <i class="fa-solid fa-satellite-dish mr-1"></i> El motor inyectará automáticamente las coordenadas de tus sucursales en las tarjetas (Máx. 10 por regla de Apple).
+                            </p>
+                            <div><label class="label-pro">Mensaje Push Notification (Pantalla de bloqueo)</label><textarea x-model="geoAlert.message" rows="2" class="input-pro text-xs resize-none" placeholder="Ej. ¡Huele a café! Entra y muestra tu tarjeta..."></textarea></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FOOTER NAVIGATION -->
+            <div class="h-16 border-t border-zinc-100 px-8 flex items-center justify-between bg-white mt-auto">
+                <button @click="if(currentStep > 1) currentStep--" class="px-5 py-2 rounded-md font-medium text-xs text-zinc-500 hover:bg-zinc-100" :class="currentStep === 1 ? 'invisible' : ''">Atrás</button>
+                <button @click="if(currentStep < 5) currentStep++; else publishPass()" class="px-6 py-2 rounded-md font-medium text-xs text-white transition shadow-sm flex items-center bg-[#8b5cf6] hover:bg-[#7c3aed]"><span x-text="currentStep === 5 ? 'Guardar Cambios' : 'Siguiente'"></span><i x-show="currentStep < 5" class="fa-solid fa-arrow-right ml-2 text-[10px]"></i></button>
+            </div>
+        </section>
+    
+        <!-- SUCCESS OVERLAY -->
+        <div x-show="isSuccess" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white" x-transition.opacity.duration.500ms style="display:none;">
+            <div class="w-24 h-24 rounded-full bg-[#8b5cf6]/10 flex items-center justify-center mb-6">
+                <i class="fa-solid fa-check text-4xl text-[#8b5cf6] animate-bounce"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-zinc-900 mb-3">¡Campaña Publicada!</h2>
+            <p class="text-zinc-500 mb-8 max-w-sm text-center">Tus tarjetas digitales han sido generadas correctamente en el Engine Core y están listas para ser descargadas por tus clientes.</p>
+            <button @click="if(window.parent) { window.parent.document.getElementById('wallet-studio-container').style.display = 'none'; window.parent.document.getElementById('wallet-studio-iframe').src = ''; window.parent.showToast('Campaña lista.', 'success'); }" class="px-8 py-3 rounded-xl bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-bold shadow-lg transition-transform hover:scale-105 flex items-center">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Volver al Dashboard Principal
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('fidelioWizard', () => ({
+                currentStep: 1,
+                fidelioTier: 'business',
+
+                init() {
+                    const params = new URLSearchParams(window.location.search);
+                    if (params.has('tier')) {
+                        this.fidelioTier = params.get('tier').toLowerCase();
+                        if (this.fidelioTier === 'basic') {
+                            this.loyaltyType = 'stamps';
+                        }
+                    }
+                },
+
+                isFlipped: false,
+                
+                // Visuals
+                businessType: 'Cafetería',
+                restName: 'Cafetería La Selva',
+                restDesc: 'Membresía VIP',
+                logo: null,
+                banner: null,
+                colorPrimary: '#09090b',
+                colorAccent: '#ffffff',
+                magicShape: 'storeCard',
+                texture: 'solid',
+                qrPosition: 'front',
+                stampIcon: 'fa-mug-hot',
+                
+                loyaltyType: 'hibrido',
+                
+                // VIP Data
+                vipBronzeReward: '5% Cashback',
+                vipSilverReward: '10% Cashback + Postre',
+                vipGoldReward: '15% Cashback + Bebida',
+                
+                // Metas Data (Dynamic Array)
+                metas: [
+                    { target: 500, reward: 'Postre Gratis' },
+                    { target: 750, reward: 'Cena para 2' }
+                ],
+                
+                // Geo & Fun
+                geoAlert: { active: false, distance: 100, message: '¡Estás muy cerca! Ven a disfrutar tus recompensas.' },
+                appLink: true,
+                pushV1: '¡Gracias por visitarnos! Síguenos en Instagram @tunegocio',
+                pushLinkV1: 'https://instagram.com/',
+                pushV2: '¿Te encantó? ¡Déjanos 5 estrellas en Google Maps!',
+                pushLinkV2: 'https://maps.google.com/',
+                pushV3: '¡Revisa nuestro TikTok para ver el menú secreto!',
+                pushLinkV3: 'https://tiktok.com/',
+                funBack: { birthday: true, welcome: false, scratch: false, roulette: false },
+                scratchPrize: 'Bebida Gratis',
+                scratchFreq: 10,
+                rouletteFreq: 15,
+                
+                legalTerms: 'Ej. Promoción no acumulable con otras ofertas. Aplica solo en sucursal centro.',
+                
+                updateStampCatalog() {
+                    const catalogs = {
+                        'Cafetería': 'fa-mug-hot', 'Estética': 'fa-scissors', 'GYM': 'fa-dumbbell', 'Restaurante': 'fa-utensils',
+                        'Clínica Dental': 'fa-tooth', 'Heladería': 'fa-ice-cream', 'Barbería': 'fa-scissors', 'Tienda de Ropa': 'fa-shirt', 'Otro': 'fa-star'
+                    };
+                    this.stampIcon = catalogs[this.businessType] || 'fa-star';
+                },
+                
+                handleLogo(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => this.logo = e.target.result;
+                        reader.readAsDataURL(file);
+                    }
+                },
+                handleBanner(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => this.banner = e.target.result;
+                        reader.readAsDataURL(file);
+                    }
+                },
+                updateStampCatalog() {
+                    // Truncated logic logic...
+                },
+                isPublishing: false, isSuccess: false,
+                async publishPass() {
+                    this.isPublishing = true;
+                    try {
+                        const payload = {
+                            branding: { name: this.restName, desc: this.restDesc, type: this.businessType, colors: { primary: this.colorPrimary, accent: this.colorAccent } },
+                            architecture: { shape: this.magicShape, qrPos: this.qrPosition, texture: this.texture },
+                            loyalty: { type: this.loyaltyType, metas: this.metas, stampsTotal: this.stampsTotal, stampsReward: this.stampsReward, vip: { bronze: this.vipBronzeReward, silver: this.vipSilverReward, gold: this.vipGoldReward } },
+                            gamification: { scratch: { active: this.funBack.scratch, prize: this.scratchPrize, freq: this.scratchFreq }, roulette: { active: this.funBack.roulette, freq: this.rouletteFreq }, welcome: this.funBack.welcome, birthday: this.funBack.birthday },
+                            autopilot: { v1: { msg: this.pushV1, url: this.pushLinkV1 }, v2: { msg: this.pushV2, url: this.pushLinkV2 }, v3: { msg: this.pushV3, url: this.pushLinkV3 } },
+                            appLink: this.appLink
+                        };
+                        
+                        // Guardado real en la base de datos a través de la ventana padre
+                        if (window.parent && typeof window.parent.saveCampaignFromStudio === 'function') {
+                            let success = false;
+                            try {
+                                success = await window.parent.saveCampaignFromStudio(payload);
+                            } catch(err) {
+                                alert("DEBUG: Error al llamar a saveCampaignFromStudio: " + err.message);
+                            }
+                            if (success) {
+                                this.isSuccess = true;
+                            } else {
+                                alert("DEBUG: saveCampaignFromStudio devolvió false. El Dashboard rechazó el payload.");
+                            }
+                        } else {
+                            // Fallback
+                            await new Promise(r => setTimeout(r, 1500));
+                            this.isSuccess = true;
+                        }
+                    } catch (error) {
+                        console.error('API Error:', error);
+                        alert('Error de Red al guardar el diseño.');
+                    } finally {
+                        this.isPublishing = false;
+                    }
+                }
+            }))
+        })
+    </script>
+</body>
+</html>

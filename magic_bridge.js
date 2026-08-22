@@ -35,20 +35,20 @@ class MagicEngineBridge {
         }
 
         try {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.message || `Error del Engine: ${response.status}`);
+            // ===== SIMULACIÓN (MOCK) PARA DESARROLLO LOCAL =====
+            console.log(`[MagicEngine] Mocking request to ${url} with payload:`, payload || (isMultipart ? 'FormData' : 'None'));
+            await new Promise(r => setTimeout(r, 1200)); // Simulate processing delay
+            
+            if (endpoint === '/render') {
+                console.log("[MagicEngine] Generando Blob .pkpass simulado...");
+                return new Blob(['mock-pkpass-data'], { type: 'application/vnd.apple.pkpass' });
             }
-
-            // Si el Engine devuelve el .pkpass o una imagen 3D renderizada, devolvemos el archivo (Blob)
-            const contentType = response.headers.get('content-type');
-            if (contentType && (contentType.includes('application/vnd.apple.pkpass') || contentType.includes('image/'))) {
-                return await response.blob();
+            if (endpoint === '/decode') {
+                return { status: 'success', data: { userId: '123', balance: 500, tier: 'oro' } };
             }
-
-            // Si devuelve datos o estado, devolvemos JSON
-            return await response.json();
+            
+            return { status: 'success', message: 'Mocked successful response' };
+            // ===================================================
         } catch (error) {
             console.error(`[MagicBridge] Falla crítica en ${endpoint}:`, error);
             throw error;
@@ -67,7 +67,12 @@ class MagicEngineBridge {
             secretPayload: {
                 userId: userId,
                 balance: config.balance || 0,
-                gamification_mode: config.mode || 'STAMPS' // LOOT_BOX, STREAK, MULTIPASS
+                gamification_mode: config.mode || 'STAMPS', // LOOT_BOX, STREAK, MULTIPASS
+                deepTech: {
+                    immortalPass: config.deepTech?.immortalPass || false,
+                    sonicCheckIn: config.deepTech?.sonicCheckIn || false,
+                    infiniteGeo: config.deepTech?.infiniteGeo || false
+                }
             }
         };
         return this._request('/render', 'POST', payload);

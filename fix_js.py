@@ -1,166 +1,86 @@
-import sys
+import re
 
-with open('/Users/robertoordonez/.gemini/antigravity/scratch/restaurant_loyalty_app/dashboard.js', 'r', encoding='utf-8') as f:
+with open('dashboard_v2.js', 'r', encoding='utf-8') as f:
     js = f.read()
 
-# I need to create a helper function that shows/hides the panels and call it on click and on load.
-# Let's find the initial state load section for loyalty mode.
-old_initial = """            // Set Mode
-            const activeMode = state.activeMode || 'hybrid';
-            loyaltyModes.forEach(radio => {
-                if(radio.value === activeMode) radio.checked = true;
-                const card = radio.closest('.role-card');
-                if(radio.checked) card.classList.add('active');
-                else card.classList.remove('active');
-            });"""
+# Replace the tbody logic in loadInbox
+old_tbody = "tbody.innerHTML += `"
+new_tbody = "tbody.innerHTML += `"
+old_row = """                <tr style="border-bottom: 1px solid var(--border-soft); ${t.status === 'resuelto' ? 'opacity: 0.6;' : ''}">
+                    <td style="padding: 16px; font-size:12px; font-family:monospace;">#${t.id.substring(0,8)}</td>
+                    <td style="padding: 16px;">
+                        <strong>${t.email || 'Desconocido'}</strong>
+                        <div style="font-size:12px; color:var(--text-muted);">${t.merchant_id || 'Visitante'}</div>
+                    </td>
+                    <td style="padding: 16px;">
+                        <strong style="display:block;">${t.subject}</strong>
+                        <span style="font-size:13px; color:var(--text-muted);">${t.message.substring(0, 50)}${t.message.length>50?'...':''}</span>
+                    </td>
+                    <td style="padding: 16px;">${statusBadge}</td>
+                    <td style="padding: 16px; text-align: right;">
+                        <button class="fidelio-btn-secondary-preset" onclick="viewTicketDetail(${index})" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
+                        ${t.status === 'abierto' ? `<button class="fidelio-btn-secondary-preset" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:var(--accent-violet);"></i></button>` : ''}
+                    </td>
+                </tr>"""
 
-new_initial = """            // Set Mode
-            const activeMode = state.activeMode || 'hybrid';
-            
-            const updateLoyaltyUI = (mode, cardTitle) => {
-                const customPanel = document.getElementById('panel-loyalty-custom');
-                const standardPanel = document.getElementById('panel-loyalty-standard');
-                const setMem = document.getElementById('settings-membership');
-                const setPre = document.getElementById('settings-prepaid');
-                const setCus = document.getElementById('settings-custom-prog');
-                
-                if(customPanel) customPanel.style.display = 'none';
-                if(setMem) setMem.style.display = 'none';
-                if(setPre) setPre.style.display = 'none';
-                if(setCus) setCus.style.display = 'none';
-                if(standardPanel) standardPanel.style.display = 'none';
+new_row = """                <div style="display: grid; grid-template-columns: 1fr 2fr 3fr 1fr 1fr; gap: 16px; padding: 16px; border-bottom: 1px solid var(--border-soft); align-items: center; ${t.status === 'resuelto' ? 'opacity: 0.6;' : ''}">
+                    <div>
+                        <div style="font-size:12px; font-family:monospace; color:var(--text-main); font-weight:700;">#${t.id.substring(0,8)}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${date}</div>
+                    </div>
+                    <div>
+                        <div style="font-weight:700; color:var(--text-main); font-size:13px;">${t.email || 'Desconocido'}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${t.merchant_id || 'Visitante'}</div>
+                    </div>
+                    <div>
+                        <div style="font-weight:700; color:var(--text-main); font-size:13px;">${t.subject}</div>
+                        <div style="font-size:12px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:250px;">${t.message}</div>
+                    </div>
+                    <div>${statusBadge}</div>
+                    <div style="text-align: right; display:flex; justify-content:flex-end; gap:8px;">
+                        <button class="fidelio-btn-secondary" style="padding:6px 10px;" onclick="viewTicketDetail(${index})" title="Ver Detalle"><i class="fa-solid fa-eye" style="color:var(--accent-violet);"></i></button>
+                        ${t.status === 'abierto' ? `<button class="fidelio-btn-secondary" style="padding:6px 10px;" onclick="resolveTicket('${t.id}')" title="Marcar Resuelto"><i class="fa-solid fa-check" style="color:#10b981;"></i></button>` : ''}
+                    </div>
+                </div>"""
 
-                if(mode === 'cashback') {
-                    if(standardPanel) standardPanel.style.display = 'block';
-                    toggleCashback.checked = true;
-                    toggleStamps.checked = false;
-                    toggleVip.checked = false;
-                } else if (mode === 'stamps') {
-                    if(standardPanel) standardPanel.style.display = 'block';
-                    toggleCashback.checked = false;
-                    toggleStamps.checked = true;
-                    toggleVip.checked = false;
-                } else if (mode === 'hybrid') {
-                    if(standardPanel) standardPanel.style.display = 'block';
-                    toggleCashback.checked = true;
-                    toggleStamps.checked = true;
-                    toggleVip.checked = true;
-                } else if (mode === 'membership' || mode === 'prepaid' || mode === 'custom') {
-                    toggleCashback.checked = false;
-                    toggleStamps.checked = false;
-                    toggleVip.checked = false;
-                    
-                    if(customPanel) {
-                        customPanel.style.display = 'block';
-                        if(mode === 'membership') setMem.style.display = 'block';
-                        if(mode === 'prepaid') setPre.style.display = 'block';
-                        if(mode === 'custom') setCus.style.display = 'block';
-                        
-                        if(cardTitle) {
-                            document.getElementById('custom-panel-title').innerHTML = `<i class="fa-solid fa-sliders" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración: ${cardTitle}`;
-                        }
-                    }
-                }
-            };
-            
-            loyaltyModes.forEach(radio => {
-                if(radio.value === activeMode) {
-                    radio.checked = true;
-                    updateLoyaltyUI(activeMode, radio.closest('.role-card').querySelector('h4').textContent);
-                }
-                const card = radio.closest('.role-card');
-                if(radio.checked) card.classList.add('active');
-                else card.classList.remove('active');
-            });
-            
-            // Also expose updateLoyaltyUI to the click listeners later
-            window.updateLoyaltyUI = updateLoyaltyUI;
+if old_row in js:
+    js = js.replace(old_row, new_row)
+else:
+    print("WARNING: Row replacement failed")
+
+# Add copyTicketForAntigravity
+antigravity_logic = """
+window.copyTicketForAntigravity = async function() {
+    const id = document.getElementById('ticket-modal-id').innerText;
+    const email = document.getElementById('ticket-modal-email').innerText;
+    const subject = document.getElementById('ticket-modal-subject').innerText;
+    const msg = document.getElementById('ticket-modal-message').innerText;
+    
+    const prompt = `¡Hola Antigravity! Un usuario me reportó el siguiente error en la aplicación. ¿Me ayudas a revisar el código e implementar la solución?
+    
+DATOS DEL TICKET:
+- ID: ${id}
+- Usuario: ${email}
+- Asunto: ${subject}
+- Descripción del problema:
+"${msg}"
+
+Por favor, revisa el código correspondiente y propón la corrección.`;
+
+    try {
+        await navigator.clipboard.writeText(prompt);
+        if(typeof window.showToast === 'function') {
+            window.showToast("Copiado al portapapeles. ¡Pégalo en tu consola local de Antigravity!", "success");
+        } else {
+            alert("Copiado al portapapeles. Pégalo en Antigravity.");
+        }
+    } catch(err) {
+        if(typeof window.showToast === 'function') window.showToast("Error al copiar texto", "error");
+    }
+};
 """
-js = js.replace(old_initial, new_initial)
+js += antigravity_logic
 
-old_click = """                    const mode = card.querySelector('input').value;
-                    const customPanel = document.getElementById('panel-loyalty-custom');
-                    const setMem = document.getElementById('settings-membership');
-                    const setPre = document.getElementById('settings-prepaid');
-                    const setCus = document.getElementById('settings-custom-prog');
-                    
-                    if(customPanel) customPanel.style.display = 'none';
-                    if(setMem) setMem.style.display = 'none';
-                    if(setPre) setPre.style.display = 'none';
-                    if(setCus) setCus.style.display = 'none';
-
-                    if(mode === 'cashback') {
-                        toggleCashback.checked = true;
-                        toggleStamps.checked = false;
-                        toggleVip.checked = false;
-                    } else if (mode === 'stamps') {
-                        toggleCashback.checked = false;
-                        toggleStamps.checked = true;
-                        toggleVip.checked = false;
-                    } else if (mode === 'hybrid') {
-                        toggleCashback.checked = true;
-                        toggleStamps.checked = true;
-                        toggleVip.checked = true;
-                    } else if (mode === 'membership' || mode === 'prepaid' || mode === 'custom') {
-                        toggleCashback.checked = false;
-                        toggleStamps.checked = false;
-                        toggleVip.checked = false;
-                        
-                        if(customPanel) {
-                            customPanel.style.display = 'block';
-                            if(mode === 'membership') setMem.style.display = 'block';
-                            if(mode === 'prepaid') setPre.style.display = 'block';
-                            if(mode === 'custom') setCus.style.display = 'block';
-                            
-                            document.getElementById('custom-panel-title').innerHTML = `<i class="fa-solid fa-sliders" style="color:var(--accent-violet); margin-right:8px;"></i> Configuración: ${card.querySelector('h4').textContent}`;
-                        }
-                    }"""
-
-new_click = """                    const mode = card.querySelector('input').value;
-                    if(window.updateLoyaltyUI) {
-                        window.updateLoyaltyUI(mode, card.querySelector('h4').textContent);
-                    }"""
-js = js.replace(old_click, new_click)
-
-# Initialize custom rules if present
-old_vip = """                if(state.vipTiers.oro) {
-                    document.getElementById('vip-oro-min').value = state.vipTiers.oro.minSpent || 3000;
-                    document.getElementById('vip-oro-cb').value = state.vipTiers.oro.cashbackPercent || 15;
-                    document.getElementById('vip-oro-perk').value = state.vipTiers.oro.perk || 'Beneficio Oro';
-                }
-            }
-        }"""
-new_vip = """                if(state.vipTiers.oro) {
-                    document.getElementById('vip-oro-min').value = state.vipTiers.oro.minSpent || 3000;
-                    document.getElementById('vip-oro-cb').value = state.vipTiers.oro.cashbackPercent || 15;
-                    document.getElementById('vip-oro-perk').value = state.vipTiers.oro.perk || 'Beneficio Oro';
-                }
-            }
-            if (state.customRules) {
-                if(state.customRules.membership) {
-                    if(document.getElementById('mem-price')) document.getElementById('mem-price').value = state.customRules.membership.price || 199;
-                    if(document.getElementById('mem-perk')) document.getElementById('mem-perk').value = state.customRules.membership.perk || '20% OFF en Tienda';
-                }
-                if(state.customRules.prepaid) {
-                    if(document.getElementById('pre-amount')) {
-                        document.getElementById('pre-amount').value = state.customRules.prepaid.amount || 500;
-                        const updatePrepaidTotal = () => {
-                            const total = (parseFloat(document.getElementById('pre-amount').value) || 0) + (parseFloat(document.getElementById('pre-bonus').value) || 0);
-                            if(document.getElementById('pre-total-display')) document.getElementById('pre-total-display').textContent = '$' + total;
-                        };
-                        updatePrepaidTotal();
-                    }
-                    if(document.getElementById('pre-bonus')) document.getElementById('pre-bonus').value = state.customRules.prepaid.bonus || 100;
-                }
-                if(state.customRules.custom) {
-                    if(document.getElementById('cus-name')) document.getElementById('cus-name').value = state.customRules.custom.name || 'Mi Programa VIP';
-                    if(document.getElementById('cus-rules')) document.getElementById('cus-rules').value = state.customRules.custom.rules || '';
-                }
-            }
-        }"""
-js = js.replace(old_vip, new_vip)
-
-with open('/Users/robertoordonez/.gemini/antigravity/scratch/restaurant_loyalty_app/dashboard.js', 'w', encoding='utf-8') as f:
+with open('dashboard_v2.js', 'w', encoding='utf-8') as f:
     f.write(js)
-
-print("Updated JS logic.")
+print("JS updated.")

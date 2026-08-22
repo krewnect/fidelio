@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjeta Digital</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --surface-color: #1a1a1a;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --primary: #8b5cf6;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pass-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .digital-card {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #000);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .digital-card-banner {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .digital-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .merchant-logo {
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .vip-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: white;
+            backdrop-filter: blur(4px);
+        }
+        
+        .campaign-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .balance-section, .stamps-section {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .balance-label, .stamps-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .balance-amount, .stamps-amount {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .qr-container {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            width: fit-content;
+            position: relative;
+            z-index: 2;
+        }
+
+        .customer-name {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .instruction {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 24px;
+        }
+
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            color: white;
+            font-size: 24px;
+        }
+
+        .btn-wallet {
+            background: #000;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .btn-schedule {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+    
+        .stamps-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            justify-items: center;
+        }
+        .stamp-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .stamp-circle.earned {
+            border: 2px solid var(--primary);
+            background-color: rgba(255,255,255,0.9);
+            box-shadow: 0 0 10px var(--primary);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .stamp-image {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+        .stamp-icon {
+            font-size: 20px;
+            color: var(--primary);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- FULL SCREEN ACTION OVERLAY -->
+    <div id="action-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#f9fafb; z-index:9999; overflow-y:auto; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        
+        <!-- Branded Header -->
+        <div id="action-header" style="background:var(--primary, #111827); color:white; padding: 24px 20px; padding-top: 48px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; text-align:center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <div style="position:relative;">
+                <button onclick="window.history.back()" style="position:absolute; left:0; top:0; background:rgba(255,255,255,0.2); border:none; border-radius:50%; width:36px; height:36px; color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-arrow-left"></i></button>
+                <img id="action-merchant-logo" src="" alt="Logo" style="width:64px; height:64px; border-radius:50%; border:3px solid white; object-fit:cover; margin:0 auto 12px auto; display:none; background:white;">
+            </div>
+            <h2 id="action-merchant-name" style="font-size:18px; font-weight:700; margin:0; opacity:0.9;">Mi Negocio</h2>
+        </div>
+
+        <div style="max-width:400px; margin:0 auto; padding: 32px 24px;">
+            <h1 id="action-title" style="font-size:26px; font-weight:800; margin-bottom:8px; color:#111827;">Agendar Cita</h1>
+            <p id="action-subtitle" style="font-size:15px; color:#4b5563; margin-bottom:32px;">Selecciona la fecha y hora para tu cita.</p>
+            
+            <div id="action-content" style="background:white; border-radius:16px; padding:24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #f3f4f6;">
+                <!-- content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+
+    <div id="loading-screen"><i class="fa-solid fa-spinner fa-spin"></i></div>
+
+    <div class="pass-container" id="pass-container" style="display:none;">
+        <div id="digital-card" style="background: #ffffff; border-radius: 20px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; min-height: 250px; border: 1px solid var(--primary);">
+            
+            <!-- Top row: Logo and "10 SELLOS" -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div style="flex: 1; max-width: 160px; display: flex; align-items: center;">
+                    <img id="ui-merchant-logo" src="" style="width: 100%; max-height: 45px; object-fit: contain; object-position: left center; display: none;" alt="Logo" />
+                    <div id="ui-default-logo" style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-crown" style="color: var(--primary); font-size: 24px;"></i>
+                        <span id="ui-campaign-title" style="font-weight: 800; font-size: 20px; color: #111827; letter-spacing: -0.5px;">Mi Negocio</span>
+                    </div>
+                </div>
+                <div id="ui-top-right-stamps" style="display: none; text-align: right; align-items: center; gap: 8px;">
+                    <span id="ui-stamps-top-label" style="font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">SELLOS</span>
+                    <i class="fa-solid fa-wifi" style="transform: rotate(90deg); color: var(--primary); opacity: 0.8; font-size: 14px;"></i>
+                </div>
+            </div>
+
+            <!-- Middle Image Banner -->
+            <div id="ui-card-banner" style="display: none; width: 100%; height: 100px; border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+                <img id="ui-banner-img" src="" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+
+            <!-- Middle Body (Dynamic: Stamps vs Cashback) -->
+            <div id="ui-stamps-section" style="display: none; flex-direction: column; flex-grow: 1;">
+                <div style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; line-height: 1.4;">ACUMULA SELLOS<br>Y OBTÉN TU RECOMPENSA</div>
+                <div id="ui-stamps-grid" style="display: flex; flex-wrap: wrap; gap: 14px; position: relative; margin-bottom: 20px;"></div>
+            </div>
+
+            <div id="ui-balance-section" style="display: none; flex-direction: column; flex-grow: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                    <div>
+                        <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">NIVEL</div>
+                        <div id="ui-vip" style="font-size: 28px; font-weight: 800; color: var(--primary); letter-spacing: -1px; display: flex; align-items: center; gap: 8px;">ÉLITE</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">CASHBACK</div>
+                        <div id="ui-balance" style="font-size: 24px; font-weight: 800; color: #111827;">$0.00</div>
+                        <div style="font-size: 10px; font-weight: 600; color: var(--primary); text-transform: uppercase; margin-top: 2px;">Disponible</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;">
+                    <div>
+                        <div style="font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">CLIENTE</div>
+                        <div id="ui-customer-name" style="font-size: 16px; font-weight: 800; color: #111827;">Cargando...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom row: Instructions and QR -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding-top: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="color: var(--primary); font-size: 24px;"><i class="fa-solid fa-expand"></i></div>
+                    <div style="font-size: 10px; font-weight: 600; color: #4b5563; text-transform: uppercase; line-height: 1.4; letter-spacing: 0.5px;">ESCANEA TU TARJETA<br>EN CAJA</div>
+                </div>
+                <div style="width: 70px; height: 70px; background: white; padding: 4px; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center;" id="qrcode">
+                    <!-- QR goes here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="ui-stamps-stat">0</div>
+                <div class="stat-label">Sellos Ganados</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="ui-visits">0</div>
+                <div class="stat-label">Visitas Totales</div>
+            </div>
+        </div>
+
+        <p class="instruction">
+            Presenta este código QR al cajero al momento de pagar para acumular o canjear tus recompensas.
+        </p>
+
+        <button class="btn-wallet" id="btn-schedule-appointment" style="display:none; background: var(--primary); margin-bottom: 12px; color: white;" onclick="openAppointmentModal()">
+            <i class="fa-solid fa-calendar-check"></i> <span id="ui-cta-text">Agendar Cita o Servicio</span>
+        </button>
+
+        <button class="btn-wallet" id="btn-apple-wallet" onclick="downloadAppleWallet()">
+            <i class="fa-brands fa-apple"></i> Añadir a Apple Wallet
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="appointment-modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0; font-size:18px;">Agendar Cita o Servicio</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:var(--text-muted);" onclick="closeAppointmentModal()"></i>
+            </div>
+            
+            <div class="form-group">
+                <label>Día de la cita</label>
+                <input type="date" class="form-input" id="modal-date">
+            </div>
+            <div class="form-group">
+                <label>Hora deseada</label>
+                <input type="time" class="form-input" id="modal-time">
+            </div>
+            
+            <button class="btn-schedule" id="btn-confirm-appointment" onclick="confirmAppointment()">Confirmar Solicitud</button>
+        </div>
+    </div>
+
+    <script>
+        let globalCustomerId = null;
+        let globalCampaignId = null;
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 1. Init Supabase
+                const configRes = await fetch('/api/config');
+                const config = await configRes.json();
+                const supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+                
+                // 2. Get IDs
+                const urlParams = new URLSearchParams(window.location.search);
+                const customerId = urlParams.get('id') || urlParams.get('c');
+                const campaignId = urlParams.get('campaign');
+                globalCustomerId = customerId;
+                globalCampaignId = campaignId;
+                
+                if (!customerId || !campaignId) {
+                    throw new Error("Pase o campaña no encontrados");
+                }
+
+                
+                const apiRes = await fetch(`/api/wallet/data?c=${customerId}&camp=${campaignId}`);
+                const apiData = await apiRes.json();
+                
+                if (!apiData.success) {
+                    throw new Error(apiData.error || "Pase inválido");
+                }
+                
+                let customer = apiData.customer;
+                let campaign = apiData.campaign;
+                let merchant = apiData.merchant;
+
+                // HANDLE ACTIONS (APPOINTMENTS / PAYMENTS)
+                const action = urlParams.get('action');
+                if (action) {
+                    document.getElementById('action-overlay').style.display = 'block';
+                    const contentDiv = document.getElementById('action-content');
+                    
+                    // Populate Action Overlay Branding here too just in case
+                    if (merchant && merchant.business_name) {
+                        document.getElementById('action-merchant-name').textContent = merchant.business_name;
+                    }
+                    const overlayLogo = document.getElementById('action-merchant-logo');
+                    if (campaign.logo_url) {
+                        overlayLogo.src = campaign.logo_url;
+                        overlayLogo.style.display = 'block';
+                    } else if (merchant) {
+                        overlayLogo.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.business_name)}&background=fff&color=000`;
+                        overlayLogo.style.display = 'block';
+                    }
+                    if (campaign.color_primary) {
+                        document.getElementById('action-header').style.background = campaign.color_primary;
+                    }
+                    
+                    if (action === 'payment') {
+                        document.getElementById('action-title').textContent = 'Procesando Pago...';
+                        document.getElementById('action-subtitle').textContent = 'Serás redirigido a la pasarela de pago seguro en un momento.';
+                        contentDiv.innerHTML = '<div style="text-align:center; padding:40px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:40px; color:#cbd5e1;"></i></div>';
+                        
+                        setTimeout(() => {
+                            let payUrl = null;
+                            if (campaign.rules_config && campaign.rules_config.payment_url) {
+                                payUrl = campaign.rules_config.payment_url;
+                            } else if (campaign.stripe_payment_link) {
+                                payUrl = campaign.stripe_payment_link;
+                            } else if (campaign.custom_cta_url) {
+                                payUrl = campaign.custom_cta_url;
+                            }
+                            
+                            if (payUrl && (payUrl.startsWith('http://') || payUrl.startsWith('https://'))) {
+                                window.location.href = payUrl;
+                            } else {
+                                contentDiv.innerHTML = '<div style="padding:20px; background:#fef2f2; color:#b91c1c; border-radius:12px; font-size:14px;"><i class="fa-solid fa-triangle-exclamation"></i> El comercio aún no ha configurado su enlace de pago. Por favor contáctalos directamente.</div>';
+                                document.getElementById('action-title').textContent = 'Enlace no disponible';
+                                document.getElementById('action-subtitle').textContent = '';
+                            }
+                        }, 1500);
+                        return; // Stop loading normal pass UI
+                    }
+                    
+                    if (action === 'appointment') {
+                        document.getElementById('action-title').textContent = 'Agendar Cita';
+                        contentDiv.innerHTML = `
+                            <form id="appointment-form" onsubmit="submitAppointment(event)">
+                                <div style="margin-bottom:16px;">
+                                    <label style="display:block; font-size:12px; font-weight:700; color:#374151; margin-bottom:6px;">FECHA DESEADA</label>
+                                    <input type="date" id="appt-date" required style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:16px;">
+                                </div>
+                                <div style="margin-bottom:24px;">
+                                    <label style="display:block; font-size:12px; font-weight:700; color:#374151; margin-bottom:6px;">HORA DESEADA</label>
+                                    <input type="time" id="appt-time" required style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:16px;">
+                                </div>
+                                <div style="margin-bottom:24px;">
+                                    <label style="display:block; font-size:12px; font-weight:700; color:#374151; margin-bottom:6px;">NOTAS O SERVICIO REQUERIDO</label>
+                                    <textarea id="appt-notes" rows="3" placeholder="Ej. Corte de cabello, Revisión dental..." style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:16px; resize:none;"></textarea>
+                                </div>
+                                <button type="submit" id="appt-submit-btn" style="width:100%; padding:16px; background:var(--primary, #111827); color:white; border:none; border-radius:12px; font-weight:700; font-size:16px; cursor:pointer;">
+                                    Solicitar Cita
+                                </button>
+                            </form>
+                        `;
+                        
+                        window.submitAppointment = async function(e) {
+                            e.preventDefault();
+                            const btn = document.getElementById('appt-submit-btn');
+                            btn.disabled = true;
+                            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+                            
+                            try {
+                                const date = document.getElementById('appt-date').value;
+                                const time = document.getElementById('appt-time').value;
+                                const notes = document.getElementById('appt-notes').value;
+                                
+                                const res = await fetch('/api/appointments', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({
+                                        customerId: customer.id,
+                                        campaignId: campaign.id,
+                                        date: date,
+                                        time: time,
+                                        notes: notes
+                                    })
+                                });
+                                
+                                const data = await res.json();
+                                if (data.success) {
+                                    document.getElementById('action-content').innerHTML = `
+                                        <div style="text-align:center; padding:40px 20px;">
+                                            <i class="fa-solid fa-circle-check" style="font-size:64px; color:#10b981; margin-bottom:16px;"></i>
+                                            <h2 style="font-size:20px; font-weight:800; color:#111827; margin-bottom:8px;">¡Solicitud Enviada!</h2>
+                                            <p style="font-size:14px; color:#4b5563;">Tu solicitud de cita ha sido recibida. El comercio se pondrá en contacto contigo para confirmarla.</p>
+                                        </div>
+                                    `;
+                                } else {
+                                    alert('Hubo un error al enviar tu solicitud: ' + data.error);
+                                    btn.disabled = false;
+                                    btn.innerHTML = 'Solicitar Cita';
+                                }
+                            } catch (err) {
+                                alert('Error de conexión.');
+                                btn.disabled = false;
+                                btn.innerHTML = 'Solicitar Cita';
+                            }
+                        };
+                        return; // Stop loading normal pass UI
+                    }
+                }
+
+
+
+                // 6. Populate UI based on Campaign
+                document.title = `Tarjeta Digital - ${campaign.name || 'Campaña'}`;
+                
+                document.getElementById('ui-customer-name').textContent = customer.full_name || customer.name;
+                document.getElementById('ui-campaign-title').textContent = campaign.name;
+                document.getElementById('ui-vip').textContent = customer.vip_tier || 'BRONCE';
+
+                // Stats mapping
+                document.getElementById('ui-balance').textContent = `$${parseFloat(customer.balance_cashback || 0).toFixed(2)}`;
+                
+                // Generar Cuadrícula de Sellos Visual
+                const gridContainer = document.getElementById('ui-stamps-grid');
+                if (gridContainer) {
+                    const totalStampsReq = (campaign.rules_config && campaign.rules_config.stamps_total) ? campaign.rules_config.stamps_total : 10;
+                    const earnedStamps = customer.stamps_count || 0;
+                    gridContainer.innerHTML = '';
+                    
+                    // Ajustar columnas dinámicamente si hay muchos sellos
+                    if (totalStampsReq > 10) gridContainer.style.gridTemplateColumns = 'repeat(6, 1fr)';
+                    if (totalStampsReq <= 5) gridContainer.style.gridTemplateColumns = `repeat(${totalStampsReq}, 1fr)`;
+
+                    const iconSrc = campaign.stamp_icon_url || 'fa-star';
+                    const isImage = iconSrc.startsWith('data:image') || iconSrc.startsWith('http');
+                    
+                    for (let i = 0; i < totalStampsReq; i++) {
+                        const circle = document.createElement('div');
+                        circle.className = 'stamp-circle' + (i < earnedStamps ? ' earned' : '');
+                        
+                        if (i < earnedStamps) {
+                            if (isImage) {
+                                circle.innerHTML = `<img src="${iconSrc}" class="stamp-image">`;
+                            } else {
+                                circle.innerHTML = `<i class="fa-solid ${iconSrc} stamp-icon"></i>`;
+                            }
+                        }
+                        
+                        gridContainer.appendChild(circle);
+                    }
+                }
+
+                
+                document.getElementById('ui-stamps-stat').textContent = customer.stamps_count || 0;
+                document.getElementById('ui-visits').textContent = customer.visits || 0;
+                
+                // Show relevant section based on campaign type
+                if (campaign.type === 'stamps') {
+                    document.getElementById('ui-stamps-section').style.display = 'block';
+                } else {
+                    document.getElementById('ui-balance-section').style.display = 'block';
+                }
+
+                // Branding
+                document.getElementById('ui-merchant-logo').src = campaign.logo_url || (merchant ? `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.business_name)}&background=000&color=fff` : `https://ui-avatars.com/api/?name=F&background=000&color=fff`);
+                
+                if (campaign.color_primary) {
+                    document.documentElement.style.setProperty('--primary', campaign.color_primary);
+                }
+                
+                // Populate Action Overlay Branding
+                if (merchant && merchant.business_name) {
+                    document.getElementById('action-merchant-name').textContent = merchant.business_name;
+                }
+                const overlayLogo = document.getElementById('action-merchant-logo');
+                if (campaign.logo_url) {
+                    overlayLogo.src = campaign.logo_url;
+                    overlayLogo.style.display = 'block';
+                } else if (merchant) {
+                    overlayLogo.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.business_name)}&background=fff&color=000`;
+                    overlayLogo.style.display = 'block';
+                }
+                
+                if (campaign.banner_url) {
+                    document.getElementById('ui-card-banner').style.backgroundImage = `url('${campaign.banner_url}')`;
+                }
+
+                
+                const isProfessional = merchant && (merchant.business_type === 'professional' || (merchant.industry && merchant.industry.toLowerCase().includes('professional')));
+                if (isProfessional) {
+                    document.getElementById('ui-vip').style.display = 'none';
+                    const btnAppt = document.getElementById('btn-schedule-appointment');
+                    btnAppt.style.display = 'block';
+                    
+                    // Update label if custom
+                    if (campaign.custom_cta_label) {
+                        document.getElementById('ui-cta-text').textContent = campaign.custom_cta_label;
+                    }
+                    
+                    // Check if Stripe is configured
+                    if (merchant.stripe_keys && merchant.stripe_keys.stripe_pub_key) {
+                        // Change action to Stripe if they provided a payment link in custom_cta_url or default
+                        btnAppt.onclick = () => {
+                            if (campaign.banner_url && campaign.banner_url.includes('stripe.com')) {
+                                window.location.href = campaign.banner_url; // We'll hijack banner_url for stripe link as hack for now
+                            } else {
+                                alert('El profesional tiene Stripe activo pero no configuró su Payment Link.');
+                            }
+                        };
+                        document.getElementById('ui-cta-text').innerHTML += " (Pagar vía Stripe)";
+                    }
+                }
+
+
+                // 7. Generate QR Code (CUSTOMER_ID|CAMPAIGN_ID)
+                const qrContent = `${customer.id}|${campaign.id}`;
+                new QRCode(document.getElementById("qrcode"), {
+                    text: qrContent,
+                    width: 150,
+                    height: 150,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('pass-container').style.display = 'flex';
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading-screen').innerHTML = `
+                    <div style="text-align:center;">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size:48px; color:var(--text-muted); margin-bottom:16px;"></i>
+                        <h2 style="margin-bottom:8px;">Pase Inválido</h2>
+                        <p style="color:var(--text-muted); font-size:14px;">El enlace no es válido o la campaña ha expirado.</p>
+                    </div>
+                `;
+            }
+        });
+
+        
+        async function downloadAppleWallet() {
+            if (!globalCustomerId || !globalCampaignId) {
+                alert("No se pudo identificar la campaña.");
+                return;
+            }
+            
+            const btn = document.getElementById('btn-apple-wallet');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando Pase...';
+            btn.disabled = true;
+
+            try {
+                const url = `/api/wallet/apple/${globalCustomerId}/${globalCampaignId}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const text = await response.text();
+                    Swal.fire('Aviso del Sistema', text || 'Configuración de Apple Wallet pendiente en el servidor (.env).', 'info');
+                    return;
+                }
+                // En iOS Safari, descargar un Blob de .pkpass vía AJAX falla silenciosamente o da error "no puede descargar este archivo".
+                // Por lo tanto, si la respuesta HTTP fue OK (los certificados existen), hacemos una redirección directa 
+                // para que el sistema operativo intercepte el archivo y abra la app nativa de Apple Wallet.
+                window.location.href = url;
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'No se pudo conectar con el servidor para generar la tarjeta.', 'error');
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+
+        
+        async function submitAppointmentRequest() {
+            const date = document.getElementById('appointment-date').value;
+            const time = document.getElementById('appointment-time').value;
+            const notes = document.getElementById('appointment-notes').value;
+            
+            if (!date || !time) {
+                alert("Por favor selecciona fecha y hora.");
+                return;
+            }
+            if (!customerId || !campaignId) {
+                alert("No se pudo identificar al cliente.");
+                return;
+            }
+            
+            const btn = document.getElementById('btn-submit-appointment');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/appointments/request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ customer_id: customerId, campaign_id: campaignId, date, time, notes })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('¡Solicitud enviada con éxito! El profesional se pondrá en contacto pronto.');
+                    closeAppointmentModal();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Error de red. Intenta de nuevo.');
+                console.error(err);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function openAppointmentModal() {
+            document.getElementById('appointment-modal').style.display = 'flex';
+        }
+
+        function closeAppointmentModal() {
+            document.getElementById('appointment-modal').style.display = 'none';
+        }
+
+        async function confirmAppointment() {
+            const dateStr = document.getElementById('modal-date').value;
+            const timeStr = document.getElementById('modal-time').value;
+            
+            if(!dateStr || !timeStr) {
+                Swal.fire('Error', 'Selecciona el día y la hora', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-confirm-appointment');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Agendando...';
+            btn.disabled = true;
+
+            try {
+                // Get customer data globally saved during init
+                const urlParams = new URLSearchParams(window.location.search);
+                const customerId = urlParams.get('id') || urlParams.get('c');
+                
+                const configRes = await fetch('/api/config');
+                const config = await configRes.json();
+                const supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+                const { data: customer } = await supabase.from('customers').select('*').eq('id', customerId).single();
+                
+                if(customer) {
+                    const appointmentDate = new Date(`${dateStr}T${timeStr}`);
+                    const { error } = await supabase.from('appointments').insert([{
+                        merchant_id: customer.merchant_id,
+                        customer_id: customer.id,
+                        customer_name: customer.full_name || customer.name,
+                        customer_phone: customer.phone || null,
+                        customer_email: customer.email,
+                        appointment_date: appointmentDate.toISOString()
+                    }]);
+                    
+                    if (error) throw error;
+                    
+                    Swal.fire('¡Solicitud Enviada!', 'El profesional ha recibido tu solicitud.', 'success');
+                    closeAppointmentModal();
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'Hubo un problema. Intenta de nuevo.', 'error');
+            }
+            
+            btn.innerHTML = 'Confirmar Solicitud';
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>

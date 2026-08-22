@@ -1,3 +1,75 @@
+
+// --- FIDELIO STUDIO BRIDGE ---
+window.saveCampaignFromStudio = async function(studioPayload) {
+    const payload = {
+        id: window.generateUUID ? window.generateUUID() : "12345678-1234-1234-1234-123456789012",
+        type: studioPayload.loyalty.type || "hybrid",
+        name: studioPayload.branding.name || "Campaña de Studio",
+        description: studioPayload.branding.desc || "Generada desde Fidelio Studio",
+        color_primary: studioPayload.branding.colors.primary || "#000000",
+        color_accent: studioPayload.branding.colors.accent || "#ffffff",
+        custom_cta_label: studioPayload.loyalty.stampsReward || 'Recompensa Exclusiva',
+        rules_config: {
+            stamps_total: studioPayload.loyalty.stampsTotal || 5
+        }
+    };
+    try {
+        const res = await fetch('/api/campaigns', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${window.merchantSession?.access_token || ''}`
+            },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            if (typeof window.loadCampaigns === 'function') {
+                await window.loadCampaigns();
+            }
+            return true;
+        } else {
+            const text = await res.text();
+            console.error("Save Error:", text);
+            alert("DEBUG API ERROR: " + res.status + " - " + text);
+            if (typeof window.showToast === 'function') window.showToast("Error al guardar campaña en BD", "error");
+            return false;
+        }
+    } catch(e) {
+        console.error(e);
+        if (typeof window.showToast === 'function') window.showToast("Error de conexión al guardar", "error");
+        return false;
+    }
+};
+// -----------------------------
+
+// --- FIDELIO STUDIO INTERCEPTOR ---
+// Overrides any attempt to show the old loyalty tab and redirects to the new fullscreen iframe.
+const observer = new MutationObserver((mutations) => {
+    const loy = document.getElementById('tab-loyalty');
+    if (loy && (loy.classList.contains('active') || loy.style.display === 'block')) {
+        loy.classList.remove('active');
+        loy.style.display = 'none';
+        
+        const container = document.getElementById('wallet-studio-container');
+        const iframe = document.getElementById('wallet-studio-iframe');
+        if (container && iframe && container.style.display !== 'block') {
+            const restId = window.merchantData ? window.merchantData.id : '123';
+            const tier = (window.merchantData && window.merchantData.business_type === "business") ? "business" : "basic";
+            iframe.src = `/studio/index.html?rest_id=${restId}&tier=${tier}`;
+            container.style.display = 'block';
+            if (typeof window.showToast === 'function') {
+                window.showToast("Cargando Fidelio Card Studio (Micro-Frontend)...", "success");
+            }
+        }
+    }
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const loy = document.getElementById('tab-loyalty');
+    if(loy) {
+        observer.observe(loy, { attributes: true, attributeFilter: ['class', 'style'] });
+    }
+});
+// ----------------------------------
 window.saveDesignToSupabase = async function saveDesignToSupabase() {
     console.log("Global saveDesignToSupabase triggered!");
     if (!state.currentCampaignId) {
@@ -818,6 +890,12 @@ let saveTimeout = null;
         }
 
         window.merchantData = merchantData;
+        const planBadge = document.getElementById('plan-badge');
+        if(planBadge) {
+            const isProPlan = ['business', 'pro', 'enterprise'].includes((merchantData.business_type || '').toLowerCase());
+            planBadge.textContent = isProPlan ? 'PRO' : 'Basic';
+            planBadge.style.background = isProPlan ? 'linear-gradient(135deg, #8b5cf6, #d946ef)' : '#94a3b8';
+        }
         // Trigger UI update for landing link explicitly when data loads
         if (typeof window.updateLandingUI === 'function') window.updateLandingUI();
         let custQuery = window.supabaseClient.from('customers').select('*');
@@ -2693,6 +2771,19 @@ function updatePassRender() {
             tab.classList.add('active');
             const targetTab = tab.getAttribute('data-tab');
             if (targetTab) {
+                // --- FIDELIO SOFT-PAYWALL INTERCEPTOR ---
+                const proTabs = ['tab-autopilot', 'tab-crm', 'tab-settings']; // Agrega aquí las pestañas PRO
+                const plan = window.merchantData ? (window.merchantData.business_type || 'basic').toLowerCase() : 'basic';
+                const isPro = ['business', 'pro', 'enterprise'].includes(plan);
+                
+                if (proTabs.includes(targetTab) && !isPro) {
+                    // Block access and show Upsell Modal
+                    document.getElementById('upsell-modal-container').style.display = 'flex';
+                    // Re-activate previous tab visually if needed, but for simplicity we just return
+                    return;
+                }
+                // ----------------------------------------
+                
                 const targetElement = document.getElementById(targetTab);
                 if (targetElement) {
                     targetElement.classList.add('active');
@@ -5333,17 +5424,19 @@ window.openCampaignModal = function() {
         
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
         
-        const loy = document.getElementById('tab-loyalty');
-        if(loy) {
-            loy.classList.add('active');
-            loy.style.display = 'block'; // Force visibility
-            console.log("Set tab-loyalty to active and block");
+        const restId = window.merchantData ? window.merchantData.id : '123';
+        const studioIframe = document.getElementById('wallet-studio-iframe');
+        if(studioIframe) {
+            const tier = (window.merchantData && window.merchantData.business_type === "business") ? "business" : "basic";
+            studioIframe.src = `/studio/index.html?rest_id=${restId}&tier=${tier}`;
+            document.getElementById('wallet-studio-container').style.display = 'block';
+            console.log("Launched FullScreen Studio Iframe");
         } else {
-            alert("ERROR: tab-loyalty NO EXISTE EN EL DOM");
+            alert("ERROR: wallet-studio-container NO EXISTE EN EL DOM");
         }
         
         if (typeof window.showToast === 'function') {
-            window.showToast("Paso 1: Elige el Programa de Fidelización para tu campaña.", "success");
+            window.showToast("Cargando Fidelio Card Studio (Micro-Frontend)...", "success");
         }
     } catch(err) {
         alert("CRITICAL ERROR IN openCampaignModal: " + err.message);

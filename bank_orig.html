@@ -1,0 +1,42 @@
+            <section id="tab-bank" class="tab-content">
+                <div class="workspace-header">
+                    <div>
+                        <span class="workspace-eyebrow">OPERACIÓN DEL NEGOCIO</span>
+                        <h1>The Bank</h1>
+                        <p>Lleva el control exacto del dinero prepagado a los monederos de tus clientes.</p>
+                    </div>
+                    <button class="btn btn-primary" style="background: var(--accent-violet); border: none;" onclick="loadBankStats()"><i class="fa-solid fa-rotate-right"></i> Actualizar Banco</button>
+                </div>
+
+                <!-- Resumen Financiero -->
+                <div class="metrics-grid" style="margin-bottom: 24px; grid-template-columns: 1fr 1fr;">
+                    <div class="metric-card" style="border-left: 4px solid var(--accent-violet);">
+                        <div class="metric-title"><i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-right:8px;"></i> Total Prepagado (Histórico)</div>
+                        <div class="metric-value" id="bank-total-deposited">$0.00</div>
+                        <div class="metric-trend" style="color: var(--text-muted);">Dinero total que han metido tus clientes al monedero.</div>
+                    </div>
+                    <div class="metric-card" style="border-left: 4px solid #10b981;">
+                        <div class="metric-title"><i class="fa-solid fa-vault" style="color:#10b981; margin-right:8px;"></i> Bolsa de Dinero No Gastado</div>
+                        <div class="metric-value" id="bank-total-unspent" style="color: #10b981;">$0.00</div>
+                        <div class="metric-trend" style="color: var(--text-muted);">Pasivo actual: Dinero que tienen a favor para gastar.</div>
+                    </div>
+                </div>
+
+                <!-- Desglose por Usuario -->
+                <div class="content-panel" style="background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); overflow-x: auto;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 16px; font-weight: 700;">Desglose por Cliente</h3>
+                    <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
+                                <th style="padding: 16px;">Cliente</th>
+                                <th style="padding: 16px;">Total Ingresado</th>
+                                <th style="padding: 16px;">Total Gastado</th>
+                                <th style="padding: 16px;">Saldo Restante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bank-table-body">
+                            <tr><td colspan="4" style="text-align:center;">Cargando registros...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>

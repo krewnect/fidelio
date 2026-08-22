@@ -73,8 +73,8 @@ const requireBusinessPlan = async (req, res, next) => {
         // Admin overrides
         if (req.userRole === 'admin' && req.merchantId === 'hola@fideliorewards.com') return next(); 
         
-        const plan = merchant.business_type || 'starter';
-        if (plan === 'business' || plan === 'enterprise') {
+        const plan = (merchant.business_type || 'basic').toLowerCase();
+        if (['business', 'pro', 'enterprise'].includes(plan)) {
             next();
         } else {
             return res.status(403).json({ success: false, error: 'Upgrade to Business to access this feature.' });
@@ -1124,12 +1124,20 @@ app.get('/', (req, res) => {
     res.sendFile(targetPath, { dotfiles: 'allow' });
 });
 
+
 app.get('/panel', (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile('index.html', { root: __dirname });
 });
+
+// Explicit route for Studio
+app.get('/studio/index.html', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+    res.sendFile('studio/index.html', { root: __dirname });
+});
+
 
 app.get('/privacidad.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'privacidad.html'), { dotfiles: 'allow' });

@@ -1,56 +1,37 @@
-import sys
+import re
 
-def patch_app_js():
-    with open('app.js', 'r') as f:
-        content = f.read()
+with open('app.js', 'r', encoding='utf-8') as f:
+    js = f.read()
 
-    # Add requireProPlan middleware after requireMerchantAuth
-    middleware_code = """
-const requireProPlan = async (req, res, next) => {
+endpoint = """
+// ============================================================================
+// ADMIN API: GET MERCHANT AUTH DETAILS
+// ============================================================================
+app.get('/api/admin/merchant-details/:id', async (req, res) => {
+    const merchantId = req.params.id;
+    if (!supabaseAdmin) return res.status(500).json({error: 'Admin client not initialized'});
     try {
-        const { data: merchant, error } = await supabase
-            .from('merchants')
-            .select('business_type')
-            .eq('id', req.merchantId)
-            .single();
-            
-        if (error || !merchant) return res.status(404).json({ success: false, error: 'Merchant not found' });
+        const { data: { user }, error } = await supabaseAdmin.auth.admin.getUserById(merchantId);
+        if (error || !user) return res.status(404).json({error: 'Not found'});
+        res.json({
+            email: user.email,
+            first_name: user.user_metadata?.first_name || '',
+            last_name: user.user_metadata?.last_name || '',
+            phone: user.phone || ''
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({error: err.message});
+    }
+});
+"""
+
+if "// ============================================================================" in js:
+    # Just append it before the trigger push API
+    anchor = "// TRIGGER MARKETING PUSH API"
+    if anchor in js:
+        js = js.replace(anchor, endpoint + "\n// ============================================================================\n" + anchor)
         
-        // Admin overrides
-        if (req.userRole === 'admin' && req.merchantId === 'hola@fideliorewards.com') return next(); // Fallback if using email
-        
-        const plan = merchant.business_type || 'starter';
-        if (plan === 'professional' || plan === 'enterprise') {
-            next();
-        } else {
-            return res.status(403).json({ success: false, error: 'Upgrade to Professional to access this feature.' });
-        }
-    } catch (e) {
-        return res.status(500).json({ success: false, error: 'Internal validation error' });
-    }
-};
-"""
-    if "const requireProPlan" not in content:
-        content = content.replace('const apiLimiter', middleware_code + '\nconst apiLimiter')
-
-    # Fix negative amount in transaction
-    transaction_check = """
-    if (!customerId || !amount || amount <= 0 || !['earn', 'redeem'].includes(type)) {
-        return res.status(400).json({ success: false, error: 'Datos inválidos' });
-    }
-"""
-    # Verify if it already exists, actually we saw it in app.js: "if (!customerId || !amount || amount <= 0 || !['earn', 'redeem'].includes(type))" 
-    # Yes, it is already there! But let's add an extra safety check for amount just in case it's not a number.
-    safe_transaction_check = """
-    amount = parseFloat(amount);
-    if (!customerId || isNaN(amount) || amount <= 0 || !['earn', 'redeem'].includes(type)) {
-        return res.status(400).json({ success: false, error: 'Datos inválidos' });
-    }
-"""
-    content = content.replace("    if (!customerId || !amount || amount <= 0 || !['earn', 'redeem'].includes(type)) {\n        return res.status(400).json({ success: false, error: 'Datos inválidos' });\n    }", safe_transaction_check)
-
-    with open('app.js', 'w') as f:
-        f.write(content)
-
-if __name__ == "__main__":
-    patch_app_js()
+with open('app.js', 'w', encoding='utf-8') as f:
+    f.write(js)
+print("app.js patched.")

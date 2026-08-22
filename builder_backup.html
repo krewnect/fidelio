@@ -1,0 +1,446 @@
+            
+            <!-- BUILDER TAB -->
+            <section id="tab-builder" class="tab-content">
+                <style>
+                    /* Premium Clean Builder Redesigned */
+                    .tab-builder-container { display: flex; height: calc(100vh - 100px); overflow: hidden; background: #f8fafc; margin: -24px; }
+                    .builder-preview-area { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; background: #f1f5f9; height: 100%; border-left: 1px solid #e2e8f0; overflow: hidden; }
+                    .builder-sidebar { overflow-y: auto; padding-right: 12px; }
+                    
+                    .builder-sidebar { 
+                        width: 55%; 
+                        max-width: 750px; 
+                        background: #f8fafc; 
+                        overflow-y: auto; 
+                        padding: 40px; 
+                        display:flex; 
+                        flex-direction:column; 
+                        gap:32px; 
+                        z-index:10; 
+                        border-right: 1px solid rgba(0,0,0,0.05);
+                    }
+                    
+                    /* The magical card groups */
+                    .builder-card {
+                        background: rgba(255, 255, 255, 0.95);
+                        backdrop-filter: blur(20px);
+                        border-radius: 24px;
+                        padding: 32px;
+                        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+                        border: 1px solid rgba(255,255,255,0.8);
+                        color: #111827;
+                        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+                    }
+                    .builder-card:hover {
+                        transform: translateY(-4px);
+                        box-shadow: 0 20px 50px -10px rgba(0,0,0,0.12);
+                    }
+                    #builder-scroll-area {
+                        background: #f9fafb !important; /* Soft light gray background */
+                    }
+                    
+                    .premium-label { 
+                        font-size: 13px; 
+                        font-weight: 700; 
+                        color: #475569; 
+                        margin-bottom: 10px; 
+                        display: flex; 
+                        align-items: center;
+                        gap: 8px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+                    
+                    .premium-input { 
+                        width: 100%; 
+                        padding: 16px 20px; 
+                        border: 2px solid transparent; 
+                        background: #f1f5f9;
+                        border-radius: 16px; 
+                        font-family: var(--font-main); 
+                        font-size: 15px; 
+                        font-weight: 500;
+                        color: #1e293b;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+                    }
+                    .premium-input:focus { 
+                        outline: none; 
+                        background: #ffffff;
+                        border-color: #8b5cf6; 
+                        box-shadow: 0 0 0 4px rgba(139,92,246,0.1); 
+                        transform: translateY(-2px);
+                    }
+                    .premium-input::placeholder { color: #94a3b8; font-weight:400; }
+                    
+                    .premium-section-title { 
+                        font-size: 22px; 
+                        font-weight: 800; 
+                        color: #0f172a; 
+                        margin-bottom: 8px; 
+                        letter-spacing:-0.5px;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                    }
+                    .premium-section-desc { 
+                        font-size: 14px; 
+                        color: #64748b; 
+                        margin-bottom: 24px; 
+                        line-height: 1.5; 
+                    }
+                    
+                    /* Hide old dividers */
+                    .premium-divider { display: none; }
+                    
+                    /* Modern File Dropzone */
+                    .file-dropzone {
+                        background: #f8fafc;
+                        border: 2px dashed #cbd5e1;
+                        border-radius: 20px;
+                        padding: 40px 20px;
+                        transition: all 0.3s;
+                    }
+                    .file-dropzone:hover {
+                        background: #f1f5f9;
+                        border-color: #8b5cf6;
+                        transform: scale(1.02);
+                    }
+                    
+                    /* Modern Color Pickers */
+                    .color-picker-wrapper { 
+                        display:flex; 
+                        gap:16px; 
+                        align-items:center; 
+                        background: #f8fafc;
+                        padding: 12px 20px;
+                        border-radius: 16px;
+                    }
+                    .premium-color-input { 
+                        -webkit-appearance: none; 
+                        border: none; 
+                        width: 48px; 
+                        height: 48px; 
+                        border-radius: 50%; 
+                        cursor: pointer; 
+                        padding: 0; 
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                        transition: transform 0.2s;
+                    }
+                    .premium-color-input:hover { transform: scale(1.1); }
+                    .premium-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+                    .premium-color-input::-webkit-color-swatch { border: none; border-radius: 50%; border: 3px solid white; }
+                    
+                    /* PHOTOREALISTIC IPHONE PRO MOCKUP */
+                    .iphone-pro-mockup { width: 380px; height: 820px; border-radius: 55px; background: #000; position: relative; box-shadow: 0 0 0 4px #1a1a1a, 0 0 0 5px #2a2a2a, 0 0 0 6px #3a3a3a, 0 30px 60px rgba(0,0,0,0.4), inset 0 0 8px rgba(255,255,255,0.2); transform: scale(0.65); transform-origin: center; display:flex; flex-direction:column; overflow:hidden; }
+                    
+                    @media (min-width: 1400px) { .iphone-pro-mockup { transform: scale(0.75); } }
+                    
+                    
+                    @keyframes spinY {
+                        0% { transform: scale(0.65) rotateY(0deg); }
+                        50% { transform: scale(0.7) rotateY(180deg); }
+                        100% { transform: scale(0.65) rotateY(360deg); }
+                    }
+                    @media (min-width: 1400px) {
+                        @keyframes spinY {
+                            0% { transform: scale(0.75) rotateY(0deg); }
+                            50% { transform: scale(0.8) rotateY(180deg); }
+                            100% { transform: scale(0.75) rotateY(360deg); }
+                        }
+                    }
+
+                    /* Dynamic Island */
+                    .iphone-pro-mockup .dynamic-island { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 120px; height: 35px; background: #000; border-radius: 20px; z-index: 100; display:flex; align-items:center; justify-content:space-between; padding:0 12px; box-shadow: inset 0 0 2px rgba(255,255,255,0.2); }
+                    .dynamic-island::before { content:''; width:12px; height:12px; background:#111; border-radius:50%; box-shadow: inset 0 0 4px rgba(255,255,255,0.1); }
+                    .dynamic-island::after { content:''; width:12px; height:12px; background:#1a1a3a; border-radius:50%; box-shadow: inset 0 0 4px rgba(255,255,255,0.2); }
+                    
+                    /* Power/Volume Buttons (Visual only, on the sides of the outer box if we want, but keeping it inside is safer for clipping) */
+                    
+                    /* Screen Content Area */
+                    .iphone-screen { width:100%; height:100%; border: 12px solid #000; border-radius: 55px; background: #0a0a0c; overflow: hidden; position: relative; display:flex; flex-direction:column; padding-top: 60px; box-sizing:border-box; }
+                    
+                    /* Screen Glare (Glass effect) */
+                    .iphone-screen::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(105deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%); pointer-events: none; z-index: 1000; border-radius: 43px; }
+                    
+                    /* Wallet Header inside iPhone */
+                    .wallet-header { display:flex; justify-content:space-between; align-items:center; padding: 10px 20px 20px 20px; position:relative; z-index:20; }
+                    .wallet-title { color:white; font-size:28px; font-weight:800; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing:-0.5px; }
+                    .wallet-icon-plus { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; cursor:pointer; backdrop-filter:blur(10px); }
+                    
+                    /* 3D Scene inside Screen */
+                    .card-3d-scene { perspective: 1200px; flex:1; position: relative; z-index: 10; margin: 0 16px 20px 16px; }
+                    .card-3d-object { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); transform-style: preserve-3d; cursor:pointer; }
+                    .card-3d-object.is-flipped { transform: rotateY(180deg); }
+                    
+                    /* The Pass Design (Apple Wallet accurate) */
+                    .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden; }
+                    
+                    .card-front { background: white; }
+                    .pass-top-section { padding: 20px 20px 20px 20px; color: white; background: linear-gradient(135deg, #1e1b4b, #8b5cf6); border-top-left-radius: 16px; border-top-right-radius: 16px; position:relative; }
+                    
+                    /* Apple Wallet cutouts (fake) */
+                    .pass-top-section::before { content:''; position:absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: #0a0a0c; border-radius: 50%; z-index:5; }
+                    .pass-top-section::after { content:''; position:absolute; top: -10px; right: -10px; width: 20px; height: 20px; background: #0a0a0c; border-radius: 50%; z-index:5; }
+                    
+                    .pass-brand-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+                    .pass-logo-circle { width: 40px; height: 40px; background: rgba(0,0,0,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+                    
+                    .pass-banner-img { width: 100%; height: 130px; object-fit: cover; background: rgba(0,0,0,0.1); }
+                    .pass-body-section { flex: 1; background: white; padding: 20px; display: flex; flex-direction: column; border-bottom-left-radius:16px; border-bottom-right-radius:16px; }
+                    .pass-field-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; font-weight: 700; margin-bottom: 4px; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+                    .pass-field-value { font-size: 16px; font-weight: 600; color: #111827; letter-spacing:-0.5px; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+                    .pass-qr-section { margin-top: auto; display: flex; flex-direction: column; align-items: center; padding-top: 20px; border-top: 1px dashed #e5e7eb; }
+                    
+                    
+                    /* Stamp Styles */
+                    .stamp-coin { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: all 0.3s; }
+                    .stamp-coin.filled { background: #8b5cf6; color: white; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4); }
+                    .stamp-coin.empty { background: #f3f4f6; color: #9ca3af; border: 2px dashed #d1d5db; }
+                    
+                    /* Back of Wallet Pass */
+                    .card-back { transform: rotateY(180deg); background: #1c1c1e; padding: 24px; color:white; overflow-y:auto; border-radius: 16px; }
+                    
+                    /* Color Pickers */
+                    .color-picker-wrapper { display:flex; gap:12px; align-items:center; }
+                    .premium-color-input { -webkit-appearance: none; border: none; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; padding: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+                    .premium-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+                    .premium-color-input::-webkit-color-swatch { border: none; border-radius: 8px; border: 2px solid white; box-shadow: 0 0 0 1px #e5e7eb; }
+                
+        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
+        #pass-render, .pass-preview-card {
+            color-scheme: light !important;
+        }
+        .premium-white-card {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+</style>
+
+                <div class="tab-builder-container">
+                    <!-- LEFT SIDEBAR: CONTROLS -->
+                    <div class="builder-sidebar">
+                        <div>
+                            
+                            <button onclick="document.querySelector('.nav-tab[data-tab=\'tab-campaigns\']').click()" style="background:transparent; border:none; color:#6b7280; font-size:14px; font-weight:600; cursor:pointer; margin-bottom:16px; display:flex; align-items:center; gap:8px; padding:0; transition:color 0.2s;" onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#6b7280'">
+                                <i class="fa-solid fa-arrow-left"></i> Volver a Mis Campañas
+                            </button>
+                            <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -1px; color: #111827;">✨ Creador Mágico</h1>
+                            <p style="font-size: 14px; color: #6b7280; margin-top: 8px;">Configura la tarjeta digital que tus clientes instalarán en sus teléfonos. Todo cambio se refleja al instante.</p>
+                            
+                            <div style="margin-top:20px; background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); padding:20px; border-radius:16px; color:white; display:flex; align-items:center; gap:16px; box-shadow:0 10px 30px rgba(76,29,149,0.3); border:1px solid rgba(255,255,255,0.1);">
+                                <div style="font-size:32px; filter:drop-shadow(0 0 10px rgba(255,255,255,0.5)); animation: float 3s ease-in-out infinite;">🤖</div>
+                                <div style="flex:1;">
+                                    <h4 style="margin:0 0 4px; font-size:16px; font-weight:800;">Copiloto de Diseño IA</h4>
+                                    <p style="margin:0; font-size:12px; opacity:0.8;">¿Sin inspiración? Deja que la IA configure los colores, textos y reglas por ti.</p>
+                                </div>
+                                <button onclick="triggerAIMagicDesign()" style="background:white; color:#4c1d95; border:none; padding:10px 16px; border-radius:12px; font-weight:800; cursor:pointer; transition:transform 0.2s; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    ¡Haz Magia! ✨
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="premium-divider"></div>
+                        
+                        <!-- 0. Reglas de Fidelización (UNIFICADO) -->
+                        <div class="builder-card">
+                            <div class="premium-section-title"><i class="fa-solid fa-gift" style="color:#8b5cf6;"></i> 1. El Premio</div>
+                            <p class="premium-section-desc" style="color:#6b7280; font-size:13px; margin-bottom:20px;">Define qué ganan tus clientes al guardar esta tarjeta en su Apple Wallet.</p>
+                            
+                            <div style="display:flex; flex-direction:column; gap:20px; background:#f8fafc; padding:20px; border-radius:16px; border:1px solid #e2e8f0;">
+                                <div>
+                                    <label class="premium-label" style="font-weight:700;"><i class="fa-solid fa-trophy text-muted"></i> ¿Qué premio van a ganar?</label>
+                                    <input type="text" id="unified-reward" class="premium-input" style="background:white;" placeholder="Ej: ¡Felicidades! Ganaste un Frappé Gratis." value="Felicidades, ganaste un premio" oninput="if(window.updateUnifiedReward) window.updateUnifiedReward(this.value)">
+                                </div>
+                                <div>
+                                    <label class="premium-label" style="font-weight:700;"><i class="fa-solid fa-comment-dots text-muted"></i> Instrucciones Breves</label>
+                                    <input type="text" id="unified-desc" class="premium-input" style="background:white;" placeholder="Ej: Acumula 10 sellos para ganar." value="Acumula visitas para ganar." oninput="if(window.updateUnifiedDesc) window.updateUnifiedDesc(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="premium-divider"></div>
+
+                        
+                        <!-- 1. Identidad -->
+                        <div class="builder-card">
+                            <div class="premium-section-title"><i class="fa-solid fa-store" style="color:#f59e0b;"></i> 2. Identidad del Negocio</div>
+                            
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
+                                <div style="margin-bottom: 24px;">
+                                    
+                                
+                                <div>
+                                    <label class="premium-label"><i class="fa-solid fa-tag text-muted"></i> Nombre de la Campaña</label>
+                                    <input type="text" id="rest-name" class="premium-input" value="Mi Negocio">
+                                </div>
+                                <div>
+                                    <label class="premium-label"><i class="fa-solid fa-briefcase text-muted"></i> Categoría del Negocio</label>
+                                    <input type="text" id="business-category-input" class="premium-input" value="Mi Negocio / Especialidad" placeholder="Ej: Barbería, Spa...">
+                                </div>
+                                <div>
+                                    <label class="premium-label">Logo del Negocio</label>
+                                    <div class="file-dropzone">
+                                        <input type="file" id="logo-file-input" accept="image/png, image/jpeg">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span>Haz clic o arrastra tu logotipo aquí</span>
+                                    </div>
+                                    <button id="btn-remove-logo" class="btn btn-primary hover-glow" style="display:none; margin-top:8px; padding:6px 12px; font-size:12px; width:100%; justify-content:center;">Quitar Logo</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="premium-divider"></div>
+                        
+                        <!-- 2. Apariencia -->
+                        <div class="builder-card">
+                            <div class="premium-section-title"><i class="fa-solid fa-palette" style="color:#ec4899;"></i> 3. Colores y Apariencia</div>
+                            
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
+                                <div>
+                                    <label class="premium-label">Imagen de Portada (Banner Wallet)</label>
+                                    <div class="file-dropzone">
+                                        <input type="file" id="banner-file-input" accept="image/png, image/jpeg">
+                                        <i class="fa-regular fa-image"></i>
+                                        <span>Haz clic o arrastra una imagen ancha (1125x432 px recom.)</span>
+                                    </div>
+                                    <button id="btn-remove-banner" class="btn btn-primary hover-glow" style="display:none; margin-top:8px; padding:6px 12px; font-size:12px; width:100%; justify-content:center;">Quitar Portada</button>
+                                </div>
+                                <div style="display:flex; gap:24px;">
+                                    <div>
+                                        <label class="premium-label">Color Principal</label>
+                                        <div class="color-picker-wrapper">
+                                            <input type="color" id="color-primary" class="premium-color-input" value="#1e1b4b">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="premium-label">Color Secundario</label>
+                                        <div class="color-picker-wrapper">
+                                            <input type="color" id="color-accent" class="premium-color-input" value="#8b5cf6">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="premium-label">Ícono (Temporal)</label>
+                                    <select id="rest-icon" class="premium-input">
+                                        <option value="fa-crown" selected>Corona (Premium)</option>
+                                        <option value="fa-burger">Hamburguesa</option>
+                                        <option value="fa-scissors">Tijeras</option>
+                                        <option value="fa-mug-hot">Café</option>
+                                        <option value="fa-spa">Spa / Flor</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="premium-label">Mensaje Corto (Promo)</label>
+                                    <input type="text" id="rest-desc" class="premium-input" value="Martes Doble Cashback" maxlength="40">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="premium-divider"></div>
+                        
+                        <!-- 2.5 Citas y Pagos (Professional Only) -->
+                        <div class="builder-card plan-professional-only" style="margin-bottom:24px;">
+                            <div class="premium-section-title"><i class="fa-solid fa-calendar-check" style="color:#8b5cf6;"></i> Integración de Citas y Pagos <span style="background:#8b5cf6; color:white; font-size:10px; padding:3px 8px; border-radius:6px; margin-left:8px; font-weight:bold; letter-spacing:1px;">PRO</span></div>
+                            <p style="font-size:13px; color:#6b7280; margin-bottom:20px;">Añade botones interactivos directamente en la tarjeta Wallet para que tus clientes agenden o paguen con un solo toque.</p>
+                            
+                            <div style="display:flex; flex-direction:column; gap:16px;">
+                                <div style="background:#f8fafc; padding:20px; border-radius:16px; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:12px;">
+                                    <div>
+                                        <label class="premium-label" style="font-weight:700; font-size:15px; margin-bottom:4px; display:block;"><i class="fa-regular fa-calendar-plus" style="color:#8b5cf6; margin-right:8px;"></i>Botón 'Agendar Cita'</label>
+                                        <span style="font-size:12px; color:#94a3b8;">Habilita un link directo a tu sistema de reservas.</span>
+                                    </div>
+                                    <select id="builder-btn-appointment" class="premium-input" style="width:100%; background:white; font-weight:bold; color:#475569; border-color:#cbd5e1; font-size:14px; padding:12px;">
+                                        <option value="no">No, ocultar botón</option>
+                                        <option value="yes">Sí, habilitar botón de Agendar</option>
+                                    </select>
+                                </div>
+                                <div style="background:#f8fafc; padding:20px; border-radius:16px; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:12px;">
+                                    <div>
+                                        <label class="premium-label" style="font-weight:700; font-size:15px; margin-bottom:4px; display:block;"><i class="fa-solid fa-credit-card" style="color:#10b981; margin-right:8px;"></i>Botón 'Pagar Cita'</label>
+                                        <span style="font-size:12px; color:#94a3b8;">Permite cobrar adelantos o liquidar el servicio.</span>
+                                    </div>
+                                    <select id="builder-btn-payment" class="premium-input" style="width:100%; background:white; font-weight:bold; color:#475569; border-color:#cbd5e1; font-size:14px; padding:12px;">
+                                        <option value="no">No, ocultar botón</option>
+                                        <option value="yes">Sí, habilitar botón de Pago</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="premium-divider plan-professional-only"></div>
+
+                        
+                        <!-- 3. Beneficios -->
+                        <div>
+                            <div class="premium-section-title">Beneficios Visibles</div>
+                            
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
+                                
+                                <div id="program-type-container" class="plan-business-only">
+                                    <label class="premium-label">Tipo de Programa</label>
+                                    <select id="program-type-select" class="premium-input" style="font-weight:600;" onchange="if(window.updatePassRender) window.updatePassRender();">
+                                        <option value="cashback" class="plan-business-only" selected>Saldo Digital (Cashback & QR)</option>
+                                        <option value="stamps">Tarjeta de Sellos (Visitas frecuentes)</option>
+                                    </select>
+                                </div>
+                                <div id="stamps-config-group" style="display:none; flex-direction:column; gap:16px;">
+                                    <div>
+                                        <label class="premium-label">Total de Sellos (Meta)</label>
+                                        <input type="number" id="stamps-total" class="premium-input" value="5" min="3" max="10" oninput="if(window.updatePassRender) window.updatePassRender();">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="premium-label">Siguiente Premio a Desbloquear</label>
+                                    <input type="text" id="stamps-reward" class="premium-input" value="Bebida de Cortesía Gratis">
+                                </div>
+                                <div>
+                                    <label class="premium-label">Términos Legales (Reverso)</label>
+                                    <textarea id="pass-policies" class="premium-input" rows="3" style="resize:vertical;">Las recompensas no son transferibles ni canjeables por efectivo.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top:auto; padding-top:24px;">
+                            <button id="btn-save-design-push" class="btn btn-primary hover-glow" style="width:100%; justify-content:center; padding:16px; font-size:16px; border-radius:12px; background:#111827; border:none; color:white; font-weight:700;"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar y Actualizar Tarjetas</button>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT AREA: PHOTOREALISTIC IPHONE -->
+                    <div class="builder-preview-area">
+                        <!-- Ambient Blur Background -->
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:600px; height:600px; background:radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%); filter:blur(40px); pointer-events:none;"></div>
+                        
+                        <!-- REALISTIC PHONE MOCKUP -->
+                        <div class="iphone-pro-mockup">
+                            
+                            <div class="iphone-screen">
+                                <div class="dynamic-island"></div>
+                                
+                                <div class="wallet-header">
+                                    <div class="wallet-title">Wallet</div>
+                                    <button id="btn-flip-card" class="wallet-icon-plus" title="Girar Tarjeta (Reverso)"><i class="fa-solid fa-rotate"></i></button>
+                                </div>
+
+                                <!-- THE PASS -->
+                                <div class="card-3d-scene" style="perspective: 1000px; display: flex; justify-content: center; align-items: center; padding: 20px;">
+                                    <div class="card-3d-object" id="pass-render" style="width: 100%; max-width: 360px; position: relative; transition: transform 0.6s; transform-style: preserve-3d;">
+                                        
+                                        <!-- FRONT OF CARD -->
+                                        <div class="card-face card-front pass-preview-card premium-white-card" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; min-height: 250px; backface-visibility: hidden; border: 1px solid var(--pass-primary, #8b5cf6);">
+                                            
+                                            
+                                        <!-- Vibrant Background Shapes for the Pass -->
+                                        <div style="position:absolute; top:-50px; right:-50px; width:200px; height:200px; background:radial-gradient(circle, var(--pass-primary) 0%, transparent 70%); opacity:0.15; border-radius:50%; z-index:0; pointer-events:none;"></div>
+                                        <div style="position:absolute; bottom:-100px; left:-50px; width:250px; height:250px; background:radial-gradient(circle, var(--pass-primary) 0%, transparent 70%); opacity:0.1; border-radius:50%; z-index:0; pointer-events:none;"></div>
+
+                                            <!-- Top row: Logo and "10 SELLOS" -->
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                                                <div class="pass-logo-container" style="flex: 1; max-width: 160px; display: flex; align-items: center;">
+                                                    <img id="render-custom-logo" src="" style="width: 100%; max-height: 45px; object-fit: contain; display: none; object-position: left center;" />
+                                                    <div id="render-default-logo" style="display: flex; align-items: center; gap: 8px;">
+                                                        <i class="fa-solid fa-crown" id="render-icon" style="color: var(--pass-primary, #8b5cf6); font-size: 24px;"></i>
+                                                        <span id="render-name" style="font-weight: 800; font-size: 20px; color: var(--text-main); letter-spacing: -0.5px; z-index:1; position:relative;">Fidelio</span>
+                                                    </div>

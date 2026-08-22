@@ -857,7 +857,6 @@ aside {
                 <!-- Creador de Tarjetas oculto del sidebar (fusionado) -->
                 <div class="nav-tab plan-professional-only" data-tab="tab-stripe" id="nav-stripe"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</div>
                 <div class="nav-tab plan-pro-only" data-tab="tab-branches" id="nav-branches" style="display:none;"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</div>
-                <div class="nav-tab plan-professional-only" data-tab="tab-appointments" id="nav-appointments"><i class="fa-solid fa-calendar-check"></i> Citas/Servicios <span class="menu-badge" id="appointments-count-badge" style="background:#ef4444; color:white; margin-left:8px; display:none;">0</span></div>
                 <div class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></div>
                 <div class="nav-tab plan-business-only" data-tab="tab-staff" style="display:none;"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</div>
                 <div class="nav-tab plan-business-only" data-tab="tab-bank" style="display:none;"><i class="fa-solid fa-piggy-bank"></i> The Bank</div>
@@ -2148,30 +2147,6 @@ aside {
             </section>
 
             <!-- BRANCHES TAB -->
-                        <section id="tab-appointments" class="tab-content">
-                            <div class="content-panel">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 24px;">
-                                    <div>
-                                        <h1>Citas/Servicios</h1>
-                                        <p>Gestiona las citas solicitadas por tus clientes desde tu enlace web público.</p>
-                                    </div>
-                                    <button class="fidelio-btn-primary" onclick="document.getElementById('schedule-config-modal').style.display='flex'"><i class="fa-solid fa-clock"></i> Configurar Horarios</button>
-                                </div>
-                                
-                                <div id="schedule-summary-container" style="background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:24px; display:none;">
-                                    <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#000000;"><i class="fa-solid fa-calendar-check" style="color:var(--text-muted); margin-right:8px;"></i> Horario Configurado</h3>
-                                    <div id="schedule-summary-content" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px;">
-                                        <!-- JS will populate -->
-                                    </div>
-                                </div>
-
-                                <div class="glass-card" style="padding: 24px;">
-                                    <div id="appointments-list-container" style="display:flex; flex-direction:column; gap:12px;">
-                                        <p style="color:var(--text-muted); text-align:center; padding: 20px;"><i class="fa-solid fa-calendar-day"></i> Aún no tienes citas agendadas.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
                         <section id="tab-branches" class="tab-content">
                 <div class="workspace-header">
                     <div>
@@ -5728,24 +5703,24 @@ body {
             // 2. Hide all tabs forcefully
             document.querySelectorAll('.tab-content').forEach(t => {
                 t.classList.remove('active');
-                t.style.display = '';
+                t.style.display = 'none';
             });
             document.querySelectorAll('.nav-tab').forEach(t => {
                 t.classList.remove('active');
             });
             
-            // 3. Show loyalty tab
-            const loy = document.getElementById('tab-loyalty');
-            if (loy) {
-                loy.classList.add('active');
-                loy.style.display = 'block';
-            } else {
-                alert("DOM ERROR: tab-loyalty is missing!");
+            // 3. Show FullScreen Studio Iframe
+            const restId = window.merchantData ? window.merchantData.id : '123';
+            const studioIframe = document.getElementById('wallet-studio-iframe');
+            if(studioIframe) {
+                const tier = (window.merchantData && window.merchantData.business_type === "business") ? "business" : "basic";
+                studioIframe.src = `/studio/index.html?rest_id=${restId}&tier=${tier}`;
+                document.getElementById('wallet-studio-container').style.display = 'block';
             }
             
             // 4. Toast
             if (typeof window.showToast === 'function') {
-                window.showToast("Paso 1: Elige el Programa de Fidelización.", "success");
+                window.showToast("Cargando Fidelio Card Studio (Micro-Frontend)...", "success");
             }
         } catch (e) {
             alert("Error crítico en forceNewCampaignFlow: " + e.message);
@@ -5788,7 +5763,32 @@ body {
         }
     };
     </script>
+
+<!-- FIDELIO WALLET STUDIO MICRO-FRONTEND -->
+<div id="wallet-studio-container" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; background:#000;">
+   <iframe id="wallet-studio-iframe" src="" style="width:100%; height:100%; border:none;"></iframe>
+   <button onclick="document.getElementById('wallet-studio-container').style.display='none'; document.getElementById('wallet-studio-iframe').src='';" style="position:absolute; bottom:30px; left:30px; z-index:9999999; background:rgba(0,0,0,0.8); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:12px 20px; border-radius:12px; cursor:pointer; font-family:var(--font-main); backdrop-filter:blur(10px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); font-weight:600; font-size:14px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-arrow-left"></i> Volver al Dashboard</button>
+</div>
+
+    <!-- UPSELL MODAL (Soft-Paywall) -->
+    <div id="upsell-modal-container" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15, 23, 42, 0.8); backdrop-filter:blur(10px); z-index:999999; align-items:center; justify-content:center;">
+        <div style="background:white; border-radius:24px; width:90%; max-width:450px; padding:40px; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; left:0; right:0; height:8px; background:linear-gradient(135deg, #8b5cf6, #d946ef);"></div>
+            <button onclick="document.getElementById('upsell-modal-container').style.display='none'" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; transition:0.2s;"><i class="fa-solid fa-times hover:text-zinc-900"></i></button>
+            
+            <div style="width:80px; height:80px; background:linear-gradient(135deg, #f3e8ff, #fae8ff); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px;">
+                <i class="fa-solid fa-crown text-3xl" style="background:-webkit-linear-gradient(135deg, #8b5cf6, #d946ef); -webkit-background-clip:text; -webkit-text-fill-color:transparent;"></i>
+            </div>
+            
+            <h2 style="font-size:24px; font-weight:800; color:#0f172a; margin-bottom:12px; font-family:var(--font-main);">Función Exclusiva PRO</h2>
+            <p style="color:#64748b; font-size:15px; margin-bottom:32px; line-height:1.5;">Esta herramienta avanzada de inteligencia artificial y automatización solo está disponible en el plan Fidelio PRO. Desbloquea todo el potencial de tu negocio.</p>
+            
+            <button onclick="window.location.href='https://billing.stripe.com/p/login/test_YOUR_STRIPE_LINK'" style="width:100%; padding:16px; border-radius:12px; border:none; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; font-size:16px; font-weight:700; cursor:pointer; box-shadow:0 10px 15px -3px rgba(139, 92, 246, 0.3); transition:transform 0.2s, box-shadow 0.2s; font-family:var(--font-main);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'"><i class="fa-solid fa-bolt mr-2"></i> Actualizar a PRO</button>
+            <p style="margin-top:16px; font-size:12px; color:#94a3b8;">Prueba de 14 días incluida. Cancela cuando quieras.</p>
+        </div>
+    </div>
 </body>
+
 
 
 </html>
