@@ -1,46 +1,19 @@
-const CACHE_NAME = 'fidelio-scanner-v2';
-const urlsToCache = [
-  '/',
-  '/scanner.html',
-  '/fidelio_logo_purple.png',
-  '/fidelio_logo_white.png'
-];
-
-self.addEventListener('install', event => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
-  );
+self.addEventListener('install', (e) => {
+    self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+self.addEventListener('activate', (e) => {
+    e.waitUntil(
+        caches.keys().then((keyList) => {
+            return Promise.all(keyList.map((key) => caches.delete(key)));
+        }).then(() => {
+            self.registration.unregister();
+            return self.clients.claim();
         })
-      );
-    })
-  );
-  self.clients.claim();
+    );
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    // Network first, falling back to cache
-    fetch(event.request).then(response => {
-      return caches.open(CACHE_NAME).then(cache => {
-        cache.put(event.request, response.clone());
-        return response;
-      });
-    }).catch(() => {
-      return caches.match(event.request);
-    })
-  );
+self.addEventListener('fetch', (e) => {
+    // No caching, always fetch from network
+    e.respondWith(fetch(e.request));
 });

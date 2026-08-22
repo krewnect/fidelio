@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+                console.log("Service Worker Unregistered");
+            }
+        });
+    }
+</script>
+
     <!-- SECURITY: Strict Content Security Policy -->
         <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
@@ -817,6 +829,27 @@ aside {
         errDiv.innerHTML += `\nUNHANDLED PROMISE: ${e.reason}`;
     });
     </script>
+<style id="crm-jewel-style">
+
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+        body { font-family: "Inter", sans-serif; background-color: transparent; color: #0f172a; overflow: hidden; }
+        
+        .tier-oro { background: linear-gradient(135deg, #fcd34d, #f59e0b); color: #78350f; }
+        .tier-plata { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #1e293b; }
+        .tier-bronce { background: linear-gradient(135deg, #fed7aa, #ea580c); color: #431407; }
+        
+        /* 3D Flip Card CSS */
+        .perspective-1000 { perspective: 1000px; }
+        .preserve-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+    
+</style>
 </head>
 <body>
     <script>
@@ -2006,145 +2039,385 @@ aside {
 
             <!-- CRM TAB -->
             <section id="tab-crm" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <div class="workspace-eyebrow">BASE DE DATOS PRIVADA</div>
-                        <h1>Clientes Fidelizados</h1>
-                        <p>Gestión avanzada de retención, hábitos de consumo y recompensas de tu cartera.</p>
+<div class="h-full w-full flex flex-col bg-slate-50 relative" x-data="crmJewel()" style="min-height: 80vh;">
+
+
+    <!-- Toast Notification -->
+    <div x-show="showToast" style="display: none;" 
+         x-transition:enter="transition ease-out duration-300" 
+         x-transition:enter-start="opacity-0 transform -translate-y-8" 
+         x-transition:enter-end="opacity-100 transform translate-y-0" 
+         x-transition:leave="transition ease-in duration-200" 
+         x-transition:leave-start="opacity-100 transform translate-y-0" 
+         x-transition:leave-end="opacity-0 transform -translate-y-8" 
+         class="absolute top-6 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-fidelio-500/30 flex items-center space-x-4 min-w-[400px]">
+        <div class="w-10 h-10 rounded-full bg-fidelio-500/20 flex items-center justify-center text-fidelio-400 shrink-0">
+            <i class="fa-solid" :class="toastIcon"></i>
+        </div>
+        <div>
+            <p class="text-[10px] font-black text-fidelio-400 uppercase tracking-widest mb-0.5" x-text="toastTitle"></p>
+            <p class="text-sm font-medium leading-tight" x-text="toastMessage"></p>
+        </div>
+    </div>
+
+    <!-- AI PROPOSAL MODAL -->
+    <div x-show="showAIModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
+        <div x-show="showAIModal" 
+             x-transition:enter="transition ease-out duration-300" 
+             x-transition:enter-start="opacity-0 transform scale-95 translate-y-4" 
+             x-transition:enter-end="opacity-100 transform scale-100 translate-y-0" 
+             @click.away="showAIModal = false"
+             class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-slate-200">
+            
+            <div class="bg-gradient-to-r from-fidelio-600 to-fidelio-800 p-6 text-white flex items-start space-x-4 relative overflow-hidden">
+                <i class="fa-solid fa-wand-magic-sparkles text-4xl opacity-20 absolute -right-4 -top-4"></i>
+                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0 border border-white/30 backdrop-blur-md">
+                    <i class="fa-solid fa-robot text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black">Propuesta Estratégica AI</h3>
+                    <p class="text-xs font-medium text-fidelio-100 mt-1">El agente ha analizado tu base de datos y sugiere la siguiente acción.</p>
+                </div>
+            </div>
+            
+            <div class="p-6 space-y-5 bg-slate-50">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Audiencia Objetivo</p>
+                        <p class="text-lg font-black text-slate-800"><i class="fa-solid fa-users text-fidelio-500 text-sm mr-1"></i> 42 Clientes</p>
+                        <p class="text-[10px] font-semibold text-rose-500 mt-0.5">En Riesgo (Fuga Inminente)</p>
                     </div>
-                    <div style="display:flex; gap:10px;">
-                        <button class="fidelio-btn-primary"><i class="fa-solid fa-download"></i> Exportar</button>
-                        <button class="fidelio-btn-primary"><i class="fa-solid fa-plus"></i> Añadir Cliente Manual</button>
+                    <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Costo de Campaña</p>
+                        <p class="text-lg font-black text-slate-800"><i class="fa-brands fa-apple text-slate-400 text-sm mr-1"></i> $0.00</p>
+                        <p class="text-[10px] font-semibold text-emerald-500 mt-0.5">Push Nativo a Wallet</p>
                     </div>
                 </div>
-                
-                
-                <!-- GEMINI CRM INSIGHTS -->
-                <div class="gemini-insight-panel" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.05)); border: 1px solid rgba(139,92,246,0.3); border-radius: 16px; padding: 24px; margin-bottom: 24px; position: relative; overflow: hidden; animation: fadeInUp 0.5s;">
-                    <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.05; filter: grayscale(1);"></div>
-                    <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 800; color: #4c1d95; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-magnifying-glass-chart" style="color: #8b5cf6;"></i> Análisis Inteligente de Cartera
-                    </h3>
-                    <p id="gemini-crm-text" style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6; margin-bottom:12px;">
-                        Descubre patrones de consumo en tu base de datos para vender más.
-                    </p>
-                    <button class="fidelio-btn-primary" onclick="if(window.fetchGeminiCRMInsights) window.fetchGeminiCRMInsights()" style="background:#7C3AED; color:white; border:none; border-radius:12px; padding:10px 20px; font-weight:600; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Ejecutar Análisis CRM
+
+                <div>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-message mr-1 text-slate-400"></i> Mensaje Propuesto (Editable)</p>
+                    <textarea x-model="aiProposedMessage" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm font-medium text-slate-800 focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-50 resize-none shadow-inner" rows="3"></textarea>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-white border-t border-slate-200 flex space-x-3">
+                <button @click="showAIModal = false" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition text-sm">
+                    Rechazar
+                </button>
+                <button @click="approveMagic()" class="flex-[2] bg-fidelio-600 hover:bg-fidelio-700 text-white font-bold py-3 rounded-xl transition shadow-md flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Aprobar y Ejecutar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="flex-1 flex overflow-hidden w-full h-full">
+        
+        <!-- LEFT PANEL: Data & Grid -->
+        <div class="flex-1 flex flex-col h-full transition-all duration-300 relative" :class="activeClient ? 'w-2/3 max-w-[calc(100%-450px)] border-r border-slate-200' : 'w-full'">
+            
+            <!-- Magic AI Prompt Bar (TOP) -->
+            <header class="h-20 border-b border-slate-200 flex items-center px-8 z-10 bg-white shadow-sm flex-shrink-0">
+                <div class="flex-1 max-w-3xl relative group">
+                    <i class="fa-solid fa-sparkles absolute left-4 top-1/2 transform -translate-y-1/2 text-fidelio-500" :class="isThinking ? 'animate-spin' : 'group-focus-within:animate-pulse'"></i>
+                    <input type="text" x-model="searchQuery" @keydown.enter="executeMagic()" :disabled="isThinking" placeholder="Prompt AI: Ej. Lluvia detectada. Lanza cupón 2x1 a clientes en riesgo..." class="w-full bg-slate-100 border border-slate-200 text-slate-800 text-sm rounded-full py-3 pl-10 pr-32 focus:outline-none focus:border-fidelio-500 focus:bg-white focus:ring-4 focus:ring-fidelio-50 transition shadow-inner disabled:opacity-50">
+                    <button @click="executeMagic()" :disabled="isThinking" class="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-fidelio-600 hover:bg-fidelio-700 disabled:opacity-75 text-xs text-white px-4 py-2 rounded-full font-bold transition flex items-center shadow-md">
+                        <span x-show="!isThinking"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generar Magia</span>
+                        <span x-show="isThinking"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Analizando...</span>
                     </button>
                 </div>
+                <div class="ml-auto flex items-center space-x-4">
+                    <div class="text-right hidden md:block">
+                        <p class="text-xs font-bold text-slate-800">Cafetería Central</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 bg-slate-100 overflow-hidden flex justify-center items-center">
+                        <i class="fa-solid fa-store text-slate-400"></i>
+                    </div>
+                </div>
+            </header>
 
-                <!-- KPI Dashboard -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;" class="stagger-2">
+            <div class="p-8 overflow-y-auto custom-scrollbar h-full">
+                
+                <!-- Actionable KPIs -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    <!-- Base Activa -->
+                    <button @click="sortBy = 'id'; filter = 'all'; fireToast('Filtro Aplicado', 'Mostrando el directorio completo de forma cronológica.', 'fa-users')" class="text-left bg-white border p-5 rounded-2xl shadow-sm relative overflow-hidden group hover:border-fidelio-300 transition focus:outline-none" :class="filter === 'all' && sortBy === 'id' ? 'border-fidelio-500 ring-2 ring-fidelio-100' : 'border-slate-200'">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-blue-50 rounded-bl-full group-hover:scale-110 transition"></div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Base Activa</p>
+                        <h3 class="text-3xl font-black text-slate-900 relative z-10">1,248</h3>
+                        <p class="text-[10px] font-bold mt-2 relative z-10" :class="filter === 'all' && sortBy === 'id' ? 'text-fidelio-600' : 'text-slate-400 group-hover:text-fidelio-500'">Ver Todos</p>
+                    </button>
                     
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">Total Clientes</span>
-                            <i class="fa-solid fa-users" style="color: #7C3AED;"></i>
-                        </div>
-                        <div id="kpi-total-customers" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0</div>
-                        <div style="font-size: 12px !important; color: #10B981 !important; font-weight: 600 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; gap: 4px !important; width: 100% !important;">
-                            <i class="fa-solid fa-arrow-trend-up"></i> Calculando...
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">Gasto Promedio (LTV)</span>
-                            <i class="fa-solid fa-sack-dollar" style="color: #7C3AED;"></i>
-                        </div>
-                        <div id="kpi-avg-spent" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">$0.00</div>
-                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
-                            Basado en historial
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">Frecuencia Promedio</span>
-                            <i class="fa-solid fa-calendar-check" style="color: #06B6D4;"></i>
-                        </div>
-                        <div id="kpi-avg-freq" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0<span style="font-size:16px; color:#6B7280; font-weight:500;"> días</span></div>
-                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
-                            Últimos 30 días
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">En Riesgo (Churn)</span>
-                            <i class="fa-solid fa-heart-crack" style="color: #EF4444;"></i>
-                        </div>
-                        <div id="kpi-churn-risk" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0</div>
-                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
-                            Requiere atención
-                        </div>
+                    <!-- LTV -->
+                    <button @click="sortBy = 'ltv'; filter = 'all'; fireToast('Análisis LTV', 'Tabla reordenada para mostrar a los clientes con mayor Gasto Promedio (Ballenas).', 'fa-sack-dollar')" class="text-left bg-white border p-5 rounded-2xl shadow-sm relative overflow-hidden group hover:border-emerald-300 transition focus:outline-none" :class="sortBy === 'ltv' ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-slate-200'">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-50 rounded-bl-full group-hover:scale-110 transition"></div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Gasto Prom. (LTV)</p>
+                        <h3 class="text-3xl font-black text-slate-900 relative z-10">$4,850</h3>
+                        <p class="text-[10px] font-bold mt-2 relative z-10" :class="sortBy === 'ltv' ? 'text-emerald-600' : 'text-slate-400 group-hover:text-emerald-500'">Ordenar Mejores Clientes</p>
+                    </button>
+                    
+                    <!-- Frecuencia -->
+                    <button @click="sortBy = 'freq'; filter = 'all'; fireToast('Análisis Frecuencia', 'Tabla reordenada por los clientes con mayor cantidad de visitas.', 'fa-calendar')" class="text-left bg-white border p-5 rounded-2xl shadow-sm relative overflow-hidden group hover:border-purple-300 transition focus:outline-none" :class="sortBy === 'freq' ? 'border-fidelio-500 ring-2 ring-fidelio-100' : 'border-slate-200'">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-fidelio-50 rounded-bl-full group-hover:scale-110 transition"></div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Frecuencia Prom.</p>
+                        <h3 class="text-3xl font-black text-slate-900 relative z-10">14 <span class="text-lg font-medium text-slate-500">días</span></h3>
+                        <p class="text-[10px] font-bold mt-2 relative z-10" :class="sortBy === 'freq' ? 'text-fidelio-600' : 'text-slate-400 group-hover:text-fidelio-500'">Ordenar Más Frecuentes</p>
+                    </button>
+                    
+                    <!-- Riesgo -->
+                    <div class="bg-white border p-5 rounded-2xl shadow-sm relative overflow-hidden group transition cursor-pointer" :class="filter === 'riesgo' ? 'border-rose-500 ring-2 ring-rose-100' : 'border-rose-200 hover:border-rose-400'" @click="filter = 'riesgo'; fireToast('Filtro Crítico', 'Mostrando únicamente clientes al borde de la fuga.', 'fa-triangle-exclamation')">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-rose-50 rounded-bl-full group-hover:scale-110 transition pointer-events-none"></div>
+                        
+                        <p class="text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1 relative z-10 pointer-events-none"><i class="fa-solid fa-triangle-exclamation mr-1"></i> En Riesgo (Fuga)</p>
+                        <h3 class="text-3xl font-black text-slate-900 relative z-10 pointer-events-none mb-2">42</h3>
+                        
+                        <button @click.stop="executeMagic()" class="w-full mt-auto text-xs bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full font-bold text-center relative z-20 hover:bg-rose-500 hover:text-white transition shadow-sm border border-rose-100">
+                            Rescate Automático <i class="fa-solid fa-bolt ml-1"></i>
+                        </button>
                     </div>
                 </div>
 
-                
+                <!-- Leaderboard Podium -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-black text-slate-900"><i class="fa-solid fa-crown text-yellow-500 mr-2"></i> Podio de Lealtad (Top 4)</h2>
+                    </div>
+                    <div class="flex space-x-4">
+                        <template x-for="(client, index) in topClients" :key="client.id">
+                            <div @click="selectClient(client)" class="bg-white border p-4 rounded-xl flex-1 cursor-pointer hover:shadow-md transition relative overflow-hidden group" :class="activeClient && activeClient.id === client.id ? 'border-fidelio-500 shadow-md ring-2 ring-fidelio-100' : 'border-slate-200 shadow-sm'">
+                                <div class="flex items-center space-x-3 relative z-10">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-black text-sm relative border border-slate-200">
+                                        <img :src="'https://ui-avatars.com/api/?name=' + client.name + '&background=random&color=fff'" class="w-full h-full rounded-full opacity-80 mix-blend-multiply">
+                                        <div x-show="index === 0" class="absolute -top-1.5 -right-1.5 text-xs"><i class="fa-solid fa-crown text-yellow-500 drop-shadow-sm"></i></div>
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <p class="text-sm font-bold text-slate-900 truncate" x-text="client.name"></p>
+                                        <p class="text-[10px] font-semibold text-slate-500" x-text="'LTV: $' + client.ltv"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
 
-
-                <div class="content-panel">
-                    <!-- Filtros -->
-                    <div class="card-title-bar" style="margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                        <div class="input-group" style="flex: 1; min-width: 250px;">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="crm-search-input" placeholder="Buscar por nombre, teléfono, email, o ID..." class="form-input fidelio-input">
+                <!-- Smart Data Grid -->
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+                        <div class="flex items-center space-x-3">
+                            <h3 class="text-sm font-bold text-slate-800"><i class="fa-solid fa-database mr-2 text-fidelio-500"></i> Matriz de Inteligencia</h3>
+                            <!-- Dynamic Tag -->
+                            <span class="px-2 py-1 bg-fidelio-100 text-fidelio-800 text-[10px] font-bold rounded" x-text="filter === 'riesgo' ? 'Filtrado: En Riesgo' : (sortBy === 'ltv' ? 'Orden: Top Gasto' : (sortBy === 'freq' ? 'Orden: Top Visitas' : 'Directorio Completo'))"></span>
                         </div>
-                        <div style="display:flex; gap: 10px; align-items:center;">
-                            <select id="crm-filter-tier" class="form-input fidelio-input" style="padding-left: 10px; width: auto;">
-                                <option value="all">Todos los Niveles</option>
-                                <option value="Oro VIP">Oro VIP</option>
-                                <option value="Plata VIP">Plata VIP</option>
-                                <option value="Bronce VIP">Bronce VIP</option>
-                            </select>
-                            <select id="crm-filter-status" class="form-input fidelio-input" style="padding-left: 10px; width: auto;">
-                                <option value="all">Todos los Estados</option>
-                                <option value="activo">Activo</option>
-                                <option value="riesgo">En Riesgo</option>
-                                <option value="nuevo">Nuevo</option>
-                            </select>
-                            <select id="crm-filter-month" class="form-input fidelio-input" style="padding-left: 10px; width: auto;">
-                                <option value="all">Cualquier Mes</option>
-                                <option value="01">Enero</option>
-                                <option value="02">Febrero</option>
-                                <option value="03">Marzo</option>
-                                <option value="04">Abril</option>
-                                <option value="05">Mayo</option>
-                                <option value="06">Junio</option>
-                                <option value="07">Julio</option>
-                                <option value="08">Agosto</option>
-                                <option value="09">Septiembre</option>
-                                <option value="10">Octubre</option>
-                                <option value="11">Noviembre</option>
-                                <option value="12">Diciembre</option>
-                            </select>
+                        <div class="text-[10px] text-slate-500 font-medium bg-white px-2 py-1 rounded border border-slate-200">
+                            Mostrando <span class="font-bold text-slate-800" x-text="processedClients.length"></span> registros
                         </div>
                     </div>
                     
-                    <div style="overflow-x: auto;">
-                        <table class="crm-table">
-                            <thead>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="text-[10px] uppercase tracking-wider text-slate-500 bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th>Cliente</th>
-                                    <th>Contacto</th>
-                                    <th>Nivel VIP</th>
-                                    <th>Saldo (Monedero)</th>
-                                    <th>Puntos / Visitas</th>
-                                    <th>Última Visita</th>
-                                    <th>Frecuencia</th>
-                                    <th>Gasto Total</th>
-                                    <th>Gasto Promedio</th>
-                                    <th>Acciones</th>
+                                    <th class="px-6 py-3 font-semibold">Cliente</th>
+                                    <th class="px-6 py-3 font-semibold">Nivel VIP</th>
+                                    <th class="px-6 py-3 font-semibold text-right">LTV (Gasto)</th>
+                                    <th class="px-6 py-3 font-semibold text-center">Frecuencia</th>
+                                    <th class="px-6 py-3 font-semibold">Estado de Salud</th>
                                 </tr>
                             </thead>
-                            <tbody id="crm-table-body">
-                                <!-- Se llena vía JS -->
+                            <tbody class="divide-y divide-slate-100">
+                                <template x-for="client in processedClients" :key="client.id">
+                                    <tr @click="selectClient(client)" class="hover:bg-slate-50 cursor-pointer transition group" :class="activeClient && activeClient.id === client.id ? 'bg-fidelio-50/30 border-l-2 border-l-fidelio-500' : 'border-l-2 border-transparent'">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center space-x-3">
+                                                <img :src="'https://ui-avatars.com/api/?name=' + client.name + '&background=random&color=fff'" class="w-8 h-8 rounded-full border border-slate-200 opacity-90 group-hover:opacity-100 transition">
+                                                <div>
+                                                    <p class="font-bold text-slate-900 group-hover:text-fidelio-700 transition" x-text="client.name"></p>
+                                                    <p class="text-[10px] font-medium text-slate-500" x-text="client.email"></p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded shadow-sm" :class="'tier-' + client.tier.toLowerCase()" x-text="client.tier"></span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right font-mono text-slate-700 font-semibold" x-text="'$' + client.ltv"></td>
+                                        <td class="px-6 py-4 text-center text-slate-600 text-xs font-medium"><span x-text="client.freq"></span> d</td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-2 h-2 rounded-full shadow-sm" :class="client.status === 'Saludable' ? 'bg-emerald-500' : (client.status === 'Nuevo' ? 'bg-blue-500' : 'bg-rose-500')"></div>
+                                                <span class="text-[10px] font-bold text-slate-600" x-text="client.status"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </section>
+            </div>
+            
+            <!-- Default Empty State -->
+            <div x-show="!activeClient" class="absolute inset-0 z-[-1] flex items-center justify-center opacity-[0.03] pointer-events-none">
+                <i class="fa-solid fa-gem text-[300px] text-fidelio-900"></i>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: Customer 360 -->
+        <div x-show="activeClient" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="translate-x-full opacity-0" x-transition:enter-end="translate-x-0 opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0 opacity-100" x-transition:leave-end="translate-x-full opacity-0" class="w-[450px] bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.05)] flex flex-col relative z-20" style="display: none;">
+            
+            <div class="h-16 border-b border-slate-200 px-6 flex items-center justify-between bg-white sticky top-0 z-30 shadow-sm">
+                <div class="flex items-center space-x-3">
+                    <button @click="close360()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition text-slate-500 hover:text-slate-800">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <span class="text-xs font-black uppercase tracking-widest text-slate-800">Gemelo Digital</span>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition flex items-center justify-center shadow-sm">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </button>
+                    <button class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-500 hover:text-white transition flex items-center justify-center shadow-sm">
+                        <i class="fa-solid fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50">
+                <div class="flex px-6 pt-4 space-x-4 border-b border-slate-200">
+                    <button @click="view360 = 'card'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition" :class="view360 === 'card' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Tarjeta Física</button>
+                    <button @click="view360 = 'history'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition" :class="view360 === 'history' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Historial Real</button>
+                </div>
+
+                <div class="p-6">
+                    <div x-show="view360 === 'card'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+                        <div class="mb-6 flex flex-col items-center">
+                            <!-- 3D Card -->
+                            <div class="perspective-1000 w-[260px] h-[420px] cursor-pointer group relative" @click="flipped = !flipped">
+                                <div class="w-full h-full preserve-3d transition-transform duration-700 relative shadow-2xl rounded-[18px]" :class="flipped ? 'rotate-y-180' : ''">
+                                    <!-- FRONT -->
+                                    <div class="absolute inset-0 backface-hidden rounded-[18px] overflow-hidden flex flex-col border border-black/5" :class="'tier-' + activeClient?.tier?.toLowerCase()">
+                                        <div class="px-4 py-3 flex justify-between items-start">
+                                            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center shadow-inner mt-1"><i class="fa-solid fa-gem text-white text-sm drop-shadow-sm"></i></div>
+                                            <div class="w-6 h-6 rounded-full bg-black/10 flex items-center justify-center hover:bg-black/20 transition">
+                                                <i class="fa-solid fa-info text-white text-[10px]"></i>
+                                            </div>
+                                        </div>
+                                        <div class="px-4 py-2 text-center">
+                                            <p class="text-[10px] font-bold uppercase tracking-widest text-black/60 mb-1">Saldo Disponible</p>
+                                            <p class="text-4xl font-black text-white font-mono drop-shadow-md" x-text="activeClient?.balance"></p>
+                                        </div>
+                                        <div class="mt-auto px-4 py-4">
+                                            <p class="text-sm text-white font-bold drop-shadow-sm uppercase" x-text="activeClient?.name"></p>
+                                            <p class="text-[10px] font-bold text-black/50 uppercase tracking-widest mt-0.5" x-text="activeClient?.tier + ' VIP'"></p>
+                                        </div>
+                                        <div class="h-24 bg-white p-3 flex flex-col justify-center items-center">
+                                            <div class="w-full h-14 bg-[url('https://upload.wikimedia.org/wikipedia/commons/8/84/EAN13.svg')] bg-center bg-cover mix-blend-multiply opacity-80"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- BACK -->
+                                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-white rounded-[18px] border border-slate-200 flex flex-col overflow-hidden">
+                                        <div class="h-10 bg-slate-100 flex items-center px-4 justify-between border-b border-slate-200">
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Reverso</span>
+                                            <button class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-[8px]"><i class="fa-solid fa-xmark"></i></button>
+                                        </div>
+                                        <div class="p-4 space-y-4 flex-1">
+                                            <div>
+                                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Notificaciones</p>
+                                                <div class="flex items-center justify-between mt-1">
+                                                    <span class="text-[11px] font-semibold text-slate-800">Permitir Alertas</span>
+                                                    <div class="w-7 h-4 bg-emerald-500 rounded-full relative"><div class="w-3 h-3 bg-white rounded-full absolute right-0.5 top-0.5"></div></div>
+                                                </div>
+                                            </div>
+                                            <hr class="border-slate-100">
+                                            <div>
+                                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Lealtad</p>
+                                                <p class="text-xs text-slate-800 font-medium mt-1">LTV: <span class="font-bold font-mono" x-text="'$' + activeClient?.ltv"></span></p>
+                                                <p class="text-xs text-slate-800 font-medium">Visitas Totales: <span class="font-bold" x-text="activeClient?.totalVisits"></span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rich Client Data -->
+                        <div class="space-y-4 mt-12">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+                                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1"><i class="fa-solid fa-cake-candles mr-1 text-rose-400"></i> Cumpleaños</p>
+                                    <p class="text-sm font-bold text-slate-800" x-text="activeClient?.birthday"></p>
+                                </div>
+                                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+                                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1"><i class="fa-solid fa-calendar-check mr-1 text-blue-400"></i> Socio Desde</p>
+                                    <p class="text-sm font-bold text-slate-800" x-text="activeClient?.memberSince"></p>
+                                </div>
+                            </div>
+
+                            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 shadow-sm relative group">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fa-solid fa-bell-concierge text-amber-600 text-sm"></i>
+                                    <p class="text-xs font-bold text-amber-800 uppercase tracking-widest">Memoria Concierge</p>
+                                </div>
+                                <textarea class="w-full bg-transparent border-none focus:ring-0 text-sm text-amber-900 resize-none font-medium p-0" rows="3" x-model="activeClient.notes" placeholder="Añadir notas del cliente..."></textarea>
+                            </div>
+                            
+                            <!-- Customizable Gift Push -->
+                            <div class="mt-4">
+                                <button x-show="!showGiftForm" @click="showGiftForm = true" class="w-full bg-fidelio-600 hover:bg-fidelio-700 border border-fidelio-700 rounded-xl p-3 flex items-center justify-center text-center transition group text-white shadow-sm">
+                                    <i class="fa-solid fa-gift mr-2 group-hover:scale-110 transition text-lg"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest">Enviar Push de Regalo Personalizado</span>
+                                </button>
+                                
+                                <div x-show="showGiftForm" style="display: none;" class="w-full bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <p class="text-[10px] font-bold text-fidelio-600 uppercase tracking-widest"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Personalizar Push</p>
+                                        <button @click="showGiftForm = false" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                    <div class="relative mb-3">
+                                        <i class="fa-brands fa-apple absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                                        <input type="text" x-model="giftMessage" class="w-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-800 rounded-lg py-2.5 pl-9 pr-3 focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-50">
+                                    </div>
+                                    <button @click="sendCustomGift()" class="w-full bg-fidelio-600 hover:bg-fidelio-700 text-white text-xs font-bold py-2.5 rounded-lg transition flex items-center justify-center shadow-sm">
+                                        <i class="fa-solid fa-paper-plane mr-2"></i> Enviar a Wallet
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: TIMELINE (HISTORIAL VISITAS) -->
+                    <div x-show="view360 === 'history'" style="display: none;" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm mb-6 flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Socio Desde</p>
+                                <p class="text-sm font-black text-slate-800" x-text="activeClient?.memberSince"></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Visitas Totales</p>
+                                <p class="text-sm font-black text-fidelio-600" x-text="activeClient?.totalVisits"></p>
+                            </div>
+                        </div>
+
+                        <div class="relative border-l-2 border-slate-200 ml-3 space-y-6 pb-4">
+                            <div class="relative pl-6">
+                                <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-fidelio-500 border-4 border-white shadow-sm"></div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1" x-text="activeClient?.lastVisit"></p>
+                                <div class="bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                                    <p class="text-xs font-bold text-slate-800">Visita a Sucursal Norte</p>
+                                    <p class="text-[10px] text-emerald-600 font-bold mt-1">+ $240.00 MXN en consumo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+</div>
+</section>
 
             <!-- BRANCHES TAB -->
                         <section id="tab-branches" class="tab-content">
@@ -5787,6 +6060,106 @@ body {
             <p style="margin-top:16px; font-size:12px; color:#94a3b8;">Prueba de 14 días incluida. Cancela cuando quieras.</p>
         </div>
     </div>
+<script>
+function crmJewel() {
+            return {
+                activeClient: null,
+                flipped: false,
+                filter: 'all', 
+                sortBy: 'id',  
+                view360: 'card', 
+                searchQuery: '',
+                
+                isThinking: false,
+                showAIModal: false,
+                aiProposedMessage: '¡Te extrañamos! Vuelve hoy y recibe un 2x1 al mostrar tu Wallet.',
+                
+                showToast: false,
+                toastTitle: '',
+                toastMessage: '',
+                toastIcon: '',
+                
+                showGiftForm: false,
+                giftMessage: '¡Tienes un Postre Gratis esperando!',
+                
+                clientsData: [
+                    { id: 1, name: "Roberto Ordoñez", email: "roberto@fidelio.com", phone: "+52 55 1234 5678", tier: "Oro", ltv: 12450, freq: 4, lastVisit: "Ayer", status: "Saludable", balance: "$840.00", totalVisits: 142, birthday: "14 Octubre", memberSince: "Ene 2024", notes: "Alergia a mariscos." },
+                    { id: 2, name: "Ana Martínez", email: "ana.m@gmail.com", phone: "+52 55 8765 4321", tier: "Oro", ltv: 9800, freq: 7, lastVisit: "Hace 3 días", status: "Saludable", balance: "$620.00", totalVisits: 95, birthday: "02 Febrero", memberSince: "Mar 2024", notes: "" },
+                    { id: 3, name: "Carlos S.", email: "carlos@slim.com", phone: "+52 55 1111 2222", tier: "Plata", ltv: 5200, freq: 12, lastVisit: "Hace 21 días", status: "En Riesgo", balance: "$150.00", totalVisits: 45, birthday: "28 Noviembre", memberSince: "Abr 2024", notes: "" },
+                    { id: 4, name: "Lucía F.", email: "lucy88@hotmail.com", phone: "+52 55 3333 4444", tier: "Plata", ltv: 4900, freq: 15, lastVisit: "Hace 10 días", status: "Saludable", balance: "$120.00", totalVisits: 38, birthday: "05 Mayo", memberSince: "May 2024", notes: "" },
+                    { id: 5, name: "Mario Rossi", email: "mario@rossi.it", phone: "+52 55 5555 6666", tier: "Bronce", ltv: 1200, freq: 28, lastVisit: "Hace 45 días", status: "En Riesgo", balance: "$45.00", totalVisits: 12, birthday: "19 Agosto", memberSince: "Jun 2024", notes: "" },
+                    { id: 6, name: "Sofia V.", email: "sofia@v.com", phone: "+52 55 7777 8888", tier: "Bronce", ltv: 800, freq: 5, lastVisit: "Hoy", status: "Nuevo", balance: "$10.00", totalVisits: 3, birthday: "12 Diciembre", memberSince: "Ago 2024", notes: "" },
+                    { id: 7, name: "Diego R.", email: "diego@art.com", phone: "+52 55 9999 0000", tier: "Plata", ltv: 3450, freq: 35, lastVisit: "Hace 60 días", status: "En Riesgo", balance: "$0.00", totalVisits: 22, birthday: "03 Julio", memberSince: "Feb 2024", notes: "" },
+                ],
+                
+                get topClients() { return this.clientsData.slice(0, 4); },
+
+                get processedClients() {
+                    let result = this.clientsData;
+                    if (this.filter === 'riesgo') {
+                        result = result.filter(c => c.status === 'En Riesgo');
+                    } else if (this.searchQuery && !this.searchQuery.toLowerCase().includes('riesgo')) {
+                        const q = this.searchQuery.toLowerCase();
+                        result = result.filter(c => c.name.toLowerCase().includes(q));
+                    }
+                    if (this.sortBy === 'ltv') { result = result.sort((a, b) => b.ltv - a.ltv); }
+                    else if (this.sortBy === 'freq') { result = result.sort((a, b) => b.totalVisits - a.totalVisits); }
+                    else { result = result.sort((a, b) => a.id - b.id); }
+                    return result;
+                },
+                
+                selectClient(client) {
+                    if (this.activeClient && this.activeClient.id === client.id) {
+                        this.close360();
+                    } else {
+                        this.activeClient = JSON.parse(JSON.stringify(client));
+                        this.flipped = false;
+                        this.view360 = 'card';
+                        this.showGiftForm = false;
+                    }
+                },
+                
+                close360() {
+                    this.activeClient = null;
+                    this.flipped = false;
+                    this.showGiftForm = false;
+                },
+
+                fireToast(title, message, icon) {
+                    this.toastTitle = title;
+                    this.toastMessage = message;
+                    this.toastIcon = icon;
+                    this.showToast = true;
+                    setTimeout(() => { this.showToast = false; }, 5000);
+                },
+                
+                executeMagic() {
+                    if (this.isThinking) return;
+                    if (!this.searchQuery) { this.searchQuery = "Filtrar clientes en riesgo y lanzar promoción 2x1"; }
+                    this.isThinking = true;
+                    
+                    setTimeout(() => {
+                        this.isThinking = false;
+                        this.showAIModal = true;
+                    }, 1800);
+                },
+                
+                approveMagic() {
+                    this.showAIModal = false;
+                    this.filter = 'riesgo';
+                    this.fireToast('Campaña Ejecutada', `El mensaje se envió a los Wallets exitosamente.`, 'fa-paper-plane');
+                },
+
+                sendCustomGift() {
+                    if (!this.giftMessage) return;
+                    this.showGiftForm = false;
+                    this.fireToast('Push Enviado Exitosamente', `El mensaje "${this.giftMessage}" ya fue inyectado en el Wallet de ${this.activeClient.name}.`, 'fa-paper-plane');
+                    this.giftMessage = '¡Tienes un Postre Gratis esperando!';
+                }
+            }
+        }
+    
+</script>
 </body>
 
 
