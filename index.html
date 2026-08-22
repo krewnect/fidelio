@@ -6560,10 +6560,37 @@ aside {
     <!-- FORCE NEW CAMPAIGN FLOW INJECTION -->
     <script>
     window.forceNewCampaignFlow = function() {
-        if(typeof window.showToast === 'function') {
-            window.showToast("El nuevo Editor de Tarjetas está en construcción. ¡Pronto disponible!", "info");
-        } else {
-            alert("El nuevo Editor de Tarjetas está en construcción. ¡Pronto disponible!");
+        try {
+            console.log("forceNewCampaignFlow triggered");
+            // 1. Reset state if it exists
+            if (typeof window.state !== 'undefined' && window.state) {
+                window.state.currentCampaignId = null;
+            }
+            
+            // 2. Hide all tabs forcefully
+            document.querySelectorAll('.tab-content').forEach(t => {
+                t.classList.remove('active');
+                t.style.display = 'none';
+            });
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            
+            // 3. Show FullScreen Studio Iframe
+            const restId = window.merchantData ? window.merchantData.id : '123';
+            const studioIframe = document.getElementById('wallet-studio-iframe');
+            if(studioIframe) {
+                const tier = (window.merchantData && window.merchantData.business_type === "business") ? "business" : "basic";
+                studioIframe.src = `/studio/index.html?rest_id=${restId}&tier=${tier}`;
+                document.getElementById('wallet-studio-container').style.display = 'block';
+            }
+            
+            // 4. Toast
+            if (typeof window.showToast === 'function') {
+                window.showToast("Cargando Fidelio Card Studio (Micro-Frontend)...", "success");
+            }
+        } catch (e) {
+            alert("Error crítico en forceNewCampaignFlow: " + e.message);
         }
     };
     </script>
