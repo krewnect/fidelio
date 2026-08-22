@@ -4566,355 +4566,500 @@ aside {
 
 
             <!-- NEW TABS PLACEHOLDERS -->
-            <section id="tab-metrics" class="tab-content">
-                <style>
-                    /* Dynamic Animations */
-                    @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); } }
-                    @keyframes floatUp { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-                    @keyframes progressFill { 0% { width: 0; } 100% { width: 100%; } }
-                    @keyframes numberCounter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-                    @keyframes chartBarGrow { from { height: 0; } }
-                    
-                    .metric-card-hover { transition: all 0.3s ease; }
-                    .metric-card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(76, 29, 149, 0.12); border-color: rgba(76, 29, 149, 0.3); }
-                    
-                    .live-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.1); color: var(--accent-violet); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid rgba(139, 92, 246, 0.2); }
-                    .live-dot { width: 8px; height: 8px; background: #8b5cf6 !important; border-radius: 50%; animation: pulseGlow 2s infinite; }
-                    
-                    .bento-chart-bar { animation: chartBarGrow 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: bottom; }
-                    
-                    .table-row-hover { transition: background 0.2s; }
-                    .table-row-hover:hover { background: rgba(255, 255, 255, 0.1); cursor: pointer; }
-                    
-                    .heatmap-cell { border-radius: 4px; transition: transform 0.2s; cursor: pointer; }
-                    .heatmap-cell:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 10; position: relative; }
-                    
-                    .stagger-1 { animation: floatUp 0.6s ease forwards 0.1s; opacity: 0; }
-                    .stagger-2 { animation: floatUp 0.6s ease forwards 0.2s; opacity: 0; }
-                    .stagger-3 { animation: floatUp 0.6s ease forwards 0.3s; opacity: 0; }
-                    .stagger-4 { animation: floatUp 0.6s ease forwards 0.4s; opacity: 0; }
-                    .stagger-5 { animation: floatUp 0.6s ease forwards 0.5s; opacity: 0; }
-                
-        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
-        #pass-render, .pass-preview-card {
-            color-scheme: light !important;
-        }
-        .premium-white-card {
-            background-color: #ffffff !important;
-            color: #111827 !important;
-        }
+            <section id="tab-metrics" class="tab-content" x-data="metricsJewel()">
+<!-- Toast AI -->
+    <div x-show="showToast" style="display: none;" 
+         x-transition:enter="transition ease-out duration-300" 
+         x-transition:enter-start="opacity-0 transform -translate-y-8" 
+         x-transition:enter-end="opacity-100 transform translate-y-0" 
+         x-transition:leave="transition ease-in duration-200" 
+         x-transition:leave-start="opacity-100 transform translate-y-0" 
+         x-transition:leave-end="opacity-0 transform -translate-y-8" 
+         class="absolute top-6 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-fidelio-500/30 flex items-center space-x-4 min-w-[400px]">
+        <div class="w-10 h-10 rounded-full bg-fidelio-500/20 flex items-center justify-center text-fidelio-400 shrink-0">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+            <p class="text-[10px] font-black text-fidelio-400 uppercase tracking-widest mb-0.5">Agente Fidelio</p>
+            <p class="text-sm font-medium leading-tight" x-text="toastMessage"></p>
+        </div>
+    </div>
 
-/* PROJECT WOW: ULTRA PREMIUM STYLING */
-body {
-    background-color: #f8fafc;
-    background-image: 
-        radial-gradient(at 40% 20%, hsla(250,100%,74%,0.15) 0px, transparent 50%),
-        radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
-        radial-gradient(at 0% 50%, hsla(355,100%,93%,0.1) 0px, transparent 50%);
-    background-attachment: fixed;
-}
-
-/* Glassmorphism Cards */
-.stats-grid > div, .gemini-insight-panel, .content-panel, .settings-card {
-    background: rgba(255, 255, 255, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(1.5) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(1.5) !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,1) !important;
-}
-
-/* 3D Wallet Preview */
-.iphone-pro-mockup {
-    transform: scale(0.65) perspective(1000px) rotateY(-10deg) rotateX(5deg) !important;
-    box-shadow: 
-        -20px 20px 40px rgba(0,0,0,0.3), 
-        -40px 40px 80px rgba(0,0,0,0.15),
-        inset 0 0 10px rgba(255,255,255,0.2),
-        inset -5px 0 15px rgba(0,0,0,0.5) !important;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.iphone-pro-mockup:hover {
-    transform: scale(0.68) perspective(1000px) rotateY(0deg) rotateX(0deg) !important;
-}
-
-/* Glowing Siri/Gemini Orb */
-.ai-orb-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-}
-.ai-orb {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #8b5cf6, #ec4899, #3b82f6);
-    background-size: 200% 200%;
-    animation: orbPulse 3s ease-in-out infinite, gradientShift 5s linear infinite;
-    box-shadow: 0 0 40px #8b5cf6, 0 0 80px #ec4899, inset 0 0 20px #fff;
-    margin-bottom: 24px;
-}
-
-@keyframes orbPulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 30px #8b5cf6, 0 0 60px #ec4899; }
-    50% { transform: scale(1.05); box-shadow: 0 0 60px #8b5cf6, 0 0 100px #ec4899; }
-    100% { transform: scale(0.95); box-shadow: 0 0 30px #8b5cf6, 0 0 60px #ec4899; }
-}
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.ai-status-text {
-    font-size: 18px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: pulseGlow 2s infinite;
-}
-
-/* Premium Inputs */
-.apple-input, .fidelio-input {
-    background: rgba(255,255,255,0.8) !important;
-    border: 1px solid rgba(0,0,0,0.1) !important;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
-    backdrop-filter: blur(10px) !important;
-}
-.apple-input:focus, .fidelio-input:focus {
-    background: #fff !important;
-    border-color: #8b5cf6 !important;
-    box-shadow: 0 0 0 4px rgba(139,92,246,0.1), inset 0 2px 4px rgba(0,0,0,0.02) !important;
-}
-
-
-/* 7. Unified Card Hovers (Kill the purple borders) */
-.tab-content > div[style*="background"]:hover, 
-.stat-card:hover, 
-.content-panel:hover, 
-.settings-card:hover,
-.gemini-insight-panel:hover,
-.accordion-card:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
-    border-color: #E5E7EB !important; /* Force keep grey border */
-}
-
-</style>
-
-                <div class="workspace-header stagger-1">
-                    <div>
-                        <div style="display:flex; align-items:center; gap:16px;">
-                            <div class="workspace-eyebrow">MÉTRICAS Y ROI</div>
-                            <div class="live-badge"><div class="live-dot"></div> Live Analytics</div>
+    <!-- WIDGET SETTINGS MODAL -->
+    <div x-show="showSettings" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
+        <div x-show="showSettings" @click.away="showSettings = false" class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col border border-slate-200">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-black text-slate-900">Personalizar Radiografía</h3>
+                    <p class="text-[10px] uppercase tracking-widest font-bold text-slate-400">Las 12 Métricas de Élite</p>
+                </div>
+                <button @click="showSettings = false" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                <template x-for="widget in availableWidgets" :key="widget.id">
+                    <div class="flex items-center justify-between p-3 rounded-xl border transition cursor-pointer hover:bg-slate-50" 
+                         :class="activeWidgets.includes(widget.id) ? 'border-fidelio-500 bg-fidelio-50/30' : 'border-slate-200'"
+                         @click="toggleWidget(widget.id)">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white" :class="widget.color">
+                                <i class="fa-solid text-sm" :class="widget.icon"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800" x-text="widget.name"></p>
+                                <p class="text-[9px] text-slate-500 font-medium" x-text="widget.desc"></p>
+                            </div>
                         </div>
-                        <h1>Inteligencia de Negocio Avanzada</h1>
-                        <p>Descubre el impacto económico real, el comportamiento de tus clientes y la efectividad de tus campañas.</p>
+                        <div class="w-10 h-6 rounded-full transition-colors relative" :class="activeWidgets.includes(widget.id) ? 'bg-fidelio-500' : 'bg-slate-300'">
+                            <div class="absolute top-1 bottom-1 w-4 bg-white rounded-full shadow transition-transform" :class="activeWidgets.includes(widget.id) ? 'transform translate-x-5' : 'transform translate-x-1'"></div>
+                        </div>
                     </div>
-                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:nowrap;">
-                        <div class="metric-card-hover" style="display:flex; align-items:center; background:white; border:1px solid var(--border-glass); border-radius:var(--radius-sm); padding:4px 12px;">
-                            <span style="font-size:12px; color:var(--text-muted); margin-right:8px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Desde</span>
-                            <input class="fidelio-input" type="date" style="border:none; outline:none; background:transparent; padding:4px; font-family:var(--font-main); font-size:13px; font-weight:700; color:var(--accent-violet); cursor:pointer;" value="2026-07-13">
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8 bg-slate-50/30">
+        <div class="max-w-[1400px] mx-auto space-y-6">
+            
+            <!-- HEADER -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
+                <div>
+                    <h1 class="text-3xl font-black tracking-tight text-slate-900 mb-2">Radiografía de Negocio</h1>
+                    <div class="relative mt-2" @click.away="branchOpen = false">
+                        <button @click="branchOpen = !branchOpen" class="flex items-center justify-between min-w-[280px] bg-white border border-slate-200 hover:border-fidelio-300 rounded-2xl px-4 py-2.5 text-left transition shadow-sm group">
+                            <div class="flex flex-col">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Filtro de Datos</span>
+                                <span class="text-sm font-black text-slate-900" x-text="selectedBranch"></span>
+                            </div>
+                            <div class="w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-fidelio-50 group-hover:text-fidelio-500 transition">
+                                <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" :class="branchOpen ? 'rotate-180' : ''"></i>
+                            </div>
+                        </button>
+                        
+                        <div x-show="branchOpen" style="display: none;" class="absolute top-full left-0 mt-3 w-80 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50">
+                            <div class="p-2 space-y-1">
+                                <template x-for="branch in branches" :key="branch">
+                                    <button @click="selectedBranch = branch; branchOpen = false; fireToast('Analizando: ' + branch)" 
+                                            class="w-full text-left px-4 py-3 rounded-xl transition flex items-center justify-between group"
+                                            :class="selectedBranch === branch ? 'bg-fidelio-50 text-fidelio-700' : 'hover:bg-slate-50 text-slate-700'">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px]"
+                                                 :class="selectedBranch === branch ? 'bg-white shadow text-fidelio-600' : 'bg-slate-100 text-slate-400'">
+                                                <i class="fa-solid" :class="branch === 'Resumen Global (Consolidado)' ? 'fa-globe' : 'fa-location-dot'"></i>
+                                            </div>
+                                            <span class="text-xs font-bold" x-text="branch"></span>
+                                        </div>
+                                        <i x-show="selectedBranch === branch" class="fa-solid fa-check text-fidelio-500 text-[10px]"></i>
+                                    </button>
+                                </template>
+                            </div>
                         </div>
-                        <div class="metric-card-hover" style="display:flex; align-items:center; background:white; border:1px solid var(--border-glass); border-radius:var(--radius-sm); padding:4px 12px;">
-                            <span style="font-size:12px; color:var(--text-muted); margin-right:8px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Hasta</span>
-                            <input class="fidelio-input" type="date" style="border:none; outline:none; background:transparent; padding:4px; font-family:var(--font-main); font-size:13px; font-weight:700; color:var(--accent-violet); cursor:pointer;" value="2026-08-13">
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-3 mt-4 md:mt-0">
+                    <button @click="showSettings = true" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-full transition shadow-sm flex items-center">
+                        <i class="fa-solid fa-sliders text-fidelio-500 mr-2"></i> Ajustar 12 Widgets
+                    </button>
+                    <button @click="fireToast('Generando reporte PDF purgado...')" class="hidden lg:flex bg-slate-900 hover:bg-slate-800 text-white rounded-full px-5 py-2.5 shadow-sm items-center space-x-2 transition font-bold text-xs">
+                        <i class="fa-solid fa-file-pdf text-fidelio-400"></i>
+                        <span>Exportar Reporte</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- MASONRY GRID SYSTEM (THE 12 ABSOLUTE KILLER WIDGETS) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- 1. The ROI Prover -->
+                <div x-show="activeWidgets.includes('roi')" x-transition class="fidelio-card p-6 md:col-span-2 relative overflow-hidden bg-gradient-to-br from-fidelio-900 to-slate-900 text-white border-none shadow-xl group">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-fidelio-500 rounded-full mix-blend-screen filter blur-3xl opacity-50 group-hover:opacity-70 transition"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-fidelio-300 mb-1">Prueba de Rentabilidad</p>
+                                <h2 class="text-xl font-bold text-white">Retorno de Inversión (ROI)</h2>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-inner text-fidelio-300">
+                                <i class="fa-solid fa-chart-line text-xl"></i>
+                            </div>
                         </div>
-                        <button class="fidelio-btn-secondary metric-card-hover" style="border-color:var(--accent-violet); color:var(--accent-violet); padding: 8px 14px !important; font-size: 13px !important; white-space: nowrap;"><i class="fa-solid fa-filter"></i> Aplicar</button>
-                        <button class="fidelio-btn-secondary metric-card-hover" style="padding: 8px 14px !important; font-size: 13px !important; white-space: nowrap;"><i class="fa-solid fa-cloud-arrow-down"></i> Exportar</button>
+                        <div class="flex items-end space-x-4 mb-6">
+                            <h1 class="text-6xl font-black tracking-tighter text-white font-mono">4,404%</h1>
+                            <div class="pb-2 text-emerald-400 font-bold text-sm bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/20 flex items-center">
+                                <i class="fa-solid fa-arrow-trend-up mr-1"></i> Crecimiento
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                
-                <!-- GEMINI METRICS INSIGHTS -->
-                <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 24px; padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);" class="gemini-insight-panel content-panel">
-                    <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.03; filter: grayscale(1); color:#111827;">
-                        <i class="fa-solid fa-chart-pie"></i>
+                <!-- 2. META MENSUAL (INTERACTIVA) -->
+                <div x-show="activeWidgets.includes('monthly_goal')" x-transition class="fidelio-card p-6 flex flex-col justify-center relative md:col-span-2 border-emerald-100 bg-emerald-50/20">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="text-sm font-black text-slate-900">Meta de Facturación</h3>
+                            <p class="text-[9px] text-slate-500 uppercase tracking-widest font-bold mt-0.5">Ventas cerradas vía Wallet</p>
+                        </div>
+                        <button @click="isEditingGoal = !isEditingGoal" class="w-8 h-8 rounded-full bg-white border border-slate-200 hover:border-emerald-300 hover:text-emerald-500 transition flex items-center justify-center shadow-sm text-slate-400" title="Editar tu Meta">
+                            <i class="fa-solid fa-pen text-[10px]" :class="isEditingGoal ? 'text-emerald-500' : ''"></i>
+                        </button>
                     </div>
-                    <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 800; color: #111827; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-chart-line" style="color: #7C3AED;"></i> Análisis Financiero (Gemini IA)
-                    </h3>
-                    <p id="gemini-metrics-text" style="margin: 0; font-size: 15px; color: #4B5563; line-height: 1.6; margin-bottom: 16px;">
-                        Gemini puede analizar la rentabilidad de tus premios y sugerirte formas de aumentar tu Ticket Promedio.
-                    </p>
-                    <button class="fidelio-btn-primary" onclick="if(window.fetchGeminiMetricsInsights) window.fetchGeminiMetricsInsights()">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generar Reporte de IA
+                    
+                    <div x-show="!isEditingGoal">
+                        <div class="flex justify-between items-end mb-2">
+                            <p class="text-2xl font-black text-slate-900 font-mono" x-text="formatMoney(currentRevenue)"></p>
+                            <p class="text-xs font-bold text-slate-400 font-mono" x-text="'/ ' + formatMoney(monthlyGoal)"></p>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
+                            <div class="bg-gradient-to-r from-emerald-400 to-fidelio-500 h-3 rounded-full transition-all duration-1000" :style="`width: ${goalProgress}%`"></div>
+                        </div>
+                        <p class="text-[10px] font-bold text-emerald-600 mt-2 text-right" x-text="goalProgress + '% Completado'"></p>
+                    </div>
+
+                    <div x-show="isEditingGoal" style="display: none;" class="flex items-center space-x-2 mt-2">
+                        <div class="relative flex-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-slate-400 text-sm font-bold">$</span>
+                            </div>
+                            <input type="number" x-model="goalInput" class="w-full bg-white border border-slate-200 text-slate-900 font-mono text-sm rounded-lg pl-8 pr-3 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition shadow-sm" placeholder="Ingresa tu meta...">
+                        </div>
+                        <button @click="saveGoal()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-5 py-2.5 rounded-lg transition shadow-sm">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. VIRTUAL ECONOMY -->
+                <div x-show="activeWidgets.includes('virtual_economy')" x-transition class="fidelio-card p-6 flex flex-col relative overflow-hidden md:col-span-1 border-emerald-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-black text-slate-900">Economía Prepago</h3>
+                        <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    </div>
+                    <div class="flex-1 space-y-4">
+                        <div class="flex justify-between items-end border-b border-slate-100 pb-2">
+                            <div><p class="text-[10px] font-bold text-slate-500 uppercase">Fondeo Total</p></div>
+                            <p class="text-sm font-black text-emerald-600 font-mono">$150k</p>
+                        </div>
+                        <div class="flex justify-between items-end border-b border-slate-100 pb-2">
+                            <div><p class="text-[10px] font-bold text-slate-500 uppercase">Consumido</p></div>
+                            <p class="text-sm font-black text-slate-900 font-mono">$85.5k</p>
+                        </div>
+                        <div class="flex justify-between items-end pt-2">
+                            <div><p class="text-xs font-bold text-slate-800">Pasivo Contable</p></div>
+                            <p class="text-xl font-black text-rose-600 font-mono">$64.5k</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. LOYALTY DEBT -->
+                <div x-show="activeWidgets.includes('loyalty_debt')" x-transition class="fidelio-card p-6 flex flex-col relative overflow-hidden md:col-span-1 border-violet-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-black text-slate-900">Deuda Cashback</h3>
+                        <div class="w-8 h-8 rounded-full bg-violet-50 text-violet-500 flex items-center justify-center"><i class="fa-solid fa-gift"></i></div>
+                    </div>
+                    <div class="flex-1 space-y-4">
+                        <div class="flex justify-between items-end border-b border-slate-100 pb-2">
+                            <div><p class="text-[10px] font-bold text-slate-500 uppercase">Puntos Regalados</p></div>
+                            <p class="text-sm font-black text-slate-900 font-mono">$42k</p>
+                        </div>
+                        <div class="flex justify-between items-end border-b border-slate-100 pb-2">
+                            <div><p class="text-[10px] font-bold text-slate-500 uppercase">Ya Redimidos</p></div>
+                            <p class="text-sm font-black text-violet-500 font-mono">$18.2k</p>
+                        </div>
+                        <div class="flex justify-between items-end pt-2">
+                            <div><p class="text-xs font-bold text-slate-800">Riesgo Flotante</p></div>
+                            <p class="text-xl font-black text-violet-600 font-mono">$23.8k</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Dinero Dormido -->
+                <div x-show="activeWidgets.includes('sleeping_money')" x-transition class="fidelio-card p-6 flex flex-col relative overflow-hidden border-rose-100 md:col-span-1">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-fidelio-500"><i class="fa-solid fa-vault mr-1"></i> Dinero Dormido</p>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        <h2 class="text-3xl font-black text-slate-900 font-mono tracking-tighter mb-1">$12,450</h2>
+                        <p class="text-[10px] text-slate-500 font-medium leading-tight">Valor en Wallets sin escanear en >30 días.</p>
+                    </div>
+                    <button @click="fireToast('Alarma de Dinero Dormido enviada a los clientes inactivos.')" class="mt-4 w-full bg-fidelio-50 hover:bg-fidelio-500 text-fidelio-600 hover:text-white border border-fidelio-200 hover:border-fidelio-500 text-xs font-bold py-2 rounded-xl transition">
+                        Despertar Dinero
+                    </button>
+                </div>
+                
+                <!-- 6. Costo de Lealtad -->
+                <div x-show="activeWidgets.includes('cost_loyalty')" x-transition class="fidelio-card p-6 flex flex-col relative overflow-hidden md:col-span-1 bg-slate-50 border-slate-200">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-600"><i class="fa-solid fa-scale-balanced mr-1"></i> Costo del Programa</p>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center my-2">
+                        <div class="flex items-end space-x-2">
+                            <h2 class="text-4xl font-black text-slate-900 font-mono tracking-tighter mb-1">4.2%</h2>
+                            <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded mb-2">Óptimo</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 font-medium leading-tight">Estás regalando $4.20 pesos en Cashback por cada $100 facturados.</p>
+                    </div>
+                </div>
+
+                <!-- 7. FUNNEL DE CAMPAÑAS PUSH (UPGRADED + INTERACTIVE) -->
+                <div x-show="activeWidgets.includes('push_perf')" x-transition class="fidelio-card p-6 flex flex-col relative md:col-span-1 border-none bg-slate-900 text-white">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-400"><i class="fa-solid fa-paper-plane mr-1"></i> Análisis Push</p>
+                        
+                        <!-- Alpine Dropdown for Campaigns -->
+                        <div class="relative" @click.away="pushMenuOpen = false">
+                            <button @click="pushMenuOpen = !pushMenuOpen" class="bg-white/10 hover:bg-white/20 transition px-2 py-1 rounded border border-white/5 text-[9px] font-bold flex items-center">
+                                <span x-text="pushCampaigns[selectedPushIndex].name"></span> 
+                                <i class="fa-solid fa-chevron-down ml-1.5 text-slate-400 transition-transform" :class="pushMenuOpen ? 'rotate-180' : ''"></i>
+                            </button>
+                            
+                            <!-- Menu -->
+                            <div x-show="pushMenuOpen" style="display: none;" class="absolute right-0 mt-1 w-48 bg-slate-800 rounded-lg shadow-xl border border-slate-700 overflow-hidden z-50">
+                                <template x-for="(campaign, index) in pushCampaigns" :key="index">
+                                    <button @click="selectedPushIndex = index; pushMenuOpen = false" class="w-full text-left px-3 py-2.5 text-[10px] font-bold transition flex items-center justify-between" :class="selectedPushIndex === index ? 'bg-blue-500/20 text-blue-400' : 'text-slate-300 hover:bg-slate-700 hover:text-white'">
+                                        <span x-text="campaign.name"></span>
+                                        <i x-show="selectedPushIndex === index" class="fa-solid fa-check text-[9px]"></i>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 space-y-3 mt-2 flex flex-col justify-center">
+                        <!-- Nivel 1: Enviados -->
+                        <div>
+                            <div class="flex justify-between items-end mb-1">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">1. Enviados</p>
+                                <p class="text-xs font-black font-mono" x-text="pushCampaigns[selectedPushIndex].sent.toLocaleString()"></p>
+                            </div>
+                            <div class="w-full bg-white/10 rounded-full h-1.5"><div class="bg-blue-300 h-1.5 rounded-full" style="width: 100%"></div></div>
+                        </div>
+                        <!-- Nivel 2: Vistos -->
+                        <div>
+                            <div class="flex justify-between items-end mb-1">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">2. Vistos</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[9px] font-bold text-blue-300" x-text="getPushSeenPercent() + '%'"></span>
+                                    <p class="text-xs font-black font-mono" x-text="pushCampaigns[selectedPushIndex].seen.toLocaleString()"></p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-white/10 rounded-full h-1.5">
+                                <div class="bg-blue-400 h-1.5 rounded-full transition-all duration-500" :style="`width: ${getPushSeenPercent()}%`"></div>
+                            </div>
+                        </div>
+                        <!-- Nivel 3: Redimidos -->
+                        <div>
+                            <div class="flex justify-between items-end mb-1">
+                                <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">3. Redimidos (Cierre)</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[9px] font-bold text-emerald-400/70" x-text="getPushRedeemedPercent() + '%'"></span>
+                                    <p class="text-xs font-black font-mono text-emerald-400" x-text="pushCampaigns[selectedPushIndex].redeemed.toLocaleString()"></p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-white/10 rounded-full h-1.5">
+                                <div class="bg-emerald-400 h-1.5 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.5)] transition-all duration-500" :style="`width: ${getPushRedeemedPercent()}%`"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 8. Clientes Resucitados -->
+                <div x-show="activeWidgets.includes('resurrected')" x-transition class="fidelio-card p-6 flex flex-col relative md:col-span-1 border-fidelio-100 bg-fidelio-50/50">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-fidelio-600"><i class="fa-solid fa-heart-pulse mr-1"></i> Zombis Recuperados</p>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center my-2">
+                        <h2 class="text-4xl font-black text-fidelio-700 font-mono tracking-tighter mb-1">142</h2>
+                        <p class="text-[10px] text-slate-600 font-medium leading-tight">Clientes inactivos (>60 días) que logramos que regresaran a comprar este mes.</p>
+                    </div>
+                </div>
+
+                <!-- 9. Alerta VIP Churn -->
+                <div x-show="activeWidgets.includes('vip_churn')" x-transition class="fidelio-card p-6 flex flex-col relative md:col-span-1 border-orange-200 bg-orange-50/30">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-orange-500"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Alerta Fuga VIP</p>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        <h2 class="text-4xl font-black text-orange-600 font-mono tracking-tighter mb-1">3</h2>
+                        <p class="text-[10px] text-slate-600 font-medium leading-tight">"Ballenas" de Wallet sin escanear en >60 días.</p>
+                    </div>
+                    <button @click="fireToast('Alarma VIP: Mensaje personalizado enviado a las 3 ballenas.')" class="mt-2 w-full bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold py-1.5 rounded-lg transition">
+                        Rescatar VIPs
                     </button>
                 </div>
 
-                <!-- 1. ROI HIGHLIGHT & LIVE FEED -->
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;" class="stagger-1">
-                    <div class="metric-card-hover" style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); border-radius: var(--radius-md); padding: 40px; color: white; display: flex; justify-content: space-between; align-items: center; gap: 32px; flex-wrap: wrap;  position: relative; overflow: hidden;">
-                        <!-- Background glow effect -->
-                        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(40px);"></div>
-                        
-                        <div style="position: relative; z-index: 2;">
-                            <span style="text-transform: uppercase; letter-spacing: 2px; font-size: 12px; opacity: 0.8; font-weight: 700; display:flex; align-items:center; gap:8px;">
-                                <i class="fa-solid fa-chart-line"></i> Retorno de Inversión (ROI)
-                            </span>
-                            <h2 style="font-size: 64px; margin: 8px 0 0 0; color: white; font-weight: 900; letter-spacing:-1px;">
-                                <span id="metric-roi" style="animation: numberCounter 1s ease-out forwards;">0%</span>
-                            </h2>
-                            <p id="metric-roi-desc" style="opacity: 0.9; margin-top: 8px; max-width: 100%; font-size: 15px; line-height: 1.6;">Por cada $1 MXN invertido en tu suscripción Fidelio, tus clientes han generado <strong style="color:white; font-size:16px;">$<span id="metric-roi-ratio">0.00</span></strong> en ingresos atribuibles.</p>
-                        </div>
-                        <div style="position: relative; z-index: 2; background: rgba(255,255,255,0.05); padding: 24px;  backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 0 20px rgba(255,255,255,0.05); min-width: max-content;">
-                            <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; margin-bottom: 8px; white-space: nowrap;">Ingreso Atribuido a Lealtad</div>
-                            <div id="metric-loyalty-revenue" style="font-size: 38px; font-weight: 800; color: #34d399; display:flex; align-items:baseline; gap:4px;">
-                                +$0 <span style="font-size:16px; font-weight:600; opacity:0.8; color:white;">MXN</span>
+                <!-- 10. BRANCH BATTLE -->
+                <div x-show="activeWidgets.includes('branch_battle')" x-transition class="fidelio-card p-6 flex flex-col lg:col-span-1">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-black text-slate-900">Sucursales</h3>
+                        <i class="fa-solid fa-map-location-dot text-fidelio-500"></i>
+                    </div>
+                    <div class="flex-1 space-y-4">
+                        <div>
+                            <div class="flex justify-between items-end mb-1">
+                                <p class="text-xs font-bold text-slate-800">Norte</p>
+                                <p class="text-xs font-black text-emerald-600 font-mono">$124.5k</p>
                             </div>
-                            <div style="margin-top: 12px; display:flex; align-items:center; gap:8px; font-size: 12px; color: #34d399; background:rgba(52, 211, 153, 0.1); padding:4px 10px; border-radius:12px; width:fit-content;">
-                                <i class="fa-solid fa-arrow-trend-up"></i> +18% vs mes pasado
+                            <div class="w-full bg-slate-100 rounded-full h-3"><div class="bg-emerald-400 h-3 rounded-full" style="width: 85%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-end mb-1">
+                                <p class="text-xs font-bold text-slate-800">Centro</p>
+                                <p class="text-xs font-black text-fidelio-600 font-mono">$98.2k</p>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- LIVE TICKER -->
-                    <div class="metric-card-hover" style="background: white; border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border-glass);  display:flex; flex-direction:column;">
-                        <h3 style="color: var(--text-main); font-size: 16px; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-bolt" style="color:var(--accent-amber);"></i> Actividad en Vivo
-                        </h3>
-                        <div style="flex:1; overflow:hidden; position:relative;">
-                            <div style="position:absolute; top:0; left:0; width:100%; height:20px; background:linear-gradient(to bottom, white, transparent); z-index:2;"></div>
-                            <div style="position:absolute; bottom:0; left:0; width:100%; height:20px; background:linear-gradient(to top, white, transparent); z-index:2;"></div>
-                            <div id="live-activity-feed" style="display:flex; flex-direction:column; gap:12px; padding: 10px 0;">
-                                <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px 0;">No hay actividad reciente.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 2. MICRO METRICS GRID -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;" class="stagger-2">
-                    
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">Base de Lealtad</span>
-                            <i class="fa-solid fa-users" style="color: #7C3AED;"></i>
-                        </div>
-                        <div id="metric-adv-loyalty" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0</div>
-                        <div style="font-size: 12px !important; color: #10B981 !important; font-weight: 600 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; gap: 4px !important; width: 100% !important;">
-                            <i class="fa-solid fa-arrow-trend-up"></i> Calculando...
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">Ticket Promedio</span>
-                            <i class="fa-solid fa-receipt" style="color: #7C3AED;"></i>
-                        </div>
-                        <div id="metric-adv-ticket" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">$0.00</div>
-                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
-                            Basado en historial
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">Tasa Redención</span>
-                            <i class="fa-solid fa-fire" style="color: #F59E0B;"></i>
-                        </div>
-                        <div id="metric-adv-redemption" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0%</div>
-                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
-                            Basado en premios
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="padding: 24px !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important;">
-                        <div style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important;">
-                            <span style="white-space: nowrap !important;">Frecuencia</span>
-                            <i class="fa-solid fa-rotate-right" style="color: #06B6D4;"></i>
-                        </div>
-                        <div id="metric-adv-freq" style="font-size: 32px !important; font-weight: 800 !important; color: #111827 !important; letter-spacing: -1px !important; margin-bottom: 4px !important; width: 100% !important; text-align: left !important;">0x<span style="font-size:16px; color:#6B7280; font-weight:500;">/mes</span></div>
-                        <div style="font-size: 12px !important; color: #6B7280 !important; font-weight: 500 !important; white-space: nowrap !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important;">
-                            Últimos 30 días
+                            <div class="w-full bg-slate-100 rounded-full h-3"><div class="bg-fidelio-400 h-3 rounded-full" style="width: 65%"></div></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. BEHAVIOR & CAMPAIGNS (Advanced Data) -->
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;" class="stagger-3">
-                    
-                    <!-- HEATMAP & BEHAVIOR -->
-                    <div class="metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
-                            <div>
-                                <h3 style="color: var(--text-main); font-size: 18px; margin:0;"><i class="fa-solid fa-map-location-dot" style="color:var(--accent-violet); margin-right:8px;"></i>Mapa de Calor de Redención</h3>
-                                <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Descubre en qué horarios y días tus clientes usan más sus beneficios.</p>
+                <!-- 11. HABITS & FREQUENCY -->
+                <div x-show="activeWidgets.includes('habits')" x-transition class="fidelio-card p-6 lg:col-span-2">
+                    <div class="flex justify-between items-end mb-6">
+                        <h3 class="text-sm font-black text-slate-900">Hábitos (Usuarios Wallet)</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-4 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-rotate-left text-fidelio-500"></i>
+                                <span class="text-xs font-bold text-slate-800 uppercase tracking-widest">Retorno Promedio</span>
+                            </div>
+                            <div class="flex items-end space-x-3 mb-2">
+                                <h4 class="text-5xl font-black text-slate-900 font-mono">14</h4>
+                                <p class="text-xs font-bold text-slate-500 pb-1 uppercase tracking-widest">Días</p>
                             </div>
                         </div>
-                        
-                        <!-- Real Heatmap Grid -->
-                        <div id="heatmap-grid" style="display:flex; flex-direction:column; gap:4px;">
-                            <div style="display:flex; justify-content:center; align-items:center; padding: 40px; color:var(--text-muted); font-size:13px;">Analizando visitas...</div>
-                        </div>
-                        
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; font-size:12px; color:var(--text-muted); border-top:1px solid var(--border-glass); padding-top:16px;">
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                Menos tráfico <div style="width:60px; height:8px; background:linear-gradient(to right, rgba(76,29,149,0.1), rgba(76,29,149,1)); border-radius:4px;"></div> Más tráfico
+                        <div>
+                            <div class="flex items-center space-x-2 mb-4 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-money-bill-wave text-emerald-500"></i>
+                                <span class="text-xs font-bold text-slate-800 uppercase tracking-widest">Perfil de Gasto</span>
                             </div>
-                            <div style="font-weight:600; color:var(--accent-violet);"><i class="fa-solid fa-lightbulb"></i> Tip: Lanza campañas flash los Martes a las 6 PM.</div>
-                        </div>
-                    </div>
-                    
-                    <!-- LEADERBOARD TOP CLIENTS -->
-                    <div class="metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);  display:flex; flex-direction:column;">
-                        <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 18px;"><i class="fa-solid fa-ranking-star" style="color:var(--accent-amber); margin-right:8px;"></i>Top Clientes (Mes)</h3>
-                        
-                        <div id="leaderboard-container" style="flex:1; display:flex; flex-direction:column; gap:12px; justify-content:flex-start; align-items:stretch; color:var(--text-muted); font-size:14px;"><p style="text-align:center; padding:20px 0;">Analizando clientes top...</p></div>
-<button class="fidelio-btn-primary hover-glow" style="width:100%; margin-top:16px; font-size:13px;">Ver CRM Completo</button>
-                    </div>
-                </div>
-
-                <!-- 4. ADVANCED CAMPAIGN PERFORMANCE -->
-                <div class="metric-card-hover stagger-4" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);  margin-bottom: 24px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
-                        <h3 style="color: var(--text-main); font-size: 18px; margin:0;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-violet); margin-right:8px;"></i>Rendimiento de Campañas (Motor IA)</h3>
-                        <div style="display:flex; gap:8px;">
-                            <span style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding:4px 12px;  font-size:12px; font-weight:600;">+24% Eficiencia vs Correos Tradicionales</span>
-                        </div>
-                    </div>
-                    
-                    <div style="display:flex; flex-direction:column; gap:8px;">
-                        <div style="display:grid; grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr; align-items:center; padding:12px 16px; background:var(--bg-input); border-radius:8px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">
-                            <div>Campaña (Push a Wallet)</div>
-                            <div>Audiencia</div>
-                            <div style="text-align:right;">Apertura</div>
-                            <div style="text-align:right;">Conversión</div>
-                            <div style="text-align:right;">Retorno ($)</div>
-                        </div>
-                        <div style="display: flex; justify-content: center; align-items: center; padding: 40px 0; color: var(--text-muted); font-size: 14px;">
-                            <p style="margin: 0;">Aún no has enviado campañas.</p>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between items-end mb-1">
+                                        <p class="text-[10px] font-bold text-slate-500">Ticket Bajo (< $200)</p>
+                                        <p class="text-[9px] font-black text-slate-400">15%</p>
+                                    </div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-slate-300 h-1.5 rounded-full" style="width: 15%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-end mb-1">
+                                        <p class="text-[10px] font-bold text-fidelio-600">Ticket Medio ($200-$500)</p>
+                                        <p class="text-[9px] font-black text-fidelio-600">65%</p>
+                                    </div>
+                                    <div class="w-full bg-fidelio-50 rounded-full h-1.5"><div class="bg-fidelio-400 h-1.5 rounded-full" style="width: 65%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-end mb-1">
+                                        <p class="text-[10px] font-bold text-emerald-600">Ticket Alto (> $500)</p>
+                                        <p class="text-[9px] font-black text-emerald-600">20%</p>
+                                    </div>
+                                    <div class="w-full bg-emerald-50 rounded-full h-1.5"><div class="bg-emerald-500 h-1.5 rounded-full" style="width: 20%"></div></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5. BOTTOM CHARTS ROW -->
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;" class="stagger-5">
-                    <!-- MAIN SALES CHART -->
-                    <div class="metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
-                            <h3 style="color: var(--text-main); font-size: 18px; margin:0;"><i class="fa-solid fa-chart-area" style="color:var(--accent-violet); margin-right:8px;"></i>Adquisición vs Retención de Ventas</h3>
-                            <div style="font-size:12px; color:var(--text-muted); display:flex; gap:16px;">
-                                <span><i class="fa-solid fa-circle" style="color:var(--accent-violet); font-size:8px; margin-right:4px;"></i> Retenidas (Lealtad)</span>
-                                <span><i class="fa-solid fa-circle" style="color:var(--bg-input); font-size:8px; margin-right:4px;"></i> Nuevas (1era vez)</span>
+                <!-- 12. HEATMAP (WITH INTERACTIVE INSIGHTS PANEL) -->
+                <div x-show="activeWidgets.includes('heatmap')" x-transition class="fidelio-card p-6 lg:col-span-4">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-sm font-black text-slate-900">Matriz Térmica (Escaneos)</h3>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <span class="text-[8px] text-slate-400 font-bold uppercase tracking-widest hidden md:inline">Tráfico:</span>
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+                                <span class="text-[9px] text-slate-500 font-bold uppercase">Valle Muerto</span>
+                            </div>
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-3 h-3 rounded-full bg-fidelio-400"></div>
+                                <span class="text-[9px] text-slate-500 font-bold uppercase">Regular</span>
+                            </div>
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-6 h-6 rounded-full bg-fidelio-700 shadow-[0_0_8px_rgba(109,40,217,0.4)]"></div>
+                                <span class="text-[9px] text-slate-500 font-bold uppercase">Hora Pico</span>
                             </div>
                         </div>
-                        <div id="acquisition-chart-container" style="height: 250px; background: repeating-linear-gradient(0deg, transparent, transparent 49px, var(--border-glass) 49px, var(--border-glass) 50px); display:flex; align-items:center; justify-content:center; padding-top:20px; padding-bottom:0; overflow:hidden;">
-            <p style="color:var(--text-muted); font-size:14px; margin:0;">No hay datos de ventas recientes.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
+                        <div class="relative overflow-x-auto custom-scrollbar pb-4">
+                            <div class="min-w-[500px] grid grid-cols-[auto_1fr] gap-6 items-center">
+                                <div class="flex flex-col justify-around text-[10px] font-bold text-slate-400 h-full py-2 space-y-6 pr-4 border-r border-slate-100">
+                                    <span>08 AM</span>
+                                    <span>12 PM</span>
+                                    <span>04 PM</span>
+                                    <span>08 PM</span>
+                                </div>
+                                <div>
+                                    <div class="grid grid-cols-7 gap-2 mb-3">
+                                        <template x-for="day in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']">
+                                            <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest" x-text="day"></div>
+                                        </template>
+                                    </div>
+                                    <div class="grid grid-cols-7 gap-2 gap-y-5 justify-items-center">
+                                        <template x-for="(intensity, index) in heatmapData" :key="index">
+                                            <div class="w-10 h-10 flex items-center justify-center cursor-pointer group relative" 
+                                                 @click="analyzeCell(index % 7, Math.floor(index / 7), intensity)">
+                                                <div x-show="selectedCellIndex === index" class="absolute inset-0 rounded-full border-2 border-slate-900 animate-ping-slow opacity-20"></div>
+                                                <div class="rounded-full transition-all duration-300 group-hover:scale-150"
+                                                     :class="{
+                                                         'w-1.5 h-1.5 bg-slate-200': intensity === 0,
+                                                         'w-2 h-2 bg-fidelio-300': intensity === 1,
+                                                         'w-3 h-3 bg-fidelio-400': intensity === 2,
+                                                         'w-4 h-4 bg-fidelio-500': intensity === 3,
+                                                         'w-6 h-6 bg-fidelio-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]': intensity === 4,
+                                                         'w-8 h-8 bg-fidelio-700 shadow-[0_0_12px_rgba(109,40,217,0.5)]': intensity === 5
+                                                     }">
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t lg:border-t-0 lg:border-l border-slate-100 pt-6 lg:pt-0 lg:pl-6 flex flex-col justify-center min-h-[250px]">
+                            <div x-show="!selectedCell" class="text-center text-slate-400 flex flex-col items-center justify-center h-full">
+                                <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-3">
+                                    <i class="fa-solid fa-hand-pointer text-lg text-slate-300"></i>
+                                </div>
+                                <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Toca un horario</p>
+                                <p class="text-[10px] mt-1 px-4 leading-relaxed">Pica cualquier burbuja para ver su análisis profundo y sugerencias de IA.</p>
+                            </div>
+                            <div x-show="selectedCell" style="display: none;" class="flex flex-col h-full justify-between">
+                                <div>
+                                    <p class="text-[10px] font-bold text-fidelio-500 uppercase tracking-widest mb-1" x-text="selectedCell ? selectedCell.title : ''"></p>
+                                    <h4 class="text-xl font-black text-slate-900 mb-3" x-text="selectedCell ? selectedCell.status : ''"></h4>
+                                    <div class="bg-slate-50 rounded-xl p-4 mb-4 border border-slate-100 flex justify-between items-center">
+                                        <div>
+                                            <p class="text-[9px] font-bold text-slate-500 uppercase">Escaneos Promedio</p>
+                                            <p class="text-2xl font-mono font-black" :class="selectedCell ? selectedCell.color : ''" x-text="selectedCell ? selectedCell.scans : ''"></p>
+                                        </div>
+                                        <i class="fa-solid fa-qrcode text-slate-300 text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-5 h-5 rounded bg-fidelio-50 text-fidelio-600 flex items-center justify-center mr-2"><i class="fa-solid fa-robot text-[10px]"></i></div>
+                                        <p class="text-[10px] font-bold text-slate-700 uppercase tracking-widest">Sugerencia Estratégica</p>
+                                    </div>
+                                    <p class="text-xs text-slate-600 font-medium leading-relaxed bg-white border border-fidelio-100 p-3 rounded-lg shadow-sm" x-text="selectedCell ? selectedCell.action : ''"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </div>
-                    </div>
-                    
-                    <!-- REWARDS DISTRIBUTION -->
-                    <div class="metric-card-hover" style="background: white; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);  display:flex; flex-direction:column;">
-                        <h3 style="margin-bottom: 24px; color: var(--text-main); font-size: 18px;"><i class="fa-solid fa-gift" style="color:var(--accent-violet); margin-right:8px;"></i>Premios Más Solicitados</h3>
-                        
-                        <div style="flex:1; display:flex; flex-direction:column; gap:20px; justify-content:center; align-items:center; color:var(--text-muted);">
-            <p style="margin:0; font-size:14px;">Aún no se han redimido premios.</p>
-        </div>
-    </div>
+    </main>
+
+    
 </section>
             
             <!-- TIENDA FIDELIO TAB -->
@@ -6143,6 +6288,133 @@ function crmJewel() {
         }
     
 </script>
+
+<script>
+        function metricsJewel() {
+            return {
+                showToast: false,
+                toastMessage: '',
+                showSettings: false,
+                
+                branchOpen: false,
+                selectedBranch: 'Resumen Global (Consolidado)',
+                branches: ['Resumen Global (Consolidado)', 'Sucursal Norte', 'Sucursal Centro', 'Sucursal Polanco', 'Sucursal Condesa'],
+                
+                // --- METAS MENSUALES ---
+                monthlyGoal: 500000,
+                currentRevenue: 340500,
+                isEditingGoal: false,
+                goalInput: 500000,
+                
+                formatMoney(amount) {
+                    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
+                },
+                
+                get goalProgress() {
+                    return Math.min(100, Math.round((this.currentRevenue / this.monthlyGoal) * 100));
+                },
+                
+                saveGoal() {
+                    let newGoal = parseInt(this.goalInput);
+                    if(newGoal && newGoal > 0) {
+                        this.monthlyGoal = newGoal;
+                        this.isEditingGoal = false;
+                        this.fireToast(`Nueva meta guardada: ${this.formatMoney(this.monthlyGoal)}`);
+                    }
+                },
+
+                // --- PUSH CAMPAIGN TRACKER ---
+                pushMenuOpen: false,
+                selectedPushIndex: 0,
+                pushCampaigns: [
+                    { name: 'Promo 2x1 Martes', sent: 4500, seen: 3195, redeemed: 562 },
+                    { name: 'Doble Cashback Fin de Semana', sent: 8200, seen: 6150, redeemed: 1420 },
+                    { name: 'Alerta Zombis (>60 días)', sent: 1200, seen: 950, redeemed: 142 },
+                    { name: 'Felicidades Cumpleañeros', sent: 340, seen: 310, redeemed: 185 }
+                ],
+                
+                getPushSeenPercent() {
+                    let c = this.pushCampaigns[this.selectedPushIndex];
+                    return Math.round((c.seen / c.sent) * 100);
+                },
+                
+                getPushRedeemedPercent() {
+                    let c = this.pushCampaigns[this.selectedPushIndex];
+                    return Math.round((c.redeemed / c.sent) * 100);
+                },
+                
+                activeWidgets: ['roi', 'monthly_goal', 'virtual_economy', 'loyalty_debt', 'sleeping_money', 'cost_loyalty', 'push_perf', 'resurrected', 'vip_churn', 'branch_battle', 'habits', 'heatmap'],
+                
+                availableWidgets: [
+                    { id: 'monthly_goal', name: 'Meta Interactiva', desc: 'Edita tu meta de facturación', icon: 'fa-flag-checkered', color: 'bg-emerald-500' },
+                    { id: 'roi', name: 'Prueba de ROI', desc: 'Retorno de Inversión', icon: 'fa-chart-line', color: 'bg-fidelio-500' },
+                    { id: 'virtual_economy', name: 'Economía Prepago', desc: 'Control de pasivos', icon: 'fa-money-bill-transfer', color: 'bg-emerald-600' },
+                    { id: 'loyalty_debt', name: 'Deuda de Cashback', desc: 'Control de puntos', icon: 'fa-gift', color: 'bg-violet-500' },
+                    { id: 'sleeping_money', name: 'Dinero Dormido', desc: 'Liquidez estancada', icon: 'fa-vault', color: 'bg-fidelio-500' },
+                    { id: 'cost_loyalty', name: 'Costo de Lealtad', desc: 'Margen sacrificado en puntos', icon: 'fa-scale-balanced', color: 'bg-slate-500' },
+                    { id: 'push_perf', name: 'Análisis Push', desc: 'Embudos por campaña', icon: 'fa-paper-plane', color: 'bg-blue-400' },
+                    { id: 'resurrected', name: 'Clientes Resucitados', desc: 'Zombis recuperados', icon: 'fa-heart-pulse', color: 'bg-fidelio-600' },
+                    { id: 'vip_churn', name: 'Alerta VIP', desc: 'Ballenas en riesgo', icon: 'fa-triangle-exclamation', color: 'bg-orange-500' },
+                    { id: 'branch_battle', name: 'Escaneos por Sucursal', desc: 'Ventas comprobadas', icon: 'fa-map-location-dot', color: 'bg-blue-500' },
+                    { id: 'habits', name: 'Hábitos de Consumo', desc: 'Frecuencia de visitas', icon: 'fa-rotate-left', color: 'bg-amber-500' },
+                    { id: 'heatmap', name: 'Matriz Térmica', desc: 'Tráfico de escaneos real', icon: 'fa-fire', color: 'bg-fidelio-900' }
+                ],
+                
+                heatmapData: [
+                    2, 1, 1, 3, 4, 2, 1, 
+                    3, 2, 2, 4, 5, 5, 4, 
+                    0, 0, 1, 2, 3, 4, 3, 
+                    3, 2, 3, 5, 5, 5, 2  
+                ],
+
+                selectedCellIndex: null,
+                selectedCell: null,
+                
+                analyzeCell(dayIndex, hourIndex, intensity) {
+                    this.selectedCellIndex = dayIndex + (hourIndex * 7);
+                    
+                    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                    const hours = ['08:00 AM', '12:00 PM', '04:00 PM', '08:00 PM'];
+                    const labels = ['Valle Muerto', 'Tráfico Muy Bajo', 'Flujo Regular', 'Movimiento Constante', 'Hora Pico', 'Saturación Total'];
+                    const scans = [0, 12, 45, 89, 150, 230];
+                    const colors = ['text-slate-400', 'text-fidelio-400', 'text-fidelio-500', 'text-fidelio-600', 'text-fidelio-700', 'text-rose-600'];
+                    
+                    const actions = [
+                        'Horario completamente muerto. Ideal para enviar una campaña Push de "Doble Cashback" 2 horas antes y provocar tráfico.',
+                        'Flujo mínimo. Lanza una alerta de liquidación relámpago a usuarios cercanos a la sucursal.',
+                        'Tráfico estable. Comportamiento predecible, no se recomienda inyectar promociones adicionales aquí.',
+                        'Buen volumen de clientes. Excelente momento para enfocar a los cajeros en up-selling o cruzar productos.',
+                        'Horario de altísima demanda. El objetivo es velocidad; apaga las recompensas para agilizar la fila.',
+                        'Capacidad operativa al límite. Sugiere a los usuarios VIP que utilicen "Pide por Adelantado" en la Wallet.'
+                    ];
+                    
+                    this.selectedCell = {
+                        title: `${days[dayIndex]} a las ${hours[hourIndex]}`,
+                        status: labels[intensity],
+                        scans: scans[intensity],
+                        action: actions[intensity],
+                        color: colors[intensity]
+                    };
+                },
+
+                toggleWidget(id) {
+                    if (this.activeWidgets.includes(id)) {
+                        this.activeWidgets = this.activeWidgets.filter(w => w !== id);
+                    } else {
+                        this.activeWidgets.push(id);
+                    }
+                },
+
+                fireToast(message) {
+                    this.toastMessage = message;
+                    this.showToast = true;
+                    setTimeout(() => {
+                        this.showToast = false;
+                    }, 4000);
+                }
+            }
+        }
+    </script>
 </body>
 
 
