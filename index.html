@@ -2227,11 +2227,8 @@ aside {
             </section>
 
             <!-- CRM TAB -->
-            <section id="tab-crm" class="tab-content">
-<div class="h-full w-full flex flex-col bg-slate-50 relative" x-data="crmJewel()" style="min-height: 80vh;">
-
-
-    <!-- Toast Notification -->
+            <section id="tab-crm" class="tab-content" x-data="crmJewel()">
+<!-- Toast Notification -->
     <div x-show="showToast" style="display: none;" 
          x-transition:enter="transition ease-out duration-300" 
          x-transition:enter-start="opacity-0 transform -translate-y-8" 
@@ -2473,8 +2470,8 @@ aside {
 
             <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50">
                 <div class="flex px-6 pt-4 space-x-4 border-b border-slate-200">
-                    <button @click="view360 = 'card'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition border-0 border-solid bg-transparent cursor-pointer" :class="view360 === 'card' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Tarjeta Física</button>
-                    <button @click="view360 = 'history'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition border-0 border-solid bg-transparent cursor-pointer" :class="view360 === 'history' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Historial Real</button>
+                    <button @click="view360 = 'card'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition" :class="view360 === 'card' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Tarjeta Física</button>
+                    <button @click="view360 = 'history'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition" :class="view360 === 'history' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Historial Real</button>
                 </div>
 
                 <div class="p-6">
@@ -2605,10 +2602,7 @@ aside {
     </main>
 
     
-</div>
-</section>
-
-            <!-- BRANCHES TAB -->
+</section><!-- BRANCHES TAB -->
                         <section id="tab-branches" class="tab-content" x-data="branchesJewel()">
 <!-- Toast AI -->
     <div x-show="showToast" style="display: none;" 
