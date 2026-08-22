@@ -935,6 +935,16 @@ aside {
     }
     
     /* The Ultimate Standard Card */
+    
+    /* Standardize Dark Cards */
+    .fidelio-dark-card {
+        border-radius: 28px !important;
+        box-shadow: 0 15px 40px -10px rgba(0,0,0,0.2) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+    }
+
     .fidelio-card, .metric-card, .content-panel, .fidelio-crisp-card {
         background: #FFFFFF !important;
         border: 1px solid #F1F5F9 !important;
@@ -4782,7 +4792,7 @@ aside {
 <!-- MASONRY GRID SYSTEM (THE 12 ABSOLUTE KILLER WIDGETS) -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 <!-- 1. The ROI Prover -->
-<div class="fidelio-card p-8 md:col-span-2 relative overflow-hidden bg-gradient-to-br from-fidelio-900 to-slate-900 text-white border-none shadow-xl group rounded-[2rem]" x-show="activeWidgets.includes('roi')" x-transition="">
+<div class="fidelio-dark-card p-8 md:col-span-2 relative overflow-hidden bg-gradient-to-br from-fidelio-900 to-slate-900 text-white border-none shadow-xl group rounded-[2rem]" x-show="activeWidgets.includes('roi')" x-transition="">
 <div class="absolute -right-10 -top-10 w-40 h-40 bg-fidelio-500 rounded-full mix-blend-screen filter blur-3xl opacity-50 group-hover:opacity-70 transition"></div>
 <div class="relative z-10">
 <div class="flex justify-between items-start mb-6">
@@ -4904,7 +4914,7 @@ aside {
 </div>
 </div>
 <!-- 7. FUNNEL DE CAMPAÑAS PUSH (UPGRADED + INTERACTIVE) -->
-<div class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-none bg-slate-900 text-white rounded-[2rem]" x-show="activeWidgets.includes('push_perf')" x-transition="">
+<div class="fidelio-dark-card p-8 flex flex-col relative md:col-span-1 border-none bg-slate-900 text-white rounded-[2rem]" x-show="activeWidgets.includes('push_perf')" x-transition="">
 <div class="flex justify-between items-start mb-4">
 <p class="text-sm font-black uppercase tracking-widest text-blue-400"><i class="fa-solid fa-paper-plane mr-1"></i> Análisis Push</p>
 <!-- Alpine Dropdown for Campaigns -->
