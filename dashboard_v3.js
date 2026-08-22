@@ -1604,7 +1604,8 @@ window.updateUnifiedDesc = function(val) {
         document.body.removeChild(link);
     };
 
-    window.uploadBranchesCSV = async function(event) {
+    window.uploadBranchesCSV_OLD = async function(event) {
+
         if (!window.merchantSession) return window.showToast('Inicia sesión primero', 'error');
         const file = event.target.files[0];
         if (!file) return;
@@ -1699,6 +1700,8 @@ window.updateUnifiedDesc = function(val) {
     }
 
     function renderBranches() {
+    return; // DISABLED FOR ALPINE PROTOTYPE
+
         try {
             const dynBranchesContainer = document.getElementById('branches-list-container');
             const dynBtnAddBranchModal = document.getElementById('btn-add-branch-modal');

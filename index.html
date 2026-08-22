@@ -2593,11 +2593,11 @@ aside {
 
                 <div class="flex items-center space-x-3 w-full sm:w-auto">
                     <!-- Descargar Layout -->
-                    <button @click="fireToast('Descargando plantilla: layout_coordenadas.csv...')" class="text-slate-500 hover:text-slate-900 text-xs font-bold px-3 py-3 transition underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 flex items-center shrink-0">
-                        <i class="fa-solid fa-cloud-arrow-down mr-1.5 text-[10px]"></i> Layout CSV
+                    <button @click="fireToast('Descargando plantilla: layout_coordenadas.csv...')" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold px-4 py-3 rounded-2xl transition shadow-sm flex items-center shrink-0">
+                        <i class="fa-solid fa-cloud-arrow-down mr-2"></i> Descargar Layout
                     </button>
                     <!-- Botón Importar CSV -->
-                    <button @click="uploadBranchesCSV()" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold px-5 py-3 rounded-2xl transition shadow-sm flex items-center shrink-0">
+                    <button @click="fireToast('Abriendo selector de archivos...')" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold px-5 py-3 rounded-2xl transition shadow-sm flex items-center shrink-0">
                         <i class="fa-solid fa-file-import text-slate-400 mr-2 text-sm"></i> Subir Nodos
                     </button>
                     <!-- Botón Nueva Sucursal -->
