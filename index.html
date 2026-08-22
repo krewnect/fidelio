@@ -902,6 +902,21 @@ aside {
 .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
 </style>
+<style id="home-jewel-style">
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap");
+        body { font-family: "Inter", sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .font-mono { font-family: "JetBrains Mono", monospace; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 10px; }
+
+@keyframes mutateColors {
+    0% { background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 100%); border-color: #cbd5e1; }
+    100% { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-color: #334155; }
+}
+.animate-mutate { animation: mutateColors 6s ease-in-out infinite alternate; }
+
+</style>
 </head>
 <body>
 
@@ -1100,129 +1115,266 @@ aside {
             </section>
 
             <!-- HOME TAB (ANALYTICS) -->
-            <section id="tab-home" class="tab-content active">
+            <section id="tab-home" class="tab-content active" x-data="dashboardJewel()">
+<!-- Toast Copiado -->
+    <div x-show="showToast" style="display: none;" 
+         x-transition class="fixed top-6 right-6 z-50 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
+        <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center"><i class="fa-solid fa-check text-emerald-400"></i></div>
+        <p class="text-sm font-bold">Enlace copiado al portapapeles</p>
+    </div>
+
+    <!-- Toast Salvar VIP -->
+    <div x-show="showSaveToast" style="display: none;" 
+         x-transition class="fixed top-6 right-6 z-50 bg-fidelio-600 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
+        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-wand-magic-sparkles text-white"></i></div>
+        <div>
+            <p class="text-xs font-black uppercase tracking-widest mb-0.5">Piloto Automático</p>
+            <p class="text-sm font-medium">Recompensa enviada al VIP en riesgo.</p>
+        </div>
+    </div>
+
+    <!-- MAIN SCROLLABLE AREA -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 relative">
+        <!-- Fondos Ambientales -->
+        <div class="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-fidelio-100/50 to-transparent pointer-events-none -z-10"></div>
+        
+        <div class="max-w-[1400px] mx-auto space-y-8">
+
+            <!-- HEADER removed per user request -->
+
+            <!-- THE GROWTH ENGINE (ONBOARDING & QR HERO BLOCKS) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
-                <!-- PORTAL PUBLICO -->
-                <div class="content-panel" style="background: #FFFFFF !important; border: 1px solid #C4B5FD !important; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; box-shadow: 0 4px 20px rgba(139,92,246,0.08) !important;">
-                    <div style="flex: 1; min-width: 280px;">
-                        <h2 style="font-size: 18px; margin-bottom: 8px; font-weight: 700; color: #4C1D95; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-earth-americas" style="color: #8B5CF6;"></i> Tu Portal Público</h2>
-                        <p style="color: #6B7280; font-size: 14px; margin: 0; max-width: 500px; line-height:1.6;">Comparte este enlace con tus clientes para que se registren y descarguen su tarjeta en Apple o Google Wallet.</p>
-                    </div>
-                    <div style="display: flex; gap: 12px; align-items: center; background: #F9FAFB; padding: 8px; border-radius: 12px; border: 1px solid #E5E7EB;">
-                        <div style="padding: 0 12px; font-family: monospace; font-size: 14px; color: #6D28D9; font-weight: 600;" id="landing-link-display">
-                            fideliorewards.com/tu-negocio
+                <!-- 1. Portal Público (Onboarding) + TARJETAS VIVAS -->
+                <div class="bg-slate-900 rounded-[2.5rem] p-8 lg:p-10 relative overflow-hidden flex flex-col justify-between shadow-2xl group border border-slate-800">
+                    <div class="absolute -right-20 -top-20 w-80 h-80 bg-fidelio-500 rounded-full blur-[80px] opacity-40 transition-opacity group-hover:opacity-60 pointer-events-none"></div>
+                    
+                    <div class="relative z-10 mb-8 flex justify-between items-start">
+                        <div>
+                            <div class="inline-flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full mb-4 border border-white/5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="text-[10px] font-bold text-white uppercase tracking-widest">Portal Activo</span>
+                            </div>
+                            <h2 class="text-4xl font-black text-white leading-tight mb-2">Tu Enlace de<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-fidelio-400 to-pink-400">Captación Digital</span></h2>
+                            <p class="text-sm font-medium text-slate-300 max-w-sm mb-4">Envía este link para que tus clientes descarguen su tarjeta nativa a Apple Wallet.</p>
                         </div>
-                        <button class="fidelio-btn-primary" style="padding: 8px 16px; font-size:13px;" onclick="copyLandingLink()">
-                            <i class="fa-regular fa-copy"></i> Copiar
+
+                        <!-- Mini Demo: Tarjetas Vivas -->
+                        <div class="hidden md:flex flex-col items-center">
+                            <div class="w-16 h-24 rounded-xl border-2 animate-mutate shadow-2xl flex flex-col justify-between p-2 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-white/10 mix-blend-overlay"></div>
+                                <div class="w-4 h-4 rounded-full bg-fidelio-500/50"></div>
+                                <div class="w-full h-1 bg-slate-500/20 rounded"></div>
+                            </div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-3 text-center">Tarjetas Vivas<br>(APNs Activo)</p>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/10 flex items-center justify-between">
+                        <div class="flex items-center px-4 overflow-hidden">
+                            <i class="fa-solid fa-link text-fidelio-400 mr-3"></i>
+                            <p class="text-white font-mono text-sm truncate">fideliorewards.com/tu-negocio</p>
+                        </div>
+                        <button @click="copyLink()" class="bg-white hover:bg-slate-200 text-slate-900 px-6 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition shadow-lg shrink-0 flex items-center">
+                            Copiar Link
                         </button>
                     </div>
                 </div>
 
-                <div class="workspace-header">
-                    <div>
-                        <div class="workspace-eyebrow">DASHBOARD</div>
-                        <h1>Rendimiento en Vivo</h1>
-                        <p>Métricas financieras y comportamiento de tus clientes en tiempo real.</p>
-                    </div>
-                    <button class="fidelio-btn-secondary" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Actualizar</button>
-                </div>
-
-                <!-- GEMINI DASHBOARD INSIGHTS -->
-                <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 24px; padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);" class="gemini-insight-panel content-panel">
-                    <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.05; filter: grayscale(1);">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 800; color: #111827; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-sparkles" style="color: #7C3AED;"></i> Asistente Gemini (Resumen Directivo)
-                    </h3>
-                    <p id="gemini-dashboard-text" style="margin: 0; font-size: 15px; color: #4B5563; line-height: 1.6; margin-bottom: 16px;">
-                        Presiona el botón para que Gemini analice el rendimiento general de tus operaciones y te brinde recomendaciones.
-                    </p>
-                    <button class="fidelio-btn-primary" onclick="if(window.fetchGeminiDashboardInsights) window.fetchGeminiDashboardInsights()" style="background:#7C3AED; color:white; border:none; border-radius:12px; padding:10px 20px; font-weight:600; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analizar Rendimiento
-                    </button>
-                </div>
-
-                <!-- KPI GRID -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 24px;">
-                    <div class="stat-card">
-                        <div style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between;">
-                            <span>Ventas Impulsadas</span>
-                            <i class="fa-solid fa-sack-dollar" style="color: #10B981;"></i>
+                <!-- 2. Display QR Físico -->
+                <div class="bg-gradient-to-br from-white to-slate-50 border border-slate-200 rounded-[2.5rem] p-8 lg:p-10 relative overflow-hidden shadow-sm flex flex-col md:flex-row items-center gap-8 group">
+                    <div class="flex-1 relative z-10">
+                        <div class="inline-flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full mb-4 border border-slate-200">
+                            <i class="fa-solid fa-print text-slate-400 text-[10px]"></i>
+                            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Material de Mostrador</span>
                         </div>
-                        <div id="metric-sales" style="font-size: 32px; font-weight: 800; color: #111827; letter-spacing: -1px;">$0.00</div>
-                        <div style="font-size: 13px; color: #10B981; font-weight: 600; margin-top: 8px;"><i class="fa-solid fa-arrow-trend-up"></i> Total Histórico</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between;">
-                            <span>Escaneos Totales</span>
-                            <i class="fa-solid fa-barcode" style="color: #7C3AED;"></i>
-                        </div>
-                        <div id="metric-scans" style="font-size: 32px; font-weight: 800; color: #111827; letter-spacing: -1px;">0</div>
-                        <div style="font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 8px;">Visitas registradas</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between;">
-                            <span>Clientes Activos</span>
-                            <i class="fa-solid fa-users" style="color: #3B82F6;"></i>
-                        </div>
-                        <div id="metric-customers" style="font-size: 32px; font-weight: 800; color: #111827; letter-spacing: -1px;">0</div>
-                        <div style="font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 8px;">En tu base de datos</div>
-                    </div>
-                </div>
-
-                <!-- 2 COLUMN LAYOUT -->
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
-                    <div class="content-panel">
-                        <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 24px 0; display:flex; justify-content:space-between; align-items:center;">
-                            <span>Actividad Reciente</span>
-                            <button class="fidelio-btn-secondary" style="padding:6px 12px; font-size:12px;">Ver todo</button>
-                        </h3>
-                        <div id="activity-feed" style="display: flex; flex-direction: column; gap: 16px;">
-                            <div style="text-align: center; color: #9CA3AF; padding: 40px 0; font-size: 14px;">Aún no hay actividad registrada hoy.</div>
-                        </div>
-                    </div>
-                    
-                    <div class="content-panel">
-                        <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 24px 0;">Atajos Rápidos</h3>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            <button onclick="switchTab('campaigns')" style="width:100%; text-align:left; background:#F9FAFB; border:1px solid #E5E7EB; padding:16px; border-radius:12px; cursor:pointer; font-weight:600; color:#374151; display:flex; align-items:center; gap:12px; transition:all 0.2s;">
-                                <div style="width:32px; height:32px; background:#E0E7FF; color:#4F46E5; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-paper-plane"></i></div>
-                                Enviar Campaña
-                            </button>
-                            <button onclick="switchTab('crm')" style="width:100%; text-align:left; background:#F9FAFB; border:1px solid #E5E7EB; padding:16px; border-radius:12px; cursor:pointer; font-weight:600; color:#374151; display:flex; align-items:center; gap:12px; transition:all 0.2s;">
-                                <div style="width:32px; height:32px; background:#DCFCE7; color:#16A34A; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-user-plus"></i></div>
-                                Añadir Cliente
-                            </button>
-                            <button onclick="switchTab('stripe')" style="width:100%; text-align:left; background:#F9FAFB; border:1px solid #E5E7EB; padding:16px; border-radius:12px; cursor:pointer; font-weight:600; color:#374151; display:flex; align-items:center; gap:12px; transition:all 0.2s;">
-                                <div style="width:32px; height:32px; background:#FEF3C7; color:#D97706; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-sack-dollar"></i></div>
-                                Cobrar en Wallet
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="content-panel" style="margin-top: 24px;">
-                        <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 16px 0; display:flex; justify-content:space-between; align-items:center;">
-                            <span>Código QR Universal</span>
-                            <i class="fa-solid fa-qrcode" style="color: #6B7280;"></i>
-                        </h3>
-                        <p style="font-size: 13px; color: #6B7280; margin-bottom: 20px; line-height: 1.5;">Imprime y coloca este QR en mostrador. Los clientes elegirán qué tarjeta descargar.</p>
+                        <h2 class="text-4xl font-black text-slate-900 leading-tight mb-2">Código QR<br>Imprimible</h2>
+                        <p class="text-sm font-medium text-slate-500 mb-8 max-w-xs">Descarga tu QR en alta resolución, imprímelo en un acrílico y ponlo en tu caja para captar tráfico físico.</p>
                         
-                        <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 16px;">
-                            <img id="merchant-qr-preview" alt="Tu Código QR" style="width: 160px; height: 160px; mix-blend-mode: multiply; opacity: 0.9;" src="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=cargando">
-                        </div>
-
-                        <button id="btn-download-merchant-qr" class="fidelio-btn-primary" style="width: 100%; justify-content: center;">
-                            <i class="fa-solid fa-cloud-arrow-down" style="margin-right: 8px;"></i> Descargar Alta Calidad
+                        <button class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition shadow-lg flex items-center">
+                            <i class="fa-solid fa-cloud-arrow-down mr-2 text-fidelio-400"></i> Descargar Kit (PDF)
                         </button>
+                    </div>
+                    
+                    <!-- QR Mockup visual -->
+                    <div class="w-48 h-48 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 flex items-center justify-center relative transform group-hover:scale-105 transition-transform duration-500 shrink-0">
+                        <!-- Simulated Acrylic glare -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/80 to-transparent rounded-3xl z-20"></div>
+                        <i class="fa-solid fa-qrcode text-[8rem] text-slate-900 relative z-10"></i>
+                        
+                        <!-- Mini Apple/Google icons under QR -->
+                        <div class="absolute -bottom-4 bg-slate-900 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-lg z-30 flex items-center space-x-2">
+                            <i class="fa-brands fa-apple"></i>
+                            <span>Wallet</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THE PULSE (3 MASSIVE KPI CARDS) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Ventas Impulsadas -->
+                <div class="bg-white border border-slate-200/60 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-emerald-50 rounded-full group-hover:scale-[2] transition-transform duration-700 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center">
+                                <i class="fa-solid fa-chart-line text-xl"></i>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-lg flex items-center"><i class="fa-solid fa-arrow-trend-up mr-1"></i> 12%</span>
+                        </div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Ventas Impulsadas</p>
+                        <p class="text-4xl font-black font-mono text-slate-900 tracking-tighter">$142,500<span class="text-xl text-slate-300">.00</span></p>
+                    </div>
+                </div>
+                
+                <!-- Escaneos Totales -->
+                <div class="bg-white border border-slate-200/60 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-fidelio-50 rounded-full group-hover:scale-[2] transition-transform duration-700 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-fidelio-50 text-fidelio-500 flex items-center justify-center">
+                                <i class="fa-solid fa-qrcode text-xl"></i>
+                            </div>
+                        </div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Tráfico Físico (Escaneos)</p>
+                        <p class="text-4xl font-black font-mono text-slate-900 tracking-tighter">4,821</p>
                     </div>
                 </div>
 
-            </section>
-            
-            <!-- BUILDER TAB -->
+                <!-- Clientes CRM -->
+                <div class="bg-white border border-slate-200/60 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-blue-50 rounded-full group-hover:scale-[2] transition-transform duration-700 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center">
+                                <i class="fa-solid fa-users text-xl"></i>
+                            </div>
+                            <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded-lg flex items-center"><i class="fa-solid fa-plus mr-1"></i> 24 hoy</span>
+                        </div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Base de Datos CRM</p>
+                        <p class="text-4xl font-black font-mono text-slate-900 tracking-tighter">1,204</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 3: INTELLIGENCE, SOCIAL & PREDICTIVE RADAR -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Activity Feed (Col 1) -->
+                <div class="lg:col-span-4 bg-white border border-slate-200/60 rounded-[2rem] p-6 shadow-sm flex flex-col h-[400px]">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900">Actividad</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Feed de Sucursal</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+                            <i class="fa-solid fa-satellite-dish"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4">
+                        <template x-for="act in feed" :key="act.id">
+                            <div class="flex items-start space-x-3 p-3 hover:bg-slate-50 rounded-2xl transition border border-transparent hover:border-slate-100">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                                    <i class="fa-solid text-xs" :class="act.icon"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-slate-800" x-html="act.text"></p>
+                                    <p class="text-[10px] font-bold text-slate-400 mt-1" x-text="act.time"></p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Top Fans Leaderboard (Col 2) -->
+                <div class="lg:col-span-4 bg-white border border-slate-200/60 rounded-[2rem] p-6 shadow-sm flex flex-col h-[400px]">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900">Top Fans</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ranking de valor</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-3">
+                        <template x-for="(fan, index) in topFans" :key="fan.id">
+                            <div class="flex items-center justify-between p-3 border border-slate-100 bg-slate-50/50 rounded-2xl hover:bg-white hover:shadow-sm transition-all">
+                                <div class="flex items-center space-x-3">
+                                    <div class="relative w-8 h-8 flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-medal text-2xl" 
+                                           :class="index === 0 ? 'text-amber-400 drop-shadow-md' : (index === 1 ? 'text-slate-300' : (index === 2 ? 'text-amber-700' : 'hidden'))"></i>
+                                        <div x-show="index > 2" class="w-6 h-6 rounded-full bg-slate-200 text-slate-500 font-black text-[10px] flex items-center justify-center" x-text="index + 1"></div>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-slate-900 truncate max-w-[90px]" x-text="fan.name"></p>
+                                        <p class="text-[9px] font-bold text-slate-500"><span x-text="fan.visits"></span> visitas</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-black font-mono text-emerald-600" x-text="'$' + fan.spent.toLocaleString()"></p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- RADAR PREDICTIVO DE FUGAS (Col 3 - The New Blowmind Feature) -->
+                <div class="lg:col-span-4 bg-slate-900 border border-rose-500/30 rounded-[2rem] p-6 shadow-xl relative overflow-hidden flex flex-col h-[400px] group">
+                    <!-- Red pulsing background -->
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-rose-500 rounded-full blur-[60px] opacity-20 animate-pulse"></div>
+                    
+                    <div class="flex justify-between items-center mb-6 relative z-10">
+                        <div>
+                            <h3 class="text-lg font-black text-white">Radar Predictivo</h3>
+                            <p class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Alerta de Fuga VIP</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center border border-rose-500/30 relative">
+                            <i class="fa-solid fa-satellite-dish animate-pulse"></i>
+                            <span class="absolute -top-1 -right-1 w-3 h-3 bg-rose-500 rounded-full border-2 border-slate-900 animate-ping"></span>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 flex-1 flex flex-col">
+                        <p class="text-xs font-medium text-slate-300 mb-4">La IA detectó una desviación severa en la frecuencia de visita de <strong class="text-white">2 clientes VIP</strong>.</p>
+                        
+                        <div class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-2">
+                            <!-- Churn Card 1 -->
+                            <div class="bg-slate-800/80 backdrop-blur border border-rose-900/50 rounded-2xl p-4 transition hover:border-rose-500/50">
+                                <div class="flex justify-between items-start mb-2">
+                                    <p class="text-sm font-black text-white">Carlos Mendoza</p>
+                                    <span class="text-[9px] font-bold bg-rose-500/20 text-rose-400 px-2 py-1 rounded">-14 días</span>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mb-3">Probabilidad de abandono: <span class="text-rose-400 font-bold">87%</span></p>
+                                <button @click="saveVIP()" class="w-full bg-white hover:bg-fidelio-50 text-slate-900 text-[9px] font-black uppercase tracking-widest py-2.5 rounded-xl transition flex items-center justify-center shadow-lg">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-2 text-fidelio-500"></i> Salvar (Regalar $50)
+                                </button>
+                            </div>
+
+                            <!-- Churn Card 2 -->
+                            <div class="bg-slate-800/80 backdrop-blur border border-amber-900/50 rounded-2xl p-4 transition hover:border-amber-500/50">
+                                <div class="flex justify-between items-start mb-2">
+                                    <p class="text-sm font-black text-white">Sofía Ruiz</p>
+                                    <span class="text-[9px] font-bold bg-amber-500/20 text-amber-400 px-2 py-1 rounded">-9 días</span>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mb-3">Probabilidad de abandono: <span class="text-amber-400 font-bold">65%</span></p>
+                                <button @click="saveVIP()" class="w-full bg-slate-700 hover:bg-slate-600 text-white text-[9px] font-black uppercase tracking-widest py-2.5 rounded-xl transition flex items-center justify-center">
+                                    <i class="fa-regular fa-paper-plane mr-2"></i> Push Recordatorio
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    
+</section><!-- BUILDER TAB -->
             <section id="tab-builder" class="tab-content">
                 <style>
                     /* Premium Clean Builder Redesigned */
@@ -7016,6 +7168,40 @@ function crmJewel() {
                     this.selectedProduct = null;
                     this.paymentMethod = null;
                     // Mantenemos al cliente seleccionado para agilizar si hace múltiples operaciones.
+                }
+            }
+        }
+    </script>
+
+<script>
+        function dashboardJewel() {
+            return {
+                showToast: false,
+                showSaveToast: false,
+                
+                feed: [
+                    { id: 1, icon: 'fa-qrcode', text: '<span class="font-bold">Juan Pérez</span> escaneó en Polanco.', time: 'Hace 2 mins' },
+                    { id: 2, icon: 'fa-wallet text-emerald-500', text: '<span class="font-bold">Ana Ruiz</span> fondeó $500.', time: 'Hace 15 mins' },
+                    { id: 3, icon: 'fa-ticket text-fidelio-500', text: '<span class="font-bold">Carlos M.</span> redimió pase.', time: 'Hace 42 mins' },
+                    { id: 4, icon: 'fa-user-plus text-blue-500', text: 'Nuevo cliente por IG.', time: 'Hace 1 hora' }
+                ],
+                
+                topFans: [
+                    { id: 1, name: 'Laura Gómez', visits: 42, spent: 14500 },
+                    { id: 2, name: 'Roberto Ordóñez', visits: 38, spent: 12200 },
+                    { id: 3, name: 'Sofía Mendizabal', visits: 35, spent: 9800 },
+                    { id: 4, name: 'Alejandro Torres', visits: 29, spent: 7400 },
+                    { id: 5, name: 'Diana Reyes', visits: 22, spent: 5100 }
+                ],
+                
+                copyLink() {
+                    this.showToast = true;
+                    setTimeout(() => { this.showToast = false; }, 3000);
+                },
+
+                saveVIP() {
+                    this.showSaveToast = true;
+                    setTimeout(() => { this.showSaveToast = false; }, 3500);
                 }
             }
         }
