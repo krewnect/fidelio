@@ -159,7 +159,7 @@ window.loadCampaigns = async function() {
         list.innerHTML = data.campaigns
             .filter(c => !['membership', 'multipass', 'certificates'].includes(c.type))
             .map(c => `
-            <div class="campaign-magic-card" style="position:relative; width: 100%; max-width: 340px; height: 180px; border-radius: 20px; cursor:pointer; perspective: 1000px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onclick="openCampaignHub('${c.id}')">
+            <div class="campaign-magic-card" style="position:relative; width: 100%; height: 190px; border-radius: 20px; cursor:pointer; perspective: 1000px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onclick="openCampaignHub('${c.id}')">
                 
                 <!-- The actual card using strict Fidelio Brand Colors (no ugly user colors here) -->
                 <div class="campaign-magic-inner" style="background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%); height: 100%; border-radius: 20px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.2);">

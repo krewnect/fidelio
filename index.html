@@ -994,20 +994,28 @@ aside {
         <main class="app-workspace">
 
             <!-- CAMPAIGNS TAB -->
-            <section id="tab-campaigns" class="tab-content">
-                <div class="workspace-header">
+            <section id="tab-campaigns" class="tab-content w-full max-w-7xl mx-auto p-4 md:p-8">
+                <!-- Header Jewel -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10">
                     <div>
-                        <div class="workspace-eyebrow">TARJETAS</div>
-                        <h1>Mis Tarjetas</h1>
-                        <p>Selecciona una tarjeta para editarla o crea una nueva.</p>
+                        <p class="text-[10px] font-bold text-fidelio-600 uppercase tracking-widest mb-2">Tarjetas</p>
+                        <h1 class="text-3xl font-black tracking-tight text-slate-900">Mis Tarjetas</h1>
+                        <p class="text-sm font-medium text-slate-500 mt-2">Selecciona una tarjeta para editarla o crea una nueva.</p>
                     </div>
-                    <button class="fidelio-btn-primary" onclick="window.forceNewCampaignFlow()"><i class="fa-solid fa-wand-magic-sparkles"></i> Crear Nueva Tarjeta</button>
+                    <button class="bg-gradient-to-r from-fidelio-600 to-fidelio-500 hover:from-fidelio-500 hover:to-fidelio-400 text-white shadow-lg shadow-fidelio-500/30 hover:shadow-fidelio-500/50 transition-all px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="window.forceNewCampaignFlow()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Crear Nueva Tarjeta
+                    </button>
                 </div>
-                <div id="campaigns-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
-                    <div id="campaigns-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #f8fafc;  border: 2px dashed #cbd5e1;">
-                        <div style="font-size: 80px; margin-bottom: 20px; animation: floatPhone 3s infinite alternate;">👻</div>
-                        <h3 style="color: #1e293b; font-size: 20px; font-weight: 800; margin-bottom: 10px;">Todo está muy tranquilo...</h3>
-                        <p style="color: #64748b; font-size: 15px; max-width: 400px; margin: 0 auto;">No tienes campañas activas. ¡Anima a tus clientes a visitarte creando tu primera tarjeta Wallet!</p>
+                
+                <!-- Contenedor Glassmorphism -->
+                <div class="bg-white/60 backdrop-blur-xl border border-white/80 rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] min-h-[400px]">
+                    <div id="campaigns-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <!-- Empty State Jewel -->
+                        <div id="campaigns-empty-state" class="col-span-full flex flex-col items-center justify-center text-center py-20 opacity-70">
+                            <i class="fa-solid fa-ghost text-6xl text-slate-300 mb-6 animate-pulse"></i>
+                            <h3 class="text-xl font-black text-slate-800 mb-2">Todo está muy tranquilo...</h3>
+                            <p class="text-sm font-medium text-slate-500 max-w-sm">No tienes campañas activas. ¡Anima a tus clientes a visitarte creando tu primera tarjeta Wallet!</p>
+                        </div>
                     </div>
                 </div>
             </section>
