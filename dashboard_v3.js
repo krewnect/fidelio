@@ -6733,7 +6733,13 @@ window.openCampaignHub = async function(id) {
         document.getElementById('hub-stat-rewards').textContent = rewards.toLocaleString();
 
         // Setup Buttons
-        document.getElementById('hub-btn-edit').onclick = () => window.selectCampaign(id);
+        document.getElementById('hub-btn-edit').onclick = () => {
+            if(typeof window.showToast === 'function') {
+                window.showToast("El nuevo Editor de Tarjetas está en construcción. ¡Pronto disponible!", "info");
+            } else {
+                alert("El nuevo Editor de Tarjetas está en construcción. ¡Pronto disponible!");
+            }
+        };
         document.getElementById('hub-btn-push').onclick = () => {
             hub.style.display = 'none';
             // Route to marketing
