@@ -1,1231 +1,928 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- SECURITY: Strict Content Security Policy -->
-        <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Escáner Fidelio</title>
-    
-    <!-- PWA / Native App tags -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#f9fafb">
-    <link rel="apple-touch-icon" href="./fidelio_logo_purple.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Escáner">
-    
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- QR Code Scanner Library -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <style>
-        /* ==========================================
-           1. CORE DESIGN TOKENS (Premium Light POS)
-           ========================================== */
-        :root {
-            --bg-main: #f3f4f6; /* Very soft gray */
-            --bg-card: #ffffff; /* White panels */
-            --border-soft: rgba(0,0,0,0.06);
-            --accent-violet: #8B5CF6;
-            --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
-            
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            
-            --success: #10B981;
-            --success-bg: rgba(16, 185, 129, 0.1);
-            --warning: #F59E0B;
-            --warning-bg: rgba(245, 158, 11, 0.1);
-            --danger: #EF4444;
-            --danger-bg: rgba(239, 68, 68, 0.1);
-            
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-            --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Header */
-        header {
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-soft);
-            z-index: 10;
-        }
-        .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
-        
-        /* Main Grid (POS Split View) */
-        .pos-layout {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 20px;
-            padding: 20px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
-            overflow: hidden;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            height: calc(100vh - 70px); /* Restar el alto aproximado del header */
-        }
-
-        /* Mobile & Tablet adaptation (iOS App Style) */
-        @media (max-width: 900px) {
-            body {
-                height: auto;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
-            }
-            .pos-layout {
-                display: flex;
-                flex-direction: column;
-                height: auto;
-                overflow: visible;
-                padding: 16px;
-                padding-bottom: calc(30px + env(safe-area-inset-bottom));
-            }
-            .action-panel {
-                height: auto !important;
-                overflow-y: visible !important;
-                min-height: 500px;
-            }
-        }
-
-        /* Lado Izquierdo: Herramienta Escáner */
-        .scanner-panel {
-            background: var(--bg-card);
-            border-radius: 20px;
-            border: 1px solid var(--border-soft);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        /* Lado Derecho: Action Panel (Siempre Visible) */
-        .action-panel {
-            background: var(--bg-card);
-            border-radius: 20px;
-            border: 1px solid var(--border-soft);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            overflow-y: auto;
-            position: relative;
-            min-height: 0; /* Crucial para que el scroll funcione dentro del grid */
-            height: 100%;
-        }
-        
-        /* Overlay de estado vacío */
-        .empty-state-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 40px;
-            transition: opacity 0.3s;
-        }
-        .empty-state-overlay i { font-size: 4rem; color: var(--text-muted); opacity: 0.3; margin-bottom: 16px; }
-        .empty-state-overlay h3 { color: var(--text-muted); font-size: 1.5rem; }
-
-        /* Scanner Area & Animation */
-        #reader-container {
-            width: 100%;
-            /* Removed aspect-ratio to let it grow if a start button is injected */
-            min-height: 300px;
-            background: #000;
-            border-radius: 16px;
-            /* Removed overflow: hidden so buttons don't get cut off at the bottom */
-            margin-bottom: 20px;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-        }
-        #reader { width: 100%; height: 100%; min-height: 300px; }
-
-        /* Efecto Súper Herramienta Láser */
-        .cyber-overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 2;
-        }
-        /* Retícula */
-        .cyber-overlay::before {
-            content: ''; position: absolute; inset: 20px;
-            border: 2px solid rgba(139, 92, 246, 0.3);
-            border-radius: 12px;
-        }
-        /* Esquinas iluminadas */
-        .cyber-bracket {
-            position: absolute;
-            width: 30px; height: 30px;
-            border-color: var(--accent-violet);
-            border-style: solid;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
-        }
-        .tl { top: 20px; left: 20px; border-width: 4px 0 0 4px; border-top-left-radius: 12px; }
-        .tr { top: 20px; right: 20px; border-width: 4px 4px 0 0; border-top-right-radius: 12px; }
-        .bl { bottom: 20px; left: 20px; border-width: 0 0 4px 4px; border-bottom-left-radius: 12px; }
-        .br { bottom: 20px; right: 20px; border-width: 0 4px 4px 0; border-bottom-right-radius: 12px; }
-
-        /* Láser Animado */
-        .laser {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--accent-violet);
-            box-shadow: 0 0 20px 5px rgba(139, 92, 246, 0.6);
-            animation: scanLaser 3s infinite linear;
-        }
-        @keyframes scanLaser {
-            0% { top: 20px; opacity: 0; }
-            10% { opacity: 1; }
-            90% { top: calc(100% - 20px); opacity: 1; }
-            100% { top: calc(100% - 20px); opacity: 0; }
-        }
-
-        /* Buttons & Inputs */
-        .btn {
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
-            transition: all 0.2s ease; border: none; width: 100%;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--accent-gradient); color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
-        .btn-primary:disabled { background: var(--text-muted); opacity: 0.5; box-shadow: none; cursor: not-allowed; }
-        
-        .btn-secondary { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-soft); }
-        
-        .input-group { margin-bottom: 24px; }
-        .input-group label { display: block; margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; font-weight: 700;}
-        .amount-wrapper { position: relative; display: flex; align-items: center; }
-        .amount-wrapper i { position: absolute; left: 20px; font-size: 1.4rem; color: var(--text-muted); }
-        
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
-            width: 100%; background: var(--bg-main); border: 2px solid var(--border-soft);
-            color: var(--text-main); padding: 18px 18px 18px 50px; font-size: 1.4rem;
-            border-radius: 14px; transition: all 0.2s; font-weight: 700;
-        }
-        input[type="number"]:focus, input[type="text"]:focus {
-            outline: none; border-color: var(--accent-violet); background: #ffffff; box-shadow: 0 0 0 4px rgba(139,92,246,0.1);
-        }
-
-        /* Right Panel Inner Layout */
-        .client-header { text-align: center; margin-bottom: 30px; }
-        .client-name { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
-        .client-tier { font-size: 0.9rem; color: var(--accent-violet); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; background: rgba(139,92,246,0.1); padding: 6px 16px; border-radius: 20px; display: inline-block;}
-
-        .balances-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; }
-        .balance-module { background: var(--bg-main); border: 1px solid var(--border-soft); border-radius: 16px; padding: 20px; text-align: center; }
-        .balance-module.full-width { grid-column: span 2; }
-        
-        .b-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;}
-        .b-amount { font-size: 2.2rem; font-weight: 800; color: var(--text-main); display:flex; align-items:center; justify-content:center; gap:6px; }
-        .b-amount span { font-size: 1rem; color: var(--text-muted); font-weight: 600; }
-        
-        .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-
-        /* Login & Toasts (Standard) */
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; }
-        .toast { background: #ffffff; color: var(--text-main); padding: 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: slideDown 0.3s ease; border-left: 4px solid var(--accent-violet); font-weight: 600;}
-        .toast.success { border-left-color: var(--success); }
-        .toast.error { border-left-color: var(--danger); }
-        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        #login-screen {
-            position:fixed; inset:0; background:var(--bg-card); z-index:200; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center;
-        }
-
-        #status-overlay {
-            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 500; text-align: center; padding: 20px;
-        }
-        .status-icon { font-size: 5rem; margin-bottom: 24px; color: var(--success); }
-        
-    </style>
-
-    <!-- SECURITY: Anti-Copy & Anti-DevTools Protection -->
-    <style>
-        /* Disable text selection globally */
-        body {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        /* Allow selection in inputs and textareas */
-        input, textarea {
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-        }
-    </style>
+    <title>Fidelio - Motor de Escáner Universal (Fix Caja)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    </div>
     <script>
-        // Disable Right Click
-        document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // Disable Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S, etc.)
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123) return false; // F12
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
-            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) return false; // Ctrl+S
-            // Mac shortcuts
-            if (e.metaKey && e.altKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Cmd+Opt+I
-            if (e.metaKey && e.altKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Cmd+Opt+C
-            if (e.metaKey && e.altKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Cmd+Opt+U
-        };
-
-        // Anti-DevTools Debugger Trap
-        // This will freeze the browser's developer tools if they manage to open them
-        setInterval(function() {
-            const before = new Date().getTime();
-            debugger;
-            const after = new Date().getTime();
-            if (after - before > 100) {
-                // DevTools is open and paused the execution
-                document.body.innerHTML = "<div style='display:flex; height:100vh; width:100vw; background:#111; color:white; align-items:center; justify-content:center; font-family:monospace; font-size:24px;'>Modo de depuración no permitido. Acceso restringido.</div>";
-                window.location.href = "about:blank";
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        fidelio: { 50: "#f5f3ff", 100: "#ede9fe", 200: "#ddd6fe", 300: "#c4b5fd", 400: "#a78bfa", 500: "#6d28d9", 600: "#5b21b6", 700: "#4c1d95" },
+                        wallet: { gold: "#FBBF24", goldDark: "#F59E0B" }
+                    }
+                }
             }
-        }, 1000);
+        }
     </script>
-
-
-    <!-- JS Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap");
+        body { font-family: "Inter", sans-serif; background-color: #f8fafc; color: #1e293b; overflow: hidden; }
+        .barcode { font-family: 'Libre Barcode 39', cursive; font-size: 5rem; line-height: 1; color: #1e293b; }
+        
+        .scanner-bracket { position: absolute; width: 40px; height: 40px; border-color: #a78bfa; border-style: solid; }
+        .bracket-tl { top: 0; left: 0; border-width: 4px 0 0 4px; border-top-left-radius: 16px; }
+        .bracket-tr { top: 0; right: 0; border-width: 4px 4px 0 0; border-top-right-radius: 16px; }
+        .bracket-bl { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-bottom-left-radius: 16px; }
+        .bracket-br { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-bottom-right-radius: 16px; }
+        .laser-line {
+            position: absolute; left: 0; right: 0; height: 2px; background: #a78bfa;
+            box-shadow: 0 0 15px 2px rgba(167, 139, 250, 0.8);
+            animation: scan 2s infinite linear alternate;
+        }
+        @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        
+        .stamp-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .number-drop { animation: drop 0.3s ease-out; }
+        @keyframes drop { 0% { transform: translateY(-10px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        
+        .progress-fill { transition: width 0.5s ease-out; }
+        
+        .glow-card { position: relative; }
+        .glow-card::before {
+            content: ''; position: absolute; inset: -10px; z-index: -1;
+            background: inherit; filter: blur(20px); opacity: 0.3; transition: opacity 0.3s; border-radius: inherit;
+        }
+    </style>
 </head>
+<body class="h-screen w-full flex flex-col bg-slate-50" x-data="scannerEngine()" x-cloak>
+    <style>[x-cloak] { display: none !important; }</style>
 
-<body>
-
-    <header>
-        <div class="logo">
-            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 32px; width: auto;" />
-            <span style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-left:8px;">Escáner</span>
+    <!-- ============================================== -->
+    <!-- MÓDULO: LOGIN                                  -->
+    <!-- ============================================== -->
+    <div x-show="!isAuthenticated" class="h-full w-full flex flex-col overflow-y-auto z-50 absolute inset-0 bg-slate-50">
+<header class="w-full flex justify-between items-center p-6 lg:px-10 z-10 shrink-0 border-b border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center gap-4">
+            <img src="logo.png" alt="Fidelio Logo" class="h-12 object-contain mix-blend-multiply">
+            <div class="border-l-2 border-slate-200 pl-4">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Terminal de Acceso</p>
+                <h1 class="text-lg font-black tracking-tight text-slate-800">Caja Principal 1</h1>
+            </div>
         </div>
-        <div id="merchant-name" style="font-size: 0.9rem; color: var(--accent-violet); font-weight: 800; background: rgba(139,92,246,0.1); padding: 8px 16px; border-radius: 20px;">Cargando...</div>
+
+        <div class="text-right">
+            <h2 class="text-2xl font-black text-slate-800 tracking-tighter" x-text="time"></h2>
+            <p class="text-xs font-bold text-fidelio-600 uppercase tracking-widest mt-1" x-text="date"></p>
+        </div>
     </header>
 
-    <div id="toast-container"></div>
-
-    <div class="pos-layout" id="main-container" style="display:none;">
+    <main class="flex-1 flex items-center justify-center p-4 lg:p-8 z-10 w-full">
         
-        <!-- Panel Izquierdo: Herramientas de Búsqueda -->
-        <div class="scanner-panel">
+        <div class="bg-white w-full max-w-5xl rounded-[2.5rem] shadow-xl border border-slate-200 flex flex-col lg:flex-row overflow-hidden relative">
             
-        <!-- Mode Switcher -->
-        <div style="display: flex; gap: 8px; margin-bottom: 24px; background: var(--bg-card); padding: 6px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm); flex-wrap: wrap; justify-content: center;">
-            <button id="btn-mode-scan" class="btn" style="background:var(--accent-gradient); color:white; border-radius:10px; padding:12px; font-size:0.9rem; flex:1; min-width:110px;" onclick="setMode('scan')"><i class="fa-solid fa-qrcode"></i> Cámara</button>
-            <button id="btn-mode-nfc" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem; flex:1; min-width:110px;" onclick="setMode('nfc')"><i class="fa-solid fa-wifi"></i> NFC</button>
-            <button id="btn-mode-manual" class="btn" style="background:transparent; color:var(--text-muted); border-radius:10px; padding:12px; font-size:0.9rem; flex:1; min-width:110px;" onclick="setMode('manual')"><i class="fa-solid fa-keyboard"></i> Manual</button>
-        </div>
+            <!-- OVERLAY DE CARGA / ÉXITO -->
+            <div x-show="loading || success" 
+                 x-transition.opacity.duration.300ms
+                 class="absolute inset-0 z-50 flex flex-col items-center justify-center rounded-[2.5rem]"
+                 :class="success ? 'bg-emerald-500 text-white' : 'bg-white text-slate-900 border-2 border-fidelio-500'">
+                 
+                 <!-- ESTADO CARGANDO -->
+                 <div x-show="loading && !success" class="flex flex-col items-center">
+                    <i class="fa-solid fa-circle-notch fa-spin text-6xl text-fidelio-500 mb-6 drop-shadow-md"></i>
+                    <h3 class="text-2xl font-black tracking-tight">Verificando Credenciales...</h3>
+                    <p class="text-sm text-slate-500 font-medium mt-2">Conectando con la base de datos principal</p>
+                 </div>
 
-            <!-- Scanner Section -->
-            <div id="scanner-section">
-                <div id="reader-container">
-                    <div id="reader"></div>
-                    <!-- EFECTO SUPER HERRAMIENTA CIBERNÉTICA -->
-                    <div class="cyber-overlay" id="cyber-effect">
-                        <div class="cyber-bracket tl"></div>
-                        <div class="cyber-bracket tr"></div>
-                        <div class="cyber-bracket bl"></div>
-                        <div class="cyber-bracket br"></div>
-                        <div class="laser"></div>
+                 <!-- ESTADO ÉXITO -->
+                 <div x-show="success" class="flex flex-col items-center"
+                      x-transition:enter="transition transform ease-out duration-500"
+                      x-transition:enter-start="scale-50 opacity-0"
+                      x-transition:enter-end="scale-100 opacity-100">
+                    <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-check text-5xl"></i>
                     </div>
-                </div>
-                <p style="text-align:center; color:var(--text-muted); font-size:1rem; font-weight:600; margin-bottom: 20px;" id="scan-hint">
-                    <i class="fa-solid fa-camera-viewfinder" style="margin-right: 8px; color:var(--accent-violet);"></i> Apunta al pase del cliente.
-                </p>
+                    <h3 class="text-4xl font-black tracking-tight mb-2">¡Acceso Concedido!</h3>
+                    <p class="text-lg font-bold text-emerald-100">Bienvenido, Roberto Ordoñez</p>
+                 </div>
             </div>
 
-            <!-- NFC Section -->
-            <div id="nfc-section" style="display:none; flex:1; flex-direction:column; justify-content:center; align-items:center;">
-                <div style="background:var(--bg-card); border-radius:20px; border:1px solid var(--border-soft); box-shadow:var(--shadow-md); padding:40px; text-align:center; width:100%;">
-                    <i class="fa-solid fa-wifi" style="font-size: 5rem; color: var(--accent-violet); margin-bottom: 20px; animation: pulse 2s infinite;"></i>
-                    <h3 style="margin-bottom:12px; font-size: 1.5rem; color:var(--text-main); font-weight:800;">Acerca el Dispositivo</h3>
-                    <p style="color:var(--text-muted); margin-bottom:24px; font-weight:500;">Mantén la tarjeta o celular del cliente cerca de la antena NFC de esta terminal.</p>
-                    <button class="btn btn-primary" onclick="startNfcReader()" id="btn-nfc-start" style="padding:16px; font-size:1.1rem;">
-                        <i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC
-                    </button>
-                    <p id="nfc-error" style="color:var(--danger); margin-top:16px; font-weight:600; display:none;"></p>
+            <!-- LADO IZQUIERDO -->
+            <div class="w-full lg:w-5/12 bg-slate-50 p-10 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-slate-200 relative overflow-hidden">
+                <!-- Decorative background elements -->
+                <div class="absolute -top-24 -left-24 w-64 h-64 bg-fidelio-400/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 right-0 w-48 h-48 bg-fidelio-600/10 rounded-full blur-2xl"></div>
+
+                <!-- Logo Centrado y Grande -->
+                <div class="relative z-10 w-full flex justify-center px-4">
+                    <img src="logo.png" alt="Fidelio Logo" class="w-full max-w-[280px] object-contain mix-blend-multiply">
                 </div>
             </div>
-            <style>@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }</style>
 
-            <!-- Manual Search Section -->
-            <div id="manual-section" style="display:none; flex:1; flex-direction:column; justify-content:center;">
-                <h3 style="margin-bottom:24px; text-align:center; font-size: 1.4rem; color:var(--text-main); font-weight:800;">Ingreso Manual</h3>
-                <div class="input-group">
-                    <label>Teléfono o Correo</label>
-                    <div class="amount-wrapper" style="margin-bottom: 20px;">
-                        <i class="fa-solid fa-user"></i>
-                        <input type="text" id="manual-search-input" placeholder="ej. correo@mail.com">
+            <!-- LADO DERECHO -->
+            <div class="w-full lg:w-7/12 p-10 flex flex-col justify-center relative bg-white">
+                
+                <div class="w-full max-w-md mx-auto" :class="{'animate-shake': error}">
+                    
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-black text-slate-800 mb-2">Iniciar Sesión</h3>
+                        <p class="text-slate-500 font-medium text-sm">Ingresa tu correo y contraseña para continuar.</p>
                     </div>
-                    <button class="btn btn-primary" onclick="searchCustomerManual()" id="btn-manual-search" style="padding:20px; font-size:1.2rem;">
-                        <i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente
-                    </button>
+
+                    <!-- FORMULARIO -->
+                    <form @submit.prevent="attemptLogin()" class="space-y-6">
+                        
+                        <!-- Correo -->
+                        <div>
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Correo Electrónico</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fa-regular fa-envelope text-slate-400"></i>
+                                </div>
+                                <input type="email" x-model="loginEmail" required
+                                    class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-fidelio-500 focus:border-fidelio-500 transition shadow-sm"
+                                    placeholder="usuario@fidelio.com">
+                            </div>
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <label class="text-xs font-black text-slate-400 uppercase tracking-widest block">Contraseña</label>
+                                <a href="#" class="text-xs font-bold text-fidelio-600 hover:text-fidelio-700 transition">¿Olvidaste tu contraseña?</a>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fa-solid fa-lock text-slate-400"></i>
+                                </div>
+                                <input :type="loginShowPassword ? 'text' : 'password'" x-model="loginPassword" required
+                                    class="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-fidelio-500 focus:border-fidelio-500 transition shadow-sm"
+                                    placeholder="••••••••">
+                                <button type="button" @click="showPassword = !loginShowPassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition">
+                                    <i class="fa-solid" :class="loginShowPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Error Banner -->
+                        <div x-show="loginError" x-transition class="bg-rose-50 border border-rose-200 text-rose-600 p-3 rounded-xl flex items-center gap-3">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <p class="text-sm font-bold">Credenciales incorrectas.</p>
+                        </div>
+
+                        <!-- Botón Submit -->
+                        <button type="submit" 
+                            class="w-full bg-fidelio-600 hover:bg-fidelio-700 text-white font-black text-sm uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-fidelio-600/30 transition active:scale-95 flex items-center justify-center gap-2"
+                            :class="{'opacity-75 cursor-wait': loading}">
+                            <i x-show="loginLoading" class="fa-solid fa-spinner fa-spin"></i>
+                            <span x-text="loading ? 'Validando...' : 'Acceder al Sistema'"></span>
+                        </button>
+
+                    </form>
+
+                    <p class="text-xs text-slate-400 font-medium mt-10 text-center"><i class="fa-solid fa-circle-info mr-1"></i> Prueba con cualquier correo y contraseña "1234"</p>
                 </div>
+
             </div>
+
         </div>
-
-        <!-- Panel Derecho: Action Panel -->
-        <div class="action-panel" id="action-panel">
-            
-            <!-- OVERLAY DE ESTADO VACÍO -->
-            <div class="empty-state-overlay" id="empty-state">
-                <i class="fa-solid fa-id-card"></i>
-                <h3>Esperando Cliente...</h3>
-                <p style="color:var(--text-muted); margin-top:12px; font-weight:500;">Escanea un código QR o realiza una búsqueda manual para habilitar los cobros.</p>
-            </div>
-
-            <div class="client-header">
-                <div class="client-name" id="c-name">Desconocido</div>
-                <div class="client-tier" id="c-tier"><i class="fa-solid fa-circle-user"></i> Sin Nivel</div>
-            </div>
-
-            <div class="balances-grid">
-                <!-- Saldo Digital -->
-                <div class="balance-card" id="card-saldo digital" style="display:none;">
-                    <div class="b-title" style="color:var(--success);"><i class="fa-solid fa-wallet"></i> Saldo Digital</div>
-                    <div class="b-amount" style="color:var(--success);" id="c-saldo digital">$0.00</div>
-                </div>
-                <!-- Cashback -->
-                <div class="balance-card" id="card-cashback" style="display:none;">
-                    <div class="b-title" style="color:var(--accent-violet);"><i class="fa-solid fa-coins"></i> Cashback</div>
-                    <div class="b-amount" style="color:var(--accent-violet);" id="c-cashback">$0.00</div>
-                </div>
-                <!-- Sellos -->
-                <div class="balance-module full-width" style="background:var(--warning-bg); border-color:rgba(245, 158, 11, 0.2);">
-                    <div class="b-title" style="color:var(--warning);"><i class="fa-solid fa-star"></i> Visitas Acumuladas</div>
-                    <div class="b-amount" style="font-size: 1.8rem; color:var(--warning);" id="c-stamps">
-                        <i class="fa-regular fa-star" style="opacity:0.3;"></i>
-                        <i class="fa-regular fa-star" style="opacity:0.3;"></i>
-                        <i class="fa-regular fa-star" style="opacity:0.3;"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div id="payment-input-group" class="input-group">
-                <label>Monto a Pagar o Abonar</label>
-                <div class="amount-wrapper">
-                    <i class="fa-solid fa-dollar-sign"></i>
-                    <input type="number" id="op-amount" placeholder="0.00" step="0.01" disabled>
-                </div>
-            </div>
-
-            <div id="payment-actions-grid" class="actions-grid">
-                <button class="btn btn-primary" id="btn-charge" onclick="processAction('charge_ticket')" disabled>
-                    <i class="fa-solid fa-receipt"></i> Cobrar Ticket
-                </button>
-                <button class="btn btn-secondary" id="btn-add" style="border: 2px solid rgba(16,185,129,0.3); color: var(--success);" onclick="processAction('add_funds')" disabled>
-                    <i class="fa-solid fa-arrow-up-from-bracket"></i> Cargar Saldo
-                </button>
-            </div>
-            
-            <div id="professional-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
-                <button class="btn btn-primary" id="btn-stamp-only" onclick="processAction('add_stamp_only')" disabled style="padding:24px; font-size:1.3rem;">
-                    <i class="fa-solid fa-stamp"></i> Añadir Sello
-                </button>
-                <button class="btn btn-secondary" id="btn-redeem-reward" onclick="processAction('redeem_reward')" disabled style="padding:24px; font-size:1.3rem; border: 2px solid var(--accent-violet); color: var(--accent-violet);">
-                    <i class="fa-solid fa-gift"></i> Cobrar Recompensa
-                </button>
-            </div>
-            
-            <div id="multipass-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
-                <button class="btn btn-primary" id="btn-redeem-multipass" onclick="processAction('redeem_multipass')" disabled style="padding:24px; font-size:1.3rem; background: var(--accent-gradient);">
-                    <i class="fa-solid fa-ticket"></i> Descontar Pase (Multipass)
-                </button>
-            </div>
-            
-            <div id="membership-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
-                <div id="membership-status-warning" style="display:none; background:rgba(239,68,68,0.1); border: 1px solid var(--danger); color:var(--danger); padding:16px; border-radius:12px; margin-bottom:12px; text-align:center; font-weight:bold;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Membresía Expirada
-                </div>
-                <button class="btn btn-primary" id="btn-register-visit" onclick="processAction('register_visit')" disabled style="padding:24px; font-size:1.3rem; background: var(--success);">
-                    <i class="fa-solid fa-check"></i> Registrar Visita de Membresía
-                </button>
-            </div>
-            
-            <div id="coupon-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
-                <button class="btn btn-primary" id="btn-redeem-coupon" onclick="processAction('redeem_coupon')" disabled style="padding:24px; font-size:1.3rem; background: var(--accent-gradient);">
-                    <i class="fa-solid fa-ticket"></i> Redimir Cupón
-                </button>
-            </div>
-
-            <div id="discount-actions-grid" class="actions-grid" style="display:none; grid-template-columns: 1fr;">
-                <button class="btn btn-primary" id="btn-apply-discount" onclick="processAction('apply_discount')" disabled style="padding:24px; font-size:1.3rem; background: var(--accent-violet);">
-                    <i class="fa-solid fa-percent"></i> Registrar Uso de Descuento
-                </button>
-            </div>
-            
-            <button class="btn btn-outline" style="margin-top: auto; padding:18px;" onclick="resetScanner()">
-                <i class="fa-solid fa-rotate-left"></i> Limpiar Terminal
-            </button>
-        </div>
-
+    </main>
     </div>
 
-    <!-- Login Screen -->
-    <div id="login-screen">
-        <div style="text-align:center; margin-bottom:40px;">
-            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 60px; margin-bottom: 24px;" />
-            <h2 style="font-weight: 800; font-size: 2rem; color:var(--text-main);">Escáner Fidelio</h2>
-            <p style="color:var(--text-muted); margin-top:8px; font-weight:600;">Ingreso para Staff Autorizado</p>
+    <!-- ============================================== -->
+    <!-- MÓDULO: ESCÁNER Y CAJA                         -->
+    <!-- ============================================== -->
+    <div x-show="isAuthenticated" class="h-full w-full flex flex-col relative z-10" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+    <!-- HEADER SCÁNER ACTUALIZADO PARA PARECERSE AL LOGIN -->
+    <header class="h-16 px-6 flex justify-between items-center bg-white border-b border-slate-200 shrink-0 z-20">
+                <div class="flex items-center">
+            <div class="relative w-32 h-16 flex items-center">
+                <img src="logo.png" alt="Fidelio" class="absolute -left-2 h-24 max-w-none mix-blend-multiply">
+            </div>
+            <div class="h-6 w-px bg-slate-200 mx-1"></div>
+            <span class="text-xl font-black tracking-tight text-slate-800 ml-3">Escáner Universal</span>
         </div>
-        <div style="width:100%; max-width:400px;">
-            <div class="input-group">
-                <label>Correo Electrónico</label>
-                <div class="amount-wrapper">
-                    <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="login-email" placeholder="cajero@restaurante.com">
-                </div>
+        <div class="flex gap-4 items-center">
+            <div class="bg-fidelio-50 text-fidelio-600 px-4 py-1.5 rounded-full text-xs font-black flex items-center">
+                Admin <i class="fa-solid fa-crown ml-2 text-wallet-gold"></i>
             </div>
-            <div class="input-group" style="margin-bottom: 40px;">
-                <label>Contraseña</label>
-                <div class="amount-wrapper">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="login-password" placeholder="******">
-                </div>
-            </div>
-            <button id="btn-login" class="btn btn-primary" onclick="handleLogin()" style="padding:18px; font-size:1.2rem;">
-                Ingresar al Sistema
+            <!-- Botón de Cerrar Sesión SUPER VISIBLE -->
+            <button @click="isAuthenticated = false" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-black uppercase tracking-widest transition px-5 py-2.5 rounded-xl shadow-lg shadow-rose-500/30 flex items-center">
+                Cerrar Caja <i class="fa-solid fa-right-from-bracket ml-2"></i>
             </button>
-            <div style="text-align:center; margin-top:20px;">
-                <a href="#" style="color:var(--accent-violet); font-size:1rem; text-decoration:none; font-weight:600;" onclick="showRecoveryScreen(); return false;">¿Olvidaste tu contraseña?</a>
-            </div>
         </div>
-    </div>
+    </header>
+
+
     
-    <!-- Recovery Screen -->
-    <div id="recovery-screen" style="display:none; position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
-        <div style="text-align:center; margin-bottom:40px;">
-            <img src="./fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 60px; margin-bottom: 24px;" />
-            <h2 style="font-weight: 800; font-size: 2rem; color:var(--text-main);">Recuperar Acceso</h2>
-            <p style="color:var(--text-muted); margin-top:8px; font-weight:600;">Enviaremos un enlace a tu correo</p>
-        </div>
-        <div style="width:100%; max-width:400px;">
-            <div class="input-group" style="margin-bottom: 20px;">
-                <label>Correo Electrónico</label>
-                <div class="amount-wrapper">
-                    <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="recovery-email" placeholder="cajero@restaurante.com">
+
+    <main class="flex-1 p-6 flex flex-col lg:flex-row gap-6 max-w-[1400px] mx-auto w-full overflow-hidden">
+        
+        <!-- ============================================================== -->
+        <!-- COLUMNA IZQUIERDA: LECTOR -> GEMELO DIGITAL                    -->
+        <!-- ============================================================== -->
+        <div class="w-full lg:w-4/12 flex flex-col h-full shrink-0 relative">
+            
+            <div x-show="isScanning" x-transition.opacity.duration.300ms class="absolute inset-0 bg-slate-900/95 backdrop-blur-xl z-[60] flex flex-col items-center justify-center rounded-[2rem] border border-slate-700 shadow-2xl">
+                <div class="w-20 h-20 relative mb-6">
+                    <div class="absolute inset-0 border-4 border-fidelio-500/30 rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-fidelio-400 border-t-transparent rounded-full animate-spin"></div>
+                    <i class="fa-solid fa-microchip text-2xl text-fidelio-300 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                </div>
+                <h2 class="text-white font-black tracking-widest uppercase text-lg animate-pulse mb-1">Decodificando NFC...</h2>
+                <p class="text-fidelio-300 text-xs font-medium">Extrayendo perfil unificado</p>
+            </div>
+
+            <!-- ESTADO 1: ESCÁNER ACTIVO -->
+            <div x-show="!clientType" class="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 flex flex-col h-full relative overflow-hidden">
+                <div class="bg-white border border-slate-200 p-1.5 rounded-2xl flex flex-col md:flex-row flex-wrap mb-6 shadow-sm gap-1">
+                    <button @click="inputMode = 'camara'" class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all" :class="inputMode === 'camara' ? 'bg-fidelio-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'">Cámara</button>
+                    <button @click="inputMode = 'nfc'" class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all" :class="inputMode === 'nfc' ? 'bg-fidelio-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'">NFC</button>
+                    <button @click="inputMode = 'manual'" class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all" :class="inputMode === 'manual' ? 'bg-fidelio-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'">Manual</button>
+                    <button @click="inputMode = 'wallet'" class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all" :class="inputMode === 'wallet' ? 'bg-fidelio-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'">Wallet</button>
+                </div>
+
+                <div class="flex-1 flex flex-col items-center w-full">
+                    <div x-show="inputMode === 'camara'" class="w-full relative group h-full max-h-[400px]">
+                        <div class="w-full h-full bg-black rounded-2xl relative overflow-hidden mb-4 shadow-inner">
+                            <div class="absolute inset-0 bg-slate-900 opacity-60"></div>
+                            <div class="absolute inset-6">
+                                <div class="scanner-bracket bracket-tl"></div>
+                                <div class="scanner-bracket bracket-tr"></div>
+                                <div class="scanner-bracket bracket-bl"></div>
+                                <div class="scanner-bracket bracket-br"></div>
+                                <div class="laser-line"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute inset-0 bg-slate-900/95 backdrop-blur-md rounded-2xl flex flex-col p-4 opacity-0 group-hover:opacity-100 transition-opacity z-50 overflow-y-auto custom-scrollbar">
+                            <div class="bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md mb-2 inline-block self-start">Modo Prueba (Simulador)</div>
+                            <p class="text-fidelio-300 font-black text-[9px] uppercase tracking-widest mb-3 shrink-0 border-b border-white/10 pb-2 leading-tight">En producción, el escáner detecta automáticamente el QR. Elige uno para simular:</p>
+                            
+                            <button @click="simulateScan('hibrido')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">⚡</span> Híbrido (VIP + Cashback)</button>
+                            <button @click="simulateScan('vip')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">💎</span> Solo Niveles VIP</button>
+                            <button @click="simulateScan('metas')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">🎯</span> Metas de Gasto</button>
+                            <button @click="simulateScan('cashback')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">💰</span> Saldo (Cashback)</button>
+                            <button @click="simulateScan('monedero')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">💳</span> Monedero Digital</button>
+                            <button @click="simulateScan('descuentos')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">🏷️</span> Descuentos Fijos</button>
+                            <button @click="simulateScan('multipass')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">🎟️</span> Multipass</button>
+                            <button @click="simulateScan('membresia')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">🏅</span> Membresía Temporal</button>
+                            <button @click="simulateScan('cupon')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">🎫</span> Cupones Promocionales</button>
+                            <button @click="simulateScan('giftcard')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1.5 flex items-center transition"><span class="w-5 text-center mr-2">🎁</span> Gift Cards</button>
+                            <button @click="simulateScan('sellos')" class="text-left bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 px-3 rounded-lg mb-1 flex items-center transition"><span class="w-5 text-center mr-2">☕</span> Solo Sellos</button>
+                        </div>
+                        <p class="text-xs font-medium text-slate-500 text-center mt-3">Pasa el ratón para abrir el panel.</p>
+                    </div>
+
+                    <div x-show="inputMode === 'nfc'" style="display:none;" class="w-full flex-1 flex flex-col items-center justify-center text-center">
+                        <div class="w-32 h-32 bg-slate-50 rounded-full flex items-center justify-center mb-6 relative">
+                            <div class="absolute inset-0 border-4 border-fidelio-400 rounded-full animate-ping opacity-20"></div>
+                            <i class="fa-solid fa-wifi text-5xl text-fidelio-500"></i>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">Acerca la Tarjeta</h3>
+                        <p class="text-sm text-slate-500">El lector NFC está activo y esperando.</p>
+                    </div>
+
+                    <div x-show="inputMode === 'manual'" style="display:none;" class="w-full flex-1 flex flex-col justify-center max-w-[300px]">
+                        <h3 class="text-xl font-black text-slate-800 mb-2 text-center">Búsqueda Manual</h3>
+                        <p class="text-sm text-slate-500 text-center mb-6">Ingresa el teléfono o correo.</p>
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-slate-800 font-bold focus:outline-none focus:border-fidelio-500 transition" placeholder="Tel o Correo...">
+                        </div>
+                        <button class="w-full bg-slate-900 hover:bg-black text-white font-black py-4 rounded-2xl mt-4 transition shadow-xl shadow-slate-900/20">BUSCAR PERFIL</button>
+                    </div>
+
+                    <div x-show="inputMode === 'wallet'" style="display:none;" class="w-full flex-1 flex flex-col items-center justify-center text-center">
+                        <div class="w-32 h-32 bg-slate-900 rounded-3xl flex items-center justify-center mb-6 shadow-2xl">
+                            <i class="fa-brands fa-apple text-6xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">Apple Wallet</h3>
+                        <p class="text-sm text-slate-500">Lectura Smart Tap habilitada.</p>
+                    </div>
                 </div>
             </div>
-            <button id="btn-recovery" class="btn btn-primary" onclick="handleRecovery()" style="padding:18px; font-size:1.2rem; margin-bottom:20px;">
-                Enviar enlace
-            </button>
-            <div style="text-align:center;">
-                <a href="#" style="color:var(--text-muted); font-size:1rem; text-decoration:none; font-weight:500;" onclick="showLoginScreen(); return false;">Volver a iniciar sesión</a>
+
+            <!-- ESTADO 2: GEMELO DIGITAL (11 TARJETAS) -->
+            <div x-show="clientType && !isScanning" style="display:none;" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="absolute inset-0 flex flex-col items-center w-full h-full overflow-y-auto pb-6 custom-scrollbar">
+                
+                <template x-if="clientType === 'hibrido'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-br from-fidelio-600 to-fidelio-900 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-bolt text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Híbrido Premium</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <p class="text-[10px] font-black uppercase tracking-widest opacity-80 mb-2">Saldo Acumulado</p>
+                            <p class="text-5xl font-black tracking-tighter drop-shadow-md number-drop" :key="clientData.hibrido.balance">$<span x-text="formatNumber(clientData.hibrido.balance)"></span></p>
+                            <div class="mt-6 flex space-x-1.5"><template x-for="i in clientData.hibrido.totalStamps"><div class="w-3 h-3 rounded-full transition-all duration-300 shadow-sm" :class="i <= clientData.hibrido.stamps ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'bg-white/20'"></div></template></div>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 text-white drop-shadow-sm">ROBERTO ORDOÑEZ</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">98273918</p>
+                        </div>
+                    </div>
+                </template>
+                
+                <template x-if="clientType === 'vip'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-br from-slate-900 to-black rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white border border-slate-700 glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-regular fa-gem text-xl text-amber-400"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-amber-400/10 px-3 py-1 rounded-full text-amber-400 border border-amber-400/30">VIP Exclusivo</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <i class="fa-solid fa-crown text-5xl text-amber-400 mb-4 drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]"></i>
+                            <p class="text-4xl font-black tracking-tighter drop-shadow-md text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">ORO VIP</p>
+                        </div>
+                        <div class="mt-auto bg-white/5 backdrop-blur-md p-5 border-t border-white/10 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase text-amber-100 mb-1 drop-shadow-sm">ROBERTO ORDOÑEZ</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">VIP88291</p>
+                        </div>
+                    </div>
+                </template>
+                
+                <template x-if="clientType === 'metas'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-br from-indigo-500 to-purple-700 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-bullseye text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Metas de Gasto</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center px-8">
+                            <p class="text-[10px] font-black uppercase tracking-widest opacity-90 mb-4">Meta para Premio</p>
+                            <div class="w-full bg-white/20 rounded-full h-4 mb-3 overflow-hidden shadow-inner">
+                                <div class="bg-emerald-400 h-full rounded-full progress-fill shadow-[0_0_10px_rgba(52,211,153,0.8)]" :style="'width: ' + (clientData.metas.spent / clientData.metas.target * 100) + '%'"></div>
+                            </div>
+                            <p class="text-xl font-black font-mono number-drop" :key="clientData.metas.spent">$<span x-text="formatNumber(clientData.metas.spent)"></span> <span class="text-white/60 text-sm">/ $<span x-text="formatNumber(clientData.metas.target)"></span></span></p>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">MARÍA JOSÉ</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">MT39281</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'cashback'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-b from-wallet-gold to-wallet-goldDark rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-wallet text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Wallet Digital</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <p class="text-[10px] font-black uppercase tracking-widest mb-2 opacity-90">Cashback Disponible</p>
+                            <p class="text-5xl font-black tracking-tighter drop-shadow-md number-drop" :key="clientData.cashback.balance">$<span x-text="formatNumber(clientData.cashback.balance)"></span></p>
+                        </div>
+                        <div class="mt-auto bg-black/10 backdrop-blur-md p-5 border-t border-black/10 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">LUIS FERNANDO</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">CB91823</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'monedero'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-br from-teal-400 to-teal-600 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-regular fa-credit-card text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Monedero Pre-pago</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <p class="text-[10px] font-black uppercase tracking-widest mb-2 opacity-90">Saldo Actual</p>
+                            <p class="text-5xl font-black tracking-tighter drop-shadow-md number-drop" :key="clientData.monedero.balance">$<span x-text="formatNumber(clientData.monedero.balance)"></span></p>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">CARLOS MENDOZA</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">MN82731</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'descuentos'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-br from-pink-500 to-rose-600 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-tag text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Descuento Fijo</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <p class="text-[10px] font-black uppercase tracking-widest mb-2 opacity-90">Beneficio Permanente</p>
+                            <p class="text-6xl font-black tracking-tighter drop-shadow-md">-<span x-text="clientData.descuentos.discount"></span>%</p>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">CLIENTE ESTRELLA</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">DS91827</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'multipass'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-b from-rose-500 to-rose-700 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-ticket text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Multipass</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <p class="text-7xl font-black tracking-tighter drop-shadow-md number-drop" :key="clientData.multipass.left" x-text="clientData.multipass.left"></p>
+                            <p class="text-xs font-black uppercase tracking-widest mt-2 opacity-90">Accesos Restantes</p>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">PASE YOGA MASTER</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">MP82716</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'membresia'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-b from-emerald-500 to-emerald-700 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-id-badge text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Membresía Activa</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-4 shadow-inner"><i class="fa-solid fa-check text-4xl"></i></div>
+                            <p class="text-3xl font-black tracking-tighter drop-shadow-md">VIGENTE</p>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">MIGUEL ÁNGEL</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">MB91827</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'cupon'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-br from-orange-400 to-red-500 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-receipt text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Cupón Promocional</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
+                            <div x-show="clientData.cupon.used" class="absolute inset-0 bg-black/60 flex items-center justify-center z-10 backdrop-blur-sm rounded-xl">
+                                <p class="text-4xl font-black text-rose-500 rotate-12 border-4 border-rose-500 p-4 rounded-xl shadow-2xl bg-white/10">CANJEADO</p>
+                            </div>
+                            <p class="text-[10px] font-black uppercase tracking-widest mb-2 opacity-90">Vale por</p>
+                            <p class="text-3xl font-black tracking-tighter drop-shadow-md leading-tight" x-text="clientData.cupon.promo"></p>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">CAMPAÑA VERANO</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">CP81726</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'giftcard'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-b from-slate-700 to-slate-900 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white border border-slate-600 glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-gift text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full border border-white/20">Gift Card</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <p class="text-[10px] font-black uppercase tracking-widest mb-2 opacity-60">Saldo Disponible</p>
+                            <p class="text-5xl font-black tracking-tighter drop-shadow-md number-drop" :key="clientData.giftcard.balance">$<span x-text="formatNumber(clientData.giftcard.balance)"></span></p>
+                        </div>
+                        <div class="mt-auto bg-white/5 backdrop-blur-md p-5 border-t border-white/10 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase opacity-60 mb-1 drop-shadow-sm">AL PORTADOR</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">GC91827</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="clientType === 'sellos'">
+                    <div class="w-full max-w-[340px] aspect-[1/1.6] bg-gradient-to-b from-blue-500 to-blue-700 rounded-[2rem] shadow-2xl flex flex-col relative overflow-hidden shrink-0 text-white glow-card">
+                        <div class="p-6 pb-2 flex justify-between items-start opacity-90"><i class="fa-solid fa-mug-hot text-xl"></i> <span class="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full shadow-sm">Tarjeta de Sellos</span></div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-center px-8">
+                            <p class="text-[11px] font-black uppercase tracking-widest mb-6 drop-shadow-md">Café Gratis</p>
+                            <div class="grid grid-cols-5 gap-3 w-full">
+                                <template x-for="i in clientData.sellos.total">
+                                    <div class="aspect-square rounded-full flex items-center justify-center transition-all duration-300 shadow-sm" :class="i <= clientData.sellos.current ? 'bg-white text-blue-600' : 'bg-blue-900/40 border border-blue-400/20'">
+                                        <template x-if="i <= clientData.sellos.current"><i class="fa-solid fa-check stamp-pop"></i></template>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="mt-auto bg-white/10 backdrop-blur-md p-5 border-t border-white/20 text-center flex flex-col items-center">
+                            <p class="text-xs font-black tracking-widest uppercase mb-1 drop-shadow-sm">ANNA SOFÍA</p>
+                            <p class="barcode text-white mix-blend-overlay text-center leading-none text-6xl mt-1">SL91827</p>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- INFO PILLS Y CONCIERGE -->
+                <div class="w-full max-w-[340px] flex gap-3 mt-6 shrink-0" x-show="!['giftcard', 'cupon'].includes(clientType)">
+                    <div class="flex-1 bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase flex items-center mb-1"><i class="fa-solid fa-cake-candles text-rose-400 mr-1.5"></i> Cumpleaños</p>
+                        <p class="text-sm font-black text-slate-800">14 Octubre</p>
+                    </div>
+                    <div class="flex-1 bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase flex items-center mb-1"><i class="fa-regular fa-calendar-check text-blue-400 mr-1.5"></i> Socio Desde</p>
+                        <p class="text-sm font-black text-slate-800">Ene 2024</p>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-[340px] mt-4 mb-4 bg-amber-50 rounded-2xl p-4 border border-amber-200 shrink-0" x-show="!['giftcard', 'cupon'].includes(clientType)">
+                    <div class="flex justify-between items-center mb-2">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-amber-700 flex items-center">
+                            <i class="fa-solid fa-bell-concierge mr-2"></i> Memoria Concierge
+                        </p>
+                        <button @click="showClientProfile = true; profileTab = 'preferencias'" class="text-[10px] bg-amber-200 text-amber-800 px-2 py-1 rounded-md font-bold hover:bg-amber-300 transition">Ver Listado <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                    </div>
+                    <textarea x-model="conciergeNote" class="w-full bg-white rounded-xl p-3 text-sm font-medium text-slate-700 border border-amber-100 focus:outline-none focus:border-amber-400" rows="2" placeholder="Ej. Cliente alérgico a nueces..."></textarea>
+                    <div class="flex gap-2 mt-3">
+                        <button @click="saveConcierge()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-xs font-black uppercase tracking-widest py-3 rounded-xl transition shadow-sm">Guardar Nota</button>
+                        <button @click="showClientProfile = true; profileTab = 'historial'" class="flex-1 bg-white border border-slate-200 hover:border-slate-300 text-slate-600 text-xs font-black uppercase tracking-widest py-3 rounded-xl transition shadow-sm flex justify-center items-center"><i class="fa-solid fa-clock-rotate-left mr-2"></i> Historial</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Success Overlay -->
-    <div id="status-overlay">
-        <i class="fa-solid fa-circle-check status-icon"></i>
-        <h2 style="font-size: 3rem; margin-bottom: 12px; font-weight: 800; color:var(--text-main);">¡Transacción Exitosa!</h2>
-        <p id="status-msg" style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 40px; font-weight:500;">Operación registrada en la nube.</p>
-        <button class="btn btn-primary" style="width: 100%; max-width: 400px; padding:20px; font-size:1.4rem;" onclick="resetScanner()">Siguiente Cliente</button>
-    </div>
+        <!-- ============================================================== -->
+        <!-- COLUMNA DERECHA: MENU INTELIGENTE POS Y WOW FACTOR             -->
+        <!-- ============================================================== -->
+        <div class="w-full lg:w-8/12 bg-white rounded-[2rem] shadow-sm border border-slate-200 flex flex-col relative overflow-hidden h-full">
+            
+            <div x-show="approveScreen.show" x-transition.opacity.duration.300ms class="absolute inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-xl bg-white/95">
+                <div class="w-32 h-32 rounded-full flex items-center justify-center mb-8 shadow-2xl stamp-pop"
+                     :class="approveScreen.color === 'emerald' ? 'bg-emerald-500 text-white shadow-emerald-500/50' : 'bg-fidelio-500 text-white shadow-fidelio-500/50'">
+                    <i class="fa-solid fa-check text-6xl"></i>
+                </div>
+                <h2 class="text-4xl font-black text-slate-900 mb-3 tracking-tight" x-text="approveScreen.title"></h2>
+                <p class="text-xl font-bold text-slate-500" x-text="approveScreen.subtitle"></p>
+            </div>
 
+            <div x-show="!clientType" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-50">
+                <div class="relative w-24 h-24 mb-6">
+                    <div class="absolute inset-0 border-4 border-slate-200 rounded-full animate-ping opacity-50"></div>
+                    <div class="w-full h-full bg-white rounded-full flex items-center justify-center shadow-md text-slate-300">
+                        <i class="fa-solid fa-satellite-dish text-4xl"></i>
+                    </div>
+                </div>
+                <h2 class="text-3xl font-black text-slate-800 mb-2">Terminal Inteligente</h2>
+                <p class="text-sm font-medium text-slate-500 max-w-sm mx-auto text-center">Simula la lectura de cualquiera de las 11 tarjetas para ver la adaptabilidad del menú, historial y recompensas vinculadas.</p>
+            </div>
+
+            <div x-show="clientType && !isScanning" style="display:none;" x-transition:enter="transition ease-out duration-300" class="flex-1 flex flex-col h-full bg-white">
+                
+                <div class="h-16 px-8 flex justify-between items-center border-b border-slate-200 shrink-0">
+                    <button @click="closeClient()" class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:bg-rose-50 hover:text-rose-500 transition"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <div class="flex space-x-6" x-show="!['giftcard', 'cupon'].includes(clientType)">
+                        <button @click="activeTab = 'operaciones'; posView = 'menu';" class="py-4 border-b-2 text-[10px] font-black uppercase tracking-widest transition" :class="activeTab === 'operaciones' ? 'border-fidelio-600 text-fidelio-600' : 'border-transparent text-slate-400 hover:text-slate-600'">Caja / POS</button>
+                        
+                        <button @click="activeTab = 'recompensas'" class="py-4 border-b-2 text-[10px] font-black uppercase tracking-widest transition flex items-center" :class="activeTab === 'recompensas' ? 'border-fidelio-600 text-fidelio-600' : 'border-transparent text-slate-400 hover:text-slate-600'">
+                            Recompensas Extra
+                            <span x-show="activeRewards.length > 0" class="ml-2 bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded-full animate-pulse" x-text="activeRewards.length"></span>
+                        </button>
+                    </div>
+                    
+                    <span class="text-xs font-black tracking-widest uppercase text-emerald-500"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Perfil Unificado</span>
+                </div>
+
+                <div class="flex-1 overflow-y-auto relative flex flex-col">
+                    
+                    <!-- VISTA RECOMPENSAS GLOBALES -->
+                    <div x-show="activeTab === 'recompensas'" style="display:none;" class="flex-1 p-8 bg-slate-50/50">
+                        <div class="max-w-2xl mx-auto">
+                            <h2 class="text-2xl font-black text-slate-900 mb-2">Recompensas del Cliente</h2>
+                            <p class="text-sm font-medium text-slate-500 mb-8">Independientemente de la tarjeta que el cliente escaneó (Nivel, Multipass, etc.), este cliente tiene asociadas las siguientes recompensas promocionales en su perfil que puede canjear ahora mismo.</p>
+                            
+                            <div class="space-y-4">
+                                <template x-for="reward in activeRewards" :key="reward.id">
+                                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition">
+                                        <div class="flex items-center space-x-5">
+                                            <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-inner" :class="reward.colorCls">
+                                                <i :class="reward.icon"></i>
+                                            </div>
+                                            <div class="text-left">
+                                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1" x-text="reward.type"></p>
+                                                <p class="font-black text-slate-800 text-xl" x-text="reward.title"></p>
+                                            </div>
+                                        </div>
+                                        <button @click="redeemCrossReward(reward.id)" class="bg-slate-900 hover:bg-black text-white font-black px-8 py-4 rounded-[1rem] shadow-xl shadow-slate-900/20 active:scale-95 transition text-sm tracking-wide">CANJEAR AHORA</button>
+                                    </div>
+                                </template>
+
+                                <div x-show="activeRewards.length === 0" class="text-center py-16 opacity-40">
+                                    <i class="fa-solid fa-box-open text-6xl mb-4 text-slate-400"></i>
+                                    <p class="text-xl font-black text-slate-800 tracking-tight">Sin recompensas activas</p>
+                                    <p class="text-sm font-medium text-slate-500 mt-2">El cliente no tiene cupones de cumpleaños, ruleta ni raspaditos pendientes.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VISTA OPERACIONES (POS) -->
+                    <div x-show="activeTab === 'operaciones'" class="flex-1 p-8 relative flex flex-col items-center justify-center text-center">
+                        
+                        <template x-if="clientType === 'hibrido' && posView === 'menu'">
+                            <div class="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button @click="posView = 'compra'" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-fidelio-400 transition text-left group"><i class="fa-solid fa-cart-shopping text-3xl text-fidelio-500 mb-3 group-hover:scale-110 transition-transform"></i><p class="font-black text-slate-900 text-lg">Venta y Cashback</p></button>
+                                <button @click="posView = 'cobro'" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-fidelio-400 transition text-left group"><i class="fa-solid fa-wallet text-3xl text-fidelio-500 mb-3 group-hover:scale-110 transition-transform"></i><p class="font-black text-slate-900 text-lg">Cobrar del Saldo</p></button>
+                                <button @click="actionApplyStamp('hibrido')" class="col-span-full p-6 rounded-2xl transition text-center disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" :class="stampAppliedThisSession ? 'bg-slate-200 text-slate-500' : 'bg-slate-900 hover:bg-black text-white shadow-xl shadow-slate-900/20'" :disabled="stampAppliedThisSession || clientData.hibrido.stamps >= clientData.hibrido.totalStamps">
+                                    <p class="font-black text-xl" x-text="stampAppliedThisSession ? 'Sello Aplicado (Bloqueado)' : 'Aplicar 1 Sello Virtual'"></p>
+                                    <i class="fa-solid" :class="stampAppliedThisSession ? 'fa-lock' : 'fa-bolt text-amber-400'"></i>
+                                </button>
+                            </div>
+                        </template>
+                        
+                        <template x-if="['vip', 'membresia'].includes(clientType)">
+                            <div class="max-w-md w-full"><i class="fa-solid fa-door-open text-7xl text-emerald-400 mb-6 drop-shadow-md"></i><h2 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Acceso Permitido</h2><p class="text-slate-500 mb-10 text-lg">Registra la entrada del cliente sin transacciones monetarias.</p><button @click="executeAction('Visita Registrada', 'El acceso ha sido guardado en la bitácora.')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-6 rounded-[2rem] shadow-xl shadow-emerald-500/30 transition text-2xl">REGISTRAR ENTRADA</button></div>
+                        </template>
+
+                        <template x-if="clientType === 'metas' && posView === 'menu'">
+                            <div class="max-w-md w-full">
+                                <i class="fa-solid fa-bullseye text-7xl text-indigo-400 mb-6 drop-shadow-md"></i>
+                                <h2 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Meta de Gasto</h2>
+                                <p class="text-slate-500 mb-10 text-lg">Suma el ticket a su barra de progreso para desbloquear premios.</p>
+                                <button @click="posView = 'compra'" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-6 rounded-[2rem] shadow-xl shadow-indigo-600/30 transition text-2xl">INGRESAR TICKET</button>
+                            </div>
+                        </template>
+
+                        <template x-if="['cashback', 'monedero', 'giftcard'].includes(clientType) && posView === 'menu'">
+                            <div class="w-full max-w-xl grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <button @click="posView = 'cobro'" class="bg-slate-900 hover:bg-black text-white p-10 rounded-[2rem] shadow-xl shadow-slate-900/20 transition text-center flex flex-col items-center justify-center group">
+                                    <i class="fa-solid fa-cash-register text-5xl mb-4 group-hover:scale-110 transition-transform"></i>
+                                    <p class="font-black text-2xl">Cobrar</p>
+                                </button>
+                                <button @click="posView = 'compra'" class="bg-white border-2 border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 text-slate-900 p-10 rounded-[2rem] shadow-sm transition text-center flex flex-col items-center justify-center group" x-show="clientType !== 'giftcard'">
+                                    <i class="fa-solid fa-plus text-5xl mb-4 text-emerald-500 group-hover:scale-110 transition-transform"></i>
+                                    <p class="font-black text-2xl" x-text="clientType === 'cashback' ? 'Venta' : 'Recargar'"></p>
+                                </button>
+                            </div>
+                        </template>
+
+                        <template x-if="clientType === 'descuentos' && posView === 'menu'">
+                            <div class="max-w-md w-full">
+                                <i class="fa-solid fa-calculator text-7xl text-pink-500 mb-6 drop-shadow-md"></i>
+                                <h2 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Descuento Automático</h2>
+                                <p class="text-slate-500 mb-10 text-lg">Ingresa el total. El sistema restará el <span x-text="clientData.descuentos.discount"></span>% para el cobro.</p>
+                                <button @click="posView = 'descuento'" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-black py-6 rounded-[2rem] shadow-xl shadow-pink-500/30 transition text-2xl">CALCULADORA</button>
+                            </div>
+                        </template>
+
+                        <template x-if="clientType === 'multipass'">
+                            <div class="max-w-md w-full">
+                                <i class="fa-solid fa-ticket text-7xl text-rose-500 mb-6 drop-shadow-md"></i>
+                                <h2 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Redención Directa</h2>
+                                <p class="text-slate-500 mb-10 text-lg">Descuenta lógicamente 1 acceso del saldo prepagado del cliente.</p>
+                                <button @click="actionRedeemPass()" :disabled="clientData.multipass.left === 0" class="w-full bg-rose-500 hover:bg-rose-600 disabled:opacity-50 text-white font-black py-6 rounded-[2rem] shadow-xl shadow-rose-500/30 active:scale-95 transition text-2xl">
+                                    <span x-text="clientData.multipass.left > 0 ? 'DESCONTAR 1 ACCESO' : 'SIN ACCESOS RESTANTES'"></span>
+                                </button>
+                            </div>
+                        </template>
+
+                        <template x-if="clientType === 'cupon'">
+                            <div class="max-w-md w-full">
+                                <i class="fa-solid fa-receipt text-7xl text-orange-500 mb-6 drop-shadow-md"></i>
+                                <h2 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Validar Cupón</h2>
+                                <p class="text-slate-500 mb-10 text-lg">Al redimirlo se marcará como quemado impidiendo su reuso.</p>
+                                <button @click="actionBurnCoupon()" :disabled="clientData.cupon.used" class="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-black py-6 rounded-[2rem] shadow-xl shadow-orange-500/30 active:scale-95 transition text-2xl">
+                                    <span x-text="!clientData.cupon.used ? 'QUEMAR CUPÓN' : 'CUPÓN YA UTILIZADO'"></span>
+                                </button>
+                            </div>
+                        </template>
+
+                        <template x-if="clientType === 'sellos'">
+                            <div class="max-w-md w-full">
+                                <i class="fa-solid fa-stamp text-7xl text-blue-500 mb-6 drop-shadow-md"></i>
+                                <h2 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Sellar Tarjeta</h2>
+                                <p class="text-slate-500 mb-10 text-lg">La tarjeta del cliente en la pantalla izquierda mutará en vivo.</p>
+                                <button @click="actionApplyStamp('sellos')" :disabled="stampAppliedThisSession || clientData.sellos.current >= clientData.sellos.total" class="w-full font-black py-6 rounded-[2rem] active:scale-95 transition text-2xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3" :class="stampAppliedThisSession ? 'bg-slate-200 text-slate-500' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/30'">
+                                    <i class="fa-solid" :class="stampAppliedThisSession ? 'fa-lock' : 'fa-stamp'"></i>
+                                    <span x-text="stampAppliedThisSession ? 'SELLO APLICADO' : (clientData.sellos.current < clientData.sellos.total ? 'APLICAR 1 SELLO' : 'TARJETA LLENA')"></span>
+                                </button>
+                            </div>
+                        </template>
+
+                        <!-- CALCULADORA MULTIUSO PROTEGIDA CON x-if -->
+                        <template x-if="['compra', 'cobro', 'descuento'].includes(posView)">
+                            <div class="max-w-sm w-full relative">
+                                <button @click="posView = 'menu'; amountStr = '0';" class="absolute -top-12 left-0 text-slate-400 font-bold text-xs hover:text-slate-600"><i class="fa-solid fa-arrow-left mr-2"></i> Volver al Menú</button>
+                                <h2 class="text-xl font-black text-slate-900 mb-6" x-text="calcTitle()"></h2>
+                                <div class="text-6xl font-black font-mono text-slate-900 tracking-tighter border-b-4 pb-2 mb-4 w-full text-center transition-colors" :class="amountStr !== '0' ? 'border-fidelio-500' : 'border-slate-200'">$<span x-text="displayAmount"></span></div>
+                                
+                                <div x-show="posView === 'compra' && ['hibrido', 'cashback'].includes(clientType) && amountStr !== '0'" class="mb-4 text-emerald-600 text-sm font-black bg-emerald-50 py-3 rounded-xl border border-emerald-100">Cashback a inyectar: <span x-text="formatMoney(parseInt(amountStr,10)*0.10)"></span></div>
+                                <div x-show="posView === 'descuento' && amountStr !== '0'" class="mb-4 text-pink-600 text-lg font-black bg-pink-50 py-4 rounded-xl border border-pink-100">Total a cobrar: <span x-text="formatMoney(parseInt(amountStr,10)*((100-clientData.descuentos.discount)/100))"></span></div>
+                                
+                                <div class="grid grid-cols-3 gap-3 w-full mb-6 mt-4">
+                                    <template x-for="n in ['1','2','3','4','5','6','7','8','9']">
+                                        <button @click="appendNumber(n)" class="h-16 bg-slate-50 rounded-2xl text-2xl font-black font-mono text-slate-700 hover:bg-slate-200 transition" x-text="n"></button>
+                                    </template>
+                                    <button @click="appendNumber('00')" class="h-16 bg-slate-50 rounded-2xl text-xl font-black font-mono text-slate-700 hover:bg-slate-200 transition">00</button>
+                                    <button @click="appendNumber('0')" class="h-16 bg-slate-50 rounded-2xl text-2xl font-black font-mono text-slate-700 hover:bg-slate-200 transition">0</button>
+                                    <button @click="deleteNumber()" class="h-16 bg-rose-50 text-rose-500 rounded-2xl text-2xl flex items-center justify-center hover:bg-rose-100 transition"><i class="fa-solid fa-delete-left"></i></button>
+                                </div>
+                                <button @click="processCalcAction()" class="w-full bg-fidelio-600 hover:bg-fidelio-700 text-white font-black text-xl py-6 rounded-2xl shadow-xl shadow-fidelio-600/30 transition disabled:opacity-50" :disabled="amountStr === '0'">Aprobar Transacción</button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CLIENT PROFILE MODAL (HISTORIAL & PREFERENCIAS) -->
+        <div x-show="showClientProfile" style="display:none;" class="fixed inset-0 z-[100] flex justify-end bg-slate-900/40 backdrop-blur-sm" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+            <!-- Slide-over panel -->
+            <div class="w-full max-w-md bg-white h-full shadow-2xl flex flex-col" @click.away="showClientProfile = false" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
+                
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-800">Perfil del Cliente</h2>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1" x-text="['hibrido','vip'].includes(clientType) ? 'ROBERTO ORDOÑEZ' : 'CLIENTE FIDELIO'"></p>
+                    </div>
+                    <button @click="showClientProfile = false" class="w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-200 transition shadow-sm"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="flex border-b border-slate-200 px-6 pt-4 bg-slate-50 gap-6">
+                    <button @click="profileTab = 'historial'" class="pb-3 text-sm font-black uppercase tracking-widest transition border-b-2" :class="profileTab === 'historial' ? 'border-fidelio-600 text-fidelio-600' : 'border-transparent text-slate-400 hover:text-slate-600'">Historial</button>
+                    <button @click="profileTab = 'preferencias'" class="pb-3 text-sm font-black uppercase tracking-widest transition border-b-2" :class="profileTab === 'preferencias' ? 'border-fidelio-600 text-fidelio-600' : 'border-transparent text-slate-400 hover:text-slate-600'">Preferencias <span class="bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full text-[10px] ml-1">3</span></button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 bg-white custom-scrollbar">
+                    
+                    <div x-show="profileTab === 'historial'" class="space-y-6">
+                        <div class="relative pl-6 border-l-2 border-slate-100">
+                            <div class="absolute w-3 h-3 bg-emerald-400 rounded-full -left-[7px] top-1 shadow-[0_0_0_4px_white]"></div>
+                            <p class="text-xs font-bold text-slate-400 mb-1">Hace 2 horas</p>
+                            <p class="text-sm font-bold text-slate-800">Compra en Sucursal Condesa</p>
+                            <p class="text-xs text-emerald-600 font-bold mt-1">+ $45.00 Cashback</p>
+                        </div>
+                        <div class="relative pl-6 border-l-2 border-slate-100">
+                            <div class="absolute w-3 h-3 bg-blue-400 rounded-full -left-[7px] top-1 shadow-[0_0_0_4px_white]"></div>
+                            <p class="text-xs font-bold text-slate-400 mb-1">Hace 1 semana</p>
+                            <p class="text-sm font-bold text-slate-800">Redención de Cupón</p>
+                            <p class="text-xs text-blue-600 font-bold mt-1">2x1 Frappé Moka</p>
+                        </div>
+                        <div class="relative pl-6 border-l-2 border-slate-100">
+                            <div class="absolute w-3 h-3 bg-fidelio-400 rounded-full -left-[7px] top-1 shadow-[0_0_0_4px_white]"></div>
+                            <p class="text-xs font-bold text-slate-400 mb-1">Hace 1 mes</p>
+                            <p class="text-sm font-bold text-slate-800">Recarga de Monedero</p>
+                            <p class="text-xs text-fidelio-600 font-bold mt-1">Cajero: MARCO P.</p>
+                        </div>
+                    </div>
+
+                    <div x-show="profileTab === 'preferencias'" class="flex flex-col h-full">
+                        <div class="flex-1 space-y-3 mb-6">
+                            <div class="bg-amber-50 border border-amber-100 p-4 rounded-xl flex gap-4 items-start">
+                                <i class="fa-solid fa-thumbtack text-amber-400 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-bold text-amber-900 mb-1">Cliente alérgico a la nuez</p>
+                                    <p class="text-xs font-bold text-amber-700/60 uppercase tracking-widest">Fidelio Concierge • Hace 1 año</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-100 p-4 rounded-xl flex gap-4 items-start">
+                                <i class="fa-solid fa-mug-hot text-slate-400 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-700 mb-1">Siempre pide el Latte deslactosado tibio, no muy caliente.</p>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Fidelio Concierge • Hace 2 meses</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-100 p-4 rounded-xl flex gap-4 items-start">
+                                <i class="fa-solid fa-heart text-slate-400 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-700 mb-1">Prefiere mesa en la terraza si está disponible.</p>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Fidelio Concierge • Hace 1 semana</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    </div>
     <script>
-        function showToast(message, type = 'info') {
-            let container = document.getElementById('toast-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'toast-container';
-                container.style.position = 'fixed';
-                container.style.top = '20px';
-                container.style.right = '20px';
-                container.style.zIndex = '99999';
-                document.body.appendChild(container);
-            }
-            const toast = document.createElement('div');
-            toast.style.background = type === 'error' ? '#EF4444' : (type === 'success' ? '#10B981' : '#3B82F6');
-            toast.style.color = 'white';
-            toast.style.padding = '12px 24px';
-            toast.style.borderRadius = '8px';
-            toast.style.marginTop = '10px';
-            toast.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-            toast.style.fontWeight = '600';
-            toast.style.fontSize = '14px';
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 3000);
-        }
-
-        let supabaseClient;
-        let html5QrcodeScanner;
-        let currentCustomerId = null;
-        let merchantSession = null;
-        
-        
-        let currentMerchantData = null;
-
-        async function init() {
-            try {
-                // Inyectar llaves directamente para máxima velocidad y evitar errores de red al inicio
-                const supabaseUrl = 'https://sjkgpyalbqqsfndekgtb.supabase.co';
-                const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqa2dweWFsYnFxc2ZuZGVrZ3RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwMzQzMjMsImV4cCI6MjEwMTYxMDMyM30.VX0NAjL7Hwm_PIk0gERLV2DdkQsErWF_HWI1w-rdp64';
-                supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        function scannerEngine() {
+            return {
+                isAuthenticated: false,
+                loginEmail: '',
+                loginPassword: '',
+                loginShowPassword: false,
+                loginError: false,
+                loginLoading: false,
                 
-                const { data, error } = await supabaseClient.auth.getSession();
-                if (!error && data && data.session) {
-                    await setupScannerSession(data.session);
-                } else {
-                    document.getElementById('login-screen').style.display = 'flex';
-                }
-            } catch (e) {
-                showToast('Error conectando con el servidor', 'error');
-                document.getElementById('login-screen').style.display = 'flex';
-            }
-        }
+                attemptLogin() {
+                    if(!this.loginEmail || !this.loginPassword) return;
+                    this.loginLoading = true;
+                    this.loginError = false;
+                    setTimeout(() => {
+                        if (this.loginPassword === '1234') {
+                            this.loginLoading = false;
+                            this.isAuthenticated = true;
+                            // Reset login fields
+                            this.loginEmail = '';
+                            this.loginPassword = '';
+                        } else {
+                            this.loginLoading = false;
+                            this.loginError = true;
+                            setTimeout(() => { this.loginError = false; this.loginPassword = ''; }, 3000);
+                        }
+                    }, 1000);
+                },
 
-        function showRecoveryScreen() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('recovery-screen').style.display = 'flex';
-        }
-
-        function showLoginScreen() {
-            document.getElementById('recovery-screen').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
-        }
-
-        async function handleRecovery() {
-            const email = document.getElementById('recovery-email').value.trim();
-            const btn = document.getElementById('btn-recovery');
-            
-            if (!email) {
-                alert('Por favor ingresa un correo.');
-                return;
-            }
-            
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
-            btn.disabled = true;
-            
-            try {
-                const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: 'https://fidelio-41j9.onrender.com/update-password.html',
-                });
+                inputMode: 'camara',
+                clientType: null, 
+                isScanning: false, 
+                posView: 'menu',
+                activeTab: 'operaciones',
+                amountStr: '0',
+                stampAppliedThisSession: false,
                 
-                if (error) throw error;
+                showClientProfile: false,
+                profileTab: 'historial',
+                conciergeNote: '',
                 
-                alert('¡Listo! Revisa tu correo electrónico para crear tu nueva contraseña.');
-                showLoginScreen();
-            } catch (error) {
-                alert('Error al recuperar: ' + error.message);
-            } finally {
-                btn.innerHTML = 'Enviar enlace';
-                btn.disabled = false;
-            }
-        }
-
-        async function handleLogin() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            const btn = document.getElementById('btn-login');
-
-            if (!email || !password) {
-                showToast('Llena todos los campos', 'error');
-                return;
-            }
-
-            if (!supabaseClient) {
-                showToast('Error de conexión con el servidor. Reinicia la app.', 'error');
-                return;
-            }
-
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
-            
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                showToast('Usuario o contraseña incorrectos', 'error');
-                btn.innerHTML = 'Ingresar al Sistema';
-                return;
-            }
-            await setupScannerSession(data.session);
-        }
-
-        async function setupScannerSession(session) {
-            merchantSession = session;
-            const role = session.user.user_metadata?.role;
-            const targetMerchantId = role === 'staff' ? session.user.user_metadata.merchant_id : session.user.id;
-            
-            const { data: merchant } = await supabaseClient
-                .from('merchants')
-                .select('*')
-                .eq('id', targetMerchantId)
-                .single();
+                approveScreen: { show: false, title: '', subtitle: '', color: 'emerald' },
+                activeRewards: [],
                 
-            if (merchant) {
-                currentMerchantData = merchant;
-                let badge = role === 'staff' ? ' <i class="fa-solid fa-user-tag"></i> Cajero' : ' <i class="fa-solid fa-crown"></i> Admin';
-                document.getElementById('merchant-name').innerHTML = merchant.business_name + badge;
-            }
-
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-container').style.display = 'grid'; // Grid View
-            showToast('Sesión Iniciada', 'success');
-            setMode('scan');
-        }
-
-        function setMode(mode) {
-            const btnScan = document.getElementById('btn-mode-scan');
-            const btnManual = document.getElementById('btn-mode-manual');
-            const btnNfc = document.getElementById('btn-mode-nfc');
-
-            [btnScan, btnManual, btnNfc].forEach(btn => {
-                btn.style.background = 'transparent';
-                btn.style.color = 'var(--text-muted)';
-                btn.style.boxShadow = 'none';
-            });
-
-            document.getElementById('scanner-section').style.display = 'none';
-            document.getElementById('manual-section').style.display = 'none';
-            document.getElementById('nfc-section').style.display = 'none';
-
-            if (mode === 'scan') {
-                document.getElementById('scanner-section').style.display = 'block';
-                btnScan.style.background = 'var(--accent-gradient)';
-                btnScan.style.color = 'white';
-                btnScan.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
+                clientData: {
+                    hibrido: { balance: 840, stamps: 3, totalStamps: 10 },
+                    vip: { },
+                    metas: { spent: 450, target: 1000 },
+                    cashback: { balance: 1250 },
+                    monedero: { balance: 500 },
+                    descuentos: { discount: 20 },
+                    multipass: { left: 4 },
+                    membresia: { },
+                    cupon: { promo: '2x1 Frappés', used: false },
+                    giftcard: { balance: 1500 },
+                    sellos: { current: 4, total: 10 }
+                },
                 
-                if (!html5QrcodeScanner) { startScanner(); } 
-                else { try { html5QrcodeScanner.clear(); } catch(e){} startScanner(); }
-            } else if (mode === 'nfc') {
-                document.getElementById('nfc-section').style.display = 'flex';
-                btnNfc.style.background = 'var(--accent-gradient)';
-                btnNfc.style.color = 'white';
-                btnNfc.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
-                if (html5QrcodeScanner) { try { html5QrcodeScanner.stop(); } catch(e){} }
-            } else {
-                document.getElementById('manual-section').style.display = 'flex';
-                btnManual.style.background = 'var(--accent-gradient)';
-                btnManual.style.color = 'white';
-                btnManual.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)';
-                if (html5QrcodeScanner) { try { html5QrcodeScanner.stop(); } catch(e){} }
-            }
-        }
-
-        async function startNfcReader() {
-            const errEl = document.getElementById('nfc-error');
-            const btn = document.getElementById('btn-nfc-start');
-            errEl.style.display = 'none';
-
-            if (!('NDEFReader' in window)) {
-                errEl.textContent = "Tu navegador o dispositivo no soporta lectura NFC (Requiere Chrome en Android).";
-                errEl.style.display = 'block';
-                return;
-            }
-
-            try {
-                const ndef = new NDEFReader();
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Escaneando NFC...';
-                await ndef.scan();
+                saveConcierge() {
+                    if (this.conciergeNote.trim() === '') return;
+                    this.executeAction('Preferencia Guardada', 'La nota ha sido anexada al perfil del cliente.');
+                    this.conciergeNote = '';
+                    this.showClientProfile = true;
+                    this.profileTab = 'preferencias';
+                },
                 
-                showToast('Escáner NFC Activado. Acerca la tarjeta.', 'info');
+                simulateScan(type) {
+                    this.isScanning = true;
+                    setTimeout(() => {
+                        this.isScanning = false;
+                        this.clientType = type;
+                        this.posView = 'menu';
+                        this.activeTab = 'operaciones';
+                        this.amountStr = '0';
+                        this.stampAppliedThisSession = false;
+                        
+                        if (!['giftcard', 'cupon'].includes(type)) {
+                            this.activeRewards = [
+                                { id: 1, type: 'Premio de Ruleta', title: 'Postre de Cortesía Gratis', icon: 'fa-solid fa-dharmachakra', colorCls: 'bg-purple-100 text-purple-600' },
+                                { id: 2, type: 'Regalo de Cumpleaños', title: '20% OFF en todo tu ticket', icon: 'fa-solid fa-cake-candles', colorCls: 'bg-rose-100 text-rose-600' }
+                            ];
+                        } else {
+                            this.activeRewards = [];
+                        }
+                    }, 800);
+                },
                 
-                ndef.addEventListener("readingerror", () => {
-                    errEl.textContent = "No se pudo leer la tarjeta. Intenta acercarla más.";
-                    errEl.style.display = 'block';
-                });
+                closeClient() { this.clientType = null; this.posView = 'menu'; this.amountStr = '0'; },
+                
+                redeemCrossReward(id) {
+                    this.activeRewards = this.activeRewards.filter(r => r.id !== id);
+                    this.executeAction('Recompensa Canjeada', 'El premio se ha descontado del perfil del cliente.', 'fidelio');
+                },
 
-                ndef.addEventListener("reading", ({ message, serialNumber }) => {
-                    let nfcText = "";
-                    for (const record of message.records) {
-                        if (record.recordType === "text") {
-                            const textDecoder = new TextDecoder(record.encoding);
-                            nfcText = textDecoder.decode(record.data);
-                            break;
+                actionApplyStamp(type) {
+                    if (this.stampAppliedThisSession) return;
+                    if (type === 'hibrido') { this.clientData.hibrido.stamps++; }
+                    if (type === 'sellos') { this.clientData.sellos.current++; }
+                    
+                    this.stampAppliedThisSession = true;
+                    this.executeAction('¡Sello Aplicado!', 'La tarjeta digital fue actualizada.');
+                },
+                
+                actionRedeemPass() {
+                    this.clientData.multipass.left--;
+                    this.executeAction('Acceso Aprobado', 'Se descontó 1 pase del saldo.', 'fidelio');
+                },
+                
+                actionBurnCoupon() {
+                    this.clientData.cupon.used = true;
+                    this.executeAction('Cupón Validado', 'Aplicando promoción en terminal...', 'fidelio');
+                },
+                
+                calcTitle() {
+                    if(this.posView === 'compra') return 'Ingresar Ticket';
+                    if(this.posView === 'cobro') return 'Monto a Cobrar';
+                    if(this.posView === 'descuento') return 'Monto sin Descuento';
+                    return '';
+                },
+                get displayAmount() {
+                    if (this.amountStr === '0' || this.amountStr === '') return '0';
+                    return Number(this.amountStr).toLocaleString('en-US');
+                },
+                appendNumber(n) {
+                    if (this.amountStr === '0' && n !== '00') this.amountStr = n;
+                    else if (this.amountStr !== '0' && this.amountStr.length < 6) this.amountStr += n;
+                },
+                deleteNumber() {
+                    if (this.amountStr.length > 1) this.amountStr = this.amountStr.slice(0, -1);
+                    else this.amountStr = '0';
+                },
+                formatNumber(val) { 
+                    return Number(val).toLocaleString('en-US', {minimumFractionDigits: 2}); 
+                },
+                formatMoney(val) { 
+                    if(isNaN(val)) return '$0.00';
+                    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(val); 
+                },
+                
+                processCalcAction() {
+                    const amt = parseInt(this.amountStr, 10);
+                    if(this.posView === 'compra') {
+                        if (['hibrido', 'cashback'].includes(this.clientType)) {
+                            const cashback = Math.floor(amt * 0.10);
+                            this.clientData[this.clientType].balance += cashback;
+                            this.executeAction('Cashback Aprobado', `Se inyectaron $${cashback} al Wallet del cliente.`);
+                        } else if (this.clientType === 'metas') {
+                            this.clientData.metas.spent += amt;
+                            this.executeAction('Progreso Actualizado', `Ticket de $${amt} validado.`);
+                        } else {
+                            this.clientData[this.clientType].balance += amt;
+                            this.executeAction('Recarga Exitosa', `Se sumaron $${amt} al saldo.`);
                         }
                     }
-                    
-                    if (nfcText) {
-                        showToast('Tarjeta NFC Leída con éxito', 'success');
-                        btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC';
-                        onScanSuccess(nfcText);
-                    } else {
-                        showToast('Hardware Tag Leído', 'success');
-                        btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC';
-                        onScanSuccess(serialNumber);
+                    if(this.posView === 'cobro') {
+                        this.clientData[this.clientType].balance -= amt;
+                        this.executeAction('Pago Procesado', `Se descontaron $${amt} del saldo Fidelio.`);
                     }
-                });
-            } catch (error) {
-                errEl.textContent = "Error iniciando NFC: " + error.message;
-                errEl.style.display = 'block';
-                btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Activar Lector NFC';
-            }
-        }
-
-        function startScanner() {
-            document.getElementById('cyber-effect').style.display = 'block';
-            
-            html5QrcodeScanner = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-            
-            html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, (err) => {})
-            .catch(err => {
-                document.getElementById('cyber-effect').style.display = 'none';
-                document.getElementById('reader').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted); display:flex; flex-direction:column; justify-content:center; height:100%;"><i class="fa-solid fa-video-slash" style="font-size:3rem; margin-bottom:16px; color:var(--danger);"></i><span>Cámara bloqueada o no detectada.</span></div>';
-            });
-        }
-
-        function renderClientProfile(data) {
-            document.getElementById('empty-state').style.opacity = '0';
-            setTimeout(() => { document.getElementById('empty-state').style.display = 'none'; }, 300);
-            
-            // Esconder todo por defecto
-            document.getElementById('card-saldo digital').style.display = 'none';
-            document.getElementById('card-cashback').style.display = 'none';
-            document.getElementById('payment-input-group').style.display = 'none';
-            document.getElementById('payment-actions-grid').style.display = 'none';
-            document.getElementById('professional-actions-grid').style.display = 'none';
-            document.getElementById('multipass-actions-grid').style.display = 'none';
-            document.getElementById('membership-actions-grid').style.display = 'none';
-            document.getElementById('membership-status-warning').style.display = 'none';
-            document.getElementById('coupon-actions-grid').style.display = 'none';
-            document.getElementById('discount-actions-grid').style.display = 'none';
-            
-            if (currentMerchantData && currentMerchantData.activeMode === 'membership') {
-                document.getElementById('membership-actions-grid').style.display = 'grid';
-                
-                let isExpired = false;
-                if (currentMerchantData.customRules && currentMerchantData.customRules.membership && currentMerchantData.customRules.membership.endDate) {
-                    const endDate = new Date(currentMerchantData.customRules.membership.endDate);
-                    const now = new Date();
-                    if (now > endDate) {
-                        isExpired = true;
+                    if(this.posView === 'descuento') {
+                        this.executeAction('Descuento Aplicado', 'Procede a cobrar en la terminal.');
                     }
                 }
-                
-                if (isExpired) {
-                    document.getElementById('membership-status-warning').style.display = 'block';
-                    document.getElementById('btn-register-visit').disabled = true;
-                    document.getElementById('btn-register-visit').style.opacity = '0.5';
-                } else {
-                    document.getElementById('btn-register-visit').disabled = false;
-                    document.getElementById('btn-register-visit').style.opacity = '1';
-                }
-            } else if (currentMerchantData && currentMerchantData.activeMode === 'multipass') {
-                document.getElementById('multipass-actions-grid').style.display = 'grid';
-                document.getElementById('btn-redeem-multipass').disabled = false;
-            } else if (currentMerchantData && currentMerchantData.activeMode === 'coupons') {
-                document.getElementById('coupon-actions-grid').style.display = 'grid';
-                document.getElementById('btn-redeem-coupon').disabled = false;
-            } else if (currentMerchantData && currentMerchantData.activeMode === 'discount') {
-                document.getElementById('discount-actions-grid').style.display = 'grid';
-                document.getElementById('btn-apply-discount').disabled = false;
-            } else if (currentMerchantData && currentMerchantData.business_type === 'professional') {
-                document.getElementById('professional-actions-grid').style.display = 'grid';
-                document.getElementById('btn-stamp-only').disabled = false;
-                document.getElementById('btn-redeem-reward').disabled = false;
-            } else {
-                document.getElementById('card-saldo digital').style.display = 'flex';
-                document.getElementById('card-cashback').style.display = 'flex';
-                document.getElementById('payment-input-group').style.display = 'block';
-                document.getElementById('payment-actions-grid').style.display = 'grid';
-                
-                document.getElementById('op-amount').disabled = false;
-                document.getElementById('btn-charge').disabled = false;
-                document.getElementById('btn-add').disabled = false;
-            }
-            
-            
-            const cName = data.full_name || data.name || 'Cliente';
-            document.getElementById('c-name').textContent = cName;
-            
-            // THE STARBUCKS EFFECT
-            try {
-                // Play Sound
-                // Note: We'll use the browser's speech synthesis for an even more magical effect!
-                const msg = new SpeechSynthesisUtterance("Bienvenido " + cName.split(' ')[0]);
-                msg.lang = 'es-MX';
-                msg.rate = 1.1;
-                window.speechSynthesis.speak(msg);
-                
-                // Show Overlay
-                const overlay = document.getElementById('starbucks-overlay');
-                document.getElementById('starbucks-name').textContent = cName.split(' ')[0];
-                overlay.style.display = 'flex';
-                
-                // Confetti
-                if (window.JSConfetti) {
-                    const jsConfetti = new window.JSConfetti();
-                    jsConfetti.addConfetti({ emojis: ['✨', '🌟', '🎉', '🔥'], confettiNumber: 60 });
-                }
-                
-                // Hide after 3.5 seconds
-                setTimeout(() => {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => overlay.style.display = 'none', 400);
-                }, 3500);
-                
-            } catch(e) { console.error("Starbucks effect failed:", e); }
-
-            document.getElementById('c-tier').innerHTML = `<i class="fa-solid fa-crown"></i> Cliente ${data.vip_tier || 'Bronce'}`;
-            
-            document.getElementById('c-saldo digital').innerHTML = `$${parseFloat(data.wallet_balance || 0).toFixed(2)}`;
-            document.getElementById('c-cashback').innerHTML = `$${parseFloat(data.balance_cashback || 0).toFixed(2)}`;
-            
-            let stampsHtml = '';
-            const totalStampsReq = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stampsTotal) ? window.currentCampaignData.rules_config.stampsTotal : (currentMerchantData?.stamps_total || 10);
-            const currentStamps = data.stamps_count || 0;
-            
-            for(let i=0; i < totalStampsReq; i++) {
-                if(i < currentStamps) stampsHtml += '<i class="fa-solid fa-star"></i> ';
-                else stampsHtml += '<i class="fa-regular fa-star" style="opacity:0.4;"></i> ';
-            }
-            document.getElementById('c-stamps').innerHTML = stampsHtml;
-            
-            // Save current customer global state
-            window.currentCustomerData = data;
-        }
-
-        
-        async function fetchCustomer(customerId) {
-            try {
-                let query = supabaseClient.from('customers').select('*').eq('merchant_id', currentMerchantData.id);
-                if (customerId.length === 36 && customerId.includes('-')) {
-                    query = query.eq('id', customerId);
-                } else if (customerId.includes('@')) {
-                    query = query.eq('email', customerId.toLowerCase());
-                } else {
-                    query = query.eq('phone', customerId);
-                }
-                const { data, error } = await query.single();
-                if (error || !data) return null;
-                return data;
-            } catch (err) {
-                console.error(err);
-                return null;
             }
         }
-        
-        async function fetchCustomerCampaign(customerId, campaignId) {
-            try {
-                const { data, error } = await supabaseClient.from('customer_campaigns')
-                    .select('*')
-                    .eq('customer_id', customerId)
-                    .eq('campaign_id', campaignId)
-                    .single();
-                if (error) {
-                    // Try to insert it if it doesn't exist
-                    const { data: newLink, error: insErr } = await supabaseClient.from('customer_campaigns')
-                        .insert([{ customer_id: customerId, campaign_id: campaignId }])
-                        .select('*').single();
-                    if (!insErr) return newLink;
-                    return null;
-                }
-                return data;
-            } catch(e) {
-                console.error(e);
-                return null;
-            }
-        }
-
-
-        
-        async function onScanSuccess(decodedText) {
-            try{ html5QrcodeScanner.stop(); }catch(e){}
-            document.getElementById('cyber-effect').style.display = 'none';
-            
-            const parts = decodedText.split('|');
-            const cId = parts[0];
-            const campId = parts.length > 1 ? parts[1] : null;
-            
-            currentCustomerId = cId;
-            window.currentCampaignId = campId;
-            
-            showToast('Pase escaneado. Buscando...', 'info');
-            const data = await fetchCustomer(cId);
-            
-            if (data) {
-                if (campId) {
-                    // VERIFICACION ESTRICTA: La campaña debe pertenecer a este negocio
-                    const { data: camp, error: campErr } = await supabaseClient.from('campaigns').select('*').eq('id', campId).eq('merchant_id', currentMerchantData.id).single();
-                    if (campErr || !camp) {
-                        alert('❌ TARJETA RECHAZADA:\n\nEsta tarjeta digital pertenece a otro negocio o profesional.\n\nNo puedes escanearla en este panel.');
-                        resetScanner();
-                        return;
-                    }
-                    
-                    const link = await fetchCustomerCampaign(cId, campId);
-                    if (link) {
-                        data.stamps_count = link.stamps_count;
-                        data.balance_cashback = link.cashback_balance;
-                    }
-                    window.currentCampaignData = camp;
-                }
-                
-                showToast('Cliente localizado', 'success');
-                renderClientProfile(data);
-            } else {
-                alert('❌ ACCESO DENEGADO:\n\nEste código QR no pertenece a tu base de datos de clientes o es de otro negocio.\n\nLa visita NO será registrada.');
-                resetScanner();
-            }
-        }
-
-
-        
-        async function searchCustomerManual() {
-            const query = document.getElementById('manual-search-input').value.trim();
-            const btn = document.getElementById('btn-manual-search');
-            if (!query) { showToast('Ingresa un teléfono o correo', 'error'); return; }
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando...';
-            btn.disabled = true;
-
-            const data = await fetchCustomer(query);
-            btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente';
-            btn.disabled = false;
-            
-            if (data) {
-                window.currentCampaignId = null;
-                showToast('Cliente localizado (Búsqueda manual - Modo Global)', 'warning');
-                currentCustomerId = data.id;
-                renderClientProfile(data);
-            }
-        }
-
-
-        function resetScanner() {
-            document.getElementById('empty-state').style.display = 'flex';
-            setTimeout(() => { document.getElementById('empty-state').style.opacity = '1'; }, 10);
-            
-            document.getElementById('op-amount').value = '';
-            document.getElementById('op-amount').disabled = true;
-            document.getElementById('btn-charge').disabled = true;
-            document.getElementById('btn-add').disabled = true;
-            
-            document.getElementById('status-overlay').style.display = 'none';
-            currentCustomerId = null;
-            window.currentCustomerData = null;
-            
-            if (document.getElementById('btn-mode-manual').style.color === 'white') {
-                setMode('manual');
-            } else {
-                setMode('scan');
-            }
-        }
-
-        // ==========================================
-        // LÓGICA DE TRANSACCIONES (Supabase Live)
-        // ==========================================
-        
-        async function processAction(actionType) {
-            if (!window.currentCustomerData) return;
-            const amountStr = document.getElementById('op-amount').value;
-            let amount = parseFloat(amountStr);
-            if (actionType === 'add_stamp_only' || actionType === 'redeem_reward') {
-                amount = 0; 
-            } else {
-                if (isNaN(amount) || amount <= 0) {
-                    showToast('Ingresa el monto de la operación primero.', 'error');
-                    document.getElementById('op-amount').focus();
-                    return;
-                }
-            }
-
-            showToast('Procesando transacción en vivo...', 'info');
-            
-            let statusMsg = "";
-            let newCashback = parseFloat(window.currentCustomerData.balance_cashback || 0);
-            let newWallet = parseFloat(window.currentCustomerData.wallet_balance || 0);
-            let newStamps = parseInt(window.currentCustomerData.stamps_count || 0);
-            let newVisits = parseInt(window.currentCustomerData.visits || 0) + 1;
-            let newLifetime = parseFloat(window.currentCustomerData.lifetime_value || 0);
-            let totalSpent = parseFloat(window.currentCustomerData.total_spent || 0);
-            
-            let txType = '';
-            let cashbackEarned = 0;
-            let cashbackRedeemed = 0;
-            let walletAmount = 0;
-            
-            if (actionType === 'add_funds') {
-                txType = 'earn';
-                newWallet += amount;
-                walletAmount = amount;
-                newLifetime += amount;
-                statusMsg = `<strong style="color:var(--text-main);">Depósito Completado</strong><br><br>Se abonaron <span style="color:var(--success); font-weight:800;">$${amount.toFixed(2)} USD</span><br>al Saldo Digital del cliente.`;
-            } 
-            else if (actionType === 'charge_ticket') {
-                txType = 'redeem';
-                let amountToPay = amount;
-                if (newWallet > 0) {
-                    if (newWallet >= amountToPay) { newWallet -= amountToPay; amountToPay = 0; }
-                    else { amountToPay -= newWallet; newWallet = 0; }
-                }
-                if (amountToPay > 0 && newCashback > 0) {
-                    if (newCashback >= amountToPay) { newCashback -= amountToPay; amountToPay = 0; }
-                    else { amountToPay -= newCashback; newCashback = 0; }
-                }
-                const cashbackRate = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.cashbackPercent) ? window.currentCampaignData.rules_config.cashbackPercent : (currentMerchantData?.cashback_percent || 0);
-                cashbackEarned = amount * (cashbackRate / 100);
-                newCashback += cashbackEarned;
-                totalSpent += amount;
-                statusMsg = `<strong style="color:var(--text-main);">Venta Cobrada</strong><br><br>El cliente ganó <span style="color:var(--accent-violet); font-weight:800;">$${cashbackEarned.toFixed(2)}</span> de Cashback por esta compra.`;
-            }
-            else if (actionType === 'add_stamp_only') {
-                txType = 'earn';
-                newStamps += 1;
-                statusMsg = `<strong style="color:var(--text-main);">Sello Otorgado</strong><br><br>El cliente ahora tiene <span style="color:var(--warning); font-weight:800;">${newStamps} sellos</span>.`;
-            }
-            else if (actionType === 'redeem_reward') {
-                txType = 'redeem';
-                const required = (window.currentCampaignData && window.currentCampaignData.rules_config && window.currentCampaignData.rules_config.stampsTotal) ? window.currentCampaignData.rules_config.stampsTotal : (currentMerchantData?.stamps_total || 10);
-                if (newStamps >= required) {
-                    newStamps -= required;
-                    statusMsg = `<strong style="color:var(--success);">¡Recompensa Canjeada!</strong><br><br>Se restaron ${required} sellos.`;
-                } else {
-                    showToast(`No tiene suficientes sellos (Requiere ${required})`, 'error');
-                    return;
-                }
-            }
-            else if (actionType === 'redeem_multipass') {
-                txType = 'redeem';
-                if (newStamps > 0) {
-                    newStamps -= 1;
-                    statusMsg = `<strong style="color:var(--success);">¡Pase Descontado!</strong><br><br>Pases restantes: <span style="color:var(--text-main); font-weight:800;">${newStamps}</span>.`;
-                } else {
-                    showToast(`No tiene pases disponibles.`, 'error');
-                    return;
-                }
-            }
-            else if (actionType === 'register_visit') {
-                txType = 'earn';
-                statusMsg = `<strong style="color:var(--success);">¡Visita Registrada!</strong><br><br>Se ha registrado el acceso mediante la membresía.`;
-            }
-            else if (actionType === 'redeem_coupon') {
-                txType = 'redeem';
-                statusMsg = `<strong style="color:var(--success);">¡Cupón Redimido!</strong><br><br>El beneficio del cupón fue otorgado con éxito.`;
-            }
-            else if (actionType === 'apply_discount') {
-                txType = 'earn';
-                statusMsg = `<strong style="color:var(--success);">¡Descuento Aplicado!</strong><br><br>Se ha registrado el uso de este descuento.`;
-            }
-
-            try {
-                const { error: updErr } = await supabaseClient.from('customers').update({
-                    balance_cashback: newCashback,
-                    wallet_balance: newWallet,
-                    stamps_count: newStamps,
-                    visits: newVisits,
-                    lifetime_value: newLifetime,
-                    total_spent: totalSpent,
-                    last_visit: new Date().toISOString()
-                }).eq('id', window.currentCustomerData.id);
-
-                if (updErr) throw updErr;
-
-                if (window.currentCampaignId) {
-                    const { error: campUpdErr } = await supabaseClient.from('customer_campaigns').update({
-                        stamps_count: newStamps,
-                        cashback_balance: newCashback,
-                        updated_at: new Date().toISOString()
-                    }).eq('customer_id', window.currentCustomerData.id).eq('campaign_id', window.currentCampaignId);
-                    if (campUpdErr) console.error("Warning: could not update customer_campaigns", campUpdErr);
-                }
-
-                const { error: txErr } = await supabaseClient.from('transactions').insert([{
-                    merchant_id: currentMerchantData.id,
-                    customer_id: window.currentCustomerData.id,
-                    campaign_id: window.currentCampaignId || null,
-                    type: txType,
-                    amount: amount,
-                    cashback_earned: cashbackEarned,
-                    cashback_redeemed: cashbackRedeemed,
-                    wallet_amount: walletAmount,
-                    stamps_awarded: (actionType==='add_stamp_only')?1:0,
-                    status: 'completed',
-                    metadata: { source: 'scanner', action: actionType }
-                }]);
-
-                if (txErr) throw txErr;
-
-                document.getElementById('status-msg').innerHTML = statusMsg;
-                document.getElementById('status-overlay').style.display = 'flex';
-                
-                try { fetch(`/api/pass/${window.currentCustomerData.id}/webhook`, { method: 'POST' }); } catch(e){}
-
-            } catch (e) {
-                console.error(e);
-                showToast('Error en transacción: ' + e.message, 'error');
-            }
-        }
-
-
-        document.addEventListener('DOMContentLoaded', init);
-</script>
-
-    <!-- STARBUCKS EFFECT AUDIO & UI -->
-    <audio id="chaching-sound" preload="auto">
-        <source src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" type="audio/mpeg">
-    </audio>
-    <div id="starbucks-overlay" style="display: none; position: fixed; inset: 0; background: linear-gradient(135deg, #10b981, #059669); z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px;">
-        <div style="font-size: 100px; animation: floatPhone 2s infinite alternate;">🎉</div>
-        <h1 id="starbucks-title" style="font-size: 40px; font-weight: 900; margin: 20px 0 10px; line-height: 1.1; text-transform: uppercase;">¡Llegó Roberto!</h1>
-        <p id="starbucks-subtitle" style="font-size: 24px; font-weight: 700; margin: 0; opacity: 0.9;">Es su 5ta visita. ¡Felicítalo!</p>
-        <button onclick="document.getElementById('starbucks-overlay').style.display='none'" style="margin-top: 40px; background: white; color: #059669; border: none; padding: 16px 32px; border-radius: 30px; font-size: 18px; font-weight: 800; box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer;">Cerrar y Continuar</button>
-    </div>
-
-
-    <script>
-    // STARBUCKS EFFECT PATCH
-    const originalShowSuccess = window.showSuccess || function(){};
-    window.triggerStarbucksEffect = function(name, visits) {
-        try { document.getElementById('chaching-sound').play(); } catch(e){}
-        const overlay = document.getElementById('starbucks-overlay');
-        document.getElementById('starbucks-title').innerText = '¡Llegó ' + (name || 'el Cliente') + '!';
-        document.getElementById('starbucks-subtitle').innerText = 'Es su visita #' + (visits || 1) + '. ¡Felicítalo!';
-        overlay.style.display = 'flex';
-        // Auto hide after 6 seconds
-        setTimeout(() => { overlay.style.display = 'none'; }, 6000);
-    };
-    
-    // Intercept when customer name is populated
-    setInterval(() => {
-        const nameEl = document.getElementById('customer-name');
-        if (nameEl && nameEl.innerText && nameEl.innerText !== '---' && !nameEl.dataset.starbucksShown) {
-            nameEl.dataset.starbucksShown = 'true';
-            // Randomize visits for demo since it's not immediately available
-            const demoVisits = Math.floor(Math.random() * 8) + 2;
-            window.triggerStarbucksEffect(nameEl.innerText.split(' ')[0], demoVisits);
-        }
-    }, 1000);
     </script>
-
 </body>
 </html>
