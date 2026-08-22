@@ -869,7 +869,7 @@ aside {
                 <div class="nav-tab" data-tab="tab-metrics"><i class="fa-solid fa-chart-pie"></i> Métricas</div>
 
                 <div class="menu-label marg-t-20">Operación del Negocio</div>
-                <div class="nav-tab" data-tab="tab-campaigns" id="nav-campaigns"><i class="fa-solid fa-list"></i> Mis Campañas</div>
+                <div class="nav-tab" data-tab="tab-campaigns" id="nav-campaigns"><i class="fa-solid fa-list"></i> Mis Tarjetas</div>
                 <!-- Creador de Tarjetas oculto del sidebar (fusionado) -->
                 <div class="nav-tab plan-professional-only" data-tab="tab-stripe" id="nav-stripe"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</div>
                 <div class="nav-tab plan-pro-only" data-tab="tab-branches" id="nav-branches" style="display:none;"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</div>
@@ -879,8 +879,7 @@ aside {
 
                 <div class="menu-label marg-t-20">Estrategia y Crecimiento</div>
                 <!-- Oculto para unificar UX: Fidelizacion movida al Creador -->
-                <!-- Oculto para unificar UX: Tarjetas Especiales --><div class="nav-tab plan-pro-only" data-tab="tab-special-cards" id="nav-special-cards" style="display:none;"><i class="fa-solid fa-address-card"></i> Tarjetas Especiales</div>
-                <div class="nav-tab plan-business-only" data-tab="tab-marketing" style="display:none;"><i class="fa-solid fa-bolt"></i> Campañas Push</div>
+                                <div class="nav-tab plan-business-only" data-tab="tab-marketing" style="display:none;"><i class="fa-solid fa-bolt"></i> Campañas Push</div>
                 <div class="nav-tab plan-pro-only" data-tab="tab-copilot" style="display:none;"><i class="fa-solid fa-brain"></i> Copiloto AI</div>
                 <div class="nav-tab plan-pro-only" data-tab="tab-api" style="display:none;"><i class="fa-solid fa-code"></i> API</div>
                 <div class="nav-tab plan-business-only" data-tab="tab-mybusiness" style="display:none;"><i class="fa-solid fa-bullhorn"></i> My Business</div>
@@ -928,11 +927,11 @@ aside {
             <section id="tab-campaigns" class="tab-content">
                 <div class="workspace-header">
                     <div>
-                        <div class="workspace-eyebrow">CAMPAÑAS</div>
-                        <h1>Mis Campañas</h1>
-                        <p>Selecciona una campaña para editarla o crea una nueva.</p>
+                        <div class="workspace-eyebrow">TARJETAS</div>
+                        <h1>Mis Tarjetas</h1>
+                        <p>Selecciona una tarjeta para editarla o crea una nueva.</p>
                     </div>
-                    <button class="fidelio-btn-primary" onclick="window.forceNewCampaignFlow()"><i class="fa-solid fa-wand-magic-sparkles"></i> Diseñar Nueva Campaña</button>
+                    <button class="fidelio-btn-primary" onclick="window.forceNewCampaignFlow()"><i class="fa-solid fa-wand-magic-sparkles"></i> Crear Nueva Tarjeta</button>
                 </div>
                 <div id="campaigns-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
                     <div id="campaigns-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #f8fafc;  border: 2px dashed #cbd5e1;">
@@ -3223,7 +3222,7 @@ aside {
                     <div class="form-group" style="flex:1; margin-bottom: 0;">
                         <label>Seleccionar Campaña Existente (o Crear Nueva)</label>
                         <select id="campaign-select-config" class="fidelio-input" style="width:100%;">
-                            <option value="new">+ Crear Nueva Campaña</option>
+                            <option value="new">+ Crear Nueva Tarjeta</option>
                         </select>
                     </div>
                     <div class="form-group" style="flex:1; margin-bottom: 0;">
