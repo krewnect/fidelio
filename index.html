@@ -1691,7 +1691,7 @@ aside {
                     <div class="builder-sidebar">
                         
                         <div style="margin-bottom: 40px;">
-                            <button onclick="document.querySelector('.nav-tab[data-tab=\'tab-campaigns\']').click()" style="background:transparent; border:none; color:#64748b; font-size:13px; font-weight:700; cursor:pointer; margin-bottom:16px; display:flex; align-items:center; gap:6px; padding:0; transition:color 0.2s; text-transform:uppercase; letter-spacing:0.5px;" onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#64748b'">
+                            <button onclick="document.querySelector('.nav-tab[data-tab='tab-campaigns']').click()" style="background:transparent; border:none; color:#64748b; font-size:13px; font-weight:700; cursor:pointer; margin-bottom:16px; display:flex; align-items:center; gap:6px; padding:0; transition:color 0.2s; text-transform:uppercase; letter-spacing:0.5px;" onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#64748b'">
                                 <i class="fa-solid fa-arrow-left"></i> Volver
                             </button>
                             <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -1.5px; color: #111827; margin: 0;">Diseñador Mágico</h1>
@@ -4094,11 +4094,11 @@ aside {
                 <div class="flex justify-between items-center mb-4 relative z-10">
                     <h3 class="text-sm font-black text-white"><i class="fa-solid fa-chart-simple text-fidelio-400 mr-2"></i> Registro Operativo</h3>
                     <!-- Selectores de Tiempo -->
-                    <div class="flex bg-slate-800 rounded-lg p-1">
-                        <button @click="timeFilter = 'dia'" :class="timeFilter === 'dia' ? 'bg-slate-600 text-white' : 'text-slate-400 hover:text-white'" class="text-[9px] font-bold px-2 py-1 rounded transition">Día</button>
-                        <button @click="timeFilter = 'sem'" :class="timeFilter === 'sem' ? 'bg-slate-600 text-white' : 'text-slate-400 hover:text-white'" class="text-[9px] font-bold px-2 py-1 rounded transition">Sem</button>
-                        <button @click="timeFilter = 'mes'" :class="timeFilter === 'mes' ? 'bg-slate-600 text-white' : 'text-slate-400 hover:text-white'" class="text-[9px] font-bold px-2 py-1 rounded transition">Mes</button>
-                        <button @click="timeFilter = 'año'" :class="timeFilter === 'año' ? 'bg-slate-600 text-white' : 'text-slate-400 hover:text-white'" class="text-[9px] font-bold px-2 py-1 rounded transition">Año</button>
+                    <div class="flex bg-slate-800/50 border border-slate-700 rounded-lg p-1">
+                        <button @click="timeFilter = 'dia'" :class="timeFilter === 'dia' ? 'bg-fidelio-600 text-white shadow-sm' : 'bg-transparent text-slate-300 hover:text-fidelio-300'" class="border-0 cursor-pointer text-[10px] font-bold px-3 py-1.5 rounded-md transition">Día</button>
+                        <button @click="timeFilter = 'sem'" :class="timeFilter === 'sem' ? 'bg-fidelio-600 text-white shadow-sm' : 'bg-transparent text-slate-300 hover:text-fidelio-300'" class="border-0 cursor-pointer text-[10px] font-bold px-3 py-1.5 rounded-md transition">Sem</button>
+                        <button @click="timeFilter = 'mes'" :class="timeFilter === 'mes' ? 'bg-fidelio-600 text-white shadow-sm' : 'bg-transparent text-slate-300 hover:text-fidelio-300'" class="border-0 cursor-pointer text-[10px] font-bold px-3 py-1.5 rounded-md transition">Mes</button>
+                        <button @click="timeFilter = 'año'" :class="timeFilter === 'año' ? 'bg-fidelio-600 text-white shadow-sm' : 'bg-transparent text-slate-300 hover:text-fidelio-300'" class="border-0 cursor-pointer text-[10px] font-bold px-3 py-1.5 rounded-md transition">Año</button>
                     </div>
                 </div>
                 
@@ -5405,7 +5405,7 @@ aside {
                         </div>
                         <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Lectores NFC Inteligentes</h3>
                         <p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">Terminales dedicadas para lectura de pases en milisegundos sin necesidad de usar celulares.</p>
-                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href=\'mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales\'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
+                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
                     </div>
 
                     <!-- Product 2 -->
@@ -5416,7 +5416,7 @@ aside {
                         </div>
                         <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Bases de Mostrador</h3>
                         <p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">Bases de acrílico y metal para colocar instrucciones o Códigos QR de registro en tu caja.</p>
-                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href=\'mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales\'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
+                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
                     </div>
 
                     <!-- Product 3 -->
@@ -5427,7 +5427,7 @@ aside {
                         </div>
                         <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Tarjetas Físicas NFC (x100)</h3>
                         <p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">Para clientes que prefieren el plástico. Personalizadas con tu logo.</p>
-                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href=\'mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales\'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
+                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
                     </div>
                 </div>
 
@@ -5442,7 +5442,7 @@ aside {
                         </div>
                         <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Table Tent (QR Escaneable)</h3>
                         <p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">PDF listo para imprimir en tamaño carta. Dóblalo y colócalo en tus mesas.</p>
-                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href=\'mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales\'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
+                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
                     </div>
 
                     <div class="content-panel" style="padding: 24px !important; display: flex; flex-direction: column; transition: transform 0.2s; cursor: pointer;">
@@ -5452,7 +5452,7 @@ aside {
                         </div>
                         <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Stickers para Vitrina</h3>
                         <p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">Formatos circulares de 10cm y 15cm listos para enviar a imprenta y pegar en la entrada.</p>
-                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href=\'mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales\'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
+                        <button class="fidelio-btn-primary" style="width: 100%; justify-content: center;" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
                     </div>
 
                 </div>
