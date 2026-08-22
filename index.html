@@ -849,20 +849,6 @@ aside {
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-    <script>
-        window.addEventListener("error", function(e) {
-            var errDiv = document.createElement('div');
-            errDiv.style = "position:fixed; z-index:99999; background:red; color:white; top:0; left:0; width:100%; padding:20px; font-size:16px; font-family:monospace; box-sizing:border-box;";
-            errDiv.innerHTML = "<b>ERROR:</b> " + e.message + " at " + e.filename + ":" + e.lineno + "<br>" + (e.error && e.error.stack ? e.error.stack.replace(/\n/g, '<br>') : "");
-            document.body.appendChild(errDiv);
-        });
-        window.addEventListener("unhandledrejection", function(e) {
-            var errDiv = document.createElement('div');
-            errDiv.style = "position:fixed; z-index:99999; background:orange; color:black; top:50px; left:0; width:100%; padding:20px; font-size:16px; font-family:monospace; box-sizing:border-box;";
-            errDiv.innerHTML = "<b>PROMISE REJECTION:</b> " + (e.reason && e.reason.message ? e.reason.message : e.reason) + "<br>" + (e.reason && e.reason.stack ? e.reason.stack.replace(/\n/g, '<br>') : "");
-            document.body.appendChild(errDiv);
-        });
-    </script>
 
     <button class="mobile-menu-btn" onclick="document.querySelector('.app-sidebar').classList.toggle('mobile-open')">
         <i class="fa-solid fa-bars"></i>
