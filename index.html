@@ -2323,7 +2323,7 @@ aside {
         <div class="flex-1 flex flex-col h-full transition-all duration-300 relative" :class="activeClient ? 'w-2/3 max-w-[calc(100%-450px)] border-r border-slate-200' : 'w-full'">
             
             <!-- Magic AI Prompt Bar (TOP) -->
-            <header class="h-20 border-b border-slate-200 flex items-center px-8 z-10 bg-white shadow-sm flex-shrink-0">
+            <header class="h-20 border-b border-slate-200 flex items-center px-8 z-10   bg-white/40 backdrop-blur-xl border-b border-white/50 shadow-sm/40 backdrop-blur-xl border-b border-white/50 shadow-sm shadow-sm flex-shrink-0">
                 <div class="flex-1 max-w-3xl relative group">
                     <i class="fa-solid fa-sparkles absolute left-4 top-1/2 transform -translate-y-1/2 text-fidelio-500" :class="isThinking ? 'animate-spin' : 'group-focus-within:animate-pulse'"></i>
                     <input type="text" x-model="searchQuery" @keydown.enter="executeMagic()" :disabled="isThinking" placeholder="Prompt AI: Ej. Lluvia detectada. Lanza cupón 2x1 a clientes en riesgo..." class="w-full bg-slate-100 border border-slate-200 text-slate-800 text-sm rounded-full py-3 pl-10 pr-32 focus:outline-none focus:border-fidelio-500 focus:bg-white focus:ring-4 focus:ring-fidelio-50 transition shadow-inner disabled:opacity-50">
@@ -2487,7 +2487,7 @@ aside {
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50">
+            <div class="flex-1 overflow-y-auto custom-scrollbar  bg-transparent/50">
                 <div class="flex px-6 pt-4 space-x-4 border-b border-slate-200">
                     <button @click="view360 = 'card'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition" :class="view360 === 'card' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Tarjeta Física</button>
                     <button @click="view360 = 'history'" class="pb-3 text-[10px] font-bold uppercase tracking-widest transition" :class="view360 === 'history' ? 'text-fidelio-600 border-b-2 border-fidelio-600' : 'text-slate-400 hover:text-slate-600'">Historial Real</button>
@@ -4452,7 +4452,7 @@ aside {
                         <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0" :class="rule.active ? 'opacity-100' : 'opacity-50 grayscale'">
                             
                             <!-- 1. EVENTO (Trigger) -->
-                            <div class="flex-1 bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-start space-x-3">
+                            <div class="flex-1  bg-transparent border border-slate-100 rounded-2xl p-4 flex items-start space-x-3">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="rule.trigger.bg + ' ' + rule.trigger.color">
                                     <i class="fa-solid" :class="rule.trigger.icon"></i>
                                 </div>
@@ -4468,7 +4468,7 @@ aside {
                             </div>
 
                             <!-- 2. CONDICIÓN (Audience) -->
-                            <div class="flex-1 bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-start space-x-3">
+                            <div class="flex-1  bg-transparent border border-slate-100 rounded-2xl p-4 flex items-start space-x-3">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="rule.condition.bg + ' ' + rule.condition.color">
                                     <i class="fa-solid" :class="rule.condition.icon"></i>
                                 </div>
@@ -5099,7 +5099,7 @@ aside {
         </div>
     </div>
 
-    <main class="flex-1 overflow-y-auto custom-scrollbar p-8 lg:p-8 bg-slate-50/30">
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-8 lg:p-8  bg-transparent/30">
         <div class="max-w-[1400px] mx-auto space-y-6">
             
             <!-- HEADER -->
@@ -5269,7 +5269,7 @@ aside {
                 </div>
                 
                 <!-- 6. Costo de Lealtad -->
-                <div x-show="activeWidgets.includes('cost_loyalty')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 bg-slate-50 border-slate-200">
+                <div x-show="activeWidgets.includes('cost_loyalty')" x-transition class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1  bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-slate-200">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-sm font-black uppercase tracking-widest text-slate-600"><i class="fa-solid fa-scale-balanced mr-1"></i> Costo del Programa</p>
                     </div>

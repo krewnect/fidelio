@@ -205,7 +205,7 @@ window.loadCampaigns = async function() {
             specialList.innerHTML = data.campaigns
                 .filter(c => ['membership', 'multipass', 'certificates'].includes(c.type))
                 .map(c => `
-                <div class="metric-card" style="cursor:pointer; border: 1px solid var(--surface-light);" onclick="openCampaignHub('${c.id}')">
+                <div class="metric-card" style="cursor:pointer; background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.8); border-radius: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.04);" onclick="openCampaignHub('${c.id}')">
                     <div style="height: 6px; background: linear-gradient(90deg, #7C3AED, #4C1D95); margin: -24px -24px 16px -24px; border-radius: 24px 24px 0 0;"></div>
                     <h3 style="margin-bottom:5px;">${c.name || 'Sin Nombre'}</h3>
                     <p style="color:var(--text-muted); font-size:0.9rem;">Tipo: ${c.type}</p>
