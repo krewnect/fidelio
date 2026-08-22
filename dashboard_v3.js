@@ -6071,8 +6071,8 @@ window.executeCopilotIdea = function(opp) {
 
     } else {
         // 1. Cambiar a la pestaña de Campañas Push (comportamiento default)
-        const marketingTabBtn = document.querySelector('.nav-tab[data-tab="tab-marketing"]');
-        const marketingTabContent = document.getElementById('tab-marketing');
+        // legacy marketing tab
+        // legacy marketing tab content
         
         if(marketingTabBtn) marketingTabBtn.classList.add('active');
         if(marketingTabContent) marketingTabContent.classList.add('active');
@@ -6127,7 +6127,7 @@ if(!document.getElementById('copilot-styles')) {
 
 // Hook en el click del tab para disparar la carga 1 sola vez
 document.addEventListener('DOMContentLoaded', () => {
-    const copilotTabBtn = document.querySelector('.nav-tab[data-tab="tab-copilot"]');
+    // legacy copilot tab
     if(copilotTabBtn) {
         copilotTabBtn.addEventListener('click', () => {
             const container = document.getElementById('copilot-cards-container');

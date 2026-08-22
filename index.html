@@ -847,6 +847,15 @@ aside {
     </script>
 
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style id="automations-jewel-style">
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+        body { font-family: "Inter", sans-serif; background-color: #f8fafc; color: #0f172a; }
+        
+        .toggle-checkbox:checked { right: 0; border-color: #8b5cf6; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #8b5cf6; }
+        .toggle-checkbox { right: 4px; z-index: 1; border-color: #cbd5e1; transition: all 0.3s; }
+        .toggle-label { width: 36px; height: 20px; background-color: #cbd5e1; border-radius: 9999px; transition: all 0.3s; }
+</style>
 </head>
 <body>
 
@@ -879,8 +888,8 @@ aside {
 
                 <div class="menu-label marg-t-20">Estrategia y Crecimiento</div>
                 <!-- Oculto para unificar UX: Fidelizacion movida al Creador -->
-                                <div class="nav-tab plan-business-only" data-tab="tab-marketing" style="display:none;"><i class="fa-solid fa-bolt"></i> Campañas Push</div>
-                <div class="nav-tab plan-pro-only" data-tab="tab-copilot" style="display:none;"><i class="fa-solid fa-brain"></i> Copiloto AI</div>
+                                <div class="nav-tab plan-business-only" data-tab="tab-autopilot" id="nav-autopilot" style="display:none;"><i class="fa-solid fa-paper-plane"></i> Piloto Automático</div>
+                
                 <div class="nav-tab plan-pro-only" data-tab="tab-api" style="display:none;"><i class="fa-solid fa-code"></i> API</div>
                 <div class="nav-tab plan-business-only" data-tab="tab-mybusiness" style="display:none;"><i class="fa-solid fa-bullhorn"></i> My Business</div>
 
@@ -2683,394 +2692,6 @@ aside {
 </section>
 
             <!-- MARKETING TAB -->
-            <section id="tab-marketing" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <div class="workspace-eyebrow">CRECIMIENTO INTELIGENTE</div>
-                        <h1>Marketing & Campañas Push</h1>
-                        <p>Fidelio analiza a tus clientes y te sugiere campañas automáticas omnicanal enfocadas en Notificaciones Push.</p>
-                    </div>
-                </div>
-                
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
-                    <!-- LEFT COLUMN: AI MODULES LIST -->
-                    <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
-                        
-                        <div class="content-panel campaign-module active" onclick="selectAICampaign('recuperacion', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-heart-crack"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Recuperar Perdidos</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Clientes sin visitas en >30 días</p>
-                            </div>
-                        </div>
-
-                        <div class="content-panel campaign-module" onclick="selectAICampaign('cumpleanos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-cake-candles"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Cumpleañeros del Mes</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Envía regalo en su mes de cumpleaños</p>
-                            </div>
-                        </div>
-
-                        <div class="content-panel campaign-module" onclick="selectAICampaign('dias_lentos', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-clock"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Inyección Días Lentos</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Aumenta tráfico en horas valle</p>
-                            </div>
-                        </div>
-
-                        <div class="content-panel campaign-module" onclick="selectAICampaign('vip_exclusivo', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-crown"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Recompensa VIP</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Trato preferencial solo para Nivel Oro</p>
-                            </div>
-                        </div>
-
-                        <div class="content-panel campaign-module" onclick="selectAICampaign('geofencing', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-location-dot"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Cerca de Ti (Geocerca)</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Notifica cuando pasen cerca del local</p>
-                            </div>
-                        </div>
-
-                        <div class="content-panel campaign-module" onclick="selectAICampaign('aniversario', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gift"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Aniversario</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">A clientes que cumplen un año en Fidelio</p>
-                            </div>
-                        </div>
-
-                        <div class="content-panel campaign-module" onclick="selectAICampaign('winback', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-gem"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Win-back Premium</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Rescata a los clientes que más gastaban</p>
-                            </div>
-                        </div>
-
-                        <div class="content-panel campaign-module" onclick="selectAICampaign('manual', this)" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 16px; gap:12px;">
-                            <div class="stat-icon" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); width:48px; height:48px; font-size:20px;"><i class="fa-solid fa-pen-nib"></i></div>
-                            <div>
-                                <h4 style="margin:0; font-size:14px; line-height:1.2;">Campaña Libre</h4>
-                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">Segmentación y mensaje manual</p>
-                            </div>
-                        </div>
-
-
-                    </div>
-                    
-                    <!-- RIGHT COLUMN: CONFIGURATION PANEL -->
-                    <div class="content-panel" style="display:flex; flex-direction:column; position: sticky; top: 0; max-height: calc(100vh - 150px); overflow-y: auto;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-glass); padding-bottom:16px; margin-bottom:20px;">
-                            <h3 id="config-camp-title" style="margin:0;"><i class="fa-solid fa-heart-crack" style="color:var(--accent-violet); margin-right:8px;"></i> Recuperar Perdidos</h3>
-                            <span class="live-badge" style="background: rgba(255, 255, 255, 0.1); color: var(--accent-violet); border: 1px solid rgba(139, 92, 246, 0.2);"><div class="live-dot" style="background: rgba(255, 255, 255, 0.1);"></div> Listo para configurar</span>
-                        </div>
-
-                        <!-- CHANNELS -->
-                        <h4 style="font-size:14px; margin-bottom:12px; color:var(--text-main);">Canales de Emisión</h4>
-                        <div style="display:flex; gap:12px; margin-bottom: 24px;">
-                            <label class="channel-toggle active" id="ch-wallet">
-                                <input type="checkbox" checked style="display:none;" onchange="window.toggleChannel(this)">
-                                <i class="fa-brands fa-apple"></i> Apple Wallet Push
-                            </label>
-
-                            <label class="channel-toggle" id="ch-email">
-                                <input type="checkbox" style="display:none;" onchange="window.toggleChannel(this)">
-                                <i class="fa-solid fa-envelope"></i> Email
-                            </label>
-                        </div>
-
-                        <!-- TRIGGERS -->
-                        <h4 style="font-size:14px; margin-bottom:12px; color:var(--text-main);">Automatización</h4>
-                        <div style="display:flex; gap:16px; margin-bottom:24px;">
-                            <label class="radio-card" style="flex:1; border: 2px solid var(--accent-violet);">
-                                <input type="radio" name="camp_trigger" value="automated" checked onchange="window.updateTriggerUI()">
-                                <div><i class="fa-solid fa-robot" style="color:var(--accent-violet);"></i></div>
-                                <span>Regla Activa</span>
-                                <small>Enviar siempre que se cumpla</small>
-                            </label>
-                            <label class="radio-card" style="flex:1;">
-                                <input type="radio" name="camp_trigger" value="one_time" onchange="window.updateTriggerUI()">
-                                <div><i class="fa-solid fa-paper-plane" style="color:var(--text-muted);"></i></div>
-                                <span>Disparo Único</span>
-                                <small>Enviar ahora a la base actual</small>
-                            </label>
-                        </div>
-                        
-                        <!-- ACTIVE RULE PARAMS (VISIBLE ONLY WHEN REGLA ACTIVA IS SELECTED) -->
-                        <div id="active-rule-params" style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; padding:16px; margin-bottom:24px;">
-                            <h4 style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
-                                <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent-violet);"></i> Configuración de la Automatización
-                            </h4>
-                            <div style="display:flex; flex-direction:column; gap:12px;">
-                                <div style="display:flex; gap:12px;">
-                                    <div style="flex:1;">
-                                        <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Frecuencia de Evaluación</label>
-                                        <select class="fidelio-input" style="padding:8px; font-size:13px;">
-                                            <option value="daily">Diariamente (Se evalúa cada día)</option>
-                                            <option value="weekly">Semanalmente (Se evalúa cada lunes)</option>
-                                            <option value="realtime">Tiempo Real (Al registrar visita/pago)</option>
-                                        </select>
-                                    </div>
-                                    <div style="flex:1;">
-                                        <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Hora de Envío</label>
-                                        <input type="time" class="fidelio-input" style="padding:8px; font-size:13px;" value="10:00" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">Límite de Envío por Cliente</label>
-                                    <select class="fidelio-input" style="padding:8px; font-size:13px;">
-                                        <option value="once">Solo 1 vez en la vida del cliente</option>
-                                        <option value="once_month">Máximo 1 vez por mes</option>
-                                        <option value="once_year">Máximo 1 vez al año</option>
-                                    </select>
-                                </div>
-                                <div style="font-size:11px; color:var(--text-muted); background:rgba(139,92,246,0.05); padding:8px; border-radius:6px; margin-top:4px;">
-                                    <strong>Nota:</strong> Esta regla se disparará automáticamente a todos los clientes que cumplan con el Filtro de Audiencia configurado abajo, respetando la frecuencia indicada.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SEGMENT FOR MANUAL (HIDDEN BY DEFAULT) -->
-                        <div id="manual-segment-selector" style="display:none; margin-bottom:24px;">
-                            <h4 style="font-size:14px; margin-bottom:12px; color:var(--text-main);">Filtro de Audiencia</h4>
-                            <select class="fidelio-input" id="camp-segment-select" onchange="window.updateAudienceEstimate()">
-                                <optgroup label="Actividad">
-                                    <option value="all">Todos los Clientes</option>
-                                    <option value="active">Frecuentes (Visitaron < 30 días)</option>
-                                    <option value="risk">En Riesgo (Sin visitas > 30 días)</option>
-                                    <option value="inactive">Inactivos (Sin visitas > 90 días)</option>
-                                </optgroup>
-                                <optgroup label="Niveles VIP">
-                                    <option value="vip_oro">Solo Nivel Oro</option>
-                                    <option value="vip_plata">Solo Nivel Plata</option>
-                                    <option value="vip_bronce">Solo Nivel Bronce</option>
-                                </optgroup>
-                                <optgroup label="Alto Valor">
-                                    <option value="top_10">Top 10 Mejores Clientes (Mes)</option>
-                                    <option value="high_ticket">Clientes High Ticket (Ticket Promedio Alto)</option>
-                                </optgroup>
-                                <optgroup label="Eventos Especiales">
-                                    <option value="cumpleaneros">Cumpleañeros del Mes</option>
-                                    <option value="aniversario">Aniversario (1 Año en Fidelio)</option>
-                                    <option value="geofencing">Clientes Cerca (Geocerca)</option>
-                                </optgroup>
-                            </select>
-                            <!-- Dynamic Audience Estimator -->
-                            <div style="margin-top: 12px; padding: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; display: flex; align-items: center; gap: 12px;">
-                                <div style="width: 32px; height: 32px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-users"></i></div>
-                                <div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">Alcance Estimado</div>
-                                    <strong style="font-size: 14px; color: #10b981;" id="audience-estimate-count">~250 Clientes</strong>
-                                </div>
-                            </div>
-                            <button class="fidelio-btn-primary"><i class="fa-solid fa-plus"></i> Crear Filtro Personalizado</button>
-                        </div>
-                        
-                        <!-- AI GENERATOR -->
-                        <!-- Live Preview and Generator -->
-                        <div style="display: flex; gap: 16px; align-items: stretch; margin-bottom: 24px;">
-                            <!-- Text input column -->
-                            <div style="flex: 1; display: flex; flex-direction: column;">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
-                                    <h4 style="font-size:14px; margin:0; color:var(--text-main);">Mensaje Push</h4>
-                                    <button class="fidelio-btn-secondary" style="background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding: 4px 8px; font-size:11px; font-weight:700;" onclick="window.generateAIPush()"><i class="fa-solid fa-wand-magic-sparkles"></i> Optimizar Texto</button>
-                                </div>
-                                <div class="form-group" style="position:relative; overflow: hidden; border-radius:12px; flex: 1;">
-                                    <textarea id="camp-push-message" class="fidelio-input" style="height: 100%; min-height: 120px; resize: none; font-size: 1rem; padding: 16px;" placeholder="Escribe el mensaje de tu Notificación Push..." oninput="window.updatePushPreview()"></textarea>
-                                    <div id="ai-loading" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(17, 24, 39, 0.8); backdrop-filter:blur(4px); align-items:center; justify-content:center; flex-direction:column; z-index:10;">
-                                        <i class="fa-solid fa-circle-notch fa-spin" style="color:var(--accent-violet); font-size:32px; margin-bottom:12px;"></i>
-                                        <span style="font-size:12px; font-weight:700; color:var(--accent-violet);">Optimizando texto...</span>
-                                    </div>
-                                </div>
-                                <div style="text-align: right; margin-top: 4px; font-size: 11px; color: var(--text-muted);">
-                                    <span id="push-char-count">0</span> / 120 caracteres recomendados
-                                </div>
-                            </div>
-
-                            <!-- Mobile Preview Column -->
-                            <div style="width: 200px; background: #000; border-radius: 24px; padding: 12px; border: 4px solid #333; position: relative; display: flex; flex-direction: column; align-items: center;">
-                                <div style="width: 60px; height: 16px; background: #000; border-radius: 0 0 12px 12px; position: absolute; top: 0; left: 50%; transform: translateX(-50%);"></div>
-                                <div class="content-panel" style="width: 100%; height: 100%; background: url('https://www.apple.com/v/ios/ios-17/a/images/overview/lock_screen/lock_screen_wallpaper__fpjmy1q8c86y_large.jpg') center/cover no-repeat; border-radius: 12px; padding: 32px 8px 8px 8px; display: flex; flex-direction: column; gap: 8px;">
-                                    <!-- Dynamic Notification Bubbles -->
-                                    <div style="background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border-radius: 12px; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <div style="display: flex; align-items: center; gap: 4px;">
-                                                <i class="fa-brands fa-apple" style="color: #000; font-size: 10px;"></i>
-                                                <span style="font-size: 9px; font-weight: 600; color: #000; text-transform: uppercase;">WALLET</span>
-                                            </div>
-                                            <span style="font-size: 9px; color: #666;">Ahora</span>
-                                        </div>
-                                        <strong style="font-size: 11px; color: #000; display: block; margin-bottom: 2px; line-height: 1.2;" id="preview-push-title">Tu Negocio</strong>
-                                        <p style="font-size: 11px; color: #333; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;" id="preview-push-body">Escribe un mensaje para ver cómo aparecerá en las pantallas de tus clientes.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button id="btn-save-camp" class="fidelio-btn-primary"><i class="fa-solid fa-play"></i> Activar Campaña</button>
-                    </div>
-                </div>
-
-                <!-- GEMINI CHAT MODAL -->
-                <div id="gemini-chat-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; backdrop-filter:blur(5px); align-items:center; justify-content:center; opacity:0; transition: opacity 0.3s ease;">
-                    
-                    <!-- CHAT WINDOW -->
-                    <div id="gemini-chat-window" style="width:90%; max-width:400px; height:600px; max-height:90vh; background:var(--bg-card); border-radius:16px; box-shadow:0 20px 50px rgba(0,0,0,0.4); border:1px solid var(--border-glass); display:flex; flex-direction:column; overflow:hidden; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                        <!-- Header -->
-                        <div style="background: linear-gradient(135deg, #1A1A2E 0%, #0F0F1A 100%); padding:16px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:18px;">
-                                <i class="fa-solid fa-sparkles"></i>
-                            </div>
-                            <div style="flex:1;">
-                                <h4 style="margin:0; font-size:16px; color:white;">Gemini AI</h4>
-                                <span style="font-size:12px; color:#a78bfa;">Experto en Marketing</span>
-                            </div>
-                            <button onclick="toggleGeminiChat()" style="background:none; border:none; color:white; opacity:0.6; cursor:pointer; font-size:18px; transition:0.2s;"><i class="fa-solid fa-times"></i></button>
-                        </div>
-                        
-                        <!-- Messages Area -->
-                        <div id="gemini-chat-messages" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px; background:#0A0A10;">
-                            <!-- Welcome Msg -->
-                            <div style="display:flex; gap:12px;">
-                                <div style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:14px; flex-shrink:0;">
-                                    <i class="fa-solid fa-sparkles"></i>
-                                </div>
-                                <div style="background:#1A1A2E; border:1px solid rgba(139,92,246,0.2); border-radius:12px 12px 12px 0; padding:14px; color:#e2e8f0; font-size:14px; line-height:1.5;">
-                                    ¡Hola! Soy tu copiloto de marketing. ¿Qué tipo de promoción quieres lanzar hoy o qué problema de ventas tienes?
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Input Area -->
-                        <div style="padding:16px 20px; background:#11111A; border-top:1px solid rgba(255,255,255,0.05); display:flex; gap:12px; align-items:center;">
-                            <input class="fidelio-input" type="text" id="gemini-chat-input" placeholder="Ej. Inventario extra de cerveza..." style="flex:1; background:var(--bg-input); border:1px solid var(--border-glass); border-radius:24px; padding:12px 20px; color:white; font-size:14px; outline:none;" onkeypress="if(event.key === 'Enter') sendGeminiMessage()" />
-                            <button onclick="sendGeminiMessage()" style="width:44px; height:44px; border-radius:50%; background: rgba(255, 255, 255, 0.1); color:white; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; font-size:16px;"><i class="fa-solid fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <style>
-                .campaign-card { background: rgba(0,0,0,0.01); border: 1px solid var(--border-glass); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-                .campaign-card:hover { background: rgba(0,0,0,0.03); transform: translateY(-2px); border-color: rgba(76, 29, 149, 0.2); }
-                .campaign-card.active { background: rgba(76, 29, 149, 0.05); border-color: var(--accent-violet); box-shadow: 0 4px 15px rgba(76, 29, 149, 0.1); }
-                .campaign-card i { font-size: 24px; margin-bottom: 12px; display: block; color: var(--text-muted); transition: color 0.3s; }
-                .campaign-card:hover i { color: var(--accent-violet); }
-                .campaign-card.active i { color: var(--accent-violet); }
-                .campaign-card strong { display: block; font-size: 13px; color: var(--text-main); margin-bottom: 4px; }
-                .campaign-card small { display: block; font-size: 11px; color: var(--text-muted); }
-
-                .segment-card { display:flex; justify-content:space-between; align-items:center; padding:16px; background:rgba(0,0,0,0.01); border:1px solid var(--border-glass); border-radius:12px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; }
-                .segment-card:hover { background:rgba(0,0,0,0.03); border-color:rgba(76, 29, 149, 0.2); }
-                .segment-card.selected { background:rgba(139,92,246,0.15); border-color:var(--accent-violet); box-shadow:0 0 15px rgba(139,92,246,0.2); }
-            
-        /* Force light theme on the wallet pass to prevent Dark Mode inversions that make it look cut off */
-        #pass-render, .pass-preview-card {
-            color-scheme: light !important;
-        }
-        .premium-white-card {
-            background-color: #ffffff !important;
-            color: #111827 !important;
-        }
-
-
-
-
-/* 7. Unified Card Hovers (Kill the purple borders) */
-.tab-content > div[style*="background"]:hover, 
-.stat-card:hover, 
-.content-panel:hover, 
-.settings-card:hover,
-.gemini-insight-panel:hover,
-.accordion-card:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
-    border-color: #E5E7EB !important; /* Force keep grey border */
-}
-
-
-/* Responsive Tables for Fidelio UI */
-.fidelio-table-container {
-    width: 100%;
-    overflow-x: auto;
-    border-radius: 12px;
-    border: 1px solid #E5E7EB;
-    background: #FFFFFF;
-}
-.fidelio-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    white-space: nowrap;
-}
-.fidelio-table th {
-    background: #F9FAFB;
-    padding: 16px 24px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #6B7280;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid #E5E7EB;
-}
-.fidelio-table td {
-    padding: 16px 24px;
-    font-size: 14px;
-    color: #111827;
-    border-bottom: 1px solid #E5E7EB;
-}
-.fidelio-table tr:last-child td {
-    border-bottom: none;
-}
-.fidelio-table tbody tr:hover {
-    background: #F9FAFB;
-}
-
-
-/* Fix new button hovers */
-#tab-home button[style*="background:#F9FAFB"]:hover {
-    background: #F3F4F6 !important;
-    border-color: #D1D5DB !important;
-}
-
-</style>
-            <!-- ========================================== -->
-            <!-- AI COPILOT TAB                             -->
-            <!-- ========================================== -->
-            <section id="tab-copilot" class="tab-content">
-                <div class="workspace-header">
-                    <div>
-                        <span class="workspace-eyebrow" style="color: var(--accent-violet);"><i class="fa-solid fa-sparkles"></i> ASISTENTE INTELIGENTE</span>
-                        <h1>Copiloto de Marketing AI</h1>
-                        <p>Gemini analiza tu negocio en tiempo real y te sugiere las campañas más efectivas para subir tus ventas.</p>
-                    </div>
-                    <button class="fidelio-btn-primary">
-                        <i class="fa-solid fa-rotate-right"></i> Refrescar Análisis
-                    </button>
-                </div>
-
-                <div class="workspace-content">
-                    <div id="copilot-loading" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                        <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(139,92,246,0.1); display:flex; align-items:center; justify-content:center; margin-bottom: 20px;">
-                            <i class="fa-solid fa-brain fa-fade" style="font-size: 40px; color: var(--accent-violet);"></i>
-                        </div>
-                        <h3 style="font-size: 18px; color: var(--text-main); margin-bottom: 8px;">Analizando tu base de clientes...</h3>
-                        <p style="color: var(--text-muted); font-size: 14px; max-width: 400px;">Gemini está cruzando datos de visitas, compras y niveles VIP para encontrar oportunidades ocultas de venta.</p>
-                    </div>
-
-                    <div id="copilot-results" style="display:none; padding-bottom:40px;">
-                        <h3 style="margin-bottom:20px; color: var(--text-main);"><i class="fa-solid fa-lightbulb" style="color:#f59e0b;"></i> Oportunidades Detectadas</h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;" id="copilot-cards-container">
-                            <!-- Cards injectadas via JS -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
             <!-- THE BANK TAB -->
             <section id="tab-bank" class="tab-content">
                 <div class="workspace-header">
@@ -4336,6 +3957,195 @@ aside {
                     </div>
                 </div>
             </section>
+
+<section id="tab-autopilot" class="tab-content" x-data="automationsJewel()">
+<!-- Toast -->
+    <div x-show="showToast" style="display: none;" 
+         x-transition class="absolute top-6 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-4 min-w-[350px]">
+        <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-0.5">Sistema</p>
+            <p class="text-sm font-medium leading-tight" x-text="toastMsg"></p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-6 lg:p-8">
+        <div class="max-w-[1200px] mx-auto">
+
+            <!-- HEADER -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10 shrink-0">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-10 h-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-gears"></i>
+                        </div>
+                        <h1 class="text-3xl font-black tracking-tight text-slate-900">Piloto Automático</h1>
+                    </div>
+                    <p class="text-sm font-medium text-slate-500 max-w-xl">Configura reglas lógicas de un solo paso. Fidelio disparará tus campañas pre-creadas automáticamente cuando un cliente cumpla las condiciones 24/7.</p>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <div class="text-right border-r border-slate-200 pr-6 hidden md:block">
+                        <p class="text-2xl font-black text-fidelio-600 font-mono">1,402</p>
+                        <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Pushes Automáticos (Mes)</p>
+                    </div>
+                    <button @click="showModal = true" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-6 py-3.5 rounded-2xl shadow-lg transition flex items-center">
+                        <i class="fa-solid fa-plus text-fidelio-400 mr-2 text-sm"></i> Nueva Regla
+                    </button>
+                </div>
+            </div>
+
+            <!-- AUTOMATIONS LIST (THE LOGIC FLOWS) -->
+            <div class="space-y-6">
+                
+                <template x-for="rule in automations" :key="rule.id">
+                    <!-- Flow Card -->
+                    <div class="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:border-slate-300 transition-colors relative overflow-hidden group">
+                        
+                        <!-- Toggle Switch -->
+                        <div class="absolute top-6 right-6 z-20">
+                            <div class="relative inline-block w-9 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" :id="'toggle-'+rule.id" x-model="rule.active" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                <label :for="'toggle-'+rule.id" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4 pr-16">
+                            <p class="text-[10px] font-black uppercase tracking-widest" :class="rule.active ? 'text-emerald-500' : 'text-slate-400'">
+                                <span class="w-1.5 h-1.5 rounded-full inline-block mr-1 mb-0.5" :class="rule.active ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'"></span>
+                                <span x-text="rule.active ? 'Monitoreando en vivo' : 'Regla Pausada'"></span>
+                            </p>
+                        </div>
+
+                        <!-- Visor Lógico (The "If -> And -> Then" visual) -->
+                        <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0" :class="rule.active ? 'opacity-100' : 'opacity-50 grayscale'">
+                            
+                            <!-- 1. EVENTO (Trigger) -->
+                            <div class="flex-1 bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="rule.trigger.bg + ' ' + rule.trigger.color">
+                                    <i class="fa-solid" :class="rule.trigger.icon"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Si ocurre este evento...</p>
+                                    <p class="text-sm font-black text-slate-800 leading-tight" x-text="rule.trigger.text"></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Flecha lógica -->
+                            <div class="hidden md:flex w-12 items-center justify-center text-slate-300">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </div>
+
+                            <!-- 2. CONDICIÓN (Audience) -->
+                            <div class="flex-1 bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="rule.condition.bg + ' ' + rule.condition.color">
+                                    <i class="fa-solid" :class="rule.condition.icon"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Y el cliente es...</p>
+                                    <p class="text-sm font-black text-slate-800 leading-tight" x-text="rule.condition.text"></p>
+                                </div>
+                            </div>
+
+                            <!-- Flecha lógica -->
+                            <div class="hidden md:flex w-12 items-center justify-center text-slate-300">
+                                <i class="fa-solid fa-arrow-right-long"></i>
+                            </div>
+
+                            <!-- 3. ACCIÓN (The pre-created campaign) -->
+                            <div class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-start space-x-3 relative overflow-hidden">
+                                <!-- Background accent -->
+                                <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-fidelio-500 rounded-full blur-2xl opacity-20 pointer-events-none"></div>
+                                
+                                <div class="w-8 h-8 rounded-full bg-white/10 text-fidelio-400 flex items-center justify-center border border-white/5 shrink-0 z-10">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <p class="text-[9px] font-bold uppercase tracking-widest text-fidelio-500 mb-0.5">Disparar Campaña</p>
+                                    <p class="text-sm font-black text-white leading-tight" x-text="rule.action.text"></p>
+                                    
+                                    <div class="mt-2 inline-flex items-center bg-white/10 px-2 py-0.5 rounded text-[10px] font-bold text-slate-300">
+                                        <i class="fa-solid fa-paper-plane mr-1 text-slate-400"></i> <span x-text="rule.stats"></span> envíos
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </template>
+                
+            </div>
+        </div>
+    </main>
+
+    <!-- NEW AUTOMATION MODAL -->
+    <div x-show="showModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm px-4">
+        <div x-show="showModal" @click.away="showModal = false" class="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
+            
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-fidelio-400 flex items-center justify-center">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900">Nueva Regla Automática</h3>
+                        <p class="text-[10px] uppercase tracking-widest font-bold text-slate-400">Configura lógica If-This-Then-That</p>
+                    </div>
+                </div>
+                <button @click="showModal = false" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-400 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-6">
+                
+                <!-- Step 1: Trigger -->
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-800 mb-3"><span class="bg-slate-200 text-slate-600 px-2 py-1 rounded mr-1">1</span> Evento Detonador</h4>
+                    <select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold p-4 rounded-2xl focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-500/20 cursor-pointer appearance-none">
+                        <option>📍 Cuando el cliente entra al Radar (Geocerca)</option>
+                        <option>🎂 El día de su Cumpleaños</option>
+                        <option>🛒 Cuando realiza una recarga de saldo</option>
+                    </select>
+                </div>
+
+                <!-- Step 2: Condition -->
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-800 mb-3"><span class="bg-slate-200 text-slate-600 px-2 py-1 rounded mr-1">2</span> Filtro de Audiencia</h4>
+                    <select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold p-4 rounded-2xl focus:outline-none focus:border-fidelio-500 focus:ring-2 focus:ring-fidelio-500/20 cursor-pointer appearance-none">
+                        <option>⚠️ Lleva inactivo más de 60 días (Zombis)</option>
+                        <option>👑 Es cliente VIP (Ticket Promedio Alto)</option>
+                        <option>🌎 Cualquier cliente (Sin filtro)</option>
+                    </select>
+                </div>
+
+                <!-- Step 3: Action -->
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-800 mb-3"><span class="bg-slate-200 text-slate-600 px-2 py-1 rounded mr-1">3</span> Campaña a Enviar</h4>
+                    <p class="text-[10px] text-slate-500 mb-3">Selecciona una de tus campañas ya creadas en el Estudio.</p>
+                    <select class="w-full bg-slate-900 border border-slate-800 text-white text-sm font-bold p-4 rounded-2xl focus:outline-none focus:border-fidelio-500 cursor-pointer appearance-none">
+                        <option>Campaña: "Te Extrañamos (20% OFF en Sucursal)"</option>
+                        <option>Campaña: "Feliz Cumpleaños (Postre Gratis)"</option>
+                        <option>Campaña: "Flash Sale Nocturno (Promo General)"</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3 shrink-0">
+                <button @click="showModal = false" class="px-5 py-3 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-200 transition">Cancelar</button>
+                <button @click="saveRule()" class="px-6 py-3 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-white shadow-lg transition flex items-center">
+                    <i class="fa-solid fa-play mr-2 text-fidelio-400"></i> Activar Piloto Automático
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+</section>
+
 
             <!-- Modal Registrar Pago (Caja) -->
             <div id="modal-caja-transaction" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:9999; align-items:center; justify-content:center; opacity:0; transition: opacity 0.3s ease;">
@@ -6730,6 +6540,54 @@ function crmJewel() {
 
                 uploadBranchesCSV() {
                     this.fireToast('Conectando a base de datos... Se han sincronizado 12 nuevos radares.');
+                },
+                
+                fireToast(msg) {
+                    this.toastMsg = msg;
+                    this.showToast = true;
+                    setTimeout(() => { this.showToast = false; }, 3500);
+                }
+            }
+        }
+    </script>
+
+<script>
+        function automationsJewel() {
+            return {
+                showToast: false,
+                toastMsg: '',
+                showModal: false,
+                
+                automations: [
+                    {
+                        id: 1,
+                        trigger: { icon: 'fa-location-crosshairs', color: 'text-fidelio-600', bg: 'bg-fidelio-50', text: 'Entra a Radar GPS (Cualquier sucursal)' },
+                        condition: { icon: 'fa-clock-rotate-left', color: 'text-rose-600', bg: 'bg-rose-50', text: 'Inactivo por > 60 días' },
+                        action: { text: 'Campaña Zombi: "Te Extrañamos"' },
+                        active: true,
+                        stats: 142
+                    },
+                    {
+                        id: 2,
+                        trigger: { icon: 'fa-cake-candles', color: 'text-blue-600', bg: 'bg-blue-50', text: 'Es el mes de su cumpleaños' },
+                        condition: { icon: 'fa-crown', color: 'text-amber-600', bg: 'bg-amber-50', text: 'Es un cliente Nivel VIP' },
+                        action: { text: 'Campaña Cumpleaños Premium' },
+                        active: true,
+                        stats: 38
+                    },
+                    {
+                        id: 3,
+                        trigger: { icon: 'fa-location-crosshairs', color: 'text-fidelio-600', bg: 'bg-fidelio-50', text: 'Entra a Radar GPS (Terraza Roma)' },
+                        condition: { icon: 'fa-globe', color: 'text-slate-600', bg: 'bg-slate-100', text: 'Cualquier Cliente' },
+                        action: { text: 'Campaña: "Promo Happy Hour Roma"' },
+                        active: false,
+                        stats: 0
+                    }
+                ],
+                
+                saveRule() {
+                    this.showModal = false;
+                    this.fireToast('Regla automática guardada. Monitoreando en vivo.');
                 },
                 
                 fireToast(msg) {
