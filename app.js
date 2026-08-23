@@ -225,7 +225,7 @@ app.post('/api/scanner/transaction', apiLimiter, requireMerchantAuth, async (req
 });
 
 // -------------------------------------------------------------
-// WEBHOOK DE STRIPE (Debe ir antes del body parser JSON)
+// WEBHOOK DE STRIPE (B2B - Suscripciones de Comercios)
 // -------------------------------------------------------------
 app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), async (req, res) => {
     const sig = req.headers['stripe-signature'];
@@ -260,6 +260,80 @@ app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), async (
     }
 
     res.json({received: true});
+});
+
+// -------------------------------------------------------------
+// UNIVERSAL LOYALTY WEBHOOK CONSUMER (B2C - App Store Integrations)
+// -------------------------------------------------------------
+
+// Webhook Receptor para Shopify
+app.post('/api/webhooks/shopify/:merchant_id', express.json(), async (req, res) => {
+    try {
+        const merchantId = req.params.merchant_id;
+        const order = req.body;
+        
+        // 1. Validar el evento (Solo procesar si está pagada)
+        // Shopify manda X-Shopify-Topic: orders/paid, pero también validamos el JSON.
+        if (order.financial_status !== 'paid') {
+            return res.status(200).send('Orden no pagada, ignorada.');
+        }
+
+        // 2. Extraer datos del cliente (Customer Mapping)
+        const email = order.customer?.email || order.email;
+        const phone = order.customer?.phone || order.phone;
+        const totalSpent = parseFloat(order.total_price || 0);
+
+        if (!email && !phone) {
+            console.log(`[Shopify Webhook] Orden ${order.id} sin cliente identificable.`);
+            return res.status(200).send('Cliente no identificado (PCD Oculto).');
+        }
+
+        console.log(`🎯 [Universal Webhook] Nueva venta de Shopify recibida para el comercio ${merchantId}`);
+        console.log(`Cliente: ${email || phone} - Total: $${totalSpent}`);
+
+        // 3. Buscar al cliente en la base de datos de Fidelio
+        let userQuery = supabase.from('users').select('*').eq('merchant_id', merchantId);
+        if (email) userQuery = userQuery.eq('email', email);
+        else if (phone) userQuery = userQuery.eq('phone', phone);
+        
+        const { data: users, error: userErr } = await userQuery.limit(1);
+
+        if (userErr || !users || users.length === 0) {
+            console.log(`[Fidelio] Cliente no encontrado en DB, creando perfil sombra temporal...`);
+            // Lógica futura: Crear usuario en Fidelio si no existe
+            return res.status(200).send('Usuario no encontrado, evento registrado.');
+        }
+
+        const user = users[0];
+
+        // 4. Calcular puntos (Hardcoded 1 a 1 para el prototipo, esto debería leer de configs)
+        const puntosGanados = Math.floor(totalSpent);
+        const nuevoSaldo = (user.points || 0) + puntosGanados;
+
+        // 5. Abonar puntos en la base de datos (Motor de Lealtad)
+        const { error: updateErr } = await supabase
+            .from('users')
+            .update({ points: nuevoSaldo })
+            .eq('id', user.id);
+
+        if (updateErr) throw updateErr;
+
+        // 6. Registrar la transacción en el historial
+        await supabase.from('transactions').insert([{
+            merchant_id: merchantId,
+            user_id: user.id,
+            points: puntosGanados,
+            type: 'earn',
+            notes: `Compra en Shopify (Orden #${order.order_number})`
+        }]);
+
+        console.log(`✅ [Fidelio] Éxito: Se sumaron ${puntosGanados} puntos al usuario ${user.id}`);
+        res.status(200).json({ success: true, points_awarded: puntosGanados, new_balance: nuevoSaldo });
+
+    } catch (err) {
+        console.error(`❌ [Shopify Webhook Error]:`, err);
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 // Middleware de Seguridad Básica eliminado (ya está arriba)
