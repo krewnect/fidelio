@@ -3434,115 +3434,65 @@ aside {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Shopify -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Shopify', 'E-Commerce', 'fa-brands fa-shopify', 'bg-[#96bf48]/10', 'text-[#96bf48]', 'Emite puntos automáticamente cuando la orden web cambie a pagada.', [{title:'Instalar App', desc:'Instala la App Custom de Fidelio en tu panel de Shopify.'}, {title:'Aprobar Permisos (PCD)', desc:'Aprueba los permisos de Protected Customer Data para extraer emails.'}, {title:'Webhooks Activos', desc:'Fidelio comenzará a escuchar el webhook orders/paid.'}])">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Shopify', 'E-Commerce', 'fa-brands fa-shopify', 'bg-[#96bf48]/10', 'text-[#96bf48]', 'Emite puntos automáticamente cuando la orden web cambie a pagada.', [{title:'Abre tu Panel de Shopify', desc:'Ve a Configuración > Aplicaciones y canales de ventas > Desarrollar aplicaciones.'}, {title:'Crea la Aplicación de Fidelio', desc:'Haz clic en Crear una aplicación y ponle el nombre de Fidelio Rewards.'}, {title:'Permisos y Claves', desc:'Dale permisos de Lectura de Clientes (PCD), instala la app y pega tu clave secreta aquí.'}])">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 rounded-xl bg-[#96bf48]/10 text-[#96bf48] flex items-center justify-center text-2xl"><i class="fa-brands fa-shopify"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
             </div>
             <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#96bf48] transition-colors">Shopify</h4>
-            <p class="text-xs text-slate-500 flex-1">Emite puntos automáticamente cuando la orden cambie a pagada.</p>
+            <p class="text-xs text-slate-500 flex-1">Conexión directa vía App Custom para capturar las ventas al momento.</p>
         </div>
 
         <!-- Stripe -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Stripe', 'Pagos', 'fa-brands fa-stripe', 'bg-[#635BFF]/10', 'text-[#635BFF]', 'Identifica al usuario en el Checkout Session y envía saldo a su Wallet.', [{title:'Stripe Connect', desc:'Inicia sesión en tu cuenta de Stripe para dar acceso a Fidelio.'}, {title:'Inyección de Metadata', desc:'Asegúrate de mandar el customer_id en la metadata de tu Checkout Session.'}, {title:'Sincronización Webhook', desc:'Recibiremos el evento checkout.session.completed.'}])">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Stripe', 'Pagos', 'fa-brands fa-stripe', 'bg-[#635BFF]/10', 'text-[#635BFF]', 'Identifica al usuario en el Checkout Session y envía saldo a su Wallet.', [{title:'Panel de Stripe', desc:'Inicia sesión en tu dashboard de Stripe y ve al menú de Desarrolladores.'}, {title:'Crea un Webhook', desc:'Haz clic en Webhooks > Añadir Endpoint y pega la URL que Fidelio te proporcionó.'}, {title:'Selecciona el Evento', desc:'Asegúrate de marcar el evento checkout.session.completed para guardar.'}])">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 rounded-xl bg-[#635BFF]/10 text-[#635BFF] flex items-center justify-center text-2xl"><i class="fa-brands fa-stripe"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Pagos</span>
             </div>
             <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#635BFF] transition-colors">Stripe</h4>
-            <p class="text-xs text-slate-500 flex-1">Identifica al usuario en el Checkout Session y envía saldo a su Wallet.</p>
-        </div>
-
-        <!-- Square -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Square POS', 'Cloud POS', 'fa-solid fa-square', 'bg-slate-100', 'text-slate-900', 'Integración bidireccional con terminales Square para restaurantes y retail.', [{title:'OAuth Login', desc:'Inicia sesión con tu cuenta de propietario de Square.'}, {title:'Mapeo de Cajeros', desc:'Instruye a tus cajeros a asignar el cliente al ticket antes de cobrar.'}, {title:'Pago Exitoso', desc:'Fidelio escuchará payment.updated para dispersar puntos.'}])">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center text-2xl"><i class="fa-solid fa-square"></i></div>
-                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Cloud POS</span>
-            </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-slate-600 transition-colors">Square POS</h4>
-            <p class="text-xs text-slate-500 flex-1">Integración bidireccional con terminales Square.</p>
-        </div>
-
-        <!-- Clover -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Clover', 'Cloud POS', 'fa-solid fa-clover', 'bg-[#00B140]/10', 'text-[#00B140]', 'Instala la app de Fidelio desde el Clover App Market.', [{title:'Clover App Market', desc:'Busca Fidelio Rewards en la tienda de aplicaciones de tu terminal Clover.'}, {title:'Instalación', desc:'Acepta los permisos de lectura de pagos y clientes.'}, {title:'Captura de Puntos', desc:'Escucharemos el evento payment.created con status APPROVED.'}])">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-[#00B140]/10 text-[#00B140] flex items-center justify-center text-2xl"><i class="fa-solid fa-clover"></i></div>
-                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Cloud POS</span>
-            </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#00B140] transition-colors">Clover</h4>
-            <p class="text-xs text-slate-500 flex-1">Integración nativa vía Clover App Market.</p>
-        </div>
-
-        <!-- Toast POS -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Toast POS', 'Enterprise POS', 'fa-solid fa-utensils', 'bg-[#F26422]/10', 'text-[#F26422]', 'La solución definitiva para restaurantes. Integración Partner Oficial.', [{title:'Solicitud Toast', desc:'Abre un ticket con el soporte de Toast para habilitar la integración Fidelio.'}, {title:'Activación API', desc:'Se te proveerán credenciales de Toast API Partner.'}, {title:'Fallback de Cliente', desc:'Configuraremos el webhook order_updated con respaldo de consulta REST.'}])">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-[#F26422]/10 text-[#F26422] flex items-center justify-center text-2xl"><i class="fa-solid fa-utensils"></i></div>
-                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Enterprise POS</span>
-            </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#F26422] transition-colors">Toast POS</h4>
-            <p class="text-xs text-slate-500 flex-1">Sincronización en tiempo real con terminales Toast para restaurantes.</p>
-        </div>
-
-        <!-- Loyverse POS -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Loyverse POS', 'Retail POS', 'fa-solid fa-cash-register', 'bg-emerald-500/10', 'text-emerald-500', 'Mapea al cliente en caja y sincroniza los puntos.', [{title:'Obtener Token', desc:'Genera un Personal Access Token (PAT) en el Backoffice de Loyverse.'}, {title:'Configurar Webhook', desc:'Añadiremos nuestra URL al webhook receipts.update.'}, {title:'Listo', desc:'Cada recibo cerrado buscará el teléfono del cliente para asignar puntos.'}])">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cash-register"></i></div>
-                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Retail POS</span>
-            </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-emerald-500 transition-colors">Loyverse & Poster</h4>
-            <p class="text-xs text-slate-500 flex-1">Mapea al cliente en caja y sincroniza los puntos de la tienda física.</p>
+            <p class="text-xs text-slate-500 flex-1">Ideal para cobrar suscripciones, tickets o productos online.</p>
         </div>
 
         <!-- WooCommerce -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('WooCommerce', 'E-Commerce', 'fa-brands fa-wordpress', 'bg-[#96588a]/10', 'text-[#96588a]', 'Conexión nativa con WordPress vía Webhooks estándar.', [{title:'WP Admin', desc:'Ve a WooCommerce > Configuración > Avanzado > Webhooks.'}, {title:'Añadir Webhook', desc:'Crea un webhook para el evento Pedido Actualizado (Order Updated).'}, {title:'URL y Secret', desc:'Ingresa la URL proporcionada por Fidelio y tu firma HMAC secreta.'}])">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('WooCommerce', 'E-Commerce', 'fa-brands fa-wordpress', 'bg-[#96588a]/10', 'text-[#96588a]', 'Conexión nativa con WordPress vía Webhooks estándar.', [{title:'Tu panel de WordPress', desc:'En tu menú izquierdo, busca WooCommerce > Ajustes.'}, {title:'Ve a la pestaña Avanzado', desc:'Haz clic en Avanzado y luego en el submenú Webhooks. Añade uno nuevo.'}, {title:'Pega la URL', desc:'Selecciona el evento Pedido Actualizado, pega la URL de Fidelio y gúardalo.'}])">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 rounded-xl bg-[#96588a]/10 text-[#96588a] flex items-center justify-center text-2xl"><i class="fa-brands fa-wordpress"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
             </div>
             <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#96588a] transition-colors">WooCommerce</h4>
-            <p class="text-xs text-slate-500 flex-1">Conexión nativa vía webhooks de WordPress.</p>
+            <p class="text-xs text-slate-500 flex-1">Integración universal sin necesitar ningún plugin extra.</p>
         </div>
 
         <!-- Tiendanube -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Tiendanube', 'E-Commerce', 'fa-solid fa-cloud', 'bg-blue-500/10', 'text-blue-500', 'Integración segura con Nuvemshop.', [{title:'Instalar App Fidelio', desc:'En la tienda de Tiendanube, instala la app de Fidelio.'}, {title:'Permisos', desc:'Concede permiso de read_customers para poder ver los emails.'}, {title:'Eventos', desc:'Capturaremos el webhook ligero order/paid y extraeremos los datos de la API.'}])">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Tiendanube', 'E-Commerce', 'fa-solid fa-cloud', 'bg-blue-500/10', 'text-blue-500', 'Integración segura con Nuvemshop.', [{title:'Portal de Socios', desc:'Entra a Tiendanube Partners y crea una App Nueva solo para tu tienda.'}, {title:'Configura Webhooks', desc:'Registra un Webhook para el evento orden pagada apuntando a Fidelio.'}, {title:'Listo', desc:'Nuestros servidores se encargarán de extraer el email de cada venta.'}])">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cloud"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
             </div>
             <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-blue-500 transition-colors">Tiendanube / Nuvemshop</h4>
-            <p class="text-xs text-slate-500 flex-1">Procesa webhooks de orden para sumar puntos al cliente mapeado.</p>
-        </div>
-        
-        <!-- Deliverect (Middleware) -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Deliverect', 'Agregador / Middleware', 'fa-solid fa-motorcycle', 'bg-slate-800/10', 'text-slate-800', 'Conecta con docenas de POS legacy a través de la API universal de Deliverect.', [{title:'Obtener API Key', desc:'Obtén tu API Key de integrador desde el portal de Deliverect.'}, {title:'Sincronización Webhook', desc:'Recibiremos órdenes unificadas independientemente del POS que use el restaurante.'}, {title:'Descuentos Directos', desc:'Fidelio inyectará las recompensas como descuentos en la orden.'}])">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-slate-800/10 text-slate-800 flex items-center justify-center text-2xl"><i class="fa-solid fa-motorcycle"></i></div>
-                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Middleware</span>
-            </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-slate-800 transition-colors">Deliverect (Universal)</h4>
-            <p class="text-xs text-slate-500 flex-1">Acceso inmediato a Micros, Aloha, NCR y decenas más vía agregador.</p>
+            <p class="text-xs text-slate-500 flex-1">Suma puntos a todos tus clientes de Latinoamérica.</p>
         </div>
 
-        <!-- Omnivore (Olo) -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Omnivore', 'Enterprise Middleware', 'fa-solid fa-network-wired', 'bg-blue-600/10', 'text-blue-600', 'La solución para cadenas corporativas y restaurantes gigantes.', [{title:'Olo Partnership', desc:'Habilita la integración de Lealtad (Loyalty Webhooks) en Olo.'}, {title:'Inyección POS', desc:'Las reglas de lealtad se envían directamente a la terminal Micros/Aloha.'}, {title:'Data Sincronizada', desc:'Reportes unificados para franquicias.'}])">
+        <!-- Square -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Square POS', 'Cloud POS', 'fa-solid fa-square', 'bg-slate-100', 'text-slate-900', 'Suma puntos desde la caja registradora de Square.', [{title:'Portal de Square', desc:'Ve a Developer Dashboard en Square y crea una Aplicación Custom.'}, {title:'Activa Webhooks', desc:'En la pestaña de Webhooks, suscríbete a payment.updated y pega la URL de Fidelio.'}, {title:'Mapea en Tienda', desc:'Instruye a tus cajeros a siempre adjuntar el cliente en la pantalla de cobro.'}])">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-network-wired"></i></div>
-                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Middleware</span>
-            </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">Omnivore (by Olo)</h4>
-            <p class="text-xs text-slate-500 flex-1">Conexión Enterprise (Micros, Aloha, POSitouch) sin VPNs locales.</p>
-        </div>
-
-        <!-- Revel Systems -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Revel Systems', 'Cloud POS', 'fa-solid fa-tablet-screen-button', 'bg-sky-500/10', 'text-sky-500', 'Integración bidireccional P2P con el POS preferido de franquicias QSR.', [{title:'App Authorization', desc:'Inicia flujo OAuth para conectar Fidelio al tenant de Revel.'}, {title:'Customer CRM', desc:'Fidelio inyectará puntos y recompensas directo en el CRM de Revel.'}, {title:'Checkout POS', desc:'El cajero verá el saldo de Fidelio en la pantalla del iPad al cobrar.'}])">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-tablet-screen-button"></i></div>
+                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center text-2xl"><i class="fa-solid fa-square"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Cloud POS</span>
             </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-sky-500 transition-colors">Revel Systems</h4>
-            <p class="text-xs text-slate-500 flex-1">Integración nativa directa con terminales Revel iPad POS.</p>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-slate-600 transition-colors">Square POS</h4>
+            <p class="text-xs text-slate-500 flex-1">Recibe las alertas de venta en tiempo real desde la terminal física.</p>
         </div>
 
+        <!-- Loyverse POS -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Loyverse POS', 'Retail POS', 'fa-solid fa-cash-register', 'bg-emerald-500/10', 'text-emerald-500', 'Integración para tiendas Retail mediante Token de acceso.', [{title:'Abre Loyverse Backoffice', desc:'Inicia sesión en tu computadora, ve a Configuración y luego a Tokens de Acceso.'}, {title:'Crea un Token (PAT)', desc:'Genera un nuevo token y configúralo para escuchar el evento de recibos actualizados.'}, {title:'Registra a los clientes', desc:'Cada vez que el cajero ponga el nombre del cliente en el recibo, se sumarán puntos.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cash-register"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Retail POS</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-emerald-500 transition-colors">Loyverse & Poster</h4>
+            <p class="text-xs text-slate-500 flex-1">Integración mediante webhooks y personal access tokens (PAT).</p>
+        </div>
+        
     </div>
 </div>
 
