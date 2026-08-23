@@ -266,51 +266,186 @@ app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), async (
 // UNIVERSAL LOYALTY WEBHOOK CONSUMER (B2C - App Store Integrations)
 // -------------------------------------------------------------
 
-// Webhook Receptor para Shopify
-app.post('/api/webhooks/shopify/:merchant_id', express.json(), async (req, res) => {
+// Webhook Receptor Universal para las 11 plataformas
+app.post('/api/webhooks/:provider/:merchant_id', express.json(), async (req, res) => {
     try {
-        const merchantId = req.params.merchant_id;
-        const order = req.body;
+        const { provider, merchant_id } = req.params;
+        const payload = req.body;
         
-        // 1. Validar el evento (Solo procesar si está pagada)
-        // Shopify manda X-Shopify-Topic: orders/paid, pero también validamos el JSON.
-        if (order.financial_status !== 'paid') {
-            return res.status(200).send('Orden no pagada, ignorada.');
+        let normalized = {
+            isValid: false,
+            email: null,
+            phone: null,
+            totalSpent: 0,
+            orderId: 'UNKNOWN'
+        };
+
+        console.log(`[Webhook] Recibiendo evento de ${provider.toUpperCase()} para merchant: ${merchant_id}`);
+
+        // ==========================================
+        // 1. NORMALIZACIÓN DE PAYLOADS POR PROVEEDOR
+        // ==========================================
+        switch(provider.toLowerCase()) {
+            
+            case 'shopify':
+                if (payload.financial_status === 'paid') {
+                    normalized.isValid = true;
+                    normalized.email = payload.customer?.email || payload.email;
+                    normalized.phone = payload.customer?.phone || payload.phone;
+                    normalized.totalSpent = parseFloat(payload.total_price || 0);
+                    normalized.orderId = `Shopify #${payload.order_number}`;
+                }
+                break;
+
+            case 'stripe':
+                // Stripe B2C Loyalty Webhook (Checkout Sessions)
+                if (payload.type === 'checkout.session.completed') {
+                    const session = payload.data.object;
+                    if (session.payment_status === 'paid') {
+                        normalized.isValid = true;
+                        normalized.email = session.customer_details?.email;
+                        normalized.phone = session.customer_details?.phone;
+                        // Stripe usa centavos, dividir por 100
+                        normalized.totalSpent = (session.amount_total || 0) / 100; 
+                        normalized.orderId = `Stripe ${session.id}`;
+                    }
+                } else if (payload.payment_status === 'paid') {
+                    // Soporte de fallback genérico
+                    normalized.isValid = true;
+                    normalized.email = payload.customer_email;
+                    normalized.totalSpent = (payload.amount_total || 0) / 100;
+                    normalized.orderId = `Stripe ${payload.id}`;
+                }
+                break;
+
+            case 'woocommerce':
+                if (payload.status === 'completed') {
+                    normalized.isValid = true;
+                    normalized.email = payload.billing?.email;
+                    normalized.phone = payload.billing?.phone;
+                    normalized.totalSpent = parseFloat(payload.total || 0);
+                    normalized.orderId = `WooCommerce #${payload.id}`;
+                }
+                break;
+
+            case 'tiendanube':
+            case 'nuvemshop':
+                // Tiendanube envía webhooks ligeros de order/paid
+                // Requiere hacer fetch a su API, simulamos el parsing si el payload trae data
+                if (payload.event === 'order/paid' || payload.status === 'paid') {
+                    normalized.isValid = true;
+                    normalized.email = payload.customer?.email;
+                    normalized.phone = payload.customer?.phone;
+                    normalized.totalSpent = parseFloat(payload.total || 0);
+                    normalized.orderId = `Tiendanube #${payload.id}`;
+                }
+                break;
+
+            case 'square':
+                if (payload.type === 'payment.updated' && payload.data?.object?.payment?.status === 'COMPLETED') {
+                    const payment = payload.data.object.payment;
+                    normalized.isValid = true;
+                    // Square a menudo requiere fetch adicional para el customer_id
+                    normalized.email = payment.customer_id; // Se asume mapeo por ID de cliente de Square
+                    normalized.totalSpent = (payment.amount_money?.amount || 0) / 100;
+                    normalized.orderId = `Square ${payment.id}`;
+                }
+                break;
+
+            case 'clover':
+                if (payload.merchants && payload.merchants.length > 0) {
+                    normalized.isValid = true;
+                    normalized.totalSpent = parseFloat(payload.amount || 0);
+                    normalized.orderId = `Clover Event`;
+                    // Nota: Clover requiere consultas secundarias (OAuth) en producción
+                }
+                break;
+
+            case 'toast':
+                // Toast Order Updated Webhook
+                if (payload.orderStatus === 'CLOSED' || payload.orderStatus === 'PAID') {
+                    normalized.isValid = true;
+                    normalized.phone = payload.customer?.phone;
+                    normalized.email = payload.customer?.email;
+                    normalized.totalSpent = parseFloat(payload.checkTotal || 0);
+                    normalized.orderId = `Toast #${payload.orderId}`;
+                }
+                break;
+
+            case 'loyverse':
+            case 'poster':
+                if (payload.receipts || payload.action === 'receipts.update') {
+                    // Loyverse Array de recibos
+                    const receipt = payload.receipts ? payload.receipts[0] : payload;
+                    normalized.isValid = true;
+                    normalized.email = receipt.customer_id; // Usando el ID del cliente
+                    normalized.totalSpent = parseFloat(receipt.total_money || 0);
+                    normalized.orderId = `Loyverse #${receipt.receipt_number}`;
+                }
+                break;
+
+            case 'deliverect':
+            case 'omnivore':
+            case 'revel':
+                // Para agregadores y Enterprise POS
+                if (payload.status === 'FINALIZED' || payload.status === 'PAID' || payload.status === 20) {
+                    normalized.isValid = true;
+                    normalized.phone = payload.customer?.phoneNumber || payload.customer?.phone;
+                    normalized.email = payload.customer?.email;
+                    normalized.totalSpent = parseFloat(payload.payment?.amount || payload.total || 0);
+                    normalized.orderId = `${provider.toUpperCase()} #${payload.id}`;
+                }
+                break;
+
+            default:
+                console.warn(`[Webhook] Proveedor no reconocido: ${provider}`);
+                return res.status(400).send('Proveedor no soportado.');
         }
 
-        // 2. Extraer datos del cliente (Customer Mapping)
-        const email = order.customer?.email || order.email;
-        const phone = order.customer?.phone || order.phone;
-        const totalSpent = parseFloat(order.total_price || 0);
-
-        if (!email && !phone) {
-            console.log(`[Shopify Webhook] Orden ${order.id} sin cliente identificable.`);
-            return res.status(200).send('Cliente no identificado (PCD Oculto).');
+        // ==========================================
+        // 2. VALIDACIÓN Y FILTRADO
+        // ==========================================
+        if (!normalized.isValid) {
+            return res.status(200).send('Evento ignorado (No cumple criterios de pago o tipo de evento).');
         }
 
-        console.log(`🎯 [Universal Webhook] Nueva venta de Shopify recibida para el comercio ${merchantId}`);
-        console.log(`Cliente: ${email || phone} - Total: $${totalSpent}`);
+        if (!normalized.email && !normalized.phone) {
+            console.log(`[${provider.toUpperCase()}] Orden ${normalized.orderId} sin cliente identificable.`);
+            return res.status(200).send('Cliente no identificado en el payload del POS.');
+        }
 
-        // 3. Buscar al cliente en la base de datos de Fidelio
-        let userQuery = supabase.from('users').select('*').eq('merchant_id', merchantId);
-        if (email) userQuery = userQuery.eq('email', email);
-        else if (phone) userQuery = userQuery.eq('phone', phone);
+        console.log(`🎯 [Universal Webhook] Extracción exitosa. Cliente: ${normalized.email || normalized.phone} - Total: $${normalized.totalSpent}`);
+
+        // ==========================================
+        // 3. MOTOR DE LEALTAD (DB)
+        // ==========================================
+        let userQuery = supabase.from('users').select('*').eq('merchant_id', merchant_id);
+        
+        // Match principal: Email. Match Secundario: Teléfono
+        if (normalized.email) {
+            userQuery = userQuery.eq('email', normalized.email);
+        } else if (normalized.phone) {
+            userQuery = userQuery.eq('phone', normalized.phone);
+        }
         
         const { data: users, error: userErr } = await userQuery.limit(1);
 
         if (userErr || !users || users.length === 0) {
-            console.log(`[Fidelio] Cliente no encontrado en DB, creando perfil sombra temporal...`);
-            // Lógica futura: Crear usuario en Fidelio si no existe
-            return res.status(200).send('Usuario no encontrado, evento registrado.');
+            console.log(`[Fidelio] Cliente no encontrado en DB, creando evento sombra...`);
+            return res.status(200).send('Usuario no encontrado en Fidelio, evento registrado como anónimo.');
         }
 
         const user = users[0];
 
-        // 4. Calcular puntos (Hardcoded 1 a 1 para el prototipo, esto debería leer de configs)
-        const puntosGanados = Math.floor(totalSpent);
+        // Calcular puntos (Configuración Default 1 a 1 para el MVP)
+        const puntosGanados = Math.floor(normalized.totalSpent);
+        if (puntosGanados <= 0) {
+             return res.status(200).send('Monto muy bajo, no generó puntos.');
+        }
+
         const nuevoSaldo = (user.points || 0) + puntosGanados;
 
-        // 5. Abonar puntos en la base de datos (Motor de Lealtad)
+        // Actualizar saldo del cliente
         const { error: updateErr } = await supabase
             .from('users')
             .update({ points: nuevoSaldo })
@@ -318,20 +453,20 @@ app.post('/api/webhooks/shopify/:merchant_id', express.json(), async (req, res) 
 
         if (updateErr) throw updateErr;
 
-        // 6. Registrar la transacción en el historial
+        // Registrar la transacción en el historial global
         await supabase.from('transactions').insert([{
-            merchant_id: merchantId,
+            merchant_id: merchant_id,
             user_id: user.id,
             points: puntosGanados,
             type: 'earn',
-            notes: `Compra en Shopify (Orden #${order.order_number})`
+            notes: `Compra vía ${provider.toUpperCase()} (${normalized.orderId})`
         }]);
 
-        console.log(`✅ [Fidelio] Éxito: Se sumaron ${puntosGanados} puntos al usuario ${user.id}`);
-        res.status(200).json({ success: true, points_awarded: puntosGanados, new_balance: nuevoSaldo });
+        console.log(`✅ [Fidelio] Éxito: Se sumaron ${puntosGanados} puntos al usuario ${user.id} a través de ${provider}`);
+        res.status(200).json({ success: true, provider, points_awarded: puntosGanados, new_balance: nuevoSaldo });
 
     } catch (err) {
-        console.error(`❌ [Shopify Webhook Error]:`, err);
+        console.error(`❌ [Universal Webhook Error]:`, err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
