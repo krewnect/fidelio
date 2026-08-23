@@ -993,12 +993,9 @@ aside {
 <div class="ambient-mesh"></div>
 <div class="app-shell">
 <!-- SIDEBAR -->
-<aside class="w-64 bg-[#0A0A0B] border-r border-white/5 flex flex-col h-screen overflow-y-auto shrink-0 transition-all custom-scrollbar">
-    <div class="px-6 py-8 cursor-pointer flex items-center group" onclick="if(typeof switchTab === 'function'){switchTab('home')}else{location.reload()}">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-fidelio-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-fidelio-500/20 group-hover:shadow-fidelio-500/40 transition-all group-hover:scale-105">
-            <i class="fa-solid fa-cube text-slate-900 text-xl"></i>
-        </div>
-        <span class="ml-3 text-lg font-black text-slate-900 tracking-tight group-hover:text-fidelio-600 transition-colors">Fidelio</span>
+<aside class="app-sidebar">
+    <div class="sidebar-brand mb-8 cursor-pointer" onclick="if(typeof switchTab === 'function'){switchTab('home')}else{location.reload()}">
+        <img src="fidelio_logo_purple.png" alt="Fidelio Logo" style="height: 44px; width: auto;" />
     </div>
 
     <nav class="flex-1 px-4 space-y-1 pb-8">
