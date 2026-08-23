@@ -2849,7 +2849,7 @@ aside {
         </div>
 
         <!-- Tabla de Equipo Actual -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-8">
             <h3 class="text-sm font-bold text-slate-900 mb-4"><i class="fa-solid fa-users-gear text-slate-400 mr-2"></i> Directorio de Equipo Activo</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -2862,19 +2862,37 @@ aside {
                             <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition">
-                            <td class="py-3 px-4">
-                                <div class="font-bold text-sm text-slate-900">Roberto Ordóñez</div>
-                                <div class="text-xs text-slate-500">roberto@fidelio.com</div>
-                            </td>
-                            <td class="py-3 px-4"><span class="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-md">Master Admin</span></td>
-                            <td class="py-3 px-4 text-xs text-slate-500">Todas (Global)</td>
-                            <td class="py-3 px-4"><span class="text-emerald-500 text-xs font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Activo</span></td>
-                            <td class="py-3 px-4 text-right">
-                                <button class="text-slate-400 hover:text-fidelio-600 transition"><i class="fa-solid fa-pen-to-square"></i></button>
-                            </td>
+                    <tbody id="staff-table-body">
+                        <!-- Llenado dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel de Auditoría de Seguridad (Audit Logs) -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm border-l-4 border-l-fidelio-500">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900"><i class="fa-solid fa-clipboard-list text-fidelio-600 mr-2"></i> Panel de Auditoría de Seguridad (SOC)</h3>
+                    <p class="text-xs text-slate-500 mt-1">Registro inmutable de todas las transacciones generadas por el equipo.</p>
+                </div>
+                <button class="text-xs font-bold text-slate-500 hover:text-slate-900 transition"><i class="fa-solid fa-download mr-1"></i> Exportar CSV</button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 bg-slate-50/50">
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha y Hora</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Operador (Cajero)</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sucursal</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Cliente / Wallet ID</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tipo de Movimiento</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Monto / Puntos</th>
                         </tr>
+                    </thead>
+                    <tbody id="audit-logs-body">
+                        <tr><td colspan="6" class="text-center py-8 text-slate-400 text-sm font-medium">Cargando registros de auditoría...</td></tr>
                     </tbody>
                 </table>
             </div>
