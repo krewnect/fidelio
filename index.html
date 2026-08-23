@@ -3356,59 +3356,119 @@ aside {
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
 <div>
-<p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>CONECTIVIDAD</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">API & Webhooks</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Conecta Fidelio a tu E-Commerce o Punto de Venta para emitir puntos en piloto automático.</p>
+<p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-plug mr-2 opacity-50"></i>UNIVERSAL LOYALTY LAYER</p>
+<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">App Store & Integraciones</h1>
+<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Conecta Fidelio a tu E-Commerce, POS o Pasarela de Pago para emitir recompensas automáticamente cuando tus clientes compren.</p>
 </div>
 <div class="flex-shrink-0">
-<button class="bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-slate-900 shadow-lg shadow-slate-900/30 hover:shadow-slate-900/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="window.showToast('Generando nueva API Key...', 'info')"><i class="fa-solid fa-key"></i> Generar API Key</button>
+<button class="bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white shadow-lg shadow-slate-900/30 hover:shadow-slate-900/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="window.showToast('Generando nueva API Key...', 'info')"><i class="fa-solid fa-key"></i> Developer API</button>
 </div>
 </div>
 
-<div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
-<!-- API Keys -->
-<div class="relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
-<div style="width:48px; height:48px; border-radius:12px; background: rgba(139, 92, 246, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
-<i class="fa-solid fa-code"></i>
-</div>
-<h3 style="margin:0 0 8px 0; font-size:18px; font-weight: 800;">Claves de API REST</h3>
-<p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Utiliza esta clave para autenticar tus peticiones desde sistemas externos como Shopify, WooCommerce o tu backend.</p>
+<!-- SECTION 1: NATIVE INTEGRATIONS -->
+<div class="mb-10">
+    <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center"><i class="fa-solid fa-shop text-fidelio-600 mr-2"></i> Directorio de Conectores</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Shopify -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Inicializando OAuth con Shopify...', 'info')">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#96bf48]/10 text-[#96bf48] flex items-center justify-center text-2xl"><i class="fa-brands fa-shopify"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#96bf48] transition-colors">Shopify</h4>
+            <p class="text-xs text-slate-500 flex-1">Emite puntos automáticamente cuando la orden cambie a pagada.</p>
+            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-[#96bf48] font-bold text-xs">
+                <i class="fa-solid fa-plus-circle mr-1"></i> Instalar App
+            </div>
+        </div>
 
-<div class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 relative flex items-center justify-between">
-    <div>
-        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Live Secret Key</p>
-        <p class="text-sm font-mono text-slate-800">sk_live_fidelio_********************</p>
+        <!-- Stripe -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Abriendo Stripe Connect...', 'info')">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#635BFF]/10 text-[#635BFF] flex items-center justify-center text-2xl"><i class="fa-brands fa-stripe"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Pagos</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#635BFF] transition-colors">Stripe</h4>
+            <p class="text-xs text-slate-500 flex-1">Identifica al usuario en el Checkout Session y envía saldo a su Wallet.</p>
+            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-[#635BFF] font-bold text-xs">
+                <i class="fa-solid fa-plus-circle mr-1"></i> Instalar App
+            </div>
+        </div>
+
+        <!-- Tiendanube -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Configuración de Webhooks Tiendanube', 'info')">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cloud"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-blue-500 transition-colors">Tiendanube / Nuvemshop</h4>
+            <p class="text-xs text-slate-500 flex-1">Procesa webhooks de orden para sumar puntos al cliente mapeado.</p>
+            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-blue-500 font-bold text-xs">
+                <i class="fa-solid fa-plus-circle mr-1"></i> Conectar
+            </div>
+        </div>
+
+        <!-- Loyverse POS -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Solicitando permisos para Retail POS...', 'info')">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cash-register"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Retail POS</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-emerald-500 transition-colors">Loyverse & Poster POS</h4>
+            <p class="text-xs text-slate-500 flex-1">Mapea al cliente en caja y sincroniza los puntos de la tienda física.</p>
+            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-emerald-500 font-bold text-xs">
+                <i class="fa-solid fa-plus-circle mr-1"></i> Conectar
+            </div>
+        </div>
     </div>
-    <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-fidelio-600 hover:border-fidelio-300 flex items-center justify-center transition-all cursor-pointer" onclick="window.showToast('Clave copiada al portapapeles', 'success')"><i class="fa-regular fa-copy"></i></button>
 </div>
 
-<div style="margin-top:auto; width:100%; display:flex; gap:12px;">
-<button class="fidelio-btn-secondary" onclick="window.open('https://docs.fideliorewards.com', '_blank')" style="flex:1; background:transparent; border:1px solid var(--border-soft); color:var(--text-main); cursor:pointer;"><i class="fa-solid fa-book"></i> Ver Documentación</button>
-</div>
+<!-- SECTION 2: DEVELOPER TOOLS (API & CUSTOM WEBHOOKS) -->
+<h3 class="text-lg font-black text-slate-900 mb-4 flex items-center"><i class="fa-solid fa-terminal text-slate-400 mr-2"></i> Herramientas de Desarrollador</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- API Keys -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm flex flex-col">
+        <div class="w-12 h-12 rounded-xl bg-fidelio-50 text-fidelio-600 flex items-center justify-center text-2xl mb-4">
+            <i class="fa-solid fa-code"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-2">Claves de API REST</h3>
+        <p class="text-sm text-slate-500 mb-6">Utiliza esta clave para autenticar tus peticiones personalizadas desde cualquier backend o sistema legado.</p>
+        
+        <div class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 relative flex items-center justify-between">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Live Secret Key</p>
+                <p class="text-sm font-mono text-slate-900">sk_live_fidelio_********************</p>
+            </div>
+            <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-fidelio-600 hover:border-fidelio-300 flex items-center justify-center transition-all cursor-pointer shadow-sm" onclick="window.showToast('Clave copiada al portapapeles', 'success')"><i class="fa-regular fa-copy"></i></button>
+        </div>
+        
+        <div class="mt-auto">
+            <button class="w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm" onclick="window.open('https://docs.fideliorewards.com', '_blank')"><i class="fa-solid fa-book mr-2 text-slate-400"></i> Documentación API</button>
+        </div>
+    </div>
+
+    <!-- Webhooks -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm flex flex-col relative overflow-hidden">
+        <div class="absolute top-6 right-6 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black border border-emerald-100">ACTIVO</div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mb-4">
+            <i class="fa-solid fa-satellite-dish"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-2">Eventos (Custom Webhooks)</h3>
+        <p class="text-sm text-slate-500 mb-6">Recibe notificaciones HTTP POST en tiempo real en tu servidor cuando ocurran redenciones, cancelaciones o recargas.</p>
+        
+        <div class="w-full mb-6">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Endpoint URL</p>
+            <input type="text" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition shadow-sm" value="https://mi-tienda.com/api/fidelio-webhook" placeholder="https://..." />
+        </div>
+        
+        <div class="mt-auto flex gap-3">
+            <button class="flex-1 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm" onclick="window.showToast('Webhook de prueba enviado (HTTP 200)', 'info')"><i class="fa-solid fa-vial mr-2 text-slate-400"></i> Probar</button>
+            <button class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm border-0" onclick="window.showToast('Endpoint guardado con éxito', 'success')">Guardar</button>
+        </div>
+    </div>
 </div>
 
-<!-- Webhooks -->
-<div class="relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
-<div style="position:absolute; top:24px; right:24px; background: rgba(16, 185, 129, 0.1); color:#10b981; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:800; border:1px solid rgba(16, 185, 129, 0.2);">
-    ACTIVO
-</div>
-<div style="width:48px; height:48px; border-radius:12px; background: rgba(16, 185, 129, 0.1); color:#10b981; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
-<i class="fa-solid fa-satellite-dish"></i>
-</div>
-<h3 style="margin:0 0 8px 0; font-size:18px; font-weight: 800;">Eventos (Webhooks)</h3>
-<p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Recibe notificaciones HTTP POST en tiempo real en tu servidor cuando un cliente reclame una recompensa o gane puntos.</p>
-
-<div class="w-full mb-4">
-    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Endpoint URL</p>
-    <input type="text" class="fidelio-input w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500" value="https://mi-tienda.com/api/fidelio-webhook" placeholder="https://..." />
-</div>
-
-<div style="margin-top:auto; width:100%; display:flex; gap:12px;">
-<button class="fidelio-btn-secondary" onclick="window.showToast('Webhook de prueba enviado', 'info')" style="flex:1; background:transparent; border:1px solid var(--border-soft); color:var(--text-main); cursor:pointer;"><i class="fa-solid fa-vial"></i> Probar Evento</button>
-<button class="fidelio-btn-primary" style="background:#10b981; border-color:#10b981;" onclick="window.showToast('Endpoint guardado', 'success')">Guardar</button>
-</div>
-</div>
-</div>
 </div></section>
 <!-- TAB MY BUSINESS -->
 <section class="tab-content" id="tab-mybusiness"><div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-12">
