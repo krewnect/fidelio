@@ -3352,7 +3352,70 @@ aside {
 </div>
 </section>
 <!-- TAB API & INTEGRATIONS -->
-<section class="tab-content" id="tab-api"><div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-12">
+<section class="tab-content" id="tab-api" x-data="{ 
+    integrationModalOpen: false, 
+    selectedApp: { name: '', type: '', icon: '', bg: '', text: '', desc: '', steps: [] },
+    openApp(name, type, icon, bg, text, desc, steps) {
+        this.selectedApp = { name, type, icon, bg, text, desc, steps };
+        this.integrationModalOpen = true;
+    }
+}">
+<div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-12 relative">
+
+<!-- Integration Guide Modal -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4" style="display: none;" x-show="integrationModalOpen" x-transition.opacity>
+    <div @click.away="integrationModalOpen = false" class="bg-white border border-slate-200 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col" x-show="integrationModalOpen" x-transition.scale.95>
+        <!-- Modal Header -->
+        <div class="p-6 md:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50 relative overflow-hidden">
+            <div class="absolute -right-12 -top-12 w-40 h-40 rounded-full opacity-10 mix-blend-multiply filter blur-2xl" :class="selectedApp.bg"></div>
+            <div class="flex gap-5 relative z-10">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-white/50 backdrop-blur-md" :class="selectedApp.bg + ' ' + selectedApp.text">
+                    <i :class="selectedApp.icon"></i>
+                </div>
+                <div>
+                    <span class="bg-white text-slate-500 border border-slate-200 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest shadow-sm" x-text="selectedApp.type"></span>
+                    <h3 class="text-2xl font-black text-slate-900 mt-2" x-text="'Integrar ' + selectedApp.name"></h3>
+                    <p class="text-sm font-medium text-slate-500 mt-1" x-text="selectedApp.desc"></p>
+                </div>
+            </div>
+            <button @click="integrationModalOpen = false" class="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors shadow-sm relative z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <!-- Modal Body (Steps) -->
+        <div class="p-6 md:p-8 overflow-y-auto max-h-[60vh]">
+            <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Guía de Configuración</h4>
+            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                <template x-for="(step, index) in selectedApp.steps" :key="index">
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-100 group-[.is-active]:bg-fidelio-600 text-slate-500 group-[.is-active]:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 font-bold text-sm">
+                            <span x-text="index + 1"></span>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <h5 class="font-bold text-slate-900 text-sm mb-1" x-text="step.title"></h5>
+                            <p class="text-xs text-slate-500" x-text="step.desc"></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            
+            <div class="mt-8 bg-amber-50 border border-amber-100 rounded-xl p-4 flex gap-3">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+                <div>
+                    <p class="text-xs font-bold text-amber-800">Soporte de Integración</p>
+                    <p class="text-xs text-amber-700/80 mt-1">Si requieres ayuda técnica para completar la integración, contacta a nuestro equipo de ingenieros B2B.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Footer -->
+        <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+            <button @click="integrationModalOpen = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-white transition-colors">Cancelar</button>
+            <button class="px-5 py-2.5 rounded-xl bg-fidelio-600 hover:bg-fidelio-700 text-white text-sm font-bold shadow-sm transition-colors flex items-center gap-2" onclick="window.showToast('Proceso de autenticación iniciado.', 'info')">
+                Continuar Integración <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
 <div>
@@ -3371,56 +3434,115 @@ aside {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Shopify -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Inicializando OAuth con Shopify...', 'info')">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Shopify', 'E-Commerce', 'fa-brands fa-shopify', 'bg-[#96bf48]/10', 'text-[#96bf48]', 'Emite puntos automáticamente cuando la orden web cambie a pagada.', [{title:'Instalar App', desc:'Instala la App Custom de Fidelio en tu panel de Shopify.'}, {title:'Aprobar Permisos (PCD)', desc:'Aprueba los permisos de Protected Customer Data para extraer emails.'}, {title:'Webhooks Activos', desc:'Fidelio comenzará a escuchar el webhook orders/paid.'}])">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 rounded-xl bg-[#96bf48]/10 text-[#96bf48] flex items-center justify-center text-2xl"><i class="fa-brands fa-shopify"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
             </div>
             <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#96bf48] transition-colors">Shopify</h4>
             <p class="text-xs text-slate-500 flex-1">Emite puntos automáticamente cuando la orden cambie a pagada.</p>
-            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-[#96bf48] font-bold text-xs">
-                <i class="fa-solid fa-plus-circle mr-1"></i> Instalar App
-            </div>
         </div>
 
         <!-- Stripe -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Abriendo Stripe Connect...', 'info')">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Stripe', 'Pagos', 'fa-brands fa-stripe', 'bg-[#635BFF]/10', 'text-[#635BFF]', 'Identifica al usuario en el Checkout Session y envía saldo a su Wallet.', [{title:'Stripe Connect', desc:'Inicia sesión en tu cuenta de Stripe para dar acceso a Fidelio.'}, {title:'Inyección de Metadata', desc:'Asegúrate de mandar el customer_id en la metadata de tu Checkout Session.'}, {title:'Sincronización Webhook', desc:'Recibiremos el evento checkout.session.completed.'}])">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 rounded-xl bg-[#635BFF]/10 text-[#635BFF] flex items-center justify-center text-2xl"><i class="fa-brands fa-stripe"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Pagos</span>
             </div>
             <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#635BFF] transition-colors">Stripe</h4>
             <p class="text-xs text-slate-500 flex-1">Identifica al usuario en el Checkout Session y envía saldo a su Wallet.</p>
-            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-[#635BFF] font-bold text-xs">
-                <i class="fa-solid fa-plus-circle mr-1"></i> Instalar App
+        </div>
+
+        <!-- Square -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Square POS', 'Cloud POS', 'fa-solid fa-square', 'bg-slate-100', 'text-slate-900', 'Integración bidireccional con terminales Square para restaurantes y retail.', [{title:'OAuth Login', desc:'Inicia sesión con tu cuenta de propietario de Square.'}, {title:'Mapeo de Cajeros', desc:'Instruye a tus cajeros a asignar el cliente al ticket antes de cobrar.'}, {title:'Pago Exitoso', desc:'Fidelio escuchará payment.updated para dispersar puntos.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center text-2xl"><i class="fa-solid fa-square"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Cloud POS</span>
             </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-slate-600 transition-colors">Square POS</h4>
+            <p class="text-xs text-slate-500 flex-1">Integración bidireccional con terminales Square.</p>
+        </div>
+
+        <!-- Clover -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Clover', 'Cloud POS', 'fa-solid fa-clover', 'bg-[#00B140]/10', 'text-[#00B140]', 'Instala la app de Fidelio desde el Clover App Market.', [{title:'Clover App Market', desc:'Busca Fidelio Rewards en la tienda de aplicaciones de tu terminal Clover.'}, {title:'Instalación', desc:'Acepta los permisos de lectura de pagos y clientes.'}, {title:'Captura de Puntos', desc:'Escucharemos el evento payment.created con status APPROVED.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#00B140]/10 text-[#00B140] flex items-center justify-center text-2xl"><i class="fa-solid fa-clover"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Cloud POS</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#00B140] transition-colors">Clover</h4>
+            <p class="text-xs text-slate-500 flex-1">Integración nativa vía Clover App Market.</p>
+        </div>
+
+        <!-- Toast POS -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Toast POS', 'Enterprise POS', 'fa-solid fa-utensils', 'bg-[#F26422]/10', 'text-[#F26422]', 'La solución definitiva para restaurantes. Integración Partner Oficial.', [{title:'Solicitud Toast', desc:'Abre un ticket con el soporte de Toast para habilitar la integración Fidelio.'}, {title:'Activación API', desc:'Se te proveerán credenciales de Toast API Partner.'}, {title:'Fallback de Cliente', desc:'Configuraremos el webhook order_updated con respaldo de consulta REST.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#F26422]/10 text-[#F26422] flex items-center justify-center text-2xl"><i class="fa-solid fa-utensils"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Enterprise POS</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#F26422] transition-colors">Toast POS</h4>
+            <p class="text-xs text-slate-500 flex-1">Sincronización en tiempo real con terminales Toast para restaurantes.</p>
+        </div>
+
+        <!-- Loyverse POS -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Loyverse POS', 'Retail POS', 'fa-solid fa-cash-register', 'bg-emerald-500/10', 'text-emerald-500', 'Mapea al cliente en caja y sincroniza los puntos.', [{title:'Obtener Token', desc:'Genera un Personal Access Token (PAT) en el Backoffice de Loyverse.'}, {title:'Configurar Webhook', desc:'Añadiremos nuestra URL al webhook receipts.update.'}, {title:'Listo', desc:'Cada recibo cerrado buscará el teléfono del cliente para asignar puntos.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cash-register"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Retail POS</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-emerald-500 transition-colors">Loyverse & Poster</h4>
+            <p class="text-xs text-slate-500 flex-1">Mapea al cliente en caja y sincroniza los puntos de la tienda física.</p>
+        </div>
+
+        <!-- WooCommerce -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('WooCommerce', 'E-Commerce', 'fa-brands fa-wordpress', 'bg-[#96588a]/10', 'text-[#96588a]', 'Conexión nativa con WordPress vía Webhooks estándar.', [{title:'WP Admin', desc:'Ve a WooCommerce > Configuración > Avanzado > Webhooks.'}, {title:'Añadir Webhook', desc:'Crea un webhook para el evento Pedido Actualizado (Order Updated).'}, {title:'URL y Secret', desc:'Ingresa la URL proporcionada por Fidelio y tu firma HMAC secreta.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#96588a]/10 text-[#96588a] flex items-center justify-center text-2xl"><i class="fa-brands fa-wordpress"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#96588a] transition-colors">WooCommerce</h4>
+            <p class="text-xs text-slate-500 flex-1">Conexión nativa vía webhooks de WordPress.</p>
         </div>
 
         <!-- Tiendanube -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Configuración de Webhooks Tiendanube', 'info')">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Tiendanube', 'E-Commerce', 'fa-solid fa-cloud', 'bg-blue-500/10', 'text-blue-500', 'Integración segura con Nuvemshop.', [{title:'Instalar App Fidelio', desc:'En la tienda de Tiendanube, instala la app de Fidelio.'}, {title:'Permisos', desc:'Concede permiso de read_customers para poder ver los emails.'}, {title:'Eventos', desc:'Capturaremos el webhook ligero order/paid y extraeremos los datos de la API.'}])">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cloud"></i></div>
                 <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
             </div>
             <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-blue-500 transition-colors">Tiendanube / Nuvemshop</h4>
             <p class="text-xs text-slate-500 flex-1">Procesa webhooks de orden para sumar puntos al cliente mapeado.</p>
-            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-blue-500 font-bold text-xs">
-                <i class="fa-solid fa-plus-circle mr-1"></i> Conectar
+        </div>
+        
+        <!-- Deliverect (Middleware) -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Deliverect', 'Agregador / Middleware', 'fa-solid fa-motorcycle', 'bg-slate-800/10', 'text-slate-800', 'Conecta con docenas de POS legacy a través de la API universal de Deliverect.', [{title:'Obtener API Key', desc:'Obtén tu API Key de integrador desde el portal de Deliverect.'}, {title:'Sincronización Webhook', desc:'Recibiremos órdenes unificadas independientemente del POS que use el restaurante.'}, {title:'Descuentos Directos', desc:'Fidelio inyectará las recompensas como descuentos en la orden.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-slate-800/10 text-slate-800 flex items-center justify-center text-2xl"><i class="fa-solid fa-motorcycle"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Middleware</span>
             </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-slate-800 transition-colors">Deliverect (Universal)</h4>
+            <p class="text-xs text-slate-500 flex-1">Acceso inmediato a Micros, Aloha, NCR y decenas más vía agregador.</p>
         </div>
 
-        <!-- Loyverse POS -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" onclick="window.showToast('Solicitando permisos para Retail POS...', 'info')">
+        <!-- Omnivore (Olo) -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Omnivore', 'Enterprise Middleware', 'fa-solid fa-network-wired', 'bg-blue-600/10', 'text-blue-600', 'La solución para cadenas corporativas y restaurantes gigantes.', [{title:'Olo Partnership', desc:'Habilita la integración de Lealtad (Loyalty Webhooks) en Olo.'}, {title:'Inyección POS', desc:'Las reglas de lealtad se envían directamente a la terminal Micros/Aloha.'}, {title:'Data Sincronizada', desc:'Reportes unificados para franquicias.'}])">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-cash-register"></i></div>
-                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Retail POS</span>
+                <div class="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-network-wired"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Middleware</span>
             </div>
-            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-emerald-500 transition-colors">Loyverse & Poster POS</h4>
-            <p class="text-xs text-slate-500 flex-1">Mapea al cliente en caja y sincroniza los puntos de la tienda física.</p>
-            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-emerald-500 font-bold text-xs">
-                <i class="fa-solid fa-plus-circle mr-1"></i> Conectar
-            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">Omnivore (by Olo)</h4>
+            <p class="text-xs text-slate-500 flex-1">Conexión Enterprise (Micros, Aloha, POSitouch) sin VPNs locales.</p>
         </div>
+
+        <!-- Revel Systems -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Revel Systems', 'Cloud POS', 'fa-solid fa-tablet-screen-button', 'bg-sky-500/10', 'text-sky-500', 'Integración bidireccional P2P con el POS preferido de franquicias QSR.', [{title:'App Authorization', desc:'Inicia flujo OAuth para conectar Fidelio al tenant de Revel.'}, {title:'Customer CRM', desc:'Fidelio inyectará puntos y recompensas directo en el CRM de Revel.'}, {title:'Checkout POS', desc:'El cajero verá el saldo de Fidelio en la pantalla del iPad al cobrar.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-tablet-screen-button"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Cloud POS</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-sky-500 transition-colors">Revel Systems</h4>
+            <p class="text-xs text-slate-500 flex-1">Integración nativa directa con terminales Revel iPad POS.</p>
+        </div>
+
     </div>
 </div>
 
