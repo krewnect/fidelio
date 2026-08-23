@@ -54,9 +54,11 @@ const requireMerchantAuth = async (req, res, next) => {
         req.userRoleLevel = user.user_metadata.role_level || 'cashier';
         req.userBranchId = user.user_metadata.branch_id || null;
         req.userPermissions = user.user_metadata.custom_permissions || {};
+        req.userId = user.id;
     } else {
         req.merchantId = user.id;
         req.userRole = 'admin';
+        req.userId = user.id;
         req.userRoleLevel = 'master'; // Owner has master privileges
         req.userBranchId = null; // Owner sees all branches
     }
@@ -186,14 +188,16 @@ app.post('/api/scanner/transaction', apiLimiter, requireMerchantAuth, async (req
 
         if (updateErr) throw updateErr;
 
-        // Registrar Transacción
+        // Registrar Transacción con Auditoría de Seguridad (B2B Audit Log)
         await supabase
             .from('transactions')
             .insert([{
                 merchant_id: req.merchantId,
                 customer_id: customerId,
                 amount: amount,
-                type: type
+                type: type,
+                staff_id: req.userRole === 'staff' ? req.userId : null,
+                branch_id: req.userBranchId || null
             }]);
             
         let reviewTriggered = false;
@@ -755,6 +759,40 @@ app.get('/api/merchant/branches', requireMerchantAuth, async (req, res) => {
     }
 });
 
+
+// --- B2B AUDIT LOGS API ---
+app.get('/api/merchant/audit-logs', requireMerchantAuth, async (req, res) => {
+    // Solo Master Admin y Managers pueden ver logs
+    if (req.userRole !== 'admin' && req.userRoleLevel === 'cashier') {
+        return res.status(403).json({ error: 'Acceso denegado a auditoría' });
+    }
+    
+    try {
+        let query = supabase
+            .from('transactions')
+            .select(`
+                *,
+                customers ( name, email ),
+                staff ( name, email )
+            `)
+            .eq('merchant_id', req.merchantId)
+            .order('created_at', { ascending: false })
+            .limit(100);
+            
+        // Si es manager, solo ve las transacciones de su sucursal
+        if (req.userRoleLevel === 'manager' && req.userBranchId) {
+            query = query.eq('branch_id', req.userBranchId);
+        }
+        
+        const { data, error } = await query;
+        if (error) throw error;
+        
+        res.json({ success: true, logs: data });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // Checkout con Stripe
 app.post('/api/stripe/checkout', async (req, res) => {
     const { merchantId, email, businessType, plan, interval } = req.body;
@@ -1088,6 +1126,9 @@ app.post('/api/wallet/apple', apiLimiter, requireMerchantAuth, async (req, res) 
                         }
                         if (campaign.rules_config?.show_payment_btn) {
                             arr.push({ key: "payment", label: "PAGAR EN LÍNEA", value: "Realizar pago", attributedValue: `<a href="https://fideliorewards.com/card.html?c=${customer.id}&camp=${campaignId}&action=payment">Haz clic aquí para pagar</a>` });
+                        }
+                        if (campaign.rules_config?.booking_link) {
+                            arr.push({ key: "booking", label: "RESERVAR MESA / CITA", value: "Reserva en línea", attributedValue: `<a href="${campaign.rules_config.booking_link}">Haz clic aquí para reservar</a>` });
                         }
                         arr.push({ key: "terms", label: "TÉRMINOS Y CONDICIONES", value: "Promoción sujeta a cambios. Válida solo en sucursales participantes. Esta tarjeta es personal e intransferible." });
                         arr.push({ key: "contact", label: "CONTACTO", value: "soporte@fideliorewards.com" });
@@ -1515,6 +1556,74 @@ app.post('/api/ai/dashboard-insights', apiLimiter, requireMerchantAuth, async (r
     } catch (error) {
         console.error('Error en Gemini Dashboard Insights:', error);
         res.status(500).json({ error: '' + error.message + '' });
+    }
+});
+
+
+// ==========================================
+// B2B: RFM SEGMENTATION & CHURN PREDICTION
+// ==========================================
+app.get('/api/merchant/crm-segmentation', requireMerchantAuth, async (req, res) => {
+    try {
+        const { data: customers, error } = await supabase
+            .from('customers')
+            .select('*')
+            .eq('merchant_id', req.merchantId);
+            
+        if (error) throw error;
+        
+        const now = new Date();
+        let totalLTV = 0;
+        let totalVisits = 0;
+        let atRiskCount = 0;
+        let whalesCount = 0;
+        
+        // RFM Logic (Recency, Frequency, Monetary)
+        const segmentedCustomers = customers.map(c => {
+            let lastVisit = c.last_visit ? new Date(c.last_visit) : null;
+            let daysSinceVisit = lastVisit ? Math.floor((now - lastVisit) / (1000 * 60 * 60 * 24)) : 999;
+            
+            totalLTV += c.lifetime_value || 0;
+            totalVisits += c.visits || 0;
+            
+            // Predicción de Churn
+            let risk = 'low';
+            if (daysSinceVisit > 30 && c.visits > 1) {
+                risk = 'high';
+                atRiskCount++;
+            } else if (daysSinceVisit > 15) {
+                risk = 'medium';
+            }
+            
+            // Ballenas (Whales)
+            if (c.lifetime_value > 1000) {
+                whalesCount++;
+            }
+            
+            return {
+                ...c,
+                days_since_visit: daysSinceVisit,
+                churn_risk: risk,
+                is_whale: c.lifetime_value > 1000
+            };
+        });
+        
+        const avgLTV = customers.length ? (totalLTV / customers.length) : 0;
+        const avgFreq = customers.length ? (totalVisits / customers.length) : 0;
+        
+        res.json({ 
+            success: true, 
+            metrics: {
+                total_active: customers.length,
+                avg_ltv: avgLTV,
+                avg_visits: avgFreq,
+                at_risk_count: atRiskCount,
+                whales_count: whalesCount
+            },
+            customers: segmentedCustomers 
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 

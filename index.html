@@ -1017,9 +1017,9 @@ aside {
         
         <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">Estrategia</div>
         <div class="nav-tab plan-pro-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-autopilot" id="nav-autopilot"><i class="fa-solid fa-robot w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Piloto Automático <span class="ml-auto bg-fidelio-600 text-white py-0.5 px-2 rounded-full text-[8px] font-bold uppercase tracking-widest">AI</span></div>
-        <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-global-db" style="display:none;"><i class="fa-solid fa-earth-americas w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Global Data</div>
+        <div class="nav-tab plan-pro-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-migration" id="nav-migration"><i class="fa-solid fa-wand-magic-sparkles w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Fidelio Switch <span class="ml-auto bg-slate-100 text-slate-500 py-0.5 px-2 rounded-full text-[8px] font-bold uppercase tracking-widest border border-slate-200">Migración</span></div>
         <div class="nav-tab plan-pro-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-api" style="display:none;"><i class="fa-solid fa-code w-6 text-slate-500 group-hover:text-emerald-600 transition-colors"></i> API & Webhooks</div>
-        <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-mybusiness" style="display:none;"><i class="fa-solid fa-building-columns w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Facturación & Negocio</div>
+        <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-mybusiness" id="nav-mybusiness"><i class="fa-solid fa-shield-halved w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Enterprise Settings</div>
 
         <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">Herramientas</div>
         <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-caja" style="display:none;"><i class="fa-solid fa-cash-register w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Caja (PoS)</div>
@@ -1868,6 +1868,28 @@ aside {
 </div>
 <button id="btn-remove-banner" style="display:none; background:#fee2e2; color:#ef4444; border:none; padding:12px; border-radius:12px; font-weight:700; cursor:pointer;">Quitar</button>
 </div>
+</div>
+</div>
+<!-- 4. ENLACES Y RESERVAS (REVERSO DE LA TARJETA) -->
+<div class="apple-section">
+<div class="apple-section-header"><i class="fa-solid fa-link"></i> Enlaces y Reservas (Reverso de Wallet)</div>
+<p style="font-size:12px; color:#64748b; margin-bottom:16px;">Estos enlaces aparecerán en la parte de atrás de la Apple Wallet de tus clientes (ícono "i"). Ideal para sistemas de reservaciones.</p>
+
+<div class="apple-input-group">
+<label class="apple-label">Plataforma de Reservas</label>
+<select class="apple-input fidelio-input" id="booking-platform" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px; font-weight:600; color:#1e293b; width:100%; outline:none;">
+    <option value="">Ninguna</option>
+    <option value="opentable">OpenTable</option>
+    <option value="covermanager">CoverManager</option>
+    <option value="sevenrooms">SevenRooms</option>
+    <option value="yelp">Yelp Reservations</option>
+    <option value="google">Google Reserve</option>
+    <option value="custom">Enlace Personalizado</option>
+</select>
+</div>
+<div class="apple-input-group" id="booking-link-container" style="display:none;">
+<label class="apple-label">Enlace Directo a Reservaciones (URL)</label>
+<input class="apple-input fidelio-input" id="booking-link" type="url" placeholder="Ej. https://www.opentable.com.mx/r/tu-restaurante" style="width:100%;"/>
 </div>
 </div>
 <!-- 4. VIGENCIA Y CADUCIDAD -->
@@ -6988,5 +7010,22 @@ function crmJewel() {
             }
         }
     </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const platformSelect = document.getElementById('booking-platform');
+        const linkContainer = document.getElementById('booking-link-container');
+        if(platformSelect && linkContainer) {
+            platformSelect.addEventListener('change', (e) => {
+                if(e.target.value && e.target.value !== '') {
+                    linkContainer.style.display = 'block';
+                } else {
+                    linkContainer.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
 </body>
+
 </html>
