@@ -945,7 +945,7 @@ aside {
         border: none !important;
     }
 
-    .fidelio-card, .metric-card, .content-panel, .fidelio-crisp-card {
+    .fidelio-card, .metric-card, .content-panel, .{
         background: #FFFFFF !important;
         border: 1px solid #F1F5F9 !important;
         border-radius: 28px !important;
@@ -2699,19 +2699,19 @@ aside {
 
 <!-- Resumen Financiero -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px;">
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; border-radius: 16px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; border-radius: 16px;">
 <div style="font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">TOTAL PREPAGADO (HISTÓRICO) <i class="fa-solid fa-wallet" style="color:var(--accent-violet); margin-left:6px;"></i></div>
 <div id="bank-total-deposited" style="font-size: 36px; font-weight: 800; color: #111827; margin: 12px 0;">$0.00</div>
 <div style="font-size: 13px; color: var(--text-muted);">Dinero total que han metido tus clientes al monedero.</div>
 </div>
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; border-radius: 16px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; border-radius: 16px;">
 <div style="font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">BOLSA DE DINERO NO GASTADO <i class="fa-solid fa-vault" style="color:#10b981; margin-left:6px;"></i></div>
 <div id="bank-total-unspent" style="font-size: 36px; font-weight: 800; color: #10b981; margin: 12px 0;">$0.00</div>
 <div style="font-size: 13px; color: var(--text-muted);">Pasivo actual: Dinero que tienen a favor para gastar.</div>
 </div>
 </div>
 <!-- Desglose por Usuario -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
 <h3 style="font-size: 1.2rem; margin-bottom: 16px; font-weight: 700;">Desglose por Cliente</h3>
 <div style="width: 100%;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; padding: 12px 16px; border-bottom: 2px solid var(--border-soft); color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -2739,7 +2739,7 @@ aside {
 </div>
 </div>
 
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="margin-bottom: 24px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="margin-bottom: 24px;">
 <h3 style="margin-bottom:20px; font-size: 16px;"><i class="fa-solid fa-user-plus" style="color:var(--accent-violet); margin-right:8px;"></i> Invitar Nuevo Miembro</h3>
 <div style="display:flex; gap: 20px; flex-wrap: wrap;">
 <!-- Role Selection -->
@@ -2788,7 +2788,7 @@ aside {
 </div>
 </div>
 <!-- Staff Table -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8">
 <div class="card-title-bar" style="margin-bottom: 20px;">
 <h3 style="font-size: 16px;"><i class="fa-solid fa-users-gear" style="color:var(--text-muted); margin-right:8px;"></i> Directorio de Equipo</h3>
 </div>
@@ -3367,7 +3367,7 @@ aside {
 
 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
 <!-- API Keys -->
-<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
+<div class="relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
 <div style="width:48px; height:48px; border-radius:12px; background: rgba(139, 92, 246, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
 <i class="fa-solid fa-code"></i>
 </div>
@@ -3388,7 +3388,7 @@ aside {
 </div>
 
 <!-- Webhooks -->
-<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
+<div class="relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
 <div style="position:absolute; top:24px; right:24px; background: rgba(16, 185, 129, 0.1); color:#10b981; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:800; border:1px solid rgba(16, 185, 129, 0.2);">
     ACTIVO
 </div>
@@ -3424,7 +3424,7 @@ aside {
 </div>
 
 <!-- PRICING & SUBSCRIPTION CENTER (STRIPE VIBES) -->
-<div class="fidelio-crisp-card relative overflow-hidden mb-12 bg-white border border-slate-200 rounded-[2rem] shadow-sm">
+<div class="relative overflow-hidden mb-12 bg-white border border-slate-200 rounded-[2rem] shadow-sm">
     <!-- Header -->
     <div class="px-8 py-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-50/50">
         <div>
@@ -3504,7 +3504,7 @@ aside {
 <!-- MAIN GRID -->
 <div class="w-full max-w-4xl">
 <!-- Business Info Card -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8">
 <div class="flex items-center gap-3 mb-8 border-b border-slate-100 pb-4">
     <div class="w-10 h-10 rounded-full bg-fidelio-50 text-fidelio-600 flex items-center justify-center"><i class="fa-solid fa-store"></i></div>
     <h3 class="text-xl font-bold text-slate-900">Perfil del Negocio</h3>
@@ -3571,7 +3571,7 @@ aside {
 <!-- Right Column: Settings Sections -->
 <div style="display: flex; flex-direction: column; gap: 32px;">
 <!-- Perfil Público -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" id="section-profile" style="padding: 32px;  border: 1px solid var(--border-soft);">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" id="section-profile" style="padding: 32px;  border: 1px solid var(--border-soft);">
 <div style="margin-bottom: 24px;">
 <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">Perfil Público</h3>
 <p style="font-size: 13px; color: var(--text-muted);">Esta información será visible para tus clientes en el menú de la aplicación y tarjetas de Wallet.</p>
@@ -3591,7 +3591,7 @@ aside {
 </div>
 </div>
 <!-- Branding del Portal -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" id="section-portal" style="padding: 32px;  border: 1px solid var(--border-soft);">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" id="section-portal" style="padding: 32px;  border: 1px solid var(--border-soft);">
 <div style="margin-bottom: 24px;">
 <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">Branding y Captación</h3>
 <p style="font-size: 13px; color: var(--text-muted);">Personaliza cómo luce tu portal público de registro y los datos que le pides a nuevos clientes.</p>
@@ -3655,7 +3655,7 @@ aside {
 </div>
 </div>
 <!-- Seguridad -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" id="section-security" style="padding: 32px;  border: 1px solid var(--border-soft);">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" id="section-security" style="padding: 32px;  border: 1px solid var(--border-soft);">
 <div style="margin-bottom: 24px;">
 <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">Seguridad y Acceso</h3>
 <p style="font-size: 13px; color: var(--text-muted);">Controla tus credenciales de inicio de sesión.</p>
@@ -3700,7 +3700,7 @@ aside {
 <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; max-width: 1200px;">
 <!-- Columna Izquierda: Academia Fidelio (Tutoriales) -->
 <div style="display: flex; flex-direction: column; gap: 24px;">
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
 <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
 <i class="fa-solid fa-graduation-cap" style="color: var(--accent-violet);"></i> Academia Fidelio (General)
                             </h2>
@@ -3724,7 +3724,7 @@ aside {
 </div>
 </div>
 </div>
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; border: 1px solid rgba(139,92,246,0.3); background: linear-gradient(180deg, #ffffff, #fafafa);">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; border: 1px solid rgba(139,92,246,0.3); background: linear-gradient(180deg, #ffffff, #fafafa);">
 <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
 <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Tutoriales Plan Business (Avanzado)
                             </h2>
@@ -3751,20 +3751,20 @@ aside {
 </div>
 <!-- Columna Derecha: Asistencia Humana (Tickets & Mail) -->
 <div style="display: flex; flex-direction: column; gap: 24px;">
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
 <h3 style="font-size: 1.1rem; margin-bottom: 8px; font-weight: 700;"><i class="fa-solid fa-ticket" style="color: var(--accent-violet);"></i> Levantar Ticket de Soporte</h3>
 <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Si enfrentas un problema técnico en tu sistema, abre un ticket directo con nuestros ingenieros.</p>
 <input class="fidelio-input" id="ticket-subject" placeholder="Asunto del problema" style="margin-bottom: 12px; width: 100%;" type="text"/>
 <textarea class="fidelio-input" id="ticket-message" placeholder="Describe detalladamente el problema para poder apoyarte..." style="height: 100px; margin-bottom: 12px; resize: none; width: 100%;"></textarea>
 <button class="fidelio-btn-primary" onclick="window.submitSupportTicket('soporte')" style="width: 100%; justify-content: center;"><i class="fa-solid fa-paper-plane"></i> Enviar Ticket</button>
 </div>
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
 <h3 style="font-size: 1.1rem; margin-bottom: 8px; font-weight: 700;"><i class="fa-solid fa-lightbulb" style="color: #eab308;"></i> Buzón de Sugerencias</h3>
 <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">¿Tienes una idea para mejorar Fidelio? ¡Nos encantaría escucharla!</p>
 <textarea class="fidelio-input" id="feature-message" placeholder="Me gustaría que la app pudiera..." style="height: 80px; margin-bottom: 12px; resize: none; width: 100%;"></textarea>
 <button class="fidelio-btn-secondary" onclick="window.submitSupportTicket('sugerencia')" style="width: 100%; justify-content: center;"><i class="fa-solid fa-comment-dots"></i> Enviar Sugerencia</button>
 </div>
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-card);">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-card);">
 <div>
 <h3 style="font-size: 1.1rem; margin-bottom: 4px; font-weight: 700;"><i class="fa-solid fa-envelope" style="color: var(--accent-violet);"></i> Correo Directo</h3>
 <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Para facturación y dudas urgentes.</p>
@@ -4363,21 +4363,21 @@ aside {
 
 <!-- MINI DASHBOARD PIPELINE -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="fidelio-crisp-card p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
+    <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
         <div>
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Nuevos (Interés)</p>
             <p class="text-2xl font-black text-slate-800">12</p>
         </div>
         <div class="w-12 h-12 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-fire"></i></div>
     </div>
-    <div class="fidelio-crisp-card p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
+    <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
         <div>
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">En Negociación</p>
             <p class="text-2xl font-black text-slate-800">5</p>
         </div>
         <div class="w-12 h-12 rounded-full bg-blue-50 text-fidelio-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-handshake"></i></div>
     </div>
-    <div class="fidelio-crisp-card p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
+    <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
         <div>
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cerrados (MRR)</p>
             <p class="text-2xl font-black text-emerald-600">$1,450<span class="text-xs text-slate-500 font-medium">/mes</span></p>
@@ -4386,7 +4386,7 @@ aside {
     </div>
 </div>
 
-<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-3xl">
+<div class="relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-3xl">
 <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
     <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-filter text-slate-500 mr-2"></i>Inbox de Prospectos</h3>
     <span class="text-xs font-medium text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">Actualizado en tiempo real</span>
@@ -4424,7 +4424,7 @@ aside {
 
 <!-- AUDIENCE GAMIFICATION METRICS -->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
+    <div class="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
         <div class="flex items-center justify-between mb-2">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Usuarios</p>
             <i class="fa-solid fa-users text-slate-600"></i>
@@ -4432,7 +4432,7 @@ aside {
         <p class="text-3xl font-black text-slate-800">4,291</p>
         <p class="text-[11px] font-medium text-emerald-600 mt-2"><i class="fa-solid fa-arrow-trend-up"></i> +12% este mes</p>
     </div>
-    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all relative overflow-hidden">
+    <div class="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all relative overflow-hidden">
         <div class="absolute -right-4 -top-4 text-purple-100 opacity-50 transform rotate-12 group-hover:scale-110 transition-transform"><i class="fa-solid fa-crown text-6xl"></i></div>
         <div class="flex items-center justify-between mb-2 relative z-10">
             <p class="text-[10px] font-bold text-fidelio-600 uppercase tracking-widest">VIPs (Ballenas)</p>
@@ -4440,7 +4440,7 @@ aside {
         <p class="text-3xl font-black text-purple-600 relative z-10">342</p>
         <p class="text-[11px] font-medium text-slate-500 mt-2 relative z-10">Top 8% de compradores</p>
     </div>
-    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
+    <div class="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
         <div class="flex items-center justify-between mb-2">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">En Riesgo (Churn)</p>
             <i class="fa-solid fa-heart-crack text-rose-300"></i>
@@ -4448,7 +4448,7 @@ aside {
         <p class="text-3xl font-black text-rose-600">89</p>
         <p class="text-[11px] font-medium text-slate-500 mt-2">Sin visitas en 30+ días</p>
     </div>
-    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
+    <div class="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
         <div class="flex items-center justify-between mb-2">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tasa de Retención</p>
             <i class="fa-solid fa-magnet text-blue-300"></i>
@@ -4458,7 +4458,7 @@ aside {
     </div>
 </div>
 
-<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-3xl flex flex-col">
+<div class="relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-3xl flex flex-col">
     <!-- FILTER BAR -->
     <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/80 flex flex-wrap gap-3 items-center">
         <div class="relative flex-1 min-w-[200px]">
@@ -4536,7 +4536,7 @@ aside {
     </div>
 </div>
 
-<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-[2rem]">
+<div class="relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-[2rem]">
 <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
     <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-network-wired text-slate-500 mr-2"></i>Red de Suscripciones</h3>
     <span class="text-xs font-medium text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm"><i class="fa-solid fa-lock text-emerald-600 mr-1"></i> Admin Privileges</span>
@@ -4574,7 +4574,7 @@ aside {
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <!-- Generador de Códigos Promo -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 32px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 32px;">
 <h3 style="font-size: 1.4rem; margin-bottom: 16px; font-weight: 800;"><i class="fa-solid fa-ticket"></i> Generar Código Promocional</h3>
 <div class="input-group" style="margin-bottom: 16px;">
 <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Código (Ej. GRATIS2026)</label>
@@ -4622,7 +4622,7 @@ aside {
                         }
                     </script>
 <!-- Morosos y Alertas -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 32px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 32px;">
 <h3 style="font-size: 1.4rem; margin-bottom: 16px; font-weight: 800; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Cuentas Vencidas</h3>
 <p style="color: var(--text-muted); margin-bottom: 16px;">Negocios cuyos pagos han fallado o su periodo de prueba ha expirado.</p>
 <div id="morosos-list" style="max-height: 250px; overflow-y: auto; padding-right: 10px;">
@@ -4632,7 +4632,7 @@ aside {
 </div>
 </div>
 <!-- Historial de Pagos -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="margin-top: 24px; background: #ffffff; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="margin-top: 24px; background: #ffffff; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto;">
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
 <h3 style="font-size: 1.4rem; font-weight: 800;"><i class="fa-solid fa-file-invoice-dollar" style="color:#10b981;"></i> Historial de Pagos (Suscripciones)</h3>
 <button class="fidelio-btn-secondary" onclick="loadBillingHistory()"><i class="fa-solid fa-rotate-right"></i> Actualizar</button>
@@ -4667,7 +4667,7 @@ aside {
 </div>
 
 <!-- SUPPORT TICKETS LIST -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; min-height: 500px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px; min-height: 500px;">
 <div style="width: 100%;">
 <div style="display: grid; grid-template-columns: 1fr 2fr 3fr 1fr 1fr; gap: 16px; padding: 12px 16px; border-bottom: 2px solid var(--border-soft); color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
 <div>ID &amp; Fecha</div>
@@ -4756,7 +4756,7 @@ aside {
 </div>
 </div>
 <main class="flex-1 overflow-y-auto custom-scrollbar p-8 lg:p-8 bg-transparent">
-<div class="max-w-[1400px] mx-auto space-y-6">
+<div class="max-w-[1400px] mx-auto space-y-10">
 <!-- HEADER -->
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
 <div>
@@ -4799,30 +4799,30 @@ aside {
 </div>
 </div>
 <!-- MASONRY GRID SYSTEM (THE 12 ABSOLUTE KILLER WIDGETS) -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 <!-- 1. The ROI Prover -->
-<div class="fidelio-dark-card p-8 md:col-span-2 relative overflow-hidden bg-gradient-to-br from-fidelio-900 to-slate-900 text-slate-900 border-none shadow-xl group rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('roi')" x-transition="">
-<div class="absolute -right-10 -top-10 w-40 h-40 bg-fidelio-600 rounded-full mix-blend-screen filter blur-3xl opacity-50 group-hover:opacity-70 transition"></div>
+<div class="p-8 md:col-span-2 relative overflow-hidden bg-white border border-slate-200 rounded-[2rem] shadow-sm group" x-show="activeWidgets.includes('roi')" x-transition="">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-fidelio-100 rounded-full filter blur-3xl opacity-50 group-hover:opacity-70 transition"></div>
 <div class="relative z-10">
 <div class="flex justify-between items-start mb-6">
 <div>
-<p class="text-sm font-black uppercase tracking-widest text-fidelio-300 mb-1">Prueba de Rentabilidad</p>
+<p class="text-[10px] font-black uppercase tracking-widest text-fidelio-600 mb-1">Prueba de Rentabilidad</p>
 <h2 class="text-2xl font-bold text-slate-900">Retorno de Inversión (ROI)</h2>
 </div>
-<div class="w-12 h-12 rounded-full bg-white/60 backdrop-blur-xl border border-white/80/10 backdrop-blur-sm border-slate-200 flex items-center justify-center shadow-inner text-fidelio-300">
+<div class="w-12 h-12 rounded-full bg-fidelio-50 text-fidelio-600 flex items-center justify-center">
 <i class="fa-solid fa-chart-line text-2xl"></i>
 </div>
 </div>
 <div class="flex items-end space-x-4 mb-6">
 <h1 class="text-6xl font-black tracking-tighter text-slate-900 font-mono">4,404%</h1>
-<div class="pb-2 text-emerald-600 font-bold text-base bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/20 flex items-center">
+<div class="pb-2 text-emerald-600 font-bold text-base bg-emerald-50 px-2 py-1 rounded-lg border flex items-center">
 <i class="fa-solid fa-arrow-trend-up mr-1"></i> Crecimiento
-                            </div>
+</div>
 </div>
 </div>
 </div>
 <!-- 2. META MENSUAL (INTERACTIVA) -->
-<div class="fidelio-card p-8 flex flex-col justify-center relative md:col-span-2 border-emerald-100 bg-emerald-50/20 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('monthly_goal')" x-transition="">
+<div class="p-8 flex flex-col justify-center relative md:col-span-2 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('monthly_goal')" x-transition="">
 <div class="flex justify-between items-center mb-4">
 <div>
 <h3 class="text-base font-black text-slate-900">Meta de Facturación</h3>
@@ -4855,7 +4855,7 @@ aside {
 </div>
 </div>
 <!-- 3. VIRTUAL ECONOMY -->
-<div class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 border-emerald-100 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('virtual_economy')" x-transition="">
+<div class="p-8 flex flex-col relative overflow-hidden md:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('virtual_economy')" x-transition="">
 <div class="flex justify-between items-center mb-6">
 <h3 class="text-base font-black text-slate-900">Economía Prepago</h3>
 <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-money-bill-transfer"></i></div>
@@ -4876,7 +4876,7 @@ aside {
 </div>
 </div>
 <!-- 4. LOYALTY DEBT -->
-<div class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 border-violet-100 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('loyalty_debt')" x-transition="">
+<div class="p-8 flex flex-col relative overflow-hidden md:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('loyalty_debt')" x-transition="">
 <div class="flex justify-between items-center mb-6">
 <h3 class="text-base font-black text-slate-900">Deuda Cashback</h3>
 <div class="w-8 h-8 rounded-full bg-violet-50 text-fidelio-600 flex items-center justify-center"><i class="fa-solid fa-gift"></i></div>
@@ -4897,7 +4897,7 @@ aside {
 </div>
 </div>
 <!-- 5. Dinero Dormido -->
-<div class="fidelio-card p-8 flex flex-col relative overflow-hidden border-rose-100 md:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('sleeping_money')" x-transition="">
+<div class="p-8 flex flex-col relative overflow-hidden md:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('sleeping_money')" x-transition="">
 <div class="flex justify-between items-start mb-2">
 <p class="text-sm font-black uppercase tracking-widest text-fidelio-600"><i class="fa-solid fa-vault mr-1"></i> Dinero Dormido</p>
 </div>
@@ -4910,7 +4910,7 @@ aside {
                     </button>
 </div>
 <!-- 6. Costo de Lealtad -->
-<div class="fidelio-card p-8 flex flex-col relative overflow-hidden md:col-span-1 fidelio-crisp-card border-slate-200 rounded-[2rem] bg-white border shadow-sm" x-show="activeWidgets.includes('cost_loyalty')" x-transition="">
+<div class="p-8 flex flex-col relative overflow-hidden md:col-span-1 border-slate-200 rounded-[2rem] bg-white border shadow-sm" x-show="activeWidgets.includes('cost_loyalty')" x-transition="">
 <div class="flex justify-between items-start mb-2">
 <p class="text-sm font-black uppercase tracking-widest text-slate-600"><i class="fa-solid fa-scale-balanced mr-1"></i> Costo del Programa</p>
 </div>
@@ -4923,21 +4923,21 @@ aside {
 </div>
 </div>
 <!-- 7. FUNNEL DE CAMPAÑAS PUSH (UPGRADED + INTERACTIVE) -->
-<div class="fidelio-dark-card p-8 flex flex-col relative md:col-span-1 border-none bg-white text-slate-900 rounded-[2rem] border border-slate-200 shadow-sm" x-show="activeWidgets.includes('push_perf')" x-transition="">
+<div class="p-8 flex flex-col relative md:col-span-1 bg-white text-slate-900 rounded-[2rem] border border-slate-200 shadow-sm" x-show="activeWidgets.includes('push_perf')" x-transition="">
 <div class="flex justify-between items-start mb-4">
 <p class="text-sm font-black uppercase tracking-widest text-fidelio-600"><i class="fa-solid fa-paper-plane mr-1"></i> Análisis Push</p>
 <!-- Alpine Dropdown for Campaigns -->
 <div @click.away="pushMenuOpen = false" class="relative">
-<button @click="pushMenuOpen = !pushMenuOpen" class="bg-white/60 backdrop-blur-xl border border-white/80/10 hover:bg-white/60 border-white/80/20 transition px-3 py-1.5 rounded-md border-slate-200 text-[11px] font-bold flex items-center text-slate-900">
+<button @click="pushMenuOpen = !pushMenuOpen" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 transition px-4 py-2 rounded-xl text-xs font-bold flex items-center text-slate-700 shadow-sm">
 <span x-text="pushCampaigns[selectedPushIndex].name"></span>
-<i :class="pushMenuOpen ? 'rotate-180' : ''" class="fa-solid fa-chevron-down ml-1.5 text-slate-500 transition-transform"></i>
+<i :class="pushMenuOpen ? 'rotate-180' : ''" class="fa-solid fa-chevron-down ml-2 text-slate-400 transition-transform"></i>
 </button>
 <!-- Menu -->
-<div class="absolute right-0 mt-1 w-48 bg-slate-50 rounded-lg shadow-xl border border-slate-200 overflow-hidden z-50" style="display: none;" x-show="pushMenuOpen">
+<div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50 py-1" style="display: none;" x-show="pushMenuOpen">
 <template :key="index" x-for="(campaign, index) in pushCampaigns">
-<button :class="selectedPushIndex === index ? 'bg-fidelio-600/20 text-fidelio-600' : 'text-slate-600 hover:bg-slate-700'" @click="selectedPushIndex = index; pushMenuOpen = false" class="w-full text-left px-4 py-3 text-sm font-bold transition flex items-center justify-between border-0 cursor-pointer text-slate-100">
+<button :class="selectedPushIndex === index ? 'bg-fidelio-50 text-fidelio-700' : 'text-slate-600 hover:bg-slate-50'" @click="selectedPushIndex = index; pushMenuOpen = false" class="w-full text-left px-4 py-2.5 text-sm font-medium transition flex items-center justify-between border-0 cursor-pointer">
 <span x-text="campaign.name"></span>
-<i class="fa-solid fa-check text-xs" x-show="selectedPushIndex === index"></i>
+<i class="fa-solid fa-check text-xs text-fidelio-600" x-show="selectedPushIndex === index"></i>
 </button>
 </template>
 </div>
@@ -4981,7 +4981,7 @@ aside {
 </div>
 </div>
 <!-- 8. Clientes Resucitados -->
-<div class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-fidelio-100 bg-fidelio-50/50 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('resurrected')" x-transition="">
+<div class="p-8 flex flex-col relative md:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('resurrected')" x-transition="">
 <div class="flex justify-between items-start mb-2">
 <p class="text-sm font-black uppercase tracking-widest text-fidelio-600"><i class="fa-solid fa-heart-pulse mr-1"></i> Zombis Recuperados</p>
 </div>
@@ -4991,7 +4991,7 @@ aside {
 </div>
 </div>
 <!-- 9. Alerta VIP Churn -->
-<div class="fidelio-card p-8 flex flex-col relative md:col-span-1 border-orange-200 bg-orange-50/30 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('vip_churn')" x-transition="">
+<div class="p-8 flex flex-col relative md:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('vip_churn')" x-transition="">
 <div class="flex justify-between items-start mb-2">
 <p class="text-sm font-black uppercase tracking-widest text-orange-600"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Alerta Fuga VIP</p>
 </div>
@@ -5004,7 +5004,7 @@ aside {
                     </button>
 </div>
 <!-- 10. BRANCH BATTLE -->
-<div class="fidelio-card p-8 flex flex-col lg:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('branch_battle')" x-transition="">
+<div class="p-8 flex flex-col lg:col-span-1 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('branch_battle')" x-transition="">
 <div class="flex justify-between items-center mb-6">
 <h3 class="text-base font-black text-slate-900">Sucursales</h3>
 <i class="fa-solid fa-map-location-dot text-fidelio-600"></i>
@@ -5027,7 +5027,7 @@ aside {
 </div>
 </div>
 <!-- 11. HABITS & FREQUENCY -->
-<div class="fidelio-card p-8 lg:col-span-2 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('habits')" x-transition="">
+<div class="p-8 lg:col-span-2 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('habits')" x-transition="">
 <div class="flex justify-between items-end mb-6">
 <h3 class="text-base font-black text-slate-900">Hábitos (Usuarios Wallet)</h3>
 </div>
@@ -5074,7 +5074,7 @@ aside {
 </div>
 </div>
 <!-- 12. HEATMAP (WITH INTERACTIVE INSIGHTS PANEL) -->
-<div class="fidelio-card p-8 lg:col-span-4 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('heatmap')" x-transition="">
+<div class="p-8 lg:col-span-4 rounded-[2rem] bg-white border border-slate-200 shadow-sm" x-show="activeWidgets.includes('heatmap')" x-transition="">
 <div class="flex justify-between items-center mb-6">
 <div>
 <h3 class="text-base font-black text-slate-900">Matriz Térmica (Escaneos)</h3>
@@ -5197,7 +5197,7 @@ aside {
 </div>
 <h2 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 20px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-swatchbook" style="color:#8B5CF6;"></i> Material Gráfico Gratuito</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-bottom: 48px;">
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px !important; display: flex; flex-direction: column; transition: transform 0.2s; cursor: pointer;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px !important; display: flex; flex-direction: column; transition: transform 0.2s; cursor: pointer;">
 <div style="background: #F5F3FF; border-radius: 16px; height: 140px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; position: relative;">
 <i class="fa-solid fa-qrcode" style="font-size: 48px; color: #8B5CF6;"></i>
 <div style="position: absolute; top: 12px; right: 12px; background: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; color: #10B981; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">GRATIS</div>
@@ -5206,7 +5206,7 @@ aside {
 <p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">PDF listo para imprimir en tamaño carta. Dóblalo y colócalo en tus mesas.</p>
 <button class="fidelio-btn-primary" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'" style="width: 100%; justify-content: center;"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
 </div>
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px !important; display: flex; flex-direction: column; transition: transform 0.2s; cursor: pointer;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px !important; display: flex; flex-direction: column; transition: transform 0.2s; cursor: pointer;">
 <div style="background: #F5F3FF; border-radius: 16px; height: 140px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; position: relative;">
 <i class="fa-solid fa-note-sticky" style="font-size: 48px; color: #8B5CF6;"></i>
 <div style="position: absolute; top: 12px; right: 12px; background: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; color: #10B981; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">GRATIS</div>
@@ -5232,7 +5232,7 @@ aside {
 
 <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
 <!-- Formulario para agregar -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="align-self: start;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="align-self: start;">
 <h3 style="font-size: 1.4rem; margin-bottom: 16px; font-weight: 800;"><i class="fa-solid fa-user-plus" style="color: var(--accent-violet);"></i> Invitar Miembro</h3>
 <div class="input-group" style="margin-bottom: 16px;">
 <label style="display:block; margin-bottom:8px; font-weight:600; font-size:14px;">Correo Electrónico</label>
@@ -5250,7 +5250,7 @@ aside {
 </div>
 <!-- Lista de Equipo -->
 <!-- TEAM LIST -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
+<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;">
 <h3 style="font-size: 1.4rem; margin-bottom: 16px; font-weight: 800;"><i class="fa-solid fa-users"></i> Miembros del Equipo</h3>
 <table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
 <thead>
