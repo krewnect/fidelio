@@ -761,7 +761,21 @@
     </div>
     <script>
         function scannerEngine() {
+            
             return {
+                scanMode: 'qr', // 'qr' or 'nfc'
+                triggerNFCSimulation() {
+                    // Simular que un cliente acerca su iPhone por NFC después de 3 segundos
+                    if(this.scanMode === 'nfc' && this.view === 'scan') {
+                        setTimeout(() => {
+                            if(this.scanMode === 'nfc' && this.view === 'scan') {
+                                this.manualCode = 'FID-827-392';
+                                this.processCode();
+                            }
+                        }, 3500);
+                    }
+                },
+
                 isAuthenticated: false,
                 loginEmail: '',
                 loginPassword: '',
