@@ -427,7 +427,86 @@
 }
 
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <!-- SECURITY: Anti-Copy & Anti-DevTools Protection -->
 <style>
         /* Disable text selection globally */
@@ -515,7 +594,86 @@
     border-color: #D1D5DB !important;
 }
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <script>
         // Disable Right Click
         document.addEventListener('contextmenu', event => event.preventDefault());
@@ -812,7 +970,86 @@ aside {
     border-color: #D1D5DB !important;
 }
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <style id="crm-jewel-style">
 
         @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -833,7 +1070,86 @@ aside {
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
     
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <!-- Tailwind CSS (Scoped via Preflight False) -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -859,7 +1175,86 @@ aside {
         .toggle-checkbox:checked + .toggle-label { background-color: #8b5cf6; }
         .toggle-checkbox { right: 4px; z-index: 1; border-color: #cbd5e1; transition: all 0.3s; }
         .toggle-label { width: 36px; height: 20px; background-color: #cbd5e1; border-radius: 9999px; transition: all 0.3s; }
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <style id="pos-jewel-style">
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
         @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap");
@@ -905,7 +1300,86 @@ aside {
 .animate-float { animation: float 6s ease-in-out infinite; }
 .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <style id="home-jewel-style">
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
         @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap");
@@ -920,7 +1394,86 @@ aside {
 }
 .animate-mutate { animation: mutateColors 6s ease-in-out infinite alternate; }
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <!-- FIDELIO UNIFIED ENTERPRISE DESIGN SYSTEM -->
 <style id="fidelio-unified-system">
     /* Global Canvas */
@@ -986,7 +1539,118 @@ aside {
     .ambient-mesh {
         display: none !important; /* Turn off the mesh so it's completely clean Enterprise SaaS */
     }
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
+
+    <!-- FIDELIO ANTI-TAMPERING & SECURITY -->
+    <script>
+        // Prevenir Right-Click (Context Menu)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Prevenir Selección de Texto
+        document.addEventListener('selectstart', event => event.preventDefault());
+
+        // Bloquear atajos de teclado de desarrollador (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) ||
+                (e.ctrlKey && (e.key === 'U' || e.key === 'u')) ||
+                (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) || // Mac F12
+                (e.metaKey && e.altKey && (e.key === 'J' || e.key === 'j')) ||
+                (e.metaKey && (e.key === 'U' || e.key === 'u'))
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Debugger Trap (Dificulta la inspección de código rompiendo el flujo si abren la consola)
+        setInterval(function() {
+            (function() { return false; }['constructor']('debugger')());
+        }, 100);
+    </script>
+
 </head>
 <body>
 <button class="mobile-menu-btn" onclick="document.querySelector('.app-sidebar').classList.toggle('mobile-open')">
@@ -1768,7 +2432,86 @@ aside {
     border-color: #D1D5DB !important;
 }
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <div class="tab-builder-container">
 <!-- LEFT SIDEBAR: CONTROLS -->
 <div class="builder-sidebar">
@@ -5851,7 +6594,86 @@ aside {
     border-color: #D1D5DB !important;
 }
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 <!-- MODAL CUSTOM FILTER -->
 <div id="modal-custom-filter" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; backdrop-filter:blur(5px); align-items:center; justify-content:center;">
 <div style="background:white; border-radius:16px; width:90%; max-width:500px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
@@ -6056,7 +6878,86 @@ aside {
     border-color: #D1D5DB !important;
 }
 
-</style>
+
+        /* ==========================================================================
+           FIDELIO $10M SIGNATURE POLISH (Apple Glass-Sheen + Fintech Typography)
+           ========================================================================== */
+        
+        /* 1. Tipografía Suiza / Fintech: Alineación métrica perfecta y números tabulares */
+        body, input, button, select, textarea {
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum" 1 !important;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 2. Apple Specular Inset & Layered Ambient Shadow (Luz física en tarjetas blancas) */
+        .premium-white-card,
+        .stat-card,
+        .content-panel,
+        .fidelio-card,
+        .tab-content > div[class*="bg-white"],
+        .tab-content > div[class*="bg-slate-50"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; /* border-slate-200 */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),           /* Luz especular Apple */
+                0 1px 3px 0 rgba(15, 23, 42, 0.03),               /* Sombra de contacto */
+                0 8px 24px -4px rgba(124, 58, 237, 0.04) !important; /* Brillo ambiental morado */
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s ease !important;
+        }
+        
+        .premium-white-card:hover,
+        .stat-card:hover,
+        .tab-content > div[class*="bg-white"]:hover {
+            transform: translateY(-2px);
+            border-color: rgba(196, 181, 253, 0.6) !important; /* Fidelio-300 soft ring */
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 1),
+                0 4px 6px -1px rgba(15, 23, 42, 0.04),
+                0 20px 32px -8px rgba(124, 58, 237, 0.1) !important;
+        }
+        
+        /* 3. Micro-interacción Háptica en Botones e Interactivos */
+        button:active, 
+        .btn:active, 
+        .fidelio-btn-secondary:active,
+        .action-card:active {
+            transform: scale(0.982) !important;
+            transition: transform 0.08s ease-out !important;
+        }
+        
+        /* 4. Radar & Live Beacons: Pulso etéreo de IA */
+        .animate-radar-ping {
+            animation: fidelioRadarPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+        }
+        
+        @keyframes fidelioRadarPulse {
+            0% { transform: scale(0.95); opacity: 0.7; box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 16px rgba(124, 58, 237, 0); }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+    
+        /* Anti-Copy Protection */
+        body {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: auto;
+            -khtml-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+    </style>
 </div>
 </div>
 <!-- MARKETING AUTO-PUSH MODAL -->
