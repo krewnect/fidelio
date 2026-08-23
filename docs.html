@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelio API Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { fidelio: { 50: "#f5f3ff", 100: "#ede9fe", 600: "#7c3aed", 700: "#6d28d9", 900: "#4c1d95" } }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex-shrink-0 hidden md:flex flex-col">
+            <div class="h-16 flex items-center px-6 border-b border-slate-200">
+                <i class="fa-solid fa-cube text-fidelio-600 text-xl mr-2"></i>
+                <span class="font-black text-lg tracking-tight">Fidelio API</span>
+            </div>
+            <div class="p-4 flex-1 overflow-y-auto">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Introducción</p>
+                <a href="#" class="block px-3 py-2 rounded-lg bg-fidelio-50 text-fidelio-600 text-sm font-bold mb-1">Empezar (Quickstart)</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 text-sm font-medium mb-1">Autenticación (API Keys)</a>
+                
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-6 mb-3">Recursos</p>
+                <a href="#" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 text-sm font-medium mb-1">Users (Clientes)</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 text-sm font-medium mb-1">Transactions (Puntos)</a>
+                <a href="#" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 text-sm font-medium mb-1">Webhooks</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-screen overflow-y-auto relative">
+            <div class="max-w-4xl w-full mx-auto p-8 md:p-12 pb-24">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-bold mb-6">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> v2.0 Live
+                </div>
+                
+                <h1 class="text-4xl font-black tracking-tight text-slate-900 mb-4">Empezar con Fidelio API</h1>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    Usa nuestra API RESTful para emitir puntos, consultar saldos y construir experiencias de lealtad personalizadas en tu propia app o caja registradora.
+                </p>
+
+                <h2 class="text-2xl font-bold text-slate-900 mt-12 mb-4 border-b border-slate-200 pb-2">Autenticación</h2>
+                <p class="text-slate-600 mb-4">
+                    Todas las peticiones a la API deben incluir tu clave secreta de servidor en los headers usando el formato Bearer Token.
+                </p>
+
+                <div class="bg-slate-900 rounded-2xl overflow-hidden shadow-xl mb-8 border border-slate-800">
+                    <div class="bg-slate-800/50 px-4 py-2 border-b border-white/10 flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-xs text-slate-400 ml-2 font-mono">Terminal</span>
+                    </div>
+                    <div class="p-6 overflow-x-auto">
+<pre class="text-sm font-mono text-emerald-400"><code>curl -X GET https://api.fidelio.com/v2/users/me \
+  -H "Authorization: Bearer sk_live_fidelio_123456789" \
+  -H "Content-Type: application/json"</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex items-start gap-4 mb-12">
+                    <i class="fa-solid fa-circle-info text-blue-500 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-blue-900">Seguridad de la API</h4>
+                        <p class="text-sm text-blue-700/80 mt-1">Nunca expongas tu clave secreta (Secret Key) en código frontend (HTML/JS) ni en aplicaciones móviles. Todas las peticiones deben originarse desde tu servidor seguro (Backend).</p>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold text-slate-900 mt-12 mb-4 border-b border-slate-200 pb-2">Asignar Puntos (Ejemplo)</h2>
+                <p class="text-slate-600 mb-4">
+                    Para registrar una compra y asignarle puntos automáticamente a un cliente, usa el endpoint de transacciones.
+                </p>
+
+                <div class="bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-800">
+                    <div class="bg-slate-800/50 px-4 py-2 border-b border-white/10 flex justify-between items-center">
+                        <span class="text-xs text-slate-400 font-mono">POST /v2/transactions</span>
+                    </div>
+                    <div class="p-6 overflow-x-auto">
+<pre class="text-sm font-mono text-pink-400"><code>{
+  "customer_email": "juan@example.com",
+  "amount_spent": 150.50,
+  "currency": "MXN",
+  "receipt_id": "TICKET-88992"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
