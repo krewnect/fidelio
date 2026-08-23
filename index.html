@@ -1012,7 +1012,7 @@ aside {
             <i class="fa-solid fa-users w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Clientes CRM 
             <span class="ml-auto bg-fidelio-600/20 text-fidelio-600 py-0.5 px-2 rounded-full text-[10px] font-bold" id="crm-count-badge">0</span>
         </div>
-        <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-staff" style="display:none;"><i class="fa-solid fa-user-tie w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Cajeros y Equipo</div>
+        <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-staff" id="nav-staff"><i class="fa-solid fa-user-tie w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> Cajeros y Roles</div>
         <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 cursor-pointer transition-colors group" data-tab="tab-bank" style="display:none;"><i class="fa-solid fa-piggy-bank w-6 text-slate-500 group-hover:text-fidelio-600 transition-colors"></i> The Bank</div>
         
         <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">Estrategia</div>
@@ -2726,89 +2726,161 @@ aside {
 </div>
 </div></section>
 <!-- STAFF TAB -->
-<section class="tab-content" id="tab-staff"><div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-12">
+<section class="tab-content" id="tab-staff" x-data="{ selectedRole: 'cashier', customPermissions: { pos: false, crm: false, metrics: false, settings: false } }">
+    <div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
+            <div>
+                <p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-shield-halved mr-2 opacity-50"></i>SEGURIDAD Y ROLES (RBAC)</p>
+                <h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Control de Acceso</h1>
+                <p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Gestiona los privilegios de tu equipo. Asigna roles fijos o personaliza accesos específicos para cada empleado.</p>
+            </div>
+            <div class="flex-shrink-0">
+                <button class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-lg hover:shadow-xl"><i class="fa-solid fa-paper-plane mr-2"></i> Enviar Invitación</button>
+            </div>
+        </div>
 
-<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
-<div>
-<p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>SEGURIDAD Y ROLES</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Cajeros y Equipo</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Gestiona quién tiene acceso al escáner de la sucursal o al panel central.</p>
-</div>
-<div class="flex-shrink-0">
-</div>
-</div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Columna Izquierda: Selección de Rol -->
+            <div class="lg:col-span-2 space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 mb-4">1. Selecciona el Nivel de Acceso</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Master Admin -->
+                    <label class="relative flex flex-col bg-white border-2 rounded-2xl p-5 cursor-pointer transition-all" :class="selectedRole === 'master' ? 'border-fidelio-500 bg-fidelio-50/30' : 'border-slate-200 hover:border-slate-300'">
+                        <input type="radio" name="role" value="master" x-model="selectedRole" class="sr-only">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-lg"><i class="fa-solid fa-crown"></i></div>
+                            <i class="fa-solid fa-circle-check text-xl" :class="selectedRole === 'master' ? 'text-fidelio-500' : 'text-slate-200'"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900">Master Admin</h4>
+                        <p class="text-xs text-slate-500 mt-1">Control total de la cuenta, cobros, sucursales y franquicias. Mismas credenciales que el dueño.</p>
+                    </label>
 
-<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="margin-bottom: 24px;">
-<h3 style="margin-bottom:20px; font-size: 16px;"><i class="fa-solid fa-user-plus" style="color:var(--accent-violet); margin-right:8px;"></i> Invitar Nuevo Miembro</h3>
-<div style="display:flex; gap: 20px; flex-wrap: wrap;">
-<!-- Role Selection -->
-<div style="flex: 1; min-width: 300px;">
-<label style="display:block; margin-bottom:12px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">1. Selecciona el Rol</label>
-<div class="role-selector">
-<label class="role-card active" id="role-scanner-card">
-<input checked="" name="staff_role" style="display:none;" type="radio" value="scanner"/>
-<div class="role-icon" style="color:#059669; background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-mobile-screen"></i></div>
-<div class="role-info">
-<h4>Usuario Escáner</h4>
-<p>Solo pueden abrir el lector QR para cobrar y dar puntos. No ven el panel.</p>
-</div>
-<div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
-</label>
-<label class="role-card" id="role-system-card">
-<input name="staff_role" style="display:none;" type="radio" value="system"/>
-<div class="role-icon" style="color:var(--accent-violet); background: rgba(255, 255, 255, 0.1);"><i class="fa-solid fa-laptop-code"></i></div>
-<div class="role-info">
-<h4>Acceso Sistema</h4>
-<p>Acceso al dashboard y métricas. Pueden añadir escáneres, pero no otros admins.</p>
-</div>
-<div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
-</label>
-</div>
-</div>
-<!-- User Details Form -->
-<div style="flex: 1; min-width: 300px;">
-<label style="display:block; margin-bottom:12px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">2. Datos de Acceso</label>
-<div class="form-group">
-<input class="fidelio-input" id="staff-name" placeholder="Nombre completo (Ej. Roberto Cajero 1)" type="text"/>
-</div>
-<div class="form-group">
-<input class="fidelio-input" id="staff-email" placeholder="Correo electrónico de acceso" type="email"/>
-</div>
-<div class="form-group" style="margin-bottom: 24px;">
-<input class="fidelio-input" id="staff-password" placeholder="Contraseña temporal (mínimo 6 caracteres)" type="password"/>
-</div>
-<button class="fidelio-btn-primary" id="btn-create-staff">
-<i class="fa-solid fa-paper-plane"></i> Enviar Invitación
-                            </button>
-<p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:12px;">
-<i class="fa-solid fa-shield-halved"></i> La creación de roles de Sistema será verificada por seguridad.
-                            </p>
-</div>
-</div>
-</div>
-<!-- Staff Table -->
-<div class="p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8">
-<div class="card-title-bar" style="margin-bottom: 20px;">
-<h3 style="font-size: 16px;"><i class="fa-solid fa-users-gear" style="color:var(--text-muted); margin-right:8px;"></i> Directorio de Equipo</h3>
-</div>
-<div style="overflow-x: auto;">
-<table class="crm-table">
-<thead>
-<tr>
-<th>Usuario</th>
-<th>Contacto</th>
-<th>Rol de Acceso</th>
-<th>Estado</th>
-<th style="text-align:right;">Acciones</th>
-</tr>
-</thead>
-<tbody id="staff-table-body">
-<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 30px;">Cargando equipo...</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-</div></section>
+                    <!-- Gerente de Sucursal -->
+                    <label class="relative flex flex-col bg-white border-2 rounded-2xl p-5 cursor-pointer transition-all" :class="selectedRole === 'manager' ? 'border-fidelio-500 bg-fidelio-50/30' : 'border-slate-200 hover:border-slate-300'">
+                        <input type="radio" name="role" value="manager" x-model="selectedRole" class="sr-only">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg"><i class="fa-solid fa-building-user"></i></div>
+                            <i class="fa-solid fa-circle-check text-xl" :class="selectedRole === 'manager' ? 'text-fidelio-500' : 'text-slate-200'"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900">Gerente de Sucursal</h4>
+                        <p class="text-xs text-slate-500 mt-1">Puede ver métricas, campañas y clientes, pero limitado a su sucursal asignada.</p>
+                    </label>
+
+                    <!-- Cajero -->
+                    <label class="relative flex flex-col bg-white border-2 rounded-2xl p-5 cursor-pointer transition-all" :class="selectedRole === 'cashier' ? 'border-fidelio-500 bg-fidelio-50/30' : 'border-slate-200 hover:border-slate-300'">
+                        <input type="radio" name="role" value="cashier" x-model="selectedRole" class="sr-only">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg"><i class="fa-solid fa-cash-register"></i></div>
+                            <i class="fa-solid fa-circle-check text-xl" :class="selectedRole === 'cashier' ? 'text-fidelio-500' : 'text-slate-200'"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900">Cajero (Operador)</h4>
+                        <p class="text-xs text-slate-500 mt-1">Acceso únicamente a la vista del escáner para registrar visitas y dar puntos. No ven el Dashboard.</p>
+                    </label>
+
+                    <!-- Personalizado -->
+                    <label class="relative flex flex-col bg-white border-2 rounded-2xl p-5 cursor-pointer transition-all" :class="selectedRole === 'custom' ? 'border-fidelio-500 bg-fidelio-50/30' : 'border-slate-200 hover:border-slate-300'">
+                        <input type="radio" name="role" value="custom" x-model="selectedRole" class="sr-only">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg"><i class="fa-solid fa-sliders"></i></div>
+                            <i class="fa-solid fa-circle-check text-xl" :class="selectedRole === 'custom' ? 'text-fidelio-500' : 'text-slate-200'"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900">Rol Personalizado</h4>
+                        <p class="text-xs text-slate-500 mt-1">Selecciona manualmente a qué pantallas y funciones específicas tiene acceso este usuario.</p>
+                    </label>
+                </div>
+
+                <!-- Panel de Permisos Personalizados (Solo visible si selectedRole == 'custom') -->
+                <div x-show="selectedRole === 'custom'" x-collapse class="mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-6">
+                    <h4 class="text-sm font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Configurar Permisos Manuales</h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" x-model="customPermissions.pos" class="w-5 h-5 text-fidelio-600 rounded border-slate-300 focus:ring-fidelio-500">
+                            <div>
+                                <span class="block text-sm font-bold text-slate-700">Operar Escáner (Caja)</span>
+                                <span class="block text-xs text-slate-500">Permite escanear QRs y emitir puntos.</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" x-model="customPermissions.crm" class="w-5 h-5 text-fidelio-600 rounded border-slate-300 focus:ring-fidelio-500">
+                            <div>
+                                <span class="block text-sm font-bold text-slate-700">Ver Base de Clientes (CRM)</span>
+                                <span class="block text-xs text-slate-500">Acceso de lectura a la tabla de clientes.</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" x-model="customPermissions.metrics" class="w-5 h-5 text-fidelio-600 rounded border-slate-300 focus:ring-fidelio-500">
+                            <div>
+                                <span class="block text-sm font-bold text-slate-700">Analítica Financiera</span>
+                                <span class="block text-xs text-slate-500">Ver Dashboard de ventas y ROI.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Datos del Usuario -->
+            <div>
+                <h3 class="text-sm font-bold text-slate-900 mb-4">2. Datos de Acceso</h3>
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nombre Completo</label>
+                            <input type="text" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-fidelio-500 focus:ring-1 focus:ring-fidelio-500 transition" placeholder="Ej. Ana Cajera 1">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Correo Electrónico</label>
+                            <input type="email" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-fidelio-500 focus:ring-1 focus:ring-fidelio-500 transition" placeholder="ana@empresa.com">
+                        </div>
+                        <div x-show="selectedRole === 'manager'" class="pt-2">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Asignar a Sucursal</label>
+                            <select class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-fidelio-500 transition">
+                                <option>Flagship Reforma</option>
+                                <option>Sucursal Condesa</option>
+                            </select>
+                        </div>
+                        <div class="pt-2">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Contraseña Temporal</label>
+                            <input type="password" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-fidelio-500 focus:ring-1 focus:ring-fidelio-500 transition" placeholder="Mínimo 6 caracteres">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Equipo Actual -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 mb-4"><i class="fa-solid fa-users-gear text-slate-400 mr-2"></i> Directorio de Equipo Activo</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100">
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Usuario</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rol</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sucursal</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado</th>
+                            <th class="py-3 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition">
+                            <td class="py-3 px-4">
+                                <div class="font-bold text-sm text-slate-900">Roberto Ordóñez</div>
+                                <div class="text-xs text-slate-500">roberto@fidelio.com</div>
+                            </td>
+                            <td class="py-3 px-4"><span class="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-md">Master Admin</span></td>
+                            <td class="py-3 px-4 text-xs text-slate-500">Todas (Global)</td>
+                            <td class="py-3 px-4"><span class="text-emerald-500 text-xs font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Activo</span></td>
+                            <td class="py-3 px-4 text-right">
+                                <button class="text-slate-400 hover:text-fidelio-600 transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
 <!-- LOYALTY TAB (FIDELIZACIÓN) -->
 <section class="tab-content" id="tab-loyalty">
 <div class="workspace-header">
