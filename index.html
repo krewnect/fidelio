@@ -3493,6 +3493,56 @@ aside {
             <p class="text-xs text-slate-500 flex-1">Integración mediante webhooks y personal access tokens (PAT).</p>
         </div>
         
+        <!-- Wix eCommerce -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Wix eCommerce', 'E-Commerce', 'fa-brands fa-wix', 'bg-black/10', 'text-black', 'Automatiza la lealtad desde tu panel de Wix.', [{title:'Wix Automations', desc:'Entra al panel de control de tu sitio web Wix y busca la sección de Automatizaciones.'}, {title:'Configura la Acción', desc:'Elige Cuando se pague un pedido como disparador.'}, {title:'Envía el Webhook', desc:'Selecciona Enviar a través de webhook como acción, y pega la URL de Fidelio.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-black/10 text-black flex items-center justify-center text-2xl"><i class="fa-brands fa-wix"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-slate-800 transition-colors">Wix eCommerce</h4>
+            <p class="text-xs text-slate-500 flex-1">Usa Wix Automations para notificar ventas a Fidelio.</p>
+        </div>
+
+        <!-- BigCommerce -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('BigCommerce', 'E-Commerce', 'fa-solid fa-cart-shopping', 'bg-[#121118]/10', 'text-[#121118]', 'Conexión abierta para tiendas de gran volumen.', [{title:'Store API Accounts', desc:'En Configuración Avanzada, ve a Cuentas de API y crea una nueva.'}, {title:'Permisos de Órdenes', desc:'Asegúrate de otorgar permisos de lectura para Orders y Customers.'}, {title:'Guarda tu Token', desc:'Copia tu Access Token y pégalo aquí para que Fidelio registre los webhooks de tienda.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#121118]/10 text-[#121118] flex items-center justify-center text-2xl"><i class="fa-solid fa-cart-shopping"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-slate-700 transition-colors">BigCommerce</h4>
+            <p class="text-xs text-slate-500 flex-1">Webhooks de tienda (Storefront) nativos y abiertos.</p>
+        </div>
+
+        <!-- PrestaShop -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('PrestaShop', 'E-Commerce', 'fa-solid fa-shop', 'bg-[#DF0067]/10', 'text-[#DF0067]', 'Suma puntos conectando el webservice abierto.', [{title:'Activar Webservice', desc:'En Parámetros Avanzados > Webservice, habilita el acceso a la API.'}, {title:'Generar Clave', desc:'Añade una nueva clave de acceso con permisos GET para orders y customers.'}, {title:'Pega tu Clave', desc:'Guarda tu clave generada en Fidelio para autorizar las conexiones.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#DF0067]/10 text-[#DF0067] flex items-center justify-center text-2xl"><i class="fa-solid fa-shop"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#DF0067] transition-colors">PrestaShop</h4>
+            <p class="text-xs text-slate-500 flex-1">API Open Source para control total sobre tus ventas.</p>
+        </div>
+
+        <!-- Magento -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Magento', 'E-Commerce', 'fa-brands fa-magento', 'bg-[#F26322]/10', 'text-[#F26322]', 'Integración corporativa mediante integraciones locales.', [{title:'Sistema > Integraciones', desc:'En tu panel de administrador ve a Sistema y luego Integraciones.'}, {title:'Crear Nueva', desc:'Añade una nueva integración dándole acceso a Ventas y Clientes.'}, {title:'Access Token', desc:'Activa la integración, copia el Access Token y pégalo en este portal.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#F26322]/10 text-[#F26322] flex items-center justify-center text-2xl"><i class="fa-brands fa-magento"></i></div>
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">E-Commerce</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#F26322] transition-colors">Magento / Adobe</h4>
+            <p class="text-xs text-slate-500 flex-1">Solución robusta para alto volumen de transacciones.</p>
+        </div>
+
+        <!-- Klaviyo -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col cursor-pointer" @click="openApp('Klaviyo', 'Marketing CRM', 'fa-solid fa-envelope-open-text', 'bg-[#242A56]/10', 'text-[#242A56]', 'Sincroniza los eventos de lealtad para enviar correos automáticos.', [{title:'Clave API Privada', desc:'Entra a Klaviyo > Settings > API Keys y crea una Private API Key.'}, {title:'Permisos', desc:'Asegúrate de darle permisos completos de lectura/escritura (Full Access) para Perfiles y Eventos.'}, {title:'Guarda y Dispara', desc:'Con esta clave, Fidelio informará a Klaviyo cada vez que un usuario gane puntos o suba de nivel.'}])">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#242A56]/10 text-[#242A56] flex items-center justify-center text-2xl"><i class="fa-solid fa-envelope-open-text"></i></div>
+                <span class="bg-amber-100 text-amber-700 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest">Outbound CRM</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 mb-1 group-hover:text-[#242A56] transition-colors">Klaviyo</h4>
+            <p class="text-xs text-slate-500 flex-1">Fidelio envía alertas a Klaviyo cuando el cliente gana puntos.</p>
+        </div>
+
     </div>
 </div>
 
