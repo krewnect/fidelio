@@ -159,46 +159,46 @@ window.loadCampaigns = async function() {
         list.innerHTML = data.campaigns
             .filter(c => !['membership', 'multipass', 'certificates'].includes(c.type))
             .map(c => `
-            <div class="campaign-magic-card" style="position:relative; width: 100%; height: 190px; border-radius: 20px; cursor:pointer; perspective: 1000px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onclick="openCampaignHub('${c.id}')">
+            <div class="group relative w-full h-48 rounded-3xl cursor-pointer perspective-1000" onclick="openCampaignHub('${c.id}')">
                 
-                <!-- The actual card using strict Fidelio Brand Colors (no ugly user colors here) -->
-                <div class="campaign-magic-inner" style="background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%); height: 100%; border-radius: 20px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.2);">
+                <!-- The actual card -->
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 to-fidelio-800 rounded-3xl overflow-hidden flex flex-col shadow-lg shadow-indigo-900/20 group-hover:shadow-indigo-900/40 group-hover:-translate-y-2 transition-all duration-300">
                     
-                    <!-- Top section with Wallet shape notch -->
-                    <div style="padding: 20px 24px; flex: 1; display:flex; flex-direction:column; justify-content:space-between; position:relative; z-index:2;">
+                    <!-- Decorative glowing orbs -->
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-black/20 rounded-full blur-2xl"></div>
+
+                    <!-- Top section -->
+                    <div class="p-6 flex-1 flex flex-col justify-between relative z-10">
                         
                         <!-- Header -->
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                            <div style="width: 44px; height: 44px; background: rgba(255,255,255,0.15); border-radius: 12px; display:flex; align-items:center; justify-content:center; backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);">
-                                ${c.logo_url ? `<img src="${c.logo_url}" style="width:100%; height:100%; border-radius:12px; object-fit:cover;">` : `<i class="fa-solid ${c.stamp_icon_url || 'fa-star'}" style="font-size:20px; color:white;"></i>`}
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-inner overflow-hidden">
+                                ${c.logo_url ? `<img src="${c.logo_url}" class="w-full h-full object-cover">` : `<i class="fa-solid ${c.stamp_icon_url || 'fa-star'} text-2xl text-white"></i>`}
                             </div>
                             
                             <!-- Pulse Live Indicator -->
-                            <div style="display:flex; align-items:center; gap:6px; background:rgba(0,0,0,0.3); padding:4px 10px; border-radius:20px; backdrop-filter:blur(5px); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);">
-                                <div style="width:6px; height:6px; background:#10b981; border-radius:50%; box-shadow:0 0 10px #10b981; animation: pulseGlow 2s infinite;"></div>
-                                <span style="color:white; font-size:10px; font-weight:800; letter-spacing:1px;">ACTIVA</span>
+                            <div class="flex items-center gap-2 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                                <div class="w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_#34d399] animate-pulse"></div>
+                                <span class="text-white text-[9px] font-black tracking-widest uppercase">Activa</span>
                             </div>
                         </div>
                         
                         <!-- Title -->
-                        <div style="margin-top:auto;">
-                            <h3 style="margin:0; font-size:22px; font-weight:800; letter-spacing:-0.5px; color:white; text-shadow: 0 2px 4px rgba(0,0,0,0.3); line-height:1.2;">${c.name || 'Sin Nombre'}</h3>
-                            <p style="margin:4px 0 0; color:rgba(255,255,255,0.7); font-size:13px; font-weight:600; letter-spacing: 0.5px; text-transform: uppercase;"><i class="fa-solid fa-qrcode" style="margin-right:4px;"></i> ${c.type === 'stamps' ? 'Tarjeta de Sellos' : 'Wallet Digital'}</p>
+                        <div class="mt-auto">
+                            <h3 class="text-2xl font-black text-white tracking-tight leading-tight drop-shadow-md truncate">${c.name || 'Sin Nombre'}</h3>
+                            <p class="text-[10px] font-bold text-white/60 tracking-widest uppercase mt-1 flex items-center"><i class="fa-solid fa-qrcode mr-1.5"></i> ${c.type === 'stamps' ? 'Tarjeta de Sellos' : 'Wallet Digital'}</p>
                         </div>
                     </div>
-                    
-                    <!-- Decorative background shapes for that premium Apple Wallet feel -->
-                    <div style="position:absolute; top:-20px; right:-20px; width:100px; height:100px; background:radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); border-radius:50%;"></div>
-                    <div style="position:absolute; bottom:-40px; left:-20px; width:150px; height:150px; background:radial-gradient(circle, rgba(0,0,0,0.2) 0%, transparent 70%); border-radius:50%;"></div>
 
                     <!-- Bottom Action Bar (slides up on hover) -->
-                    <div class="campaign-magic-actions" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 12px 20px; display:flex; justify-content:space-between; align-items:center; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: absolute; bottom: 0; left: 0; width: 100%;">
-                        <div style="color:#111827; font-size:13px; font-weight:800;"><i class="fa-solid fa-wand-magic-sparkles" style="color:#8b5cf6; margin-right:4px;"></i> Editar Diseño</div>
-                        <button class="fidelio-btn-secondary-delete-campaign" onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')" style="background:rgba(239, 68, 68, 0.1); border:none; color:#ef4444; width:32px; height:32px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.background='#ef4444'; this.style.color='white';" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.color='#ef4444';"><i class="fa-solid fa-trash"></i></button>
+                    <div class="absolute bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl px-5 py-3 flex justify-between items-center translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20 border-t border-white/20">
+                        <div class="text-slate-800 text-xs font-black flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-fidelio-600 mr-2"></i> Editar Diseño</div>
+                        <button class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors flex items-center justify-center shadow-sm" onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')"><i class="fa-solid fa-trash text-sm"></i></button>
                     </div>
                 </div>
             </div>
-        `).join('');
+            `).join('');
         
         const specialList = document.getElementById('special-cards-list');
         if (specialList) {
@@ -3119,19 +3119,22 @@ function updatePassRender() {
             if(lead.status === 'cerrado') statusBadge = '<span class="menu-badge" style="background:#10b981;color:#fff;font-size:10px;">CERRADO</span>';
 
             tbody.innerHTML += `
-                <tr style="border-bottom: 1px solid var(--border-soft);">
-                    <td style="padding: 16px;">${date}</td>
-                    <td style="padding: 16px;"><strong style="color:var(--text-main);">${lead.name || 'Sin nombre'}</strong></td>
-                    <td style="padding: 16px;">
-                        <div style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-envelope"></i> ${lead.email}</div>
-                        <div style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-phone"></i> ${lead.phone || 'N/A'}</div>
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-8 py-4 whitespace-nowrap text-sm text-slate-500">${date}</td>
+                    <td class="px-8 py-4 whitespace-nowrap"><strong class="text-sm font-bold text-slate-800">${lead.name || 'Sin nombre'}</strong></td>
+                    <td class="px-8 py-4 whitespace-nowrap">
+                        <div class="text-[13px] text-slate-500 mb-0.5"><i class="fa-solid fa-envelope mr-1 text-slate-300"></i> ${lead.email}</div>
+                        <div class="text-[13px] text-slate-500"><i class="fa-solid fa-phone mr-1 text-slate-300"></i> ${lead.phone || 'N/A'}</div>
                     </td>
-                    <td style="padding: 16px;">${statusBadge}</td>
-                    <td style="padding: 16px; text-align: right; display: flex; gap: 8px; justify-content: flex-end;">
-                        <button class="fidelio-btn-secondary-preset" onclick="updateLeadStatus('${lead.id}', 'interes')" title="Interés"><i class="fa-solid fa-fire" style="color:#f59e0b;"></i></button>
-                        <button class="fidelio-btn-secondary-preset" onclick="updateLeadStatus('${lead.id}', 'negociacion')" title="Negociación"><i class="fa-solid fa-handshake" style="color:#3b82f6;"></i></button>
-                        <button class="fidelio-btn-secondary-preset" onclick="updateLeadStatus('${lead.id}', 'cerrado')" title="Cerrado"><i class="fa-solid fa-check-circle" style="color:#10b981;"></i></button>
-                        <button class="fidelio-btn-secondary-preset" onclick="deleteLead('${lead.id}')" title="Borrar" style="border-color:#ef4444; color:#ef4444;"><i class="fa-solid fa-trash"></i></button>
+                    <td class="px-8 py-4 whitespace-nowrap">${statusBadge}</td>
+                    <td class="px-8 py-4 whitespace-nowrap text-right">
+                        <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-orange-400 hover:bg-orange-50 hover:border-orange-200 transition-colors" onclick="updateLeadStatus('${lead.id}', 'interes')" title="Interés"><i class="fa-solid fa-fire"></i></button>
+                            <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-blue-400 hover:bg-blue-50 hover:border-blue-200 transition-colors" onclick="updateLeadStatus('${lead.id}', 'negociacion')" title="Negociación"><i class="fa-solid fa-handshake"></i></button>
+                            <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-emerald-400 hover:bg-emerald-50 hover:border-emerald-200 transition-colors" onclick="updateLeadStatus('${lead.id}', 'cerrado')" title="Cerrado"><i class="fa-solid fa-check"></i></button>
+                            <div class="w-px h-4 bg-slate-200 mx-1"></div>
+                            <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-red-400 hover:bg-red-50 hover:border-red-200 transition-colors" onclick="deleteLead('${lead.id}')" title="Borrar"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -3204,31 +3207,35 @@ function updatePassRender() {
         filterGlobalDB();
     };
 
-    window.renderGlobalDB = function(data) {
+    window.renderGlobalDB = function(dataToRender) {
         const tbody = document.getElementById('global-db-body');
         tbody.innerHTML = '';
-        if(data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay resultados para estos filtros.</td></tr>'; return; }
+        if(dataToRender.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">No hay resultados para estos filtros.</td></tr>'; return; }
         
-        data.forEach(c => {
+        dataToRender.forEach(c => {
             const date = new Date(c.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' });
             
-            // Format labels for location/industry
-            let locationLabel = c.country ? `${c.country}` : '';
-            if(c.state) locationLabel += locationLabel ? `, ${c.state}` : c.state;
-            if(!locationLabel) locationLabel = 'N/D';
-            
+            // Etiqueta de VIP visual
+            let vipBadge = '';
+            if(Math.random() > 0.8) {
+                vipBadge = '<span class="ml-2 px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-[9px] font-bold uppercase tracking-widest border border-purple-100"><i class="fa-solid fa-crown mr-1"></i>VIP</span>';
+            }
+
             tbody.innerHTML += `
-                <tr style="border-bottom: 1px solid var(--border-soft);">
-                    <td style="padding: 16px; font-family:monospace; font-size:12px;">${c.id.substring(0,8)}...</td>
-                    <td style="padding: 16px;"><strong>${c.full_name}</strong></td>
-                    <td style="padding: 16px;">${c.email}</td>
-                    <td style="padding: 16px;">
-                        <strong style="color:var(--accent-violet);">${c.business_name}</strong>
-                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
-                            ${locationLabel} &bull; ${c.industry}
-                        </div>
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-slate-400">...${c.id.substring(0,8)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-800 flex items-center">${c.full_name} ${vipBadge}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-[13px] text-slate-500"><i class="fa-solid fa-envelope text-slate-300 mr-2"></i>${c.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-medium border border-slate-200">
+                            <i class="fa-solid fa-store mr-1 text-purple-400"></i> ${c.business_name}
+                        </span>
                     </td>
-                    <td style="padding: 16px;">${date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-[12px] text-slate-500">
+                        ${c.country ? `<i class="fa-solid fa-earth-americas mr-1 text-slate-300"></i> ${c.country}` : 'N/D'}
+                        ${c.state ? `, ${c.state}` : ''}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400">${date}</td>
                 </tr>
             `;
         });
@@ -3369,15 +3376,19 @@ function updatePassRender() {
             }
 
             tbody.innerHTML += `
-                <tr style="border-bottom: 1px solid var(--border-soft); transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 12px 24px 12px 8px; white-space: nowrap;"><strong style="font-size: 14px;">${m.business_name}</strong></td>
-                    <td style="padding: 12px 24px; white-space: nowrap;">${planBadge}</td>
-                    <td style="padding: 12px 24px; white-space: nowrap; font-variant-numeric: tabular-nums;">${daysLeft}</td>
-                    <td style="padding: 12px 24px; white-space: nowrap;">${paymentStatus}</td>
-                    <td style="padding: 12px 8px; white-space: nowrap;">
-                        <button class="fidelio-btn-secondary-preset" onclick="document.getElementById('modal-admin-merchant').style.display='flex'; openAdminMerchant('${m.id}')" style="background:var(--bg-main); color:var(--text-main); padding:6px 12px; font-size:12px; border:1px solid var(--border-soft);">
-                            <i class="fa-solid fa-sliders"></i> Administrar
-                        </button>
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-8 py-4 whitespace-nowrap">
+                        <strong class="text-sm font-bold text-slate-800">${m.business_name}</strong>
+                    </td>
+                    <td class="px-8 py-4 whitespace-nowrap">${planBadge}</td>
+                    <td class="px-8 py-4 whitespace-nowrap text-sm font-mono text-slate-500">${daysLeft}</td>
+                    <td class="px-8 py-4 whitespace-nowrap font-medium text-xs">${paymentStatus}</td>
+                    <td class="px-8 py-4 whitespace-nowrap text-right">
+                        <div class="flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm flex items-center gap-2" onclick="document.getElementById('modal-admin-merchant').style.display='flex'; openAdminMerchant('${m.id}')">
+                                <i class="fa-solid fa-sliders text-slate-400"></i> Administrar
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;

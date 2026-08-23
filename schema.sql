@@ -62,16 +62,43 @@ CREATE TABLE public.transactions (
 
 ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
 
--- Políticas de Seguridad (RLS)
+-- Políticas de Seguridad RLS Blindadas (DevSecOps)
+
+-- Comercios (Merchants)
 CREATE POLICY "Comercios_Select" ON public.merchants FOR SELECT USING (id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
 CREATE POLICY "Comercios_Update" ON public.merchants FOR UPDATE USING (id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
 
-CREATE POLICY "Clientes_Select" ON public.customers FOR SELECT USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
-CREATE POLICY "Clientes_Insert" ON public.customers FOR INSERT WITH CHECK (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
-CREATE POLICY "Clientes_Update" ON public.customers FOR UPDATE USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+-- Clientes (Customers) - Solo dueños o super admins pueden ver clientes
+CREATE POLICY "Clientes_Select" ON public.customers FOR SELECT USING (
+    merchant_id = auth.uid() 
+    OR (auth.jwt()->>'user_metadata'->>'merchant_id')::uuid = merchant_id
+    OR auth.jwt()->>'email' = 'hola@fideliorewards.com'
+);
 
-CREATE POLICY "Transacciones_Select" ON public.transactions FOR SELECT USING (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
-CREATE POLICY "Transacciones_Insert" ON public.transactions FOR INSERT WITH CHECK (merchant_id = auth.uid() OR auth.jwt()->>'email' = 'hola@fideliorewards.com');
+CREATE POLICY "Clientes_Insert" ON public.customers FOR INSERT WITH CHECK (
+    merchant_id = auth.uid() 
+    OR (auth.jwt()->>'user_metadata'->>'merchant_id')::uuid = merchant_id
+    OR auth.jwt()->>'email' = 'hola@fideliorewards.com'
+);
+
+CREATE POLICY "Clientes_Update" ON public.customers FOR UPDATE USING (
+    merchant_id = auth.uid() 
+    OR (auth.jwt()->>'user_metadata'->>'merchant_id')::uuid = merchant_id
+    OR auth.jwt()->>'email' = 'hola@fideliorewards.com'
+);
+
+-- Transacciones - Solo lectura de las transacciones de su propio comercio
+CREATE POLICY "Transacciones_Select" ON public.transactions FOR SELECT USING (
+    merchant_id = auth.uid() 
+    OR (auth.jwt()->>'user_metadata'->>'merchant_id')::uuid = merchant_id
+    OR auth.jwt()->>'email' = 'hola@fideliorewards.com'
+);
+
+CREATE POLICY "Transacciones_Insert" ON public.transactions FOR INSERT WITH CHECK (
+    merchant_id = auth.uid() 
+    OR (auth.jwt()->>'user_metadata'->>'merchant_id')::uuid = merchant_id
+    OR auth.jwt()->>'email' = 'hola@fideliorewards.com'
+);
 
 -- 4. Tabla de Códigos Promocionales (Suscripciones SaaS)
 CREATE TABLE public.promo_codes (

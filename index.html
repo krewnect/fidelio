@@ -993,57 +993,57 @@ aside {
 <div class="ambient-mesh"></div>
 <div class="app-shell">
 <!-- SIDEBAR -->
-<aside class="app-sidebar">
-<div class="sidebar-brand" onclick="if(typeof switchTab === 'function'){switchTab('home')}else{location.reload()}" style="cursor: pointer;">
-<img alt="Fidelio Logo" src="./fidelio_logo_purple.png?v=5" style="height: 44px; width: auto; object-fit: contain;"/>
-</div>
-<nav class="sidebar-menu">
-<div class="menu-label">Gestión y Rendimiento</div>
-<div class="nav-tab active" data-tab="tab-home"><i class="fa-solid fa-chart-line"></i> Dashboard</div>
-<div class="nav-tab" data-tab="tab-metrics"><i class="fa-solid fa-chart-pie"></i> Métricas</div>
-<div class="menu-label marg-t-20">Operación del Negocio</div>
-<div class="nav-tab" data-tab="tab-campaigns" id="nav-campaigns"><i class="fa-solid fa-list"></i> Mis Tarjetas</div>
-<!-- Creador de Tarjetas oculto del sidebar (fusionado) -->
-<div class="nav-tab plan-professional-only" data-tab="tab-stripe" id="nav-stripe"><i class="fa-brands fa-stripe"></i> Monetización (Stripe)</div>
-<div class="nav-tab plan-pro-only" data-tab="tab-branches" id="nav-branches" style="display:none;"><i class="fa-solid fa-location-dot"></i> Sucursales GPS</div>
-<div class="nav-tab" data-tab="tab-crm"><i class="fa-solid fa-users"></i> Clientes CRM <span class="menu-badge" id="crm-count-badge">0</span></div>
-<div class="nav-tab plan-business-only" data-tab="tab-staff" style="display:none;"><i class="fa-solid fa-user-tie"></i> Cajeros y Equipo</div>
-<div class="nav-tab plan-business-only" data-tab="tab-bank" style="display:none;"><i class="fa-solid fa-piggy-bank"></i> The Bank</div>
-<div class="menu-label marg-t-20">Estrategia y Crecimiento</div>
-<!-- Oculto para unificar UX: Fidelizacion movida al Creador -->
-<div class="nav-tab plan-business-only" data-tab="tab-autopilot" id="nav-autopilot" style="display:none;"><i class="fa-solid fa-paper-plane"></i> Piloto Automático</div>
-<div class="nav-tab plan-pro-only" data-tab="tab-api" style="display:none;"><i class="fa-solid fa-code"></i> API</div>
-<div class="nav-tab plan-business-only" data-tab="tab-mybusiness" style="display:none;"><i class="fa-solid fa-bullhorn"></i> My Business</div>
-<div class="menu-label marg-t-20">Herramientas</div>
-<div class="nav-tab plan-business-only" data-tab="tab-caja" style="display:none;"><i class="fa-solid fa-cash-register"></i> Caja (PoS)</div>
-<div class="nav-tab" onclick="window.open('scanner.html?v=' + new Date().getTime(), '_blank')"><i class="fa-solid fa-qrcode"></i> Escáner Staff <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px; margin-left:auto;"></i></div>
-<div class="nav-tab" data-tab="tab-store"><i class="fa-solid fa-shop"></i> Tienda Fidelio</div>
-<div class="menu-label marg-t-20 admin-only-item" style="display:none; color: var(--accent-violet);">Administración Central</div>
-<div class="nav-tab admin-only-item" data-tab="tab-leads" style="display:none;"><i class="fa-solid fa-envelope-open-text"></i> Prospectos (Leads)</div>
-<div class="nav-tab admin-only-item" data-tab="tab-global-db" style="display:none;"><i class="fa-solid fa-database"></i> Base de Datos</div>
-<div class="nav-tab admin-only-item" data-tab="tab-merchants-control" style="display:none;"><i class="fa-solid fa-building-user"></i> Control de Negocios</div>
-<div class="nav-tab admin-only-item" data-tab="tab-master-admin" style="display:none;"><i class="fa-solid fa-money-check-dollar"></i> Finanzas y Promos</div>
-<div class="nav-tab admin-only-item" data-tab="tab-inbox" style="display:none;"><i class="fa-solid fa-inbox"></i> Inbox de Soporte <span class="menu-badge" id="inbox-alert-badge" style="display:none; background:#EF4444; color:white; border-radius:10px;">0</span></div>
-<div class="nav-tab admin-only-item" data-tab="tab-fidelio-team" id="admin-team-tab" style="display:none;"><i class="fa-solid fa-users-gear"></i> Equipo Fidelio</div>
-<div class="menu-label marg-t-20">Configuración y Ayuda</div>
-<div class="nav-tab" data-tab="tab-account"><i class="fa-solid fa-user-gear"></i> Mi Cuenta</div>
-<div class="nav-tab" data-tab="tab-support"><i class="fa-solid fa-headset"></i> Soporte</div>
-<div class="menu-label marg-t-20">Sistema</div>
-<div class="nav-tab" onclick="window.supabaseClient.auth.signOut().then(() =&gt; { window.location.href = '/landing.html'; })" style="color: #5b0eb8; font-weight: 600;">
-<i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
-                </div>
-</nav>
-<div class="sidebar-footer">
-<div class="user-account-card">
-<div class="user-avatar" id="header-business-icon"><i class="fa-solid fa-store"></i></div>
-<div class="user-info">
-<strong id="header-restaurant-name">Mi Negocio</strong>
-<small id="header-business-category" style="display:flex; align-items:center; gap:6px;">
-<span>Profesional</span>
-</small>
-</div>
-</div>
-</div>
+<aside class="w-64 bg-[#0A0A0B] border-r border-white/5 flex flex-col h-screen overflow-y-auto shrink-0 transition-all custom-scrollbar">
+    <div class="px-6 py-8 cursor-pointer flex items-center group" onclick="if(typeof switchTab === 'function'){switchTab('home')}else{location.reload()}">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-fidelio-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-fidelio-500/20 group-hover:shadow-fidelio-500/40 transition-all group-hover:scale-105">
+            <i class="fa-solid fa-cube text-white text-xl"></i>
+        </div>
+        <span class="ml-3 text-lg font-black text-white tracking-tight group-hover:text-fidelio-100 transition-colors">Fidelio</span>
+    </div>
+
+    <nav class="flex-1 px-4 space-y-1 pb-8">
+        <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-6 mb-3">Rendimiento</div>
+        <div class="nav-tab active flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-home"><i class="fa-solid fa-chart-line w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Dashboard</div>
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-metrics"><i class="fa-solid fa-chart-pie w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Métricas</div>
+        
+        <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">Operación</div>
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-campaigns" id="nav-campaigns"><i class="fa-solid fa-list w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Mis Tarjetas</div>
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-crm">
+            <i class="fa-solid fa-users w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Clientes CRM 
+            <span class="ml-auto bg-fidelio-500/20 text-fidelio-400 py-0.5 px-2 rounded-full text-[10px] font-bold" id="crm-count-badge">0</span>
+        </div>
+        
+        <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">Estrategia</div>
+        <div class="nav-tab plan-pro-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-api" style="display:none;"><i class="fa-solid fa-code w-6 text-slate-500 group-hover:text-emerald-400 transition-colors"></i> API & Webhooks</div>
+        <div class="nav-tab plan-business-only flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-mybusiness" style="display:none;"><i class="fa-solid fa-building-columns w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Facturación & Negocio</div>
+
+        <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">Herramientas</div>
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" onclick="window.open('scanner.html?v=' + new Date().getTime(), '_blank')"><i class="fa-solid fa-qrcode w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Escáner Staff <i class="fa-solid fa-arrow-up-right-from-square ml-auto text-[10px] opacity-50"></i></div>
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-store"><i class="fa-solid fa-shop w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Hardware Store</div>
+
+        <div class="admin-only-item hidden">
+            <div class="text-[9px] font-bold text-rose-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">HQ ADMIN</div>
+            <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-leads"><i class="fa-solid fa-envelope-open-text w-6 text-slate-500 group-hover:text-rose-400 transition-colors"></i> Sales Pipeline</div>
+            <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-global-db"><i class="fa-solid fa-database w-6 text-slate-500 group-hover:text-rose-400 transition-colors"></i> Audience Insight</div>
+            <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-merchants-control"><i class="fa-solid fa-building-user w-6 text-slate-500 group-hover:text-rose-400 transition-colors"></i> SaaS God Mode</div>
+        </div>
+
+        <div class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mt-8 mb-3">Cuenta</div>
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-account"><i class="fa-solid fa-user-gear w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Preferencias</div>
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors group" data-tab="tab-support"><i class="fa-solid fa-headset w-6 text-slate-500 group-hover:text-fidelio-400 transition-colors"></i> Soporte VIP</div>
+        
+        <div class="nav-tab flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-rose-500/70 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer transition-colors group mt-4" onclick="window.supabaseClient.auth.signOut().then(() => { window.location.href = '/landing.html'; })"><i class="fa-solid fa-right-from-bracket w-6"></i> Cerrar Sesión</div>
+    </nav>
+
+    <div class="p-4 mt-auto border-t border-white/5">
+        <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300" id="header-business-icon"><i class="fa-solid fa-store"></i></div>
+            <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold text-white truncate" id="header-restaurant-name">Mi Negocio</p>
+                <p class="text-[10px] text-fidelio-400 font-medium truncate" id="header-business-category">Pro Tier</p>
+            </div>
+        </div>
+    </div>
 </aside>
 <!-- MAIN WORKSPACE -->
 <main class="app-workspace">
@@ -1072,97 +1072,6 @@ aside {
 </div>
 </div>
 </section>
-<!-- STRIPE TAB -->
-<section class="tab-content" id="tab-stripe"><div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-12">
-
-<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
-<div>
-<p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>MONETIZACIÓN</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Vende por Apple Wallet</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Convierte tu tarjeta de lealtad en un punto de venta. Configura cobros por suscripciones, recargas o membresías VIP.</p>
-</div>
-<div class="flex-shrink-0">
-</div>
-</div>
-
-<!-- PROFESSIONAL TIER LOCK -->
-<div id="stripe-pro-lock" style="display:none; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 24px; padding: 48px; text-align: center; margin-bottom: 24px;">
-<div style="font-size: 48px; color: #F59E0B; margin-bottom: 16px;"><i class="fa-solid fa-crown"></i></div>
-<h3 style="margin-bottom: 12px; color: #111827; font-size: 24px; font-weight:800; letter-spacing:-0.5px;">Desbloquea Pagos en Wallet</h3>
-<p style="color: #6B7280; font-size: 15px; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; line-height:1.6;">
-                        La conexión oficial con <b>Stripe</b> para vender saldo o membresías directamente en el reverso de la tarjeta requiere una licencia de nivel Business. Sube de nivel para revolucionar tus ventas.
-                    </p>
-<button class="fidelio-btn-primary" onclick="window.location.href='professionals.html'">
-<i class="fa-solid fa-arrow-up-right-dots"></i> Subir Nivel a Business
-                    </button>
-</div>
-<div id="stripe-active-ui" style="display:flex; flex-direction:column; gap:24px;">
-<!-- HEADER METRICS / STEPS -->
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="position:relative; overflow:hidden;">
-<div style="position:absolute; top:-20px; right:-20px; font-size:100px; opacity:0.02; color:#111827;"><i class="fa-brands fa-stripe"></i></div>
-<div style="width:48px; height:48px; border-radius:12px; background:#F3F4F6; color:#6366f1; display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:16px;">
-<i class="fa-solid fa-link"></i>
-</div>
-<h4 style="font-size:16px; font-weight:700; margin-bottom:8px; color:#111827;">1. Crea tu Payment Link</h4>
-<p style="font-size:14px; color:#6B7280; margin:0; line-height:1.5;">Entra a tu cuenta de Stripe, crea un producto (ej. Membresía VIP Mensual) y genera un link de pago.</p>
-</div>
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="position:relative; overflow:hidden;">
-<div style="position:absolute; top:-20px; right:-20px; font-size:100px; opacity:0.02; color:#111827;"><i class="fa-brands fa-apple"></i></div>
-<div style="width:48px; height:48px; border-radius:12px; background:#F3F4F6; color:#10B981; display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:16px;">
-<i class="fa-solid fa-wallet"></i>
-</div>
-<h4 style="font-size:16px; font-weight:700; margin-bottom:8px; color:#111827;">2. Vincula a la Tarjeta</h4>
-<p style="font-size:14px; color:#6B7280; margin:0; line-height:1.5;">Pega el enlace abajo. Automáticamente se creará un botón de "Comprar / Renovar" en el reverso de la Wallet.</p>
-</div>
-</div>
-<!-- CONFIGURATION PANEL GRID -->
-<div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px;">
-<!-- LEFT FORM -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8">
-<h3 style="font-size:18px; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:10px; color:#111827;"><i class="fa-brands fa-stripe" style="color:#6366f1;"></i> Conectar Checkout</h3>
-<p style="font-size:14px; color:#6B7280; margin-bottom:32px; line-height:1.6;">Convierte a tus clientes en suscriptores. Al pagar, el saldo o nivel VIP se actualizará automáticamente en su teléfono mediante webhooks.</p>
-<div style="margin-bottom: 24px;">
-<label style="display: block; margin-bottom: 8px; font-weight: 700; font-size: 13px; color:#4B5563; text-transform:uppercase; letter-spacing:0.5px;">Selecciona la Campaña</label>
-<select id="stripe-campaign-select" style="width: 100%; background:#F9FAFB; border:1px solid #D1D5DB; padding:14px 16px; border-radius:12px; font-size:15px; outline:none; color:#111827;">
-<option value="">-- Selecciona una campaña --</option>
-</select>
-</div>
-<div style="margin-bottom: 32px;">
-<label style="display: block; margin-bottom: 8px; font-weight: 700; font-size: 13px; color:#4B5563; text-transform:uppercase; letter-spacing:0.5px;">Enlace de Pago (Stripe Link)</label>
-<div style="position:relative;">
-<i class="fa-solid fa-link" style="position:absolute; left:16px; top:16px; color:#9CA3AF;"></i>
-<input class="fidelio-input" id="stripe-payment-link" placeholder="https://buy.stripe.com/..." style="width: 100%; padding:14px 16px 14px 45px; background:#F9FAFB; border:1px solid #D1D5DB; border-radius:12px; font-size:15px; font-family:monospace; outline:none; color:#111827;" type="url"/>
-</div>
-<div style="font-size:13px; color:#6B7280; margin-top:8px;"><i class="fa-solid fa-shield-halved" style="color:#10B981;"></i> Redirección segura para el cliente final.</div>
-</div>
-<button class="fidelio-btn-primary" onclick="saveStripeKeys()" style="width:100%;">
-<i class="fa-solid fa-cloud-arrow-up"></i> Guardar e Inyectar en Wallet
-                            </button>
-</div>
-<!-- RIGHT PREVIEW (CLEAN) -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="display:flex; flex-direction:column; align-items:center; background:#F9FAFB; border:1px solid #E5E7EB; justify-content:center;">
-<div style="font-size:13px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:24px;">Vista Previa (Reverso)</div>
-<div style="width:100%; max-width:280px; background:#FFFFFF; border:1px solid #E5E7EB; border-radius:24px; padding:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05);">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-<div style="width:32px; height:32px; border-radius:50%; background:#F3F4F6; display:flex; justify-content:center; align-items:center; color:#6B7280; font-size:14px;"><i class="fa-solid fa-xmark"></i></div>
-<div style="font-weight:600; color:#111827; font-size:14px;">Reverso del Pass</div>
-</div>
-<div style="background:#F9FAFB; border:1px solid #F3F4F6; border-radius:12px; padding:16px; margin-bottom:16px;">
-<div style="font-size:11px; font-weight:700; color:#9CA3AF; margin-bottom:4px;">NIVEL ACTUAL</div>
-<div style="font-size:16px; font-weight:700; color:#111827;">Membresía Gratuita</div>
-</div>
-<div style="background:#F9FAFB; border:1px solid #F3F4F6; border-radius:12px; padding:16px;">
-<div style="font-size:11px; font-weight:700; color:#9CA3AF; margin-bottom:8px;">SUSCRIPCIÓN VIP</div>
-<p style="font-size:13px; color:#4B5563; margin:0 0 12px 0; line-height:1.4;">Desbloquea 2x Puntos y envíos gratis.</p>
-<div style="background:#6366f1; color:white; text-align:center; padding:10px; border-radius:8px; font-weight:600; font-size:13px; display:flex; justify-content:center; align-items:center; gap:8px;"><i class="fa-solid fa-lock-open"></i> Activar por $9.99/mes</div>
-</div>
-</div>
-<div style="margin-top:24px; font-size:12px; color:#9CA3AF; text-align:center;">El botón se inyecta al escanear el pase.</div>
-</div>
-</div>
-</div>
-</div></section>
 <!-- HOME TAB (ANALYTICS) -->
 <section class="tab-content active" id="tab-home" x-data="dashboardJewel()">
 <!-- Toast Copiado -->
@@ -3442,40 +3351,55 @@ aside {
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
 <div>
 <p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>CONECTIVIDAD</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">API</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Sincroniza Fidelio con tus sistemas actuales para emitir puntos automáticamente.</p>
+<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">API & Webhooks</h1>
+<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Conecta Fidelio a tu E-Commerce o Punto de Venta para emitir puntos en piloto automático.</p>
 </div>
 <div class="flex-shrink-0">
+<button class="bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white shadow-lg shadow-slate-900/30 hover:shadow-slate-900/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="window.showToast('Generando nueva API Key...', 'info')"><i class="fa-solid fa-key"></i> Generar API Key</button>
 </div>
 </div>
 
 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
-<!-- E-Commerce -->
-<div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start; position:relative; overflow:hidden;">
-<div style="position:absolute; top:24px; right:24px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
-                            FASE BETA
-                        </div>
-<div style="width:48px; height:48px; border-radius:12px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
-<i class="fa-solid fa-cart-shopping"></i>
+<!-- API Keys -->
+<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
+<div style="width:48px; height:48px; border-radius:12px; background: rgba(139, 92, 246, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
+<i class="fa-solid fa-code"></i>
 </div>
-<h3 style="margin:0 0 8px 0; font-size:18px;">E-Commerce</h3>
-<p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Conecta tu tienda en línea (Shopify, WooCommerce, Tiendanube) para que las compras web acumulen puntos en Fidelio automáticamente.</p>
-<div style="margin-top:auto; width:100%;">
-<button class="fidelio-btn-secondary" onclick="window.location.href='mailto:soporte@fideliorewards.com?subject=Solicitud de Acceso Beta a Integración'" style="width:100%; background:transparent; border:1px solid var(--accent-violet); color:var(--accent-violet); cursor:pointer;"><i class="fa-solid fa-flask"></i> Solicitar Acceso Beta</button>
+<h3 style="margin:0 0 8px 0; font-size:18px; font-weight: 800;">Claves de API REST</h3>
+<p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Utiliza esta clave para autenticar tus peticiones desde sistemas externos como Shopify, WooCommerce o tu backend.</p>
+
+<div class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 relative flex items-center justify-between">
+    <div>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Live Secret Key</p>
+        <p class="text-sm font-mono text-slate-800">sk_live_fidelio_********************</p>
+    </div>
+    <button class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-fidelio-600 hover:border-fidelio-300 flex items-center justify-center transition-all cursor-pointer" onclick="window.showToast('Clave copiada al portapapeles', 'success')"><i class="fa-regular fa-copy"></i></button>
+</div>
+
+<div style="margin-top:auto; width:100%; display:flex; gap:12px;">
+<button class="fidelio-btn-secondary" onclick="window.open('https://docs.fideliorewards.com', '_blank')" style="flex:1; background:transparent; border:1px solid var(--border-soft); color:var(--text-main); cursor:pointer;"><i class="fa-solid fa-book"></i> Ver Documentación</button>
 </div>
 </div>
-<!-- Punto de Venta (POS) -->
-<div style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start; position:relative; overflow:hidden;">
-<div style="position:absolute; top:24px; right:24px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; border:1px solid rgba(139, 92, 246, 0.2);">
-                            FASE BETA
-                        </div>
-<div style="width:48px; height:48px; border-radius:12px; background: rgba(255, 255, 255, 0.1); color:var(--accent-violet); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
-<i class="fa-solid fa-cash-register"></i>
+
+<!-- Webhooks -->
+<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style="background:var(--bg-card); border-radius:16px; border:1px solid var(--border-glass); padding:24px; display:flex; flex-direction:column; align-items:flex-start;">
+<div style="position:absolute; top:24px; right:24px; background: rgba(16, 185, 129, 0.1); color:#10b981; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:800; border:1px solid rgba(16, 185, 129, 0.2);">
+    ACTIVO
 </div>
-<h3 style="margin:0 0 8px 0; font-size:18px;">Punto de Venta (POS)</h3>
-<p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Integra Fidelio con tu sistema de caja (Lightspeed, Square, SoftRestaurant) para escaneo nativo e impresión de saldos en tickets.</p>
-<div style="margin-top:auto; width:100%;">
-<button class="fidelio-btn-secondary" onclick="window.location.href='mailto:soporte@fideliorewards.com?subject=Solicitud de Acceso Beta a Integración'" style="width:100%; background:transparent; border:1px solid var(--accent-violet); color:var(--accent-violet); cursor:pointer;"><i class="fa-solid fa-flask"></i> Solicitar Acceso Beta</button>
+<div style="width:48px; height:48px; border-radius:12px; background: rgba(16, 185, 129, 0.1); color:#10b981; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">
+<i class="fa-solid fa-satellite-dish"></i>
+</div>
+<h3 style="margin:0 0 8px 0; font-size:18px; font-weight: 800;">Eventos (Webhooks)</h3>
+<p style="color:var(--text-muted); font-size:13px; line-height:1.5; margin:0 0 24px 0;">Recibe notificaciones HTTP POST en tiempo real en tu servidor cuando un cliente reclame una recompensa o gane puntos.</p>
+
+<div class="w-full mb-4">
+    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Endpoint URL</p>
+    <input type="text" class="fidelio-input w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500" value="https://mi-tienda.com/api/fidelio-webhook" placeholder="https://..." />
+</div>
+
+<div style="margin-top:auto; width:100%; display:flex; gap:12px;">
+<button class="fidelio-btn-secondary" onclick="window.showToast('Webhook de prueba enviado', 'info')" style="flex:1; background:transparent; border:1px solid var(--border-soft); color:var(--text-main); cursor:pointer;"><i class="fa-solid fa-vial"></i> Probar Evento</button>
+<button class="fidelio-btn-primary" style="background:#10b981; border-color:#10b981;" onclick="window.showToast('Endpoint guardado', 'success')">Guardar</button>
 </div>
 </div>
 </div>
@@ -3486,72 +3410,90 @@ aside {
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
 <div>
 <p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>CENTRO DE CONTROL</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Mi Negocio &amp; Facturación</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Administra tu información fiscal, pagos y automatiza tu crecimiento en redes sociales.</p>
+<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Mi Negocio & Facturación</h1>
+<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Administra tu información fiscal, pagos y escalabilidad B2B.</p>
 </div>
 <div class="flex-shrink-0">
 </div>
 </div>
 
-<!-- PRICING & SUBSCRIPTION CENTER -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="margin-bottom: 32px; padding: 32px;">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-soft); padding-bottom: 24px;">
-<div>
-<h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin: 0;">Suscripción y Pagos</h2>
-<p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted);">Administra tu plan de facturación de Fidelio.</p>
-</div>
-<div style="display: flex; gap: 12px;">
-<button class="fidelio-btn-secondary" id="btn-request-invoice"><i class="fa-solid fa-file-invoice"></i> Solicitar Factura</button>
-<button class="fidelio-btn-secondary" id="btn-bank-transfer"><i class="fa-solid fa-building-columns"></i> Datos Bancarios</button>
-</div>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px;">
-<!-- Left Side: Subscription Details -->
-<div style="display: flex; flex-direction: column; gap: 24px;">
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div>
-<div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;">Plan Actual</div>
-<div id="pricing-tier-badge" style="font-weight: 800; color: #F59E0B; display: inline-flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.1); padding: 6px 12px; border-radius: 8px; font-size: 13px;"><i class="fa-solid fa-crown"></i> Founder (De por vida)</div>
-</div>
-<div>
-<div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;">Precio</div>
-<div style="font-size: 20px; font-weight: 800; color: var(--text-main);">$<span id="pricing-amount">9,999</span> <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">MXN / <span id="pricing-period">año</span></span></div>
-</div>
-<div>
-<div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;">Estado</div>
-<div id="sub-status-text" style="font-size: 15px; font-weight: 700; color: #10B981; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check-circle"></i> Calculando...</div>
-</div>
-<div>
-<div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;">Tarjetas Emitidas</div>
-<div style="font-size: 15px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-wallet" style="color:var(--accent-violet);"></i> <span id="metrics-cards-issued">0</span></div>
-</div>
-</div>
-<p id="pricing-description" style="color:var(--text-muted); font-size:14px; margin: 0; padding-top: 16px; border-top: 1px solid var(--border-soft);">Sucursales ilimitadas. Soporte VIP incluido.</p>
-</div>
-<!-- Right Side: Payment -->
-<div style="background: var(--bg-input); padding: 24px; border-radius: 16px; border: 1px solid var(--border-soft); display: flex; flex-direction: column;">
-<div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 16px;">Renovar o Mejorar Plan</div>
-<!-- Toggle Monthly / Annual -->
-<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; background: rgba(139,92,246,0.05); padding: 8px 16px; border-radius: 100px; width: fit-content; border: 1px solid rgba(139,92,246,0.1);">
-<span id="label-monthly" style="font-size: 13px; font-weight: 600; color: var(--text-muted); cursor:pointer;">Mensual</span>
-<label style="position:relative; display:inline-block; width:44px; height:24px;">
-<input checked="" id="billing-cycle-toggle" style="opacity:0; width:0; height:0;" type="checkbox"/>
-<span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:var(--accent-violet); border-radius:24px; transition:.3s; box-shadow: 0 2px 4px rgba(139,92,246,0.2);">
-<span class="slider-circle" style="position:absolute; content:''; height:18px; width:18px; left:3px; bottom:3px; background-color:white; border-radius:50%; transition:.3s; transform:translateX(20px);"></span>
-</span>
-</label>
-<span id="label-annual" style="font-size: 13px; font-weight: 700; color: var(--text-main); cursor:pointer; display: flex; align-items: center; gap: 6px;">Anual <span style="background:rgba(16,185,129,0.1); color:#059669; padding:3px 8px; border-radius:100px; font-size:10px; font-weight:800; text-transform:uppercase;">2 Meses Gratis</span></span>
-</div>
-<div style="display: flex; flex-direction: column; gap: 12px;">
-<input class="fidelio-input" id="merchant-promo-code" placeholder="Código promocional" style="width: 100%; background: #ffffff;" type="text"/>
-<button class="fidelio-btn-primary" id="btn-pay-stripe" style="width: 100%; justify-content: center; font-size: 15px;"><i class="fa-brands fa-stripe" style="font-size: 18px;"></i> Procesar Pago</button>
-</div>
-<div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: auto; padding-top: 16px;">
-                                Pagos encriptados con seguridad bancaria de Stripe.<br/>
-                                Al procesar el pago, aceptas nuestro <a href="/privacy.html" style="color:var(--accent-violet); text-decoration:none; font-weight: 600;" target="_blank">Aviso</a> y <a href="/terms.html" style="color:var(--accent-violet); text-decoration:none; font-weight: 600;" target="_blank">Términos</a>.
-                            </div>
-</div>
-</div>
+<!-- PRICING & SUBSCRIPTION CENTER (STRIPE VIBES) -->
+<div class="fidelio-crisp-card relative overflow-hidden mb-12 bg-white border border-slate-200 rounded-[2rem] shadow-sm">
+    <!-- Header -->
+    <div class="px-8 py-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-50/50">
+        <div>
+            <h2 class="text-xl font-bold text-slate-800"><i class="fa-brands fa-stripe text-[#635BFF] mr-2"></i>Suscripción y Pagos</h2>
+            <p class="text-xs text-slate-500 mt-1">Gestión segura impulsada por infraestructura financiera global.</p>
+        </div>
+        <div class="flex gap-3 mt-4 md:mt-0">
+            <button class="bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all px-4 py-2 rounded-xl text-xs font-bold shadow-sm" id="btn-request-invoice"><i class="fa-solid fa-file-invoice mr-1"></i> Solicitar Factura</button>
+            <button class="bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all px-4 py-2 rounded-xl text-xs font-bold shadow-sm" id="btn-bank-transfer"><i class="fa-solid fa-building-columns mr-1"></i> SPEI / Transfer</button>
+        </div>
+    </div>
+    
+    <!-- Body -->
+    <div class="p-8 md:p-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Left Side: Subscription Details -->
+        <div class="flex flex-col gap-8">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Current Plan -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Plan Actual</p>
+                    <div id="pricing-tier-badge" class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-sm shadow-orange-500/20"><i class="fa-solid fa-crown"></i> Founder</div>
+                </div>
+                <!-- Pricing -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Inversión</p>
+                    <div class="text-2xl font-black text-slate-800">$<span id="pricing-amount">9,999</span><span class="text-sm font-bold text-slate-400"> MXN / <span id="pricing-period">año</span></span></div>
+                </div>
+                <!-- Status -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Estado de Cuenta</p>
+                    <div id="sub-status-text" class="text-sm font-bold text-emerald-500 flex items-center gap-2"><i class="fa-solid fa-check-circle"></i> Al corriente</div>
+                </div>
+                <!-- Cards Issued Metric -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Tarjetas Emitidas (Límite)</p>
+                    <div class="text-sm font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-wallet text-fidelio-600"></i> <span id="metrics-cards-issued">0</span> / &infin; Ilimitadas</div>
+                </div>
+            </div>
+            <div class="text-sm text-slate-500 border-l-2 border-fidelio-500 pl-4 py-1" id="pricing-description">
+                Sucursales ilimitadas. Base de datos privada. Soporte de ingeniería nivel VIP incluido.
+            </div>
+        </div>
+        
+        <!-- Right Side: Upgrade / Payment Action (PLG Hook) -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[1.5rem] p-8 text-white relative overflow-hidden shadow-2xl flex flex-col justify-center">
+            <!-- Background Glow -->
+            <div class="absolute -top-24 -right-24 w-64 h-64 bg-fidelio-500 rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
+            
+            <h3 class="text-xl font-bold mb-2 relative z-10">Desbloquea el Poder Enterprise</h3>
+            <p class="text-sm text-slate-300 mb-6 relative z-10 leading-relaxed">Conecta tu Punto de Venta (POS), automatiza webhooks y obtén acceso a las analíticas de gamificación avanzadas.</p>
+            
+            <div class="flex items-center gap-4 mb-8 bg-black/20 p-1 rounded-full w-fit relative z-10 border border-white/10 backdrop-blur-md">
+                <span id="label-monthly" class="text-xs font-bold text-slate-400 px-3 py-1 cursor-pointer hover:text-white transition-colors">Mensual</span>
+                <label class="relative inline-block w-11 h-6 cursor-pointer">
+                    <input type="checkbox" id="billing-cycle-toggle" checked class="opacity-0 w-0 h-0 peer">
+                    <span class="absolute inset-0 bg-slate-600 rounded-full peer-checked:bg-fidelio-500 transition-colors shadow-inner"></span>
+                    <span class="absolute left-[3px] bottom-[3px] bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-5 shadow-sm"></span>
+                </label>
+                <span id="label-annual" class="text-xs font-bold text-white px-3 py-1 flex items-center gap-2 cursor-pointer">Anual <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-widest border border-emerald-500/30">2 Meses Gratis</span></span>
+            </div>
+            
+            <div class="flex flex-col gap-4 relative z-10">
+                <div class="relative">
+                    <i class="fa-solid fa-tag absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="merchant-promo-code" placeholder="Código promocional" class="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 font-medium text-sm rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-fidelio-400 focus:bg-white/20 transition-all backdrop-blur-sm">
+                </div>
+                <button id="btn-pay-stripe" class="bg-white hover:bg-slate-50 text-slate-900 shadow-lg shadow-white/10 hover:shadow-white/20 transition-all px-8 py-4 rounded-xl font-black text-sm border-0 cursor-pointer flex items-center justify-center gap-2"><i class="fa-brands fa-stripe text-[#635BFF] text-xl"></i> Pagar con Stripe</button>
+            </div>
+            
+            <div class="text-center text-[10px] text-slate-400 mt-6 relative z-10">
+                <i class="fa-solid fa-lock text-emerald-400 mr-1"></i> Pagos encriptados con seguridad bancaria de Stripe 256-bit.<br>
+                Al procesar el pago, aceptas nuestro <a href="#" class="text-fidelio-400 hover:text-fidelio-300 underline font-bold transition-colors">Aviso</a> y <a href="#" class="text-fidelio-400 hover:text-fidelio-300 underline font-bold transition-colors">Términos</a>.
+            </div>
+        </div>
+    </div>
 </div>
 <!-- MAIN GRID -->
 <div class="w-full max-w-4xl">
@@ -4414,64 +4356,136 @@ aside {
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
 <div>
-<p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>MÓDULO</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Prospectos Entrantes</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Gestión del embudo de ventas para nuevos negocios.</p>
+<p class="text-[11px] font-black text-emerald-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-arrow-trend-up mr-2 opacity-80"></i>GROWTH & PLG</p>
+<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Pipeline de Ventas</h1>
+<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Gestión de prospectos B2B, conversión de leads y MRR proyectado.</p>
 </div>
 <div class="flex-shrink-0">
-<button class="bg-gradient-to-r from-fidelio-600 to-fidelio-500 hover:from-fidelio-500 hover:to-fidelio-400 text-white shadow-lg shadow-fidelio-500/30 hover:shadow-fidelio-500/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="loadLeads()"><i class="fa-solid fa-rotate-right"></i> Refrescar Lista</button>
+<button class="bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-white shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="loadLeads()"><i class="fa-solid fa-rotate-right"></i> Refrescar Pipeline</button>
 </div>
 </div>
 
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;  overflow-x: auto;">
-<table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+<!-- MINI DASHBOARD PIPELINE -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="fidelio-crisp-card p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
+        <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Nuevos (Interés)</p>
+            <p class="text-2xl font-black text-slate-800">12</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-fire"></i></div>
+    </div>
+    <div class="fidelio-crisp-card p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
+        <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">En Negociación</p>
+            <p class="text-2xl font-black text-slate-800">5</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-handshake"></i></div>
+    </div>
+    <div class="fidelio-crisp-card p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all">
+        <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Cerrados (MRR)</p>
+            <p class="text-2xl font-black text-emerald-600">$1,450<span class="text-xs text-slate-400 font-medium">/mes</span></p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-trophy"></i></div>
+    </div>
+</div>
+
+<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-3xl">
+<div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-filter text-slate-400 mr-2"></i>Inbox de Prospectos</h3>
+    <span class="text-xs font-medium text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">Actualizado en tiempo real</span>
+</div>
+<div class="p-0 overflow-x-auto">
+<table class="crm-table w-full text-left border-collapse">
 <thead>
-<tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted);">
-<th style="padding: 16px;">Fecha</th>
-<th style="padding: 16px;">Negocio</th>
-<th style="padding: 16px;">Contacto</th>
-<th style="padding: 16px;">Estado</th>
-<th style="padding: 16px; text-align: right;">Acciones</th>
+<tr class="text-xs font-bold text-slate-400 uppercase tracking-wider bg-white border-b border-slate-100">
+<th class="px-8 py-4">Fecha</th>
+<th class="px-8 py-4">Negocio</th>
+<th class="px-8 py-4">Contacto</th>
+<th class="px-8 py-4">Estado</th>
+<th class="px-8 py-4 text-right">Acciones</th>
 </tr>
 </thead>
-<tbody id="leads-table-body">
+<tbody id="leads-table-body" class="divide-y divide-slate-100 bg-white">
 <!-- Dynamic Content -->
 </tbody>
 </table>
 </div>
+</div>
 </div></section>
-<!-- GLOBAL DB -->
 <section class="tab-content" id="tab-global-db"><div class="w-full max-w-7xl mx-auto px-4 md:px-8 pb-12">
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
 <div>
-<p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>MÓDULO</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Base de Datos Global</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Visión maestra de todos los usuarios (clientes finales) registrados en todo Fidelio.</p>
+<p class="text-[11px] font-black text-purple-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-ranking-star mr-2 opacity-80"></i>LOYALTY ENGINE</p>
+<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Audiencia Global</h1>
+<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Visión maestra de retención, valor de vida del cliente (LTV) y usuarios registrados.</p>
 </div>
 <div class="flex-shrink-0">
-<button class="bg-gradient-to-r from-fidelio-600 to-fidelio-500 hover:from-fidelio-500 hover:to-fidelio-400 text-white shadow-lg shadow-fidelio-500/30 hover:shadow-fidelio-500/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="loadGlobalDatabase()"><i class="fa-solid fa-rotate-right"></i> Refrescar</button>
+<button class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="loadGlobalDatabase()"><i class="fa-solid fa-rotate-right"></i> Sincronizar Audiencia</button>
 </div>
 </div>
 
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px;  overflow-x: auto;">
-<div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: var(--bg-main); padding: 16px; border-radius: 12px; border: 1px solid var(--border-soft);">
-<input class="fidelio-input" id="global-db-search" oninput="filterGlobalDB()" placeholder="Buscar (Nombre / Hash)..." style="flex: 1; min-width: 200px;" type="text"/>
-<input class="fidelio-input" id="global-db-filter-business" oninput="filterGlobalDB()" placeholder="Filtrar Negocio..." style="width: 180px;" type="text"/>
-<input class="fidelio-input" id="global-db-filter-country" oninput="filterGlobalDB()" placeholder="País..." style="width: 130px;" type="text"/>
-<input class="fidelio-input" id="global-db-filter-state" oninput="filterGlobalDB()" placeholder="Estado..." style="width: 130px;" type="text"/>
-<input class="fidelio-input" id="global-db-filter-colonia" oninput="filterGlobalDB()" placeholder="Colonia..." style="width: 130px;" type="text"/>
+<!-- AUDIENCE GAMIFICATION METRICS -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
+        <div class="flex items-center justify-between mb-2">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Usuarios</p>
+            <i class="fa-solid fa-users text-slate-300"></i>
+        </div>
+        <p class="text-3xl font-black text-slate-800">4,291</p>
+        <p class="text-[11px] font-medium text-emerald-500 mt-2"><i class="fa-solid fa-arrow-trend-up"></i> +12% este mes</p>
+    </div>
+    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 text-purple-100 opacity-50 transform rotate-12 group-hover:scale-110 transition-transform"><i class="fa-solid fa-crown text-6xl"></i></div>
+        <div class="flex items-center justify-between mb-2 relative z-10">
+            <p class="text-[10px] font-bold text-purple-400 uppercase tracking-widest">VIPs (Ballenas)</p>
+        </div>
+        <p class="text-3xl font-black text-purple-600 relative z-10">342</p>
+        <p class="text-[11px] font-medium text-slate-500 mt-2 relative z-10">Top 8% de compradores</p>
+    </div>
+    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
+        <div class="flex items-center justify-between mb-2">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">En Riesgo (Churn)</p>
+            <i class="fa-solid fa-heart-crack text-rose-300"></i>
+        </div>
+        <p class="text-3xl font-black text-rose-500">89</p>
+        <p class="text-[11px] font-medium text-slate-500 mt-2">Sin visitas en 30+ días</p>
+    </div>
+    <div class="fidelio-crisp-card p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between group hover:border-purple-200 transition-all">
+        <div class="flex items-center justify-between mb-2">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tasa de Retención</p>
+            <i class="fa-solid fa-magnet text-blue-300"></i>
+        </div>
+        <p class="text-3xl font-black text-blue-600">68%</p>
+        <p class="text-[11px] font-medium text-slate-500 mt-2">Vuelven antes de 14 días</p>
+    </div>
 </div>
-<table class="crm-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-<thead>
-<tr style="border-bottom: 2px solid var(--border-soft); color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-<th style="padding: 16px;">ID / Hash</th>
-<th style="padding: 16px;">Nombre</th>
-<th style="padding: 16px;">Contacto <i class="fa-solid fa-shield-halved" style="color:var(--accent-violet);" title="Privacidad Activada"></i></th>
-<th style="padding: 16px;">Negocio</th>
-<th style="padding: 16px;">Ubicación Origen</th>
-<th style="padding: 16px;">Registro</th>
-</tr>
+
+<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-3xl flex flex-col">
+    <!-- FILTER BAR -->
+    <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/80 flex flex-wrap gap-3 items-center">
+        <div class="relative flex-1 min-w-[200px]">
+            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input class="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-purple-500 focus:ring-purple-500" id="global-db-search" oninput="filterGlobalDB()" placeholder="Buscar cliente por nombre, email o hash..." type="text"/>
+        </div>
+        <input class="bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm w-32 focus:border-purple-500 focus:ring-purple-500" id="global-db-filter-business" oninput="filterGlobalDB()" placeholder="Negocio" type="text"/>
+        <input class="bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm w-28 focus:border-purple-500 focus:ring-purple-500" id="global-db-filter-country" oninput="filterGlobalDB()" placeholder="País" type="text"/>
+        <input class="bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm w-28 focus:border-purple-500 focus:ring-purple-500" id="global-db-filter-state" oninput="filterGlobalDB()" placeholder="Estado" type="text"/>
+        <input class="bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm w-28 focus:border-purple-500 focus:ring-purple-500" id="global-db-filter-colonia" oninput="filterGlobalDB()" placeholder="Colonia" type="text"/>
+    </div>
+    
+    <div class="p-0 overflow-x-auto">
+    <table class="crm-table w-full text-left border-collapse">
+    <thead>
+    <tr class="text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-white border-b border-slate-100">
+    <th class="px-6 py-4">ID / Hash</th>
+    <th class="px-6 py-4">Nombre</th>
+    <th class="px-6 py-4">Contacto <i class="fa-solid fa-shield-halved text-purple-400 ml-1" title="Privacidad Activada"></i></th>
+    <th class="px-6 py-4">Negocio Origen</th>
+    <th class="px-6 py-4">Ubicación</th>
+    <th class="px-6 py-4">Registro</th>
+    </tr>
 </thead>
 <tbody id="global-db-body">
 <!-- Dynamic Content -->
@@ -4484,30 +4498,69 @@ aside {
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10 w-full">
 <div>
-<p class="text-[11px] font-black text-fidelio-600 uppercase tracking-widest mb-2"><i class="fa-solid fa-cube mr-2 opacity-50"></i>ADMINISTRACIÓN CENTRAL</p>
-<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Control de Negocios</h1>
-<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Listado de negocios afiliados y estatus de sus suscripciones.</p>
+<p class="text-[11px] font-black text-rose-500 uppercase tracking-widest mb-2"><i class="fa-solid fa-bolt mr-2 opacity-80"></i>SAAS GOD MODE</p>
+<h1 class="text-4xl font-black tracking-tight text-slate-900 mb-2">Comando Central (MRR)</h1>
+<p class="text-sm font-medium text-slate-500 max-w-2xl leading-relaxed">Monitoreo global de ingresos recurrentes, suscripciones activas y negocios afiliados a Fidelio.</p>
 </div>
 <div class="flex-shrink-0">
-<button class="bg-gradient-to-r from-fidelio-600 to-fidelio-500 hover:from-fidelio-500 hover:to-fidelio-400 text-white shadow-lg shadow-fidelio-500/30 hover:shadow-fidelio-500/50 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="loadMerchantsControl()"><i class="fa-solid fa-rotate-right"></i> Actualizar Estatus</button>
+<button class="bg-gradient-to-r from-slate-900 to-black hover:from-black hover:to-slate-900 text-white shadow-lg shadow-black/20 hover:shadow-black/40 transition-all px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 border-0 cursor-pointer" onclick="loadMerchantsControl()"><i class="fa-solid fa-satellite-dish"></i> Sincronizar Red</button>
 </div>
 </div>
 
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="background: #ffffff; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto;">
-<table class="crm-table" style="width: max-content; border-collapse: collapse; text-align: left; table-layout: auto; white-space: nowrap;">
+<!-- SaaS FINANCIAL METRICS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl relative overflow-hidden group hover:border-slate-500 transition-all">
+        <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/20 rounded-full blur-[40px] pointer-events-none"></div>
+        <div class="relative z-10">
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center"><i class="fa-solid fa-money-bill-trend-up text-emerald-400 mr-2"></i> MRR Estimado</p>
+            <h2 class="text-4xl font-black text-white">$42,500 <span class="text-sm text-slate-500 font-medium">MXN/mes</span></h2>
+            <div class="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-500/10 w-fit px-3 py-1 rounded-full border border-emerald-500/20">
+                <i class="fa-solid fa-arrow-up"></i> +15% vs Mes Anterior
+            </div>
+        </div>
+    </div>
+    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all flex flex-col justify-between">
+        <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center"><i class="fa-solid fa-building-circle-check text-blue-500 mr-2"></i> Negocios Activos</p>
+            <h2 class="text-4xl font-black text-slate-800">48</h2>
+        </div>
+        <div class="mt-4 flex gap-2">
+            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">32 Pro</span>
+            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">16 Business</span>
+        </div>
+    </div>
+    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all flex flex-col justify-between">
+        <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center"><i class="fa-solid fa-user-xmark text-rose-500 mr-2"></i> Churn Rate B2B</p>
+            <h2 class="text-4xl font-black text-slate-800">1.2%</h2>
+        </div>
+        <div class="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full w-fit">
+            <i class="fa-solid fa-heart-pulse"></i> Salud del Ecosistema Excelente
+        </div>
+    </div>
+</div>
+
+<div class="fidelio-crisp-card relative overflow-hidden group transition-all duration-300 hover:shadow-2xl mb-8 bg-white border border-slate-200 rounded-[2rem]">
+<div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-network-wired text-slate-400 mr-2"></i>Red de Suscripciones</h3>
+    <span class="text-xs font-medium text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm"><i class="fa-solid fa-lock text-emerald-500 mr-1"></i> Admin Privileges</span>
+</div>
+<div class="p-0 overflow-x-auto">
+<table class="crm-table w-full text-left border-collapse">
 <thead>
-<tr style="border-bottom: 2px solid #E5E7EB; color: #6B7280; font-size:11px; text-transform:uppercase;">
-<th style="padding: 12px 24px 12px 8px;">Negocio</th>
-<th style="padding: 12px 24px;">Plan Actual</th>
-<th style="padding: 12px 24px;">Días Restantes</th>
-<th style="padding: 12px 24px;">Estado Pago</th>
-<th style="padding: 12px 8px;">Acciones</th>
+<tr class="text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-white border-b border-slate-100">
+<th class="px-8 py-4">Negocio</th>
+<th class="px-8 py-4">Plan Actual</th>
+<th class="px-8 py-4">Días Restantes</th>
+<th class="px-8 py-4">Estado Pago</th>
+<th class="px-8 py-4 text-right">Acciones (God Mode)</th>
 </tr>
 </thead>
-<tbody id="merchants-control-body">
+<tbody id="merchants-control-body" class="divide-y divide-slate-100 bg-white">
 <!-- Dynamic Content -->
 </tbody>
 </table>
+</div>
 </div>
 <!-- FINANZAS Y PROMOS -->
 </div></section>
@@ -5128,37 +5181,29 @@ aside {
 </div>
 </div>
 
-<h2 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 20px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-microchip" style="color:#8B5CF6;"></i> Terminales y Lectores NFC</h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-bottom: 48px;">
+<h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2"><i class="fa-solid fa-microchip text-fidelio-500"></i> Terminales y Lectores NFC</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
 <!-- Product 1 -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px !important; display: flex; flex-direction: column; opacity: 0.8; transition: transform 0.2s; cursor: pointer;">
-<div style="background: #F3F4F6; border-radius: 16px; height: 180px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; position: relative;">
-<i class="fa-solid fa-mobile-screen" style="font-size: 64px; color: #D1D5DB;"></i>
-<div style="position: absolute; top: 12px; right: 12px; background: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; color: #9CA3AF; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">SOBRE PEDIDO</div>
+<div class="bg-white border border-slate-200 rounded-[1.5rem] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group cursor-pointer">
+<div class="bg-slate-50 border border-slate-100 rounded-2xl h-48 mb-6 flex items-center justify-center relative group-hover:bg-slate-100 transition-colors">
+<i class="fa-solid fa-mobile-screen text-6xl text-slate-300 group-hover:text-fidelio-400 transition-colors"></i>
+<div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-[9px] font-black text-slate-400 tracking-widest uppercase shadow-sm border border-slate-100">SOBRE PEDIDO</div>
 </div>
-<h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Lectores NFC Inteligentes</h3>
-<p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">Terminales dedicadas para lectura de pases en milisegundos sin necesidad de usar celulares.</p>
-<button class="fidelio-btn-primary" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'" style="width: 100%; justify-content: center;"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
+<h3 class="text-lg font-bold text-slate-900 mb-2">Lectores NFC Inteligentes</h3>
+<p class="text-sm text-slate-500 mb-6 leading-relaxed flex-1">Terminales dedicadas para lectura de pases en milisegundos sin necesidad de usar celulares.</p>
+<button class="w-full bg-slate-900 hover:bg-black text-white py-3 rounded-xl text-sm font-bold shadow-lg flex justify-center items-center gap-2 transition-all" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
 </div>
 <!-- Product 2 -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px !important; display: flex; flex-direction: column; opacity: 0.8; transition: transform 0.2s; cursor: pointer;">
-<div style="background: #F3F4F6; border-radius: 16px; height: 180px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; position: relative;">
-<i class="fa-solid fa-tablet-screen-button" style="font-size: 64px; color: #D1D5DB;"></i>
-<div style="position: absolute; top: 12px; right: 12px; background: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; color: #9CA3AF; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">SOBRE PEDIDO</div>
+<div class="bg-white border border-slate-200 rounded-[1.5rem] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group cursor-pointer">
+<div class="bg-slate-50 border border-slate-100 rounded-2xl h-48 mb-6 flex items-center justify-center relative group-hover:bg-slate-100 transition-colors">
+<i class="fa-solid fa-tablet-screen-button text-6xl text-slate-300 group-hover:text-fidelio-400 transition-colors"></i>
+<div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-[9px] font-black text-slate-400 tracking-widest uppercase shadow-sm border border-slate-100">SOBRE PEDIDO</div>
 </div>
-<h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Bases de Mostrador</h3>
-<p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">Bases de acrílico y metal para colocar instrucciones o Códigos QR de registro en tu caja.</p>
-<button class="fidelio-btn-primary" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'" style="width: 100%; justify-content: center;"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
+<h3 class="text-lg font-bold text-slate-900 mb-2">Bases de Mostrador</h3>
+<p class="text-sm text-slate-500 mb-6 leading-relaxed flex-1">Bases de acrílico y metal para colocar instrucciones o Códigos QR de registro en tu caja.</p>
+<button class="w-full bg-slate-900 hover:bg-black text-white py-3 rounded-xl text-sm font-bold shadow-lg flex justify-center items-center gap-2 transition-all" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
 </div>
 <!-- Product 3 -->
-<div class="fidelio-crisp-card p-8 md:p-10 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 mb-8" style="padding: 24px !important; display: flex; flex-direction: column; opacity: 0.8; transition: transform 0.2s; cursor: pointer;">
-<div style="background: #F3F4F6; border-radius: 16px; height: 180px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; position: relative;">
-<i class="fa-solid fa-credit-card" style="font-size: 64px; color: #D1D5DB;"></i>
-<div style="position: absolute; top: 12px; right: 12px; background: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; color: #9CA3AF; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">SOBRE PEDIDO</div>
-</div>
-<h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Tarjetas Físicas NFC (x100)</h3>
-<p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0; line-height: 1.5; flex: 1;">Para clientes que prefieren el plástico. Personalizadas con tu logo.</p>
-<button class="fidelio-btn-primary" onclick="window.location.href='mailto:ventas@fideliorewards.com?subject=Cotización de Hardware y Materiales'" style="width: 100%; justify-content: center;"><i class="fa-solid fa-envelope"></i> Solicitar Cotización</button>
 </div>
 </div>
 <h2 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 20px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-swatchbook" style="color:#8B5CF6;"></i> Material Gráfico Gratuito</h2>
