@@ -144,12 +144,39 @@
                 </div>
             </div>
 
-            <!-- Right Side: Live Interactive Demo (Phone) -->
+            <!-- Right Side: Beautiful Wallet Card Replica -->
             <div class="hidden md:block">
-                <div class="phone-container">
-                    <div class="phone-screen">
-                        <!-- Embedded actual working product (Sales Demo) to show movement and reality -->
-                        <iframe src="sales_demo.html" class="phone-iframe" title="Fidelio Live Demo"></iframe>
+                <div class="phone-container flex items-center justify-center bg-gray-900 border-[8px] border-black rounded-[48px] overflow-hidden relative shadow-2xl" style="width: 320px; height: 650px;">
+                    <!-- Dynamic Notch -->
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-7 bg-black rounded-b-3xl z-50"></div>
+                    
+                    <!-- Wallet Interface -->
+                    <div class="w-full h-full bg-gray-100 flex flex-col p-4 pt-16 relative">
+                        <h2 class="text-3xl font-black mb-6 pl-2" style="font-family: -apple-system, sans-serif;">Cartera</h2>
+                        
+                        <!-- Apple Wallet Card -->
+                        <div class="relative w-full rounded-2xl overflow-hidden shadow-2xl transform transition-transform hover:scale-105 duration-300" style="background: linear-gradient(135deg, #4C1D95 0%, #312e81 100%); aspect-ratio: 1.58/1; display:flex; flex-direction: column; justify-content: space-between; padding: 20px;">
+                            <div class="flex justify-between items-start text-white">
+                                <div class="font-bold tracking-widest uppercase text-xs opacity-80">MI RESTAURANTE</div>
+                                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm"><i class="fa-solid fa-mug-hot text-white"></i></div>
+                            </div>
+                            <div class="text-white text-center">
+                                <div class="text-4xl font-black mb-1">2,450</div>
+                                <div class="text-xs uppercase tracking-widest font-semibold opacity-80">Puntos VIP</div>
+                            </div>
+                            <div class="flex justify-between items-end text-white text-xs font-medium opacity-80">
+                                <div>Nivel Platino</div>
+                                <i class="fa-brands fa-apple text-lg"></i>
+                            </div>
+                        </div>
+
+                        <!-- Tap to Pay indicator -->
+                        <div class="absolute bottom-10 left-0 w-full flex flex-col items-center justify-center animate-pulse">
+                            <div class="w-16 h-16 bg-black/5 rounded-full flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-wifi text-2xl text-gray-400 rotate-90"></i>
+                            </div>
+                            <p class="text-gray-400 font-medium text-sm">Acerca al lector</p>
+                        </div>
                     </div>
                 </div>
             </div>
