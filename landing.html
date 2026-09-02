@@ -116,7 +116,7 @@
                 <img src="fidelio_logo_purple.png" style="height: 44px; width: auto;" alt="Fidelio Logo" onerror="this.src='https://placehold.co/200x60?text=Fidelio+Logo'">
             </a>
             <div class="hidden md:flex items-center gap-4">
-                <a href="/login" class="font-semibold text-gray-700 hover:text-purple-700 transition">Iniciar Sesión</a>
+                <a href="#" data-modal-open="loginModal" class="font-semibold text-gray-700 hover:text-purple-700 transition">Iniciar Sesión</a>
                 <a href="#demo" class="font-semibold text-gray-700 hover:text-purple-700 transition">Solicitar Demo</a>
                 <a href="#precios" class="btn-solid">Crear Cuenta</a>
             </div>
@@ -277,7 +277,7 @@
                         <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Base de datos de clientes</li>
                         <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 1 Ubicación</li>
                     </ul>
-                    <a href="/register" class="btn-solid text-center w-full block">Seleccionar Basic</a>
+                    <a href="#" data-modal-open="registerModal" class="btn-solid text-center w-full block">Seleccionar Basic</a>
                 </div>
 
                 <!-- Plan Pro -->
@@ -295,7 +295,7 @@
                         <li><i class="fa-solid fa-check text-green-500 mr-2"></i> IA Cashback Automático</li>
                         <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Sucursales y usuarios ilimitados</li>
                     </ul>
-                    <a href="/register" class="btn-solid text-center w-full block">Seleccionar Pro</a>
+                    <a href="#" data-modal-open="registerModal" class="btn-solid text-center w-full block">Seleccionar Pro</a>
                 </div>
             </div>
         </div>
@@ -327,10 +327,75 @@
         <div class="flex flex-wrap justify-center gap-6 text-sm font-medium text-gray-400 mb-8">
             <a href="/privacidad.html" class="hover:text-white transition">Aviso de Privacidad</a>
             <a href="/terminos.html" class="hover:text-white transition">Ley de Protección de Datos</a>
-            <a href="/login" class="hover:text-white transition">Iniciar Sesión</a>
+            <a href="#" data-modal-open="loginModal" class="hover:text-white transition">Iniciar Sesión</a>
         </div>
         <p class="text-xs text-gray-600">© 2026 Fidelio Rewards. Todos los derechos reservados.</p>
     </footer>
 
+
+    <!-- MODALS -->
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; w-full h-full; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; border-radius: 24px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+    </style>
+
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-box relative">
+            <button data-modal-close="registerModal" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl font-bold">&times;</button>
+            <h3 class="text-3xl font-black text-gray-900 mb-2">Crear Cuenta</h3>
+            <p class="text-gray-500 mb-8 font-medium">Estás a un paso de modernizar tu lealtad.</p>
+            <form id="registerForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Nombre del Negocio</label>
+                    <input type="text" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
+                    <input type="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Código de Descuento o Cortesía <span class="text-xs text-gray-400 font-normal">(Opcional)</span></label>
+                    <input type="text" class="w-full px-4 py-3 rounded-xl border border-dashed border-purple-400 bg-purple-50 text-purple-900 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200 uppercase font-bold tracking-widest" placeholder="EJ: FIDELIO2026">
+                </div>
+                <button type="submit" class="btn-solid w-full text-lg py-4">Únete a Fidelio</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box relative">
+            <button data-modal-close="loginModal" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl font-bold">&times;</button>
+            <h3 class="text-3xl font-black text-gray-900 mb-6">Iniciar Sesión</h3>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
+                    <input type="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Contraseña</label>
+                    <input type="password" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <button type="submit" class="btn-solid w-full text-lg py-4">Entrar al Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('[data-modal-open]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById(btn.getAttribute('data-modal-open')).classList.add('active');
+            });
+        });
+        document.querySelectorAll('[data-modal-close]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById(btn.getAttribute('data-modal-close')).classList.remove('active');
+            });
+        });
+        document.getElementById('registerForm').addEventListener('submit', (e) => { e.preventDefault(); window.location.href='/index.html'; });
+        document.getElementById('loginForm').addEventListener('submit', (e) => { e.preventDefault(); window.location.href='/index.html'; });
+    </script>
 </body>
 </html>
