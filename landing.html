@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelio | Enterprise Loyalty</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --fidelio-purple: #4C1D95; /* Exact Fidelio Purple */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #111827;
+            overflow-x: hidden;
+        }
+
+        /* Video Background Wrapper */
+        .video-bg-wrapper {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .video-bg-wrapper video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.15; /* Subtle so it doesn't overpower text */
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,1));
+        }
+
+        /* Apple Style Buttons */
+        .btn-solid {
+            background-color: var(--fidelio-purple);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 14px rgba(76, 29, 149, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-solid:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(76, 29, 149, 0.6);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--fidelio-purple);
+            padding: 14px 28px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 2px solid var(--fidelio-purple);
+            transition: all 0.2s ease;
+        }
+        .btn-outline:hover {
+            background-color: var(--fidelio-purple);
+            color: white;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Floating interactive phone */
+        .phone-container {
+            width: 380px;
+            height: 750px;
+            background: #000;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            margin: 0 auto;
+            position: relative;
+        }
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 32px;
+            overflow: hidden;
+        }
+        .phone-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- IMAGE BACKGROUND HEADER -->
+    <div class="video-bg-wrapper">
+        <img src="hero_bg.jpg" alt="Background" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.15;">
+        <div class="video-overlay"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="fixed top-0 w-full glass-nav z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="/" class="flex items-center">
+                <!-- EXACT REQUESTED LOGO -->
+                <img src="fidelio_logo_purple.png" style="height: 44px; width: auto;" alt="Fidelio Logo" onerror="this.src='https://placehold.co/200x60?text=Fidelio+Logo'">
+            </a>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#" data-modal-open="loginModal" class="font-semibold text-gray-700 hover:text-purple-700 transition">Iniciar Sesión</a>
+                <a href="#demo" class="font-semibold text-gray-700 hover:text-purple-700 transition">Solicitar Demo</a>
+                <a href="#precios" class="btn-solid">Crear Cuenta</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (Split screen: Copy + Interactive Product Demo) -->
+    <section class="relative pt-32 pb-20 min-h-screen flex items-center">
+        <div class="max-w-4xl mx-auto px-6 w-full text-center">
+            
+            <!-- Center Copy -->
+            <div class="mx-auto flex flex-col items-center">
+                <h1 class="text-6xl lg:text-7xl font-black tracking-tight leading-tight mb-6 text-gray-900">
+                    Tu programa de recompensas en <span style="color: var(--fidelio-purple);">Apple & Google Wallet.</span>
+                </h1>
+                <p class="text-xl text-gray-600 font-medium mb-10 leading-relaxed max-w-2xl mx-auto">
+                    Sin apps para descargar. Sin tarjetas de plástico. Tus clientes se unen en segundos y su tarjeta vive en su teléfono para siempre.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#precios" class="btn-solid">Ver Planes</a>
+                    <a href="#demo" class="btn-outline flex items-center gap-2"><i class="fa-solid fa-play"></i> Solicitar Demo</a>
+                </div>
+            </div>
+
+
+
+        </div>
+    </section>
+
+    <!-- FEATURES WITH REAL IMAGES / VIDEO -->
+    <section class="py-24 bg-white relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-black text-gray-900 tracking-tight">El ecosistema más avanzado</h2>
+                <p class="mt-4 text-xl text-gray-500 font-medium">Diseñado exclusivamente para dueños de restaurantes y franquicias.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-24">
+                <div>
+                    <!-- Image showing contactless payment -->
+                    <img src="tap_to_pay.jpg" class="rounded-3xl shadow-2xl w-full object-cover" alt="Tap to Pay">
+                </div>
+                <div>
+                    <h3 class="text-3xl font-bold mb-4">Tap to Pay (NFC)</h3>
+                    <p class="text-lg text-gray-600 font-medium mb-6">Tus clientes solo acercan su teléfono a la caja. Nuestro escáner lee su pase de Apple o Google Wallet instantáneamente. Tan mágico como pagar con Apple Pay o Google Pay.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center flex-col-reverse md:flex-row-reverse">
+                <div>
+                    <!-- Image of a busy restaurant or gift card -->
+                    <img src="restaurant.jpg" class="rounded-3xl shadow-2xl w-full" alt="Restaurante lleno">
+                </div>
+                <div>
+                    <h3 class="text-3xl font-bold mb-4">Tarjetas de Regalo (Gift Cards)</h3>
+                    <p class="text-lg text-gray-600 font-medium mb-6">Recibe dinero antes de que el cliente consuma. Vende tarjetas de regalo digitales que se guardan en el Wallet y mejora tu flujo de efectivo hoy mismo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- CORE VARIATIONS (MEMBRESÍAS, LEALTAD, ETC) -->
+    <section class="py-24 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 tracking-tight">Un programa para cada modelo de negocio</h2>
+                <p class="mt-4 text-xl text-gray-500 font-medium">Configura Fidelio exactamente como tu restaurante o franquicia lo necesita.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Tarjetas de Lealtad -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Tarjetas de Puntos</h3>
+                    <p class="text-gray-600 font-medium">El programa clásico. Acumulación de puntos por cada compra canjeables por recompensas de tu menú.</p>
+                </div>
+                
+                <!-- Monederos -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Monederos (Cashback)</h3>
+                    <p class="text-gray-600 font-medium">Regresa un porcentaje de la cuenta en dinero digital a su tarjeta para asegurar su próxima visita.</p>
+                </div>
+
+                <!-- Membresías -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Membresías VIP</h3>
+                    <p class="text-gray-600 font-medium">Escala a tus clientes en niveles (Plata, Oro, Platino) basados en su gasto, con beneficios automáticos.</p>
+                </div>
+
+                <!-- Visitas Prepagadas -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-stamp"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Tarjetas de Sellos</h3>
+                    <p class="text-gray-600 font-medium">La clásica cuponera ("El sexto café es gratis"), ahora 100% digital, antifraude y sin desgaste de cartón.</p>
+                </div>
+                
+                <!-- Tarjetas de Regalo -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Gift Cards (Prepago)</h3>
+                    <p class="text-gray-600 font-medium">Vende tarjetas de regalo digitales. Recibe capital flotante hoy y el cliente consume después.</p>
+                </div>
+                
+                <!-- Cupones de Descuento -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Cupones Dinámicos</h3>
+                    <p class="text-gray-600 font-medium">Cupones de un solo uso que desaparecen de la Wallet al escanearse. Ideal para promociones flash.</p>
+                </div>
+                
+                <!-- Tarjetas Corporativas -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Pases Corporativos</h3>
+                    <p class="text-gray-600 font-medium">Convenios B2B. Otorga pases especiales con descuento fijo para los empleados de las oficinas cercanas.</p>
+                </div>
+                
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PRECIOS EXACTOS -->
+    <section id="precios" class="py-24 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-gray-900 tracking-tight mb-4">Planes Claros</h2>
+                <p class="text-xl text-gray-500 font-medium">Sin comisiones ocultas.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Plan Basic -->
+                <div class="bg-white rounded-3xl p-10 border border-gray-200 shadow-lg flex flex-col">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Plan Basic</h3>
+                    <p class="text-gray-500 mb-6 font-medium">1 sola sucursal</p>
+                    <div class="mb-6">
+                        <span class="text-5xl font-black">$399</span><span class="text-gray-500 font-bold"> / mes</span>
+                        <div class="text-sm text-gray-400 mt-1 font-bold">ó $3,999 Anual (Precios más IVA)</div>
+                    </div>
+                    <ul class="space-y-4 mb-8 font-medium text-gray-600 flex-grow">
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Apple Wallet y Google Wallet</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Base de datos de clientes</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 1 Ubicación</li>
+                    </ul>
+                    <a href="#" data-modal-open="registerModal" class="btn-solid text-center w-full block">Seleccionar Basic</a>
+                </div>
+
+                <!-- Plan Pro -->
+                <div class="bg-white rounded-3xl p-10 shadow-2xl flex flex-col border-4" style="border-color: var(--fidelio-purple);">
+                    <div class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 uppercase tracking-wide">El Ecosistema Completo</div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Plan Pro</h3>
+                    <p class="text-gray-500 mb-6 font-medium">Sucursales Múltiples</p>
+                    <div class="mb-6">
+                        <span class="text-5xl font-black">$999</span><span class="text-gray-500 font-bold"> / mes</span>
+                        <div class="text-sm text-gray-400 mt-1 font-bold">ó $9,999 Anual (Precios más IVA)</div>
+                    </div>
+                    <ul class="space-y-4 mb-8 font-medium text-gray-600 flex-grow">
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Todo lo del plan Basic</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Tarjetas de Regalo (Fidelio Bank)</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> IA Cashback Automático</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Sucursales y usuarios ilimitados</li>
+                    </ul>
+                    <a href="#" data-modal-open="registerModal" class="btn-solid text-center w-full block">Seleccionar Pro</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULARIO DE DEMO (INTEGRADO EN LA PÁGINA) -->
+    <section id="demo" class="py-24 bg-white">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-black text-gray-900 tracking-tight mb-4">Solicita una Demo</h2>
+            <p class="text-xl text-gray-500 font-medium mb-10">Déjanos tus datos y te contactaremos de inmediato.</p>
+            
+            <form class="text-left bg-gray-50 p-10 rounded-3xl border border-gray-200">
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Tu Nombre Completo</label>
+                    <input type="text" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Teléfono o WhatsApp</label>
+                    <input type="tel" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <button type="submit" class="btn-solid w-full text-lg py-4">Enviar Solicitud</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER LEY DE PROTECCIÓN -->
+    <footer class="bg-gray-900 text-white py-16 px-6 text-center">
+        <img src="fidelio_logo_purple.png" style="height: 32px; width: auto; filter: brightness(0) invert(1);" alt="Fidelio Logo" class="mx-auto mb-6">
+        <div class="flex flex-wrap justify-center gap-6 text-sm font-medium text-gray-400 mb-8">
+            <a href="/privacidad.html" class="hover:text-white transition">Aviso de Privacidad</a>
+            <a href="/terminos.html" class="hover:text-white transition">Ley de Protección de Datos</a>
+            <a href="#" data-modal-open="loginModal" class="hover:text-white transition">Iniciar Sesión</a>
+        </div>
+        <p class="text-xs text-gray-600">© 2026 Fidelio Rewards. Todos los derechos reservados.</p>
+    </footer>
+
+
+    <!-- MODALS -->
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; w-full h-full; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; border-radius: 24px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+    </style>
+
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-box relative">
+            <button data-modal-close="registerModal" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl font-bold">&times;</button>
+            <h3 class="text-3xl font-black text-gray-900 mb-2">Crear Cuenta</h3>
+            <p class="text-gray-500 mb-8 font-medium">Estás a un paso de modernizar tu lealtad.</p>
+            <form id="registerForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Nombre del Negocio</label>
+                    <input type="text" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
+                    <input type="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Código de Descuento o Cortesía <span class="text-xs text-gray-400 font-normal">(Opcional)</span></label>
+                    <input type="text" class="w-full px-4 py-3 rounded-xl border border-dashed border-purple-400 bg-purple-50 text-purple-900 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200 uppercase font-bold tracking-widest" placeholder="EJ: FIDELIO2026">
+                </div>
+                <button type="submit" class="btn-solid w-full text-lg py-4">Únete a Fidelio</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box relative">
+            <button data-modal-close="loginModal" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl font-bold">&times;</button>
+            <h3 class="text-3xl font-black text-gray-900 mb-6">Iniciar Sesión</h3>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
+                    <input type="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Contraseña</label>
+                    <input type="password" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-200" required>
+                </div>
+                <button type="submit" class="btn-solid w-full text-lg py-4">Entrar al Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('[data-modal-open]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById(btn.getAttribute('data-modal-open')).classList.add('active');
+            });
+        });
+        document.querySelectorAll('[data-modal-close]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById(btn.getAttribute('data-modal-close')).classList.remove('active');
+            });
+        });
+        document.getElementById('registerForm').addEventListener('submit', (e) => { e.preventDefault(); window.location.href='/index.html'; });
+        document.getElementById('loginForm').addEventListener('submit', (e) => { e.preventDefault(); window.location.href='/index.html'; });
+    </script>
+</body>
+</html>
